@@ -82,6 +82,8 @@ Builds the project via ant (obviously).
   <property name="project_name" value="ESG-Search"/>
   <property name="author" value="Gavin M. Bell"/>
 
+  <ivy:settings file="./ivysettings.xml" />
+
   <!--
       ************************************************************
       Global Initialization and Preparation....
