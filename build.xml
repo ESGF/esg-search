@@ -201,11 +201,11 @@ Builds the project via ant (obviously).
 	      dest="ivy-${ivy_version}.jar" usetimestamp="true"/> -->
     <taskdef resource="org/apache/ivy/ant/antlib.xml"
              uri="antlib:org.apache.ivy.ant" classpath="${lib_dir}/ivy-${ivy_version}.jar"/>
+    <ivy:settings file="./ivysettings.xml" />
   </target>
   
   <target name="deps" depends="init-ivy" description="(Sets up library dependencies: Ivy)">
     <mkdir dir="${lib_fetched_dir}"/>
-    <ivy:settings file="./ivysettings.xml" />
     <ivy:retrieve sync="false"/>
     <path id="main_classpath">
       <fileset dir="${lib_dir}">
