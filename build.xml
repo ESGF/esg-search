@@ -670,6 +670,20 @@ Builds the project via ant (obviously).
     <echo message="Web Site -> http://esg-repo.llnl.gov/esg/${module}/index.html"/>
   </target>
 
+  <target name="post"  depends="init">
+    <property name="orig.dir" value="${doc_dir_generated}"/>
+    <property name="dest.server" value="esgf.org"/>
+    <property name="dest.dir" value="www/${module}-site/"/>
+    
+    <echo message="orig.dir      = ${orig.dir} "/>
+    <echo message="dest.server   = ${dest.server} "/> 
+    <echo message="dest.dir      = ${dest.dir} "/> 
+    <echo message="dest.user     = ${dest.user} "/> 
+
+    <exec executable="rsync" dir="${basedir}">
+      <arg line="-caOvzl --chmod=g+r,a+r --exclude *~ --exclude semantic* ${orig.dir} ${dest.user}@${dest.server}:${dest.dir}"/>
+    </exec>
+  </target>
 
 
 
