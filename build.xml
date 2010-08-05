@@ -149,6 +149,7 @@ Builds the project via ant (obviously).
     <property name="jdoc_dir"   	  value="${doc_dir_generated}/javadocs"/>
     <property name="test_results_dir"     value="${doc_dir_generated}/test-results"/>
     <property name="test_reports_dir"     value="${doc_dir_generated}/test-reports"/>
+    <property name="test_coverage_dir"    value="${doc_dir_generated}/coverage-reports" />
     <property name="lib_deps_reports_dir" value="${doc_dir_generated}/dep-reports"/>
 
     <property name="jaxb_xsd_dir"         value="${etc_dir}/xsd/"/>
@@ -156,6 +157,7 @@ Builds the project via ant (obviously).
     <property name="jaxb_gen_package" value="esg.common.generated"/>
 
     <property name="test_last_failed_file" location="${build_dir}/.lasttestsfailed"/>
+    <property name="test_coverage_file"   value="${basedir}/.cobertura.ser"/>
     <property name="ivy.lib.dir" value="${lib_fetched_dir}"/>
      
     <echo message="--------------------------------"/> 
@@ -183,6 +185,7 @@ Builds the project via ant (obviously).
     <echo message="jdoc_dir             = ${jdoc_dir}"/>
     <echo message="test_results_dir     = ${test_results_dir}"/>
     <echo message="test_reports_dir     = ${test_reports_dir}"/>
+    <echo message="test_coverage_dir    = ${test_coverage_dir}"/>
     <echo message="lib_deps_reports_dir = ${doc_dir_generated}/dep-reports"/>
     <echo message="--------------------------------"/> 
     <tstamp/>
@@ -450,6 +453,8 @@ Builds the project via ant (obviously).
     <echo message="Removing build directory"/> 
     <delete dir="${build_dir}"/>
     <delete dir="${doc_dir_generated}"/>
+    <delete file="${test_coverage_file}"/>
+    <delete dir="${test_build_dir_inst}"/>
     <tstamp/>
   </target>
 
@@ -570,11 +575,37 @@ Builds the project via ant (obviously).
     <mkdir dir="${test_results_dir}"/>
     <delete dir="${test_reports_dir}" />
     <mkdir dir="${test_reports_dir}"/>
+    <delete dir="${test_coverage_dir}" />
+    <mkdir dir="${test_coverage_dir}" />
+
+    <path id="coverage.classpath">
+      <fileset dir="${lib_dir}" includes="**/*.jar" />
+      <path refid="main_classpath" />
+      <pathelement location="${test_build_dir}" />
+    </path>
+    <taskdef resource="tasks.properties" classpathref="coverage.classpath" />
+    
+    <!-- instrument classes -->
+    <cobertura-instrument todir="${test_build_dir_inst}" datafile="${test_coverage_file}">
+      <fileset dir="${build_dir}/esg">
+	<include name="**/*.class" />
+      </fileset>
+    </cobertura-instrument>
+
+    <!-- set test_classapth to see instrumented classes -->
+    <path id="test_classpath">
+      <pathelement location="${test_build_dir_inst}" />
+      <fileset dir="${lib_dir}" includes="**/junit*.jar" />
+      <path refid="main_classpath" />
+      <pathelement location="${test_build_dir}" />
+    </path>
+
     <junit errorproperty="failed"
 	   failureproperty="failed"
 	   printsummary="on"
 	   fork="yes"
 	   maxmemory="1024M">
+      <sysproperty key="net.sourceforge.cobertura.datafile" value="${test_coverage_file}"/>
       <classpath refid="test_classpath" />
       <formatter type="plain" usefile="false"/>
       <formatter type="xml" />
@@ -592,6 +623,11 @@ Builds the project via ant (obviously).
       </fileset>
       <report format="frames" todir="${test_reports_dir}"/>
     </junitreport>
+
+    <!-- coverage report -->
+    <cobertura-report format="html" srcdir="${src_dir}" destdir="${test_coverage_dir}"     datafile="${test_coverage_file}"/>
+    <cobertura-report format="xml"  srcdir="${src_dir}" destdir="${test_coverage_dir}/xml" datafile="${test_coverage_file}"/>
+
     <echo message="last build failed tests" file="${test_last_failed_file}"/>
     <fail if="failed" message="Unit tests failed.  Check log or reports for details"/>
     <delete file="${test_last_failed_file}"/> 
@@ -621,7 +657,7 @@ Builds the project via ant (obviously).
       </packageset>
 
       <doctitle><![CDATA[<h1>${module}</h1>]]></doctitle>
-      <bottom><![CDATA[<i><a href="http://esg-repo.llnl.gov/esg" target="_top">ESG</a> / <a href="http://esg-repo.llnl.gov/" target="_top">BSD OpenSource License</a></i>]]></bottom>
+      <bottom><![CDATA[<i><a href="http://esgf.org/" target="_top">ESGF</a> / <a href="http://esgf.org/LICENSE" target="_top">BSD OpenSource License</a></i>]]></bottom>
       <tag name="todo" scope="all" description="To do:"/>
       <group title="ESG Search Component Packages" packages="esg.search*"/>
       <group title="ESG Search Connection Packages" packages="esg.node.search.connector*"/>
@@ -664,10 +700,10 @@ Builds the project via ant (obviously).
   
   <target name="make_everything" depends="make_dist,test,docs,dep_report"
 	  description="(Builds Everything... Distributions, Tests, Docs n Reports)">
-    <echo message="JavaDocs -> file://${jdoc_dir}/index.html"/>
-    <echo message="Unit Test Report -> file://${test_reports_dir}/index.html"/>
+    <echo message="JavaDocs ----------> file://${jdoc_dir}/index.html"/>
     <echo message="Dependency Report -> file://${lib_deps_reports_dir}/esg-${module}-default.html"/>
-    <echo message="Web Site -> http://esg-repo.llnl.gov/esg/${module}/index.html"/>
+    <echo message="Unit Test Report  -> file://${test_reports_dir}/index.html"/>
+    <echo message="Web Site ----------> http://esg-repo.llnl.gov/esg/${module}/index.html"/>
   </target>
 
   <target name="post"  depends="init">
