@@ -209,7 +209,7 @@ Builds the project via ant (obviously).
   
   <target name="deps" depends="init-ivy" description="(Sets up library dependencies: Ivy)">
     <mkdir dir="${lib_fetched_dir}"/>
-    <ivy:retrieve sync="false"/>
+    <ivy:retrieve sync="true"/>
     <path id="main_classpath">
       <fileset dir="${lib_dir}">
 	<include name="**/*.jar"/>
