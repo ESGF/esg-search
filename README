@@ -1,8 +1,16 @@
-#*****************************************************************
-#
-#   Description: Basic description of the project(s) and layout of the
-#   		project.
-#
-#*****************************************************************
+DESCRIPTION
 
-README:
+This module contains the next generation search functionality for the Earth System Grid Federation.
+
+INSTALLING AND BUILDING FROM THE COMMAND LINE
+
+Retrieve the software from the ESGF git repository with one of the following commands:
+
+- git clone git@esg-repo.llnl.gov:esg-search.git (if you have an ssh git account)
+- git clone git://esg-repo.llnl.gov/esg-search.git (if you don't have an ssh git account)
+
+The bulding process is based on Apache Ant (to execute tasks) and Ivy (to manage and download dependencies).
+After downloading the software, execute the following commands:
+- cd esg-search
+- ant make_dist (to build the distribution jars)
+- ant test (to run the tests)

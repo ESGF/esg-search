@@ -80,7 +80,7 @@ Builds the project via ant (obviously).
   <property name="module" value="esg-search"/>
   <property name="organization" value="Earth Systems Grid Federation"/>
   <property name="project_name" value="ESG-Search"/>
-  <property name="author" value="Gavin M. Bell"/>
+  <property name="author" value="Luca Cinquini"/>
 
   <!--
       ************************************************************

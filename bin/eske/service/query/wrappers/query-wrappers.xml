@@ -1,53 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<!-- Spring configuration for wrapping new ESG search functionality around legacy ESKE services. -->
-<beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:context="http://www.springframework.org/schema/context"
-	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
-	
-	<!-- FacetService wrapper that delegates all functionality to the SearchService -->
-	<bean name="facetService" class="eske.service.query.wrappers.FacetServiceSolrImpl" init-method="init">
-		<constructor-arg index="0" ref="searchService"/>
-		<constructor-arg index="1" ref="mappingUtil" />
-	</bean>
-	
-	<!-- QueryService wrapper that delegates all functionality to the SearchService -->
-	<bean name="queryService" class="eske.service.query.wrappers.QueryServiceSolrImpl">
-		<constructor-arg index="0" ref="searchService"/>
-		<constructor-arg index="1" ref="mappingUtil" />
-	</bean>
-	
-	<!-- Mapping Utility class for facet keys, product values -->
-	<bean name="mappingUtil" class="eske.service.query.wrappers.MappingUtil">
-		<constructor-arg index="0" ref="facetKeyMap"/>
-		<constructor-arg index="1" ref="productValueMap" />
-	</bean>
-	
-	<!-- Facet keys translation map -->
-	<bean name="facetKeyMap" class="java.util.LinkedHashMap">
-		<constructor-arg index="0">
-			<map>
-	          	<entry key="hasProject"><value>project</value></entry>
-	          	<entry key="hasModel"><value>model</value></entry>
-	          	<entry key="hasExperiment"><value>experiment</value></entry>
-	          	<entry key="hasTimeFrequency"><value>frequency</value></entry>
-	          	<entry key="hasRealm"><value>realm</value></entry>
-	          	<entry key="hasCFParameter"><value>cf_variable</value></entry>
-	          	<entry key="hasGCMDParameter"><value>gcmd_variable</value></entry>
-	          	<entry key="hasInstrument"><value>instrument</value></entry>
-	        </map>
-	   	</constructor-arg>
-	</bean>
-	
-	<!-- Product keys translation map -->
-	<bean name="productValueMap" class="java.util.LinkedHashMap">
-		<constructor-arg index="0">
-			<map>
-	          	<entry key="GeophysicalDataset"><value>Dataset</value></entry>
-	        </map>
-	   	</constructor-arg>
-	</bean>
-                           
-</beans>
+<!--
+  Copyright (c) 2010 Earth System Grid Federation
+  ALL RIGHTS RESERVED. 
+  U.S. Government sponsorship acknowledged.
+  
+  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+  
+  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+  
+  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+  
+  Neither the name of the <ORGANIZATION> nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
