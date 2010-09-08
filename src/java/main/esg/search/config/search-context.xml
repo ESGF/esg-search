@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Copyright (c) 2010 Earth System Grid Federation
-  ALL RIGHTS RESERVED. 
-  U.S. Government sponsorship acknowledged.
-  
-  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-  
-  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-  
-  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
-  
-  Neither the name of the <ORGANIZATION> nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
-  
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
-  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
-  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
--->
+
+<!-- Spring configuration for harvesting services based on Apache-Solr -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- Facet profile for CMIP5 model data.
+	     These facets must be defined in the schema.xml file for the Apache Solr server -->
+	<bean name="facetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
+		<constructor-arg index="0">
+			 <map>
+			 
+	          	<entry key="project"><value>Project</value></entry>
+	          	<entry key="model"><value>Model</value></entry>
+	          	<entry key="experiment"><value>Experiment</value></entry>
+	          	<entry key="frequency"><value>Frequency</value></entry>
+	          	<entry key="realm"><value>Realm</value></entry>
+	          	<entry key="cf_variable"><value>CF Variable</value></entry>
+		      
+		      </map>
+		</constructor-arg>
+	</bean>
+
+	<!-- Client to the Apache-Solr server -->
+	<bean name="searchService" class="esg.search.query.impl.solr.SearchServiceImpl">
+		<constructor-arg index="0" ref="facetProfile"/>
+		<!-- <constructor-arg index="1" value="http://jpl-esg.jpl.nasa.gov:8983/solr"/> -->
+		<!-- target dataset query filter request handler -->
+		<constructor-arg index="1" value="http://localhost:8983/solr"/>
+	</bean>
+                           
+</beans>

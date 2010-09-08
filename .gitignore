@@ -38,3 +38,4 @@ generated/
 /lib/endorsed
 /WebContent
 /.cobertura.ser
+/bin
