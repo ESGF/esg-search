@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+<log4j:configuration threshold="all"
+	xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+	<!--  APPENDERS  -->
+	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="conversionPattern" value="[%p] %C: %m%n" />
+		</layout>
+	</appender>
+
+	
+	<logger name="esg" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="stdout" />
+	</logger>
+	
+	<logger name="eske" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="stdout" />
+	</logger>
+	
+	<logger name="org.apache.solr" additivity="false">
+		<level value="DEBUG" />
+		<appender-ref ref="stdout" />
+	</logger>
+
+</log4j:configuration>

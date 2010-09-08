@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<response>
+
+	<lst name="responseHeader">
+		<int name="status">0</int>
+		<int name="QTime">8</int>
+	</lst>
+	<result name="response" numFound="186" start="11">
+		<doc>
+			<str name="id">id #0</str>
+			<str name="title">title #0</str>
+			<str name="type">Dataset</str>
+			<str name="url">http://localhost/access?id=0</str>
+			<arr name="description">
+				<str>description #0</str>
+			</arr>
+			<arr name="variable">
+				<str>variable A</str>
+				<str>variable B</str>
+			</arr>
+			<arr name="instrument">
+				<str>instrument #0</str>
+			</arr>
+			<arr name="project">
+				<str>project A</str>
+				<str>project B</str>
+			</arr>
+			<date name="timestamp">2000-01-01T00:00:00.000Z</date>
+		</doc>
+		<doc>
+			<str name="id">id #1</str>
+			<str name="title">title #1</str>
+			<str name="type">Dataset</str>
+			<str name="url">http://localhost/access?id=1</str>
+			<arr name="description">
+				<str>description #1</str>
+			</arr>
+			<arr name="variable">
+				<str>variable A</str>
+				<str>variable B</str>
+			</arr>
+			<arr name="instrument">
+				<str>instrument #1</str>
+			</arr>
+			<arr name="project">
+				<str>project A</str>
+				<str>project B</str>
+			</arr>
+			<date name="timestamp">2000-01-01T00:00:00.000Z</date>
+		</doc>
+	</result>
+	<lst name="facet_counts">
+		<lst name="facet_queries" />
+		<lst name="facet_fields">
+			<lst name="instrument">
+				<int name="instrument #0">1</int>
+				<int name="instrument #1">1</int>
+			</lst>
+			<lst name="project">
+				<int name="project A">1</int>
+				<int name="project B">1</int>
+			</lst>
+			<lst name="variable">
+				<int name="variable A">1</int>
+				<int name="variable B">0</int>
+			</lst>
+		</lst>
+		<lst name="facet_dates" />
+	</lst>
+</response>

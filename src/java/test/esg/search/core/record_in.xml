@@ -1,0 +1,11 @@
+ <add>
+  <doc>
+    <field name="id">test id</field>
+    <field name="description">test description</field>
+    <field name="property">value A</field>
+    <field name="property">value B</field>
+    <field name="title">test title</field>
+    <field name="type">Dataset</field>
+    <field name="url">http://test.com/</field>
+  </doc>
+</add>

@@ -1,0 +1,17 @@
+<doc>
+	<field name="id">id2</field>
+	<field name="url">http://test.com/id2</field>
+	<field name="model">model 2</field>
+	<field name="format">netCDF, CF-1.0</field>
+	<field name="type">Dataset</field>
+	<field name="cf_variable">Surface Sensible Heat Flux</field>
+	<field name="cf_variable">Relative Humidity</field>
+	<field name="cf_variable">Specific Humidity</field>
+	<field name="cf_variable">Moisture in Upper 0.1 m of Soil Column</field>
+	<field name="project">IPCC</field>
+	<field name="time_frequency">monthly</field>
+	<field name="title">Record #2</field>
+	<field name="realm">ice</field>
+	<field name="experiment">sresa2</field>
+	<field name="variable">clivi</field>
+</doc>

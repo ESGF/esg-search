@@ -288,7 +288,8 @@ Builds the project via ant (obviously).
     </javac>
 
     <copy todir="${build_dir}" filtering="${filter}" overwrite="true">
-      <fileset dir="${conf_dir}" includes="**/*.properties,**/*.template,**/*filter-web.xml"/>
+      <fileset dir="${conf_dir}" includes="**/*.properties,**/*.template,**/*.xml,**/*filter-web.xml"/>
+      <fileset dir="${src_dir}" includes="**/*.properties,**/*.template,**/*.xml"/>
     </copy> 
 
     <tstamp/>
@@ -532,6 +533,10 @@ Builds the project via ant (obviously).
 	   verbose="off"
 	   nowarn="on"/>
     <tstamp/>
+  	
+    <copy todir="${test_build_dir}" filtering="${filter}" overwrite="true">
+      <fileset dir="${test_src_dir}" includes="**/*.properties,**/*.template,**/*.xml,**/*.ks"/>
+    </copy>
 
   </target>
 

@@ -1,0 +1,8 @@
+<doc>  
+  <str name="id">test id</str>
+  <str name="title">test title</str>
+  <str name="url">http://test.com/</str>
+  <arr name="type"><str>Dataset</str></arr>
+  <arr name="description"><str>test description</str></arr>
+  <arr name="property"><str>value A</str><str>value B</str></arr>
+</doc>
