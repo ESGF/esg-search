@@ -61,7 +61,7 @@
 		<constructor-arg index="0" value="/Users/cinquini/junk"/>
 	</bean>
                            
-    <!-- Class that generated simulated search records -->
+    <!-- Class that generates simulated search records -->
     <bean name="recordGenerator" class="esg.search.harvest.impl.RecordGenerator">
     	<property name="consumers">
     		<list>

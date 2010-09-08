@@ -30,11 +30,10 @@ import thredds.catalog.InvCatalogRef;
 import thredds.catalog.InvDataset;
 import thredds.catalog.InvDatasetImpl;
 import esg.search.core.Record;
-import esg.search.harvest.api.MetadataRepositoryCrawler;
 import esg.search.harvest.impl.MetadataHarvester;
 
 /**
- * Implementation of {@link MetadataRepositoryCrawler} for processing a hierarchy of THREDDS catalogs.
+ * Implementation of {@link MetadataHarvester} for processing a hierarchy of THREDDS catalogs.
  * This class implements the recursive behavior of the THREDDS harvesting process,
  * while delegating the parsing of catalogs and indexing of records to other configurable components.
  */
