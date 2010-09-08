@@ -22,7 +22,7 @@
 		<!-- List of search record consumers -->
 		<constructor-arg index="1">
 			<list>
-				<!--  <ref bean="solrIndex"/> -->
+				<ref bean="solrIndex"/>
 				<ref bean="fileWriter"/>
 			</list>
 		</constructor-arg>
@@ -58,7 +58,7 @@
 	
 	<!-- Class that writes search records to the file system -->
 	<bean name="fileWriter" class="esg.search.harvest.impl.FileWriter">
-		<constructor-arg index="0" value="/Users/cinquini/junk"/>
+		<constructor-arg index="0" value="/tmp"/>
 	</bean>
                            
     <!-- Class that generates simulated search records -->

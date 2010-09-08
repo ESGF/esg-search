@@ -32,20 +32,24 @@ public class HarvestingServiceMain {
 	
 	//private static final Log LOG = LogFactory.getLog(ThreddsParserMain.class);
     
-	//private final static String URL = "http://pcmdi3.llnl.gov/thredds/esgcet/14/pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1.xml#pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1";
-    //private final static String URL = "http://pcmdi3.llnl.gov/thredds/esgcet/catalog.xml";
-    //private final static String URL = "file:///Users/cinquini/Documents/workspace/solr/XML/ORNL-oai_dif.xml";
-    private final static String URL  = "file:///Users/cinquini/Documents/workspace/solr/XML/cas_rdf.xml";
-
-	
 	public static void main(String[] args) throws Exception {
 		
 	    final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(configLocations);
 	    final HarvestingService harvestingService = (HarvestingService)context.getBean("harvestingService");
+	    
+	    if (args.length!=2) {
+	    	System.out.println("Usage: java esg.search.harvest.impl.HarvestingServiceMain <Metadata Repository URL> <Metadata repository Type>");
+	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS");
+	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain http://pcmdi3.llnl.gov/thredds/esgcet/catalog.xml' THREDDS");
+	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml OAI");
+	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/cas_rdf.xml CAS");
+	    	System.exit(-1);
+	    }
 
-	    //harvestingService.harvest(new URI(URL), true, MetadataRepositoryType.THREDDS);
-	    //harvestingService.harvest(new URI(URL), true, MetadataRepositoryType.OAI);
-	    harvestingService.harvest(new URI(URL), true, MetadataRepositoryType.CAS);
+	    final URI uri = new URI(args[0]);
+	    final MetadataRepositoryType type = MetadataRepositoryType.valueOf(args[1]);
+	    
+	    harvestingService.harvest(uri, true, type);
 		
 	}
 	

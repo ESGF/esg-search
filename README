@@ -1,16 +1,40 @@
 DESCRIPTION
 
-This module contains the next generation search functionality for the Earth System Grid Federation.
+This module contains the next generation search functionality for the Earth System Grid Federation, 
+built upon the Apache Solr search engine. 
+The module contains functionality for executing two temporally successive operations:
 
-INSTALLING AND BUILDING FROM THE COMMAND LINE
+o Harvesting a remote metadata repository (for example a THREDDS catalog, an OAI repository, etc.) 
+and generating XML metadata records that are ingested into a Solr engine.
 
-Retrieve the software from the ESGF git repository with one of the following commands:
+o Searching the Solr engine content via a free text or faceted search.
 
-- git clone git@esg-repo.llnl.gov:esg-search.git (if you have an ssh git account)
-- git clone git://esg-repo.llnl.gov/esg-search.git (if you don't have an ssh git account)
+For installation and running instructions, see the INSTALL file.
 
-The bulding process is based on Apache Ant (to execute tasks) and Ivy (to manage and download dependencies).
-After downloading the software, execute the following commands:
-- cd esg-search
-- ant make_dist (to build the distribution jars)
-- ant test (to run the tests)
+THE SOLR SCHEMA
+
+The XML schema used by the Solr engine determines the syntax of the metadata records to be ingested 
+(i.e. which fields should be mandatory, which are optional, and how all fields are parsed) 
+and the format of the records returned by a search. This application comes with a specific Solr schema
+(located in "src/java/test/solr/conf/schema.xml") that has been customized for the ESGF. 
+Specifically, the ESGF Solr schema has the following features:
+
+o Each incoming XML record must have the following MANDATORY named fields:
+	- "id": the unique record identifier
+	- "title": the title displayed when the record is found as the result of a search
+	- "url": the URL that is hyperlinked to the search result
+	- "type": the metadata record type, used to enable searching for different products. For now, hard-wired by the software to "dataset".
+	
+o Each incoming XML record may contain the following OPTIONAL named fields:
+	- "description": if found, it may be displayed as additional information in a search result
+	- "start_datetime", "stop_datetime": used to enable time searches (not yet implemented)
+	- "north/east/south/west_degrees": used to enable geographic searches (not yet implemented)
+	
+o Any other field found in the incoming XML record is ingested as-is (i.e. not text processing occurs) to the Solr engine,
+so that it can be used for faceted searching
+
+o The content of all fields (mandatory named, optional named, and arbitrarily named) is text-processed and ingested into the Solr
+engine to drive the Lucene free text search.
+
+
+

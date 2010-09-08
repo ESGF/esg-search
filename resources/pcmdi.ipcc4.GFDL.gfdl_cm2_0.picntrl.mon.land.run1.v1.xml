@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<catalog xmlns="http://www.unidata.ucar.edu/namespaces/thredds/InvCatalog/v1.0" xmlns:xlink="http://www.w3.org/1999/xlink" name="TDS configuration file" version="1.0.1">
+  <service name="gridded" serviceType="OPENDAP" base="/thredds/dodsC/">
+    <property name="requires_authorization" value="false" />
+    <property name="application" value="Web Browser" />
+  </service>
+  <service name="fileservice" serviceType="Compound" base="">
+    <service name="HTTPServer" serviceType="HTTPServer" base="/thredds/fileServer/">
+      <property name="requires_authorization" value="true" />
+      <property name="application" value="Web Browser" />
+      <property name="application" value="Web Script" />
+    </service>
+    <service name="GRIDFTPatPCMDI" serviceType="GridFTP" base="gsiftp://pcmdi3.llnl.gov:2811/">
+      <property name="requires_authorization" value="true" />
+      <property name="application" value="DataMover-Lite" />
+    </service>
+  </service>
+  <service name="HRMatPCMDI" serviceType="SRM" base="srm://datagrid2.lbl.gov:6288/srm/v2/server?SFN=/garchive.nersc.gov/">
+    <property name="requires_authorization" value="false" />
+  </service>
+  <property name="catalog_version" value="2" />
+  <dataset name="project=IPCC Fourth Assessment Report, model=NOAA Geophysical Fluid Dynamics Laboratory, CM2.0 Model, experiment=pre-industrial control, run=run1, time_frequency=mon, realm=land, version=1" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1" restrictAccess="esg-user">
+    <creator>
+      <name>Karl_Taylor</name>
+      <contact url="http://www-pcmdi.llnl.gov/" email="taylor13@llnl.gov" />
+    </creator>
+    <property name="dataset_id" value="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1" />
+    <property name="dataset_version" value="1" />
+    <property name="project" value="ipcc4" />
+    <property name="experiment" value="picntrl" />
+    <property name="model" value="gfdl_cm2_0" />
+    <property name="time_frequency" value="mon" />
+    <property name="realm" value="land" />
+    <property name="run_name" value="run1" />
+    <property name="institute" value="GFDL" />
+    <property name="title" value="NOAA GFDL  model output prepared for IPCC Fourth Assessment and US CCSP Projects pre-industrial control experiment" />
+    <property name="creation_time" value="2010-08-12 19:15:46" />
+    <property name="format" value="netCDF, CF-1.0" />
+    <variables vocabulary="CF-1.0">
+      <variable name="snm" vocabulary_name="Snow Melt" units="kg m-2 s-1">Snow Melt</variable>
+      <variable name="mrsofc" vocabulary_name="soil_moisture_content_at_field_capacity" units="kg m-2">Capacity of Soil to Store Water</variable>
+      <variable name="snw" vocabulary_name="Snow Amount" units="kg m-2">Snow Amount</variable>
+      <variable name="orog" vocabulary_name="surface_altitude" units="m">Surface Altitude</variable>
+      <variable name="sftgif" vocabulary_name="land_ice_area_fraction" units="%">Fraction of Grid Cell Covered with Glacier</variable>
+      <variable name="sftlf" vocabulary_name="land_area_fraction" units="%">Land Area Fraction</variable>
+      <variable name="mrro" vocabulary_name="runoff_flux" units="kg m-2 s-1">Surface and Subsurface Runoff</variable>
+      <variable name="mrso" vocabulary_name="soil_moisture_content" units="kg m-2">Total Soil Moisture Content</variable>
+    </variables>
+    <metadata inherited="true">
+      <dataType>GRID</dataType>
+      <dataFormat>NetCDF</dataFormat>
+    </metadata>
+    <dataset name="snm_A1.000101-050012.nc" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.snm_A1.000101-050012.nc" urlPath="ipcc4_picntrl/land/mo/snm/gfdl_cm2_0/run1/snm_A1.000101-050012.nc" restrictAccess="esg-user">
+      <serviceName>HTTPServer</serviceName>
+      <dataSize units="Mbytes">311.1</dataSize>
+      <property name="file_id" value="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.snm_A1.000101-050012.nc" />
+      <property name="file_version" value="1" />
+      <property name="size" value="311193420" />
+      <property name="mod_time" value="2004-11-04 12:05:42" />
+      <variables vocabulary="CF-1.0">
+        <variable name="snm" vocabulary_name="Snow Melt" units="kg m-2 s-1">Snow Melt</variable>
+      </variables>
+      <access urlPath="/ipcc/picntrl/land/mo/snm/gfdl_cm2_0/run1/snm_A1.000101-050012.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+    </dataset>
+    <dataset name="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.snm.1.aggregation" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.snm.1.aggregation" urlPath="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.snm.1.aggregation" restrictAccess="esg-user">
+      <serviceName>gridded</serviceName>
+      <property name="aggregation_id" value="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.snm.1.aggregation" />
+      <property name="time_length" value="6000" />
+      <variables vocabulary="CF-1.0">
+        <variable name="snm" vocabulary_name="Snow Melt" units="kg m-2 s-1">Snow Melt</variable>
+      </variables>
+      <metadata inherited="true">
+        <geospatialCoverage>
+          <northsouth>
+            <start>-89.0</start>
+            <size>178.0</size>
+            <units>degrees_north</units>
+          </northsouth>
+          <eastwest>
+            <start>1.25</start>
+            <size>357.5</size>
+            <units>degrees_east</units>
+          </eastwest>
+        </geospatialCoverage>
+        <timeCoverage>
+          <start>0001-01-16T12:00:00</start>
+          <end>0500-12-16T12:00:00</end>
+        </timeCoverage>
+      </metadata>
+    </dataset>
+    <dataset name="mrsofc_A1.static.nc" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.mrsofc_A1.static.nc" urlPath="ipcc4_picntrl/land/fixed/mrsofc/gfdl_cm2_0/run1/mrsofc_A1.static.nc" restrictAccess="esg-user">
+      <serviceName>HTTPServer</serviceName>
+      <dataSize units="Kbytes">60.92</dataSize>
+      <property name="file_id" value="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.mrsofc_A1.static.nc" />
+      <property name="file_version" value="1" />
+      <property name="size" value="60920" />
+      <property name="mod_time" value="2005-01-06 19:09:01" />
+      <variables vocabulary="CF-1.0">
+        <variable name="mrsofc" vocabulary_name="soil_moisture_content_at_field_capacity" units="kg m-2">Capacity of Soil to Store Water</variable>
+      </variables>
+      <access urlPath="/ipcc/picntrl/land/fixed/mrsofc/gfdl_cm2_0/run1/mrsofc_A1.static.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+    </dataset>
+    <dataset name="snw_A1.000101-050012.nc" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.snw_A1.000101-050012.nc" urlPath="ipcc4_picntrl/land/mo/snw/gfdl_cm2_0/run1/snw_A1.000101-050012.nc" restrictAccess="esg-user">
+      <serviceName>HTTPServer</serviceName>
+      <dataSize units="Mbytes">311.1</dataSize>
+      <property name="file_id" value="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.snw_A1.000101-050012.nc" />
+      <property name="file_version" value="1" />
+      <property name="size" value="311193404" />
+      <property name="mod_time" value="2004-11-04 12:05:49" />
+      <variables vocabulary="CF-1.0">
+        <variable name="snw" vocabulary_name="Snow Amount" units="kg m-2">Snow Amount</variable>
+      </variables>
+      <access urlPath="/ipcc/picntrl/land/mo/snw/gfdl_cm2_0/run1/snw_A1.000101-050012.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+    </dataset>
+    <dataset name="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.snw.1.aggregation" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.snw.1.aggregation" urlPath="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.snw.1.aggregation" restrictAccess="esg-user">
+      <serviceName>gridded</serviceName>
+      <property name="aggregation_id" value="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.snw.1.aggregation" />
+      <property name="time_length" value="6000" />
+      <variables vocabulary="CF-1.0">
+        <variable name="snw" vocabulary_name="Snow Amount" units="kg m-2">Snow Amount</variable>
+      </variables>
+      <metadata inherited="true">
+        <geospatialCoverage>
+          <northsouth>
+            <start>-89.0</start>
+            <size>178.0</size>
+            <units>degrees_north</units>
+          </northsouth>
+          <eastwest>
+            <start>1.25</start>
+            <size>357.5</size>
+            <units>degrees_east</units>
+          </eastwest>
+        </geospatialCoverage>
+        <timeCoverage>
+          <start>0001-01-16T12:00:00</start>
+          <end>0500-12-16T12:00:00</end>
+        </timeCoverage>
+      </metadata>
+    </dataset>
+    <dataset name="orog_A1.static.nc" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.orog_A1.static.nc" urlPath="ipcc4_picntrl/land/fixed/orog/gfdl_cm2_0/run1/orog_A1.static.nc" restrictAccess="esg-user">
+      <serviceName>HTTPServer</serviceName>
+      <dataSize units="Kbytes">60.66</dataSize>
+      <property name="file_id" value="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.orog_A1.static.nc" />
+      <property name="file_version" value="1" />
+      <property name="size" value="60660" />
+      <property name="mod_time" value="2005-01-06 19:09:01" />
+      <variables vocabulary="CF-1.0">
+        <variable name="orog" vocabulary_name="surface_altitude" units="m">Surface Altitude</variable>
+      </variables>
+      <access urlPath="/ipcc/picntrl/land/fixed/orog/gfdl_cm2_0/run1/orog_A1.static.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+    </dataset>
+    <dataset name="sftgif_A1.static.nc" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.sftgif_A1.static.nc" urlPath="ipcc4_picntrl/land/fixed/sftgif/gfdl_cm2_0/run1/sftgif_A1.static.nc" restrictAccess="esg-user">
+      <serviceName>HTTPServer</serviceName>
+      <dataSize units="Kbytes">60.91</dataSize>
+      <property name="file_id" value="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.sftgif_A1.static.nc" />
+      <property name="file_version" value="1" />
+      <property name="size" value="60916" />
+      <property name="mod_time" value="2005-01-06 19:09:01" />
+      <variables vocabulary="CF-1.0">
+        <variable name="sftgif" vocabulary_name="land_ice_area_fraction" units="%">Fraction of Grid Cell Covered with Glacier</variable>
+      </variables>
+      <access urlPath="/ipcc/picntrl/land/fixed/sftgif/gfdl_cm2_0/run1/sftgif_A1.static.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+    </dataset>
+    <dataset name="sftlf_A1.static.nc" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.sftlf_A1.static.nc" urlPath="ipcc4_picntrl/land/fixed/sftlf/gfdl_cm2_0/run1/sftlf_A1.static.nc" restrictAccess="esg-user">
+      <serviceName>HTTPServer</serviceName>
+      <dataSize units="Kbytes">60.87</dataSize>
+      <property name="file_id" value="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.sftlf_A1.static.nc" />
+      <property name="file_version" value="1" />
+      <property name="size" value="60876" />
+      <property name="mod_time" value="2005-02-23 11:54:00" />
+      <variables vocabulary="CF-1.0">
+        <variable name="sftlf" vocabulary_name="land_area_fraction" units="%">Land Area Fraction</variable>
+      </variables>
+      <access urlPath="/ipcc/picntrl/land/fixed/sftlf/gfdl_cm2_0/run1/sftlf_A1.static.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+    </dataset>
+    <dataset name="mrro_A1.000101-050012.nc" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.mrro_A1.000101-050012.nc" urlPath="ipcc4_picntrl/land/mo/mrro/gfdl_cm2_0/run1/mrro_A1.000101-050012.nc" restrictAccess="esg-user">
+      <serviceName>HTTPServer</serviceName>
+      <dataSize units="Mbytes">311.1</dataSize>
+      <property name="file_id" value="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.mrro_A1.000101-050012.nc" />
+      <property name="file_version" value="1" />
+      <property name="size" value="311193420" />
+      <property name="mod_time" value="2004-11-04 12:02:38" />
+      <variables vocabulary="CF-1.0">
+        <variable name="mrro" vocabulary_name="runoff_flux" units="kg m-2 s-1">Surface and Subsurface Runoff</variable>
+      </variables>
+      <access urlPath="/ipcc/picntrl/land/mo/mrro/gfdl_cm2_0/run1/mrro_A1.000101-050012.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+    </dataset>
+    <dataset name="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.mrro.1.aggregation" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.mrro.1.aggregation" urlPath="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.mrro.1.aggregation" restrictAccess="esg-user">
+      <serviceName>gridded</serviceName>
+      <property name="aggregation_id" value="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.mrro.1.aggregation" />
+      <property name="time_length" value="6000" />
+      <variables vocabulary="CF-1.0">
+        <variable name="mrro" vocabulary_name="runoff_flux" units="kg m-2 s-1">Surface and Subsurface Runoff</variable>
+      </variables>
+      <metadata inherited="true">
+        <geospatialCoverage>
+          <northsouth>
+            <start>-89.0</start>
+            <size>178.0</size>
+            <units>degrees_north</units>
+          </northsouth>
+          <eastwest>
+            <start>1.25</start>
+            <size>357.5</size>
+            <units>degrees_east</units>
+          </eastwest>
+        </geospatialCoverage>
+        <timeCoverage>
+          <start>0001-01-16T12:00:00</start>
+          <end>0500-12-16T12:00:00</end>
+        </timeCoverage>
+      </metadata>
+    </dataset>
+    <dataset name="mrso_A1.000101-050012.nc" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.mrso_A1.000101-050012.nc" urlPath="ipcc4_picntrl/land/mo/mrso/gfdl_cm2_0/run1/mrso_A1.000101-050012.nc" restrictAccess="esg-user">
+      <serviceName>HTTPServer</serviceName>
+      <dataSize units="Mbytes">311.1</dataSize>
+      <property name="file_id" value="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.mrso_A1.000101-050012.nc" />
+      <property name="file_version" value="1" />
+      <property name="size" value="311193504" />
+      <property name="mod_time" value="2004-11-04 12:02:45" />
+      <variables vocabulary="CF-1.0">
+        <variable name="mrso" vocabulary_name="soil_moisture_content" units="kg m-2">Total Soil Moisture Content</variable>
+      </variables>
+      <access urlPath="/ipcc/picntrl/land/mo/mrso/gfdl_cm2_0/run1/mrso_A1.000101-050012.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+    </dataset>
+    <dataset name="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.mrso.1.aggregation" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.mrso.1.aggregation" urlPath="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.mrso.1.aggregation" restrictAccess="esg-user">
+      <serviceName>gridded</serviceName>
+      <property name="aggregation_id" value="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.mrso.1.aggregation" />
+      <property name="time_length" value="6000" />
+      <variables vocabulary="CF-1.0">
+        <variable name="mrso" vocabulary_name="soil_moisture_content" units="kg m-2">Total Soil Moisture Content</variable>
+      </variables>
+      <metadata inherited="true">
+        <geospatialCoverage>
+          <northsouth>
+            <start>-89.0</start>
+            <size>178.0</size>
+            <units>degrees_north</units>
+          </northsouth>
+          <eastwest>
+            <start>1.25</start>
+            <size>357.5</size>
+            <units>degrees_east</units>
+          </eastwest>
+        </geospatialCoverage>
+        <timeCoverage>
+          <start>0001-01-16T12:00:00</start>
+          <end>0500-12-16T12:00:00</end>
+        </timeCoverage>
+      </metadata>
+    </dataset>
+  </dataset>
+</catalog>
+
