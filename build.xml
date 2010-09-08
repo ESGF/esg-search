@@ -135,6 +135,7 @@ Builds the project via ant (obviously).
     <property name="dist_dir"   	  value="${basedir}/dist"/>
     <property name="test_src_dir"  	  value="${basedir}/src/java/test"/>
     <property name="test_build_dir"       value="${basedir}/build/test"/>
+  	<property name="test_build_dir_inst"  value="${basedir}/build/test-instrumented" />
     <property name="etc_dir"   	          value="${basedir}/etc"/>
     <property name="conf_dir"   	  value="${etc_dir}/conf"/>
     <property name="web_dir"   	          value="${basedir}/web"/>
