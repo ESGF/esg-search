@@ -709,6 +709,7 @@ Builds the project via ant (obviously).
     <echo message="JavaDocs ----------> file://${jdoc_dir}/index.html"/>
     <echo message="Dependency Report -> file://${lib_deps_reports_dir}/esg-${module}-default.html"/>
     <echo message="Unit Test Report  -> file://${test_reports_dir}/index.html"/>
+    <echo message="Coverage Report   -> file://${test_coverage_dir}/index.html"/>
     <echo message="Web Site ----------> http://esg-repo.llnl.gov/esg/${module}/index.html"/>
   </target>
 
