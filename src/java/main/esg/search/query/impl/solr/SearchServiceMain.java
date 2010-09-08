@@ -56,34 +56,34 @@ public class SearchServiceMain {
 		
 		// text query
 		LOG.info("\nQUERY #1");
-		input.setText("sresb1");
+		input.setText("boreas");
 		SearchOutput output = searchService.getResults(input);
 		LOG.info(output.toString());
 
 		// text + 1 facet query
 		LOG.info("\nQUERY #2");
-		input.addConstraint("time_frequency", "3hr");
+		input.addConstraint("project", "EOSDIS");
 		output = searchService.getResults(input);
 		LOG.info(output.toString());
 		
 		// text + 2 facets query
 		LOG.info("\nQUERY #3");
-		input.addConstraint("realm", "atm");
-		output = searchService.getResults(input);
-		LOG.info(output.toString());
-		
-		// text + 3 facets query
-		LOG.info("\nQUERY #4");
-		input.addConstraint("cf_variable", "Surface Downwelling Longwave Radiation");
+		input.addConstraint("gcmd_variable", "LAND SURFACE > SOILS > SOIL TEMPERATURE");
 		output = searchService.getResults(input);
 		LOG.info(output.toString());
 		
 		// constrained facets
-		LOG.info("\nQUERY #5");
+		LOG.info("\nQUERY #4");
 		facets = searchService.getFacets(input);
 		for (final Facet facet : facets.values()) {
 			LOG.info(facet.toString());
 		}
+		
+		// text + 3 facets query
+		LOG.info("\nQUERY #5");
+		input.addConstraint("instrument", "TEMPERATURE SENSOR");
+		output = searchService.getResults(input);
+		LOG.info(output.toString());
 		
 		// empty query for results
 		LOG.info("\nQUERY #6");
