@@ -31,9 +31,9 @@
 	<!-- Client to the Apache-Solr server -->
 	<bean name="searchService" class="esg.search.query.impl.solr.SearchServiceImpl">
 		<constructor-arg index="0" ref="facetProfile"/>
-		<!-- <constructor-arg index="1" value="http://jpl-esg.jpl.nasa.gov:8983/solr"/> -->
+		<constructor-arg index="1" value="http://jpl-esg.jpl.nasa.gov:8983/solr"/>
 		<!-- target dataset query filter request handler -->
-		<constructor-arg index="1" value="http://localhost:8983/solr"/>
+		<!-- <constructor-arg index="1" value="http://localhost:8983/solr"/> -->
 	</bean>
                            
 </beans>

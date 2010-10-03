@@ -63,12 +63,12 @@ public class SolrUrlBuilderTest {
 		final SearchInput input = new SearchInputImpl();
 		solrUrlBuilder.setSearchInput(input);
 		URL url = solrUrlBuilder.buildSelectUrl();
-		Assert.assertEquals(SOLR_URL+"/select/?indent=true", url.toString());
+		Assert.assertEquals(SOLR_URL+"/select/?indent=true&q=*", url.toString());
 		
 		// query default field, specify results type as query filter
 		input.setType("Dataset");
 		url = solrUrlBuilder.buildSelectUrl();
-		Assert.assertEquals(SOLR_URL+"/select/?indent=true&fq=type%3A%22Dataset%22", url.toString());
+		Assert.assertEquals(SOLR_URL+"/select/?indent=true&q=*&fq=type%3A%22Dataset%22", url.toString());
 		
 		// query default field, use query filter for results type, match text
 		input.setText("atmospheric data");

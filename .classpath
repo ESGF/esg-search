@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src/java/main"/>
 	<classpathentry kind="src" path="src/java/test"/>
-	<classpathentry kind="lib" path="lib/hessian-3.0.20.jar"/>
 	<classpathentry kind="lib" path="lib/ivy-2.1.0.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/eske.jar"/>
