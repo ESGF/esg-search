@@ -496,22 +496,12 @@
        <int name="rows">10</int>
        <str name="fl">*,score</str>
 
-       <!-- use dismax query parser (as opposed to standard Lucene query parser) -->
-       <str name="defType">dismax</str>
        <str name="qf">text</str>
        <float name="tie">0.01</float>
 
        <!-- default query to match all documents> -->
        <str name="q.alt">*:*</str>
-       
-       <!-- boost documents where terms are found in id, title
-       <str name="qf">id^2.0 title^1.5 text^1.0</str> -->
-       <!-- query slop: boost documents where searched terms are close
-       <str name="qs">1</str> -->
-       <!-- boost documents that have the (optional) field description
-       <str name="bq">description:([* TO *])^1.5</str> -->
 
-       <!-- <str name="version">2.1</str> -->
      </lst>
 
      <!-- always perform faceted search -->
@@ -527,7 +517,7 @@
      </lst>
 
   </requestHandler>
-  
+
 <!-- Please refer to http://wiki.apache.org/solr/SolrReplication for details on configuring replication -->
 <!-- remove the <lst name="master"> section if this is just a slave -->
 <!-- remove  the <lst name="slave"> section if this is just a master -->

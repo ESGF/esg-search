@@ -1,11 +1,10 @@
 DESCRIPTION
 
 This module contains the next generation search functionality for the Earth System Grid Federation, 
-built upon the Apache Solr search engine. 
-The module contains functionality for executing two temporally successive operations:
+built upon the Apache Solr search engine. The package contains functionality for:
 
 o Harvesting a remote metadata repository (for example a THREDDS catalog, an OAI repository, etc.) 
-and generating XML metadata records that are ingested into a Solr engine.
+and generating XML metadata records that are inserted into a Solr engine.
 
 o Searching the Solr engine content via a free text or faceted search.
 
@@ -13,7 +12,7 @@ For installation and running instructions, see the INSTALL file.
 
 THE SOLR SCHEMA
 
-The XML schema used by the Solr engine determines the syntax of the metadata records to be ingested 
+The XML schema used by the Solr engine determines the syntax of the metadata records to be inserted 
 (i.e. which fields should be mandatory, which are optional, and how all fields are parsed) 
 and the format of the records returned by a search. This application comes with a specific Solr schema
 (located in "src/java/test/solr/conf/schema.xml") that has been customized for the ESGF. 
@@ -30,11 +29,13 @@ o Each incoming XML record may contain the following OPTIONAL named fields:
 	- "start_datetime", "stop_datetime": used to enable time searches (not yet implemented)
 	- "north/east/south/west_degrees": used to enable geographic searches (not yet implemented)
 	
-o Any other field found in the incoming XML record is ingested as-is (i.e. not text processing occurs) to the Solr engine,
+o Any other field found in the incoming XML record is inserted as-is (i.e. not text processing occurs) to the Solr engine,
 so that it can be used for faceted searching
 
-o The content of all fields (mandatory named, optional named, and arbitrarily named) is text-processed and ingested into the Solr
+o The content of all fields (mandatory named fields, optional named fields, and all other fields) is text-processed and inserted into the Solr
 engine to drive the Lucene free text search.
+
+o A timestamp indicating the last processing time is automatically associated with each incoming record.
 
 
 

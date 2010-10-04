@@ -34,9 +34,11 @@ RUNNING THE HARVESTING TOOL
 The application comes with a command-line program that can be used to experiment with harvesting metadata records into a Solr engine.
 
 o Start an Apache Solr engine configured with the specific ESGF schema as described above.
+
 o If desired, edit the file src/java/main/esg/search/config/harvest-context.xml to customize the consumption of incoming XML metadata records.
 By default, the application is configured to send the records for processing to the Solr engine available at: http://localhost:8983/solr, and at the same
 time to write the serialized records to the /tmp directory (for debugging and informative purposes).
+
 o Run the Java class HarvestingServiceMain supplying it with the URL of a metadata repository, and the type of that repository. Note that at
 this time the application can parse THREDDS catalogs, records coming from a OAI/DIF repository, and from  CAS/RDF repository. Also, some example
 XML documents are provided in the "resources/" subdirectory.
@@ -44,7 +46,7 @@ XML documents are provided in the "resources/" subdirectory.
 For example, to test ingestion of a single THREDDS catalog run the following command:
 
 o cd <esg-search install>
-o cd build (this directory contains the .class files after you have run "ant make_dist"
+o cd build (this directory contains the .class files after you have run "ant make_dist")
 o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib/:../lib/fetched esg.search.harvest.impl.HarvestingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS
 o a search for "snow" in the Solr admin interface available at http://localhost:8983/solr/admin/ will return one record
 
@@ -58,7 +60,7 @@ RUNNING THE SEARCH TOOL
 The application contains a command-line tool that can be used to execute some canned queries towards the Solr engine, 
 both free text queries and faceted queries. Note that the result of these queries will depend on how the Solr engine has been populated
 in the harvesting phase. The Java program can be edited and recompiled to execute different queries that better reflect the 
-content of the XML records that were ingested.
+content of the XML records that were inserted.
 
 To run the search command line tool, do the following:
 
