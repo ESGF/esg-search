@@ -19,8 +19,6 @@
 package esg.search.query.impl.solr;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -58,16 +56,44 @@ public class SolrXmlParser {
 	}
 	
 	/**
-	 * Method to retrieve the list of facets and counts from the <lst name="facet_counts"> snippet.
+	 * Method to parse a Solr XML output document into record and facet objects.
+	 * Either the results or the facets section of the document can be processed, or both.
+	 * 
+	 * @param xml
+	 * @param input
+	 * @param parseResults
+	 * @param parseFacets
+	 * @return
+	 */
+	public SearchOutput parse(final String xml, final SearchInput input, final boolean parseResults, final boolean parseFacets) throws IOException, JDOMException {
+		
+		final SearchOutput output = new SearchOutputImpl();
+		final Document doc = xmlParser.parseString(xml);
+		final Element root = doc.getRootElement();
+
+		// parse results
+		if (parseResults) {
+			parseResults(root, output);
+		}
+		
+		// parse facets
+		if (parseFacets) {
+			parseFacets(root, input, output);
+		}
+		
+		return output;
+		
+	}
+	
+	/**
+	 * Private method to retrieve the list of facets and counts from the <lst name="facet_counts"> snippet.
 	 * @param xml
 	 * @return
 	 * @throws IOException
 	 * @throws JDOMException
 	 */
-	public Map<String, Facet> parseFacets(final String xml, final SearchInput input) throws IOException, JDOMException {
-		
-		final Map<String,Facet> facets = new LinkedHashMap<String, Facet>();
-		
+	private void parseFacets(final Element root, final SearchInput input, final SearchOutput output) throws IOException, JDOMException {
+				
 		/* 
 		<lst name="facet_counts">
 		 	<lst name="facet_queries"/>
@@ -81,8 +107,6 @@ public class SolrXmlParser {
 		 	<lst name="facet_dates"/>
 		</lst>
 		*/
-		final Document doc = xmlParser.parseString(xml);
-		final Element root = doc.getRootElement();
 		for (final Object lstEl : root.getChildren(SolrXmlPars.ELEMENT_LST)) {
 			final Element _lstEl = (Element)lstEl;
 			if (_lstEl.getAttribute(SolrXmlPars.ATTRIBUTE_NAME).getValue().equals(SolrXmlPars.ELEMENT_FACET_COUNTS)) {
@@ -119,30 +143,25 @@ public class SolrXmlParser {
 							
 							}
 							
-							facets.put(facetName, facet);
+							output.addFacet(facetName, facet);
 						}
 					}	
 				}
 			}
 		}
-		
-		return facets;
 
 	}
 	
 	/**
-	 * Method to retrieve the search results from the <result name="response" numFound="..." start="0"> snippet.
+	 * Private method to retrieve the search results from the <result name="response" numFound="..." start="0"> snippet.
 	 * 
 	 * @param xml
 	 * @return
 	 * @throws IOException
 	 * @throws JDOMException
 	 */
-	public SearchOutput parseResults(final String xml) throws IOException, JDOMException {
+	private void parseResults(final Element root, final SearchOutput output) throws IOException, JDOMException {
 		
-		final SearchOutput output = new SearchOutputImpl();
-		final Document doc = xmlParser.parseString(xml);
-		final Element root = doc.getRootElement();
 		for (final Object resultEl : root.getChildren(SolrXmlPars.ELEMENT_RESULT)) {
 			final Element _resultEl = (Element)resultEl;
 			if (_resultEl.getAttributeValue(SolrXmlPars.ATTRIBUTE_NAME).equals(SolrXmlPars.ATTRIBUTE_VALUE_RESPONSE)) {
@@ -161,8 +180,6 @@ public class SolrXmlParser {
 			}
 			
 		}
-		
-		return output;
 		
 	}
 	

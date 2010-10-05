@@ -30,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import esg.search.query.api.SearchInput;
+import esg.search.query.api.SearchOutput;
 import esg.search.query.api.SearchService;
 import esg.search.query.impl.solr.SearchInputImpl;
 import eske.model.query.Facet;
@@ -94,7 +95,8 @@ public class FacetServiceSolrImpl implements FacetService {
 			// execute unconstrained search for all facets specified in map values
 			final SearchInput input = new SearchInputImpl();
 			input.setFacets(new ArrayList<String>( mappingUtil.getInverseFacetKeys()) );
-			final Map<String, esg.search.query.api.Facet> newFacets = this.searchService.getFacets(input);
+			final SearchOutput output = this.searchService.search(input, false, true);
+			final Map<String, esg.search.query.api.Facet> newFacets = output.getFacets();
 	
 			// swap the maps
 			synchronized (facets) {

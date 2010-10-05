@@ -96,7 +96,7 @@ public class QueryServiceSolrImpl implements QueryService {
 			if (LOG.isDebugEnabled()) LOG.debug(searchInput.toString());
 
 			// execute search
-			final SearchOutput searchOutput = searchService.getResults(searchInput);
+			final SearchOutput searchOutput = searchService.search(searchInput, true, false);
 			if (LOG.isDebugEnabled()) LOG.debug(searchOutput.toString());
 			
 			// translate output
@@ -136,7 +136,8 @@ public class QueryServiceSolrImpl implements QueryService {
 			if (LOG.isDebugEnabled()) LOG.debug(searchInput.toString());
 			
 			// execute search
-			final Map<String, esg.search.query.api.Facet> facets = searchService.getFacets(searchInput);
+			final SearchOutput output = searchService.search(searchInput, false, true);
+			final Map<String, esg.search.query.api.Facet> facets = output.getFacets();
 			
 			// translate output
 			final Map<String, Set<String>> _facets = facetFactory.getFacetMap(facets);
@@ -170,7 +171,7 @@ public class QueryServiceSolrImpl implements QueryService {
 			if (LOG.isDebugEnabled()) LOG.debug(searchInput.toString());
 
 			// execute search
-			final SearchOutput searchOutput = searchService.getResults(searchInput);
+			final SearchOutput searchOutput = searchService.search(searchInput, true, false);
 			if (LOG.isDebugEnabled()) LOG.debug(searchOutput.toString());
 			
 			// translate search output

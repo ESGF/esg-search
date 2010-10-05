@@ -19,11 +19,13 @@
 package esg.search.query.api;
 
 import java.util.List;
+import java.util.Map;
 
 import esg.search.core.Record;
 
 /**
- * Interface representing the output of a search operation.
+ * Interface representing the output of a search operation,
+ * composed of search results and facets.
  */
 public interface SearchOutput {
 	
@@ -52,15 +54,31 @@ public interface SearchOutput {
 	public void setOffset(int offset);
 	
 	/**
-	 * Method to return the list of results.
+	 * Method to return the results list.
 	 * @return
 	 */
 	public List<Record> getResults();
+	
+	/**
+	 * Method to return the facets map (indexed by facet key).
+	 * indexed by key.
+	 * @return
+	 */
+	public Map<String, Facet> getFacets();
 	
 	/**
 	 * Method to add a single result to the list.
 	 * @param record
 	 */
 	public void addResult(Record record) ;
+	
+	/**
+	 * Method to add a facet to the map.
+	 * @param key
+	 * @param facet
+	 */
+	public void addFacet(String key, Facet facet);
+	
+
 
 }

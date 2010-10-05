@@ -54,14 +54,14 @@ public class SolrXmlParserTest {
 	 * @throws JDOMException
 	 */
 	@Test
-	public void parseResults() throws IOException, JDOMException {
+	public void parseForResults() throws IOException, JDOMException {
 		
 		// read file
 		final String xml = FileUtils.readFileToString( XMLFILE.getFile() );
 		if (LOG.isDebugEnabled()) LOG.debug(xml);
 		
 		// parse XML into objects
-		final SearchOutput output = solrXmlParser.parseResults(xml);
+		final SearchOutput output = solrXmlParser.parse(xml, null, true, false);
 		if (LOG.isDebugEnabled()) LOG.debug(output.toString());
 		
 		// <result name="response" numFound="186" start="11">
@@ -102,7 +102,7 @@ public class SolrXmlParserTest {
 	 * Tests parsing of the <lst name="facet_counts">...</lst> XML snippet containing the facet counts for the retrieved results.
 	 */
 	@Test
-	public void parseFacets() throws IOException, JDOMException {
+	public void parseForFacets() throws IOException, JDOMException {
 		
 		// read file
 		final String xml = FileUtils.readFileToString( XMLFILE.getFile() );
@@ -113,7 +113,7 @@ public class SolrXmlParserTest {
 		input.addConstraint("project", "project A");
 		
 		// parse XML into objects
-		final Map<String, Facet> facets = solrXmlParser.parseFacets(xml, input);
+		final Map<String, Facet> facets = solrXmlParser.parse(xml, input, false, true).getFacets();
 		if (LOG.isDebugEnabled()) {
 			for (final Facet facet : facets.values()) {
 				LOG.debug(facet.toString());

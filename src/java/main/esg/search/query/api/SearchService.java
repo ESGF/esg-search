@@ -18,24 +18,22 @@
  ******************************************************************************/
 package esg.search.query.api;
 
-import java.util.Map;
 
 /**
  * Interface defining the API for mix faceted/text search.
  */
 public interface SearchService {
-		
-	/**
-	 * Method to return the search facets, indexed by facet key, subject to the given query constraints.
-	 * @return
-	 */
-	public Map<String, Facet> getFacets(final SearchInput input) throws Exception;
 	
 	/**
-	 * Method to return a list of results matching the given query constraints.
+	 * Method to search for results and/or facets matching the given constraints.
+	 * 
+	 * @param input
+	 * @param getResults : true to search for results
+	 * @param getFacets : true to search for facets
 	 * @return
 	 * @throws Exception
 	 */
-	public SearchOutput getResults(final SearchInput input) throws Exception;
+	public SearchOutput search(final SearchInput input, final boolean getResults, final boolean getFacets) throws Exception;
+		
 
 }

@@ -49,7 +49,7 @@ public class SearchServiceMain {
 		final SearchInput input = new SearchInputImpl();
 		input.setFacets(new ArrayList<String>(facetProfile.getTopLevelFacets().keySet()));
 		
-		Map<String, Facet> facets = searchService.getFacets(input);
+		Map<String, Facet> facets = searchService.search(input, true, true).getFacets();
 		for (final Facet facet : facets.values()) {
 			LOG.info(facet.toString());
 		}
@@ -57,24 +57,24 @@ public class SearchServiceMain {
 		// text query
 		LOG.info("\nQUERY #1");
 		input.setText("boreas");
-		SearchOutput output = searchService.getResults(input);
+		SearchOutput output = searchService.search(input, true, true);
 		LOG.info(output.toString());
 
 		// text + 1 facet query
 		LOG.info("\nQUERY #2");
 		input.addConstraint("project", "EOSDIS");
-		output = searchService.getResults(input);
+		output = searchService.search(input, true, true);
 		LOG.info(output.toString());
 		
 		// text + 2 facets query
 		LOG.info("\nQUERY #3");
 		input.addConstraint("gcmd_variable", "LAND SURFACE > SOILS > SOIL TEMPERATURE");
-		output = searchService.getResults(input);
+		output = searchService.search(input, true, true);
 		LOG.info(output.toString());
 		
 		// constrained facets
 		LOG.info("\nQUERY #4");
-		facets = searchService.getFacets(input);
+		facets = searchService.search(input, true, true).getFacets();
 		for (final Facet facet : facets.values()) {
 			LOG.info(facet.toString());
 		}
@@ -82,18 +82,18 @@ public class SearchServiceMain {
 		// text + 3 facets query
 		LOG.info("\nQUERY #5");
 		input.addConstraint("instrument", "TEMPERATURE SENSOR");
-		output = searchService.getResults(input);
+		output = searchService.search(input, true, true);
 		LOG.info(output.toString());
 		
 		// empty query for results
 		LOG.info("\nQUERY #6");
 		input.addConstraint("frequency", "Daily");
-		output = searchService.getResults(input);
+		output = searchService.search(input, true, true);
 		LOG.info(output.toString());
 		
 		// empty query for facets
 		LOG.info("\nQUERY #7");
-		facets = searchService.getFacets(input);
+		facets = searchService.search(input, true, true).getFacets();
 		for (final Facet facet : facets.values()) {
 			LOG.info(facet.toString());
 		}

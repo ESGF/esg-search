@@ -10,6 +10,7 @@ o Searching the Solr engine content via a free text or faceted search.
 
 For installation and running instructions, see the INSTALL file.
 
+
 THE SOLR SCHEMA
 
 The XML schema used by the Solr engine determines the syntax of the metadata records to be inserted 
@@ -36,6 +37,15 @@ o The content of all fields (mandatory named fields, optional named fields, and 
 engine to drive the Lucene free text search.
 
 o A timestamp indicating the last processing time is automatically associated with each incoming record.
+
+
+USING A FACET PROFILE
+
+Because the ESG Solr schema treats every "unknown" field as a search facet, new facets can be harvested from a metadata source into the Solr index by simply 
+inserting the field (name, value(s)) pair into the Solr input document, without the need for pre-defining the facets.
+
+The same facets can be retrieved through a query by specifying their keys as input to the search operation, 
+for example by mapping the requested faceted to keys via the facet profile utility.
 
 
 

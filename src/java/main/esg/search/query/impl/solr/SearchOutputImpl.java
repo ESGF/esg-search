@@ -20,9 +20,12 @@ package esg.search.query.impl.solr;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import esg.search.core.Record;
+import esg.search.query.api.Facet;
 import esg.search.query.api.SearchOutput;
 
 /**
@@ -34,6 +37,11 @@ public class SearchOutputImpl implements SearchOutput {
 	 * The list of records returned by the search.
 	 */
 	private List<Record> results = new ArrayList<Record>();
+	
+	/**
+	 * The map of facets returned by the search.
+	 */
+	private Map<String, Facet> facets = new LinkedHashMap<String, Facet>();
 	
 	/**
 	 * The total number of records matching the search input criteria.
@@ -60,7 +68,21 @@ public class SearchOutputImpl implements SearchOutput {
 	public List<Record> getResults() {
 		return Collections.unmodifiableList(results);
 	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Map<String, Facet> getFacets() {
+		return Collections.unmodifiableMap(facets);
+	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public void addFacet(final String key, final Facet facet) {
+		facets.put(key, facet);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -101,6 +123,7 @@ public class SearchOutputImpl implements SearchOutput {
 			s.append("Result #").append(i++).append(": ")
 			 .append(r.toString()).append(NEWLINE);
 		}
+		s.append("Facets:").append(this.getFacets());
 		return s.toString();
 	}
 
