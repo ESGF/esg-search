@@ -41,6 +41,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	
 	//private final Log LOG = LogFactory.getLog(this.getClass());
 	
+	/**
+	 * Default URL builder
+	 */
 	private ThreddsDataseUrlBuilder urlBuilder = new ThreddsDatasetUrlBuilderCatalogUrlImpl();
 		
 	public ThreddsParserStrategyTopLevelDatasetImpl() {}
@@ -100,6 +103,16 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		records.add(record);
 		return records;
 		
+	}
+
+	/**
+	 * Method to set the builder for the URL to be associated with each record
+	 * (overriding the default strategy).
+	 * 
+	 * @param urlBuilder
+	 */
+	public void setUrlBuilder(ThreddsDataseUrlBuilder urlBuilder) {
+		this.urlBuilder = urlBuilder;
 	}
 
 }

@@ -32,7 +32,12 @@
 	<!-- Class that generates search records from a THREDDS catalogs hierarchy -->
 	<bean name="threddsHarvester" class="esg.search.harvest.thredds.ThreddsHarvester">
 		<constructor-arg index="0">
-			<bean name="threddsParserStrategy" class="esg.search.harvest.thredds.ThreddsParserStrategyTopLevelDatasetImpl"/>
+			<bean name="threddsParserStrategy" class="esg.search.harvest.thredds.ThreddsParserStrategyTopLevelDatasetImpl">
+				<!-- configure to hyper-link records to HTML pages -->
+				<property name="urlBuilder">
+					<bean class="esg.search.harvest.thredds.ThreddsDatasetUrlBuilderCatalogViewImpl"/>
+				</property>
+			</bean>
 		</constructor-arg>
 	</bean>
 	

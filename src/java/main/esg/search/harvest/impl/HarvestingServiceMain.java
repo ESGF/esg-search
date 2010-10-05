@@ -40,7 +40,8 @@ public class HarvestingServiceMain {
 	    if (args.length!=2) {
 	    	System.out.println("Usage: java esg.search.harvest.impl.HarvestingServiceMain <Metadata Repository URL> <Metadata repository Type>");
 	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS");
-	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain http://pcmdi3.llnl.gov/thredds/esgcet/catalog.xml' THREDDS");
+	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain http://pcmdi3.llnl.gov/thredds/esgcet/catalog.xml THREDDS");
+	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain http://esg-datanode.jpl.nasa.gov/thredds/esgcet/catalog.xml THREDDS");
 	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml OAI");
 	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/cas_rdf.xml CAS");
 	    	System.exit(-1);
