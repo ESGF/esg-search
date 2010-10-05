@@ -7,8 +7,7 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-	<!-- Facet profile.
-	     These facets must be defined in the schema.xml file for the Apache Solr server -->
+	<!-- Facet profile -->
 	<bean name="facetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
 		<constructor-arg index="0">
 			 <map>
