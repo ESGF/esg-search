@@ -118,30 +118,24 @@ public class SolrXmlParser {
 							final Element _flstEl = (Element)flstEl;
 							final String facetName = _flstEl.getAttributeValue(SolrXmlPars.ATTRIBUTE_NAME);
 							final Facet facet = new FacetImpl(facetName, facetName, "");
-							
-							// constrained facet -> set one option to constraint value
-							if (input.getConstraints().containsKey(facetName)) {
-								
-								final String subFacetName = input.getConstraints().get(facetName).get(0);
-								final Facet subFacet = new FacetImpl(subFacetName, subFacetName, "");
-								subFacet.setCounts(1);
-								facet.addSubFacet( subFacet );
-							
-							// facet not constrained -> retrieve all options from XML response
-							} else {
-							
-								for (final Object intEl : _flstEl.getChildren(SolrXmlPars.ELEMENT_INT)) {
-									final Element _intEl = (Element)intEl;
-									final String subFacetName = _intEl.getAttributeValue(SolrXmlPars.ATTRIBUTE_NAME);
-									final int subFacetCounts = Integer.parseInt(_intEl.getText());
-									if (subFacetCounts>0) {
+														
+							// loop over facet options
+							for (final Object intEl : _flstEl.getChildren(SolrXmlPars.ELEMENT_INT)) {
+								final Element _intEl = (Element)intEl;
+								final String subFacetName = _intEl.getAttributeValue(SolrXmlPars.ATTRIBUTE_NAME);
+								final int subFacetCounts = Integer.parseInt(_intEl.getText());
+								if (subFacetCounts>0) {
+									
+									// facet not constrained -> retrieve all options from XML response
+									if (!input.getConstraints().containsKey(facetName)
+										// constrained facet -> retrieve only selected option
+										|| input.getConstraints().get(facetName).get(0).equals(subFacetName)) {
 										final Facet subFacet = new FacetImpl(subFacetName, subFacetName, "");
 										subFacet.setCounts(subFacetCounts);
 										facet.addSubFacet( subFacet );
 									}
 								}
-							
-							}
+							}							
 							
 							output.addFacet(facetName, facet);
 						}

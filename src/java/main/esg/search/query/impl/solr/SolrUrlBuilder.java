@@ -148,6 +148,10 @@ public class SolrUrlBuilder {
 			}
 		}
 		
+		// &start=...@rows=...
+		sb.append("&start=").append(input.getOffset())
+		  .append("&rows=").append(input.getLimit());
+		
 		// indent=true
 		//if (this.indent) {
 		//	sb.append("indent=true");
