@@ -79,12 +79,12 @@ public class SolrUrlBuilderTest {
 		final List<String> facets = Arrays.asList( new String[]{ "facet1", "facet2" } );
 		solrUrlBuilder.setFacets(facets);
 		url = solrUrlBuilder.buildSelectUrl();
-		Assert.assertEquals(SOLR_URL+"/select/?indent=true&q=atmospheric+data&fq=type%3A%22Dataset%22&facet.field=facet1&facet.field=facet2&start=0&rows=10", url.toString());
+		Assert.assertEquals(SOLR_URL+"/select/?indent=true&q=atmospheric+data&fq=type%3A%22Dataset%22&facet=true&facet.field=facet1&facet.field=facet2&start=0&rows=10", url.toString());
 		
 		// query default field, use query filter for results type, match text, use facet constraint, retrieve all facets
 		input.addConstraint("facet1", "value1");
 		url = solrUrlBuilder.buildSelectUrl();
-		Assert.assertEquals(SOLR_URL+"/select/?indent=true&q=atmospheric+data&fq=type%3A%22Dataset%22&fq=facet1%3A%22value1%22&facet.field=facet1&facet.field=facet2&start=0&rows=10", url.toString());
+		Assert.assertEquals(SOLR_URL+"/select/?indent=true&q=atmospheric+data&fq=type%3A%22Dataset%22&fq=facet1%3A%22value1%22&facet=true&facet.field=facet1&facet.field=facet2&start=0&rows=10", url.toString());
 		
 	}
 

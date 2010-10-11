@@ -142,7 +142,7 @@ public class SolrUrlBuilder {
 		
 		// &facet.field=...&facet.field=...
 		if (this.facets!=null) {
-			//sb.append("&facet=true");
+			sb.append("&facet=true");
 			for (final String facet : this.facets) {
 				sb.append("&facet.field=").append( URLEncoder.encode(facet, UTF8 ));
 			}
