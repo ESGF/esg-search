@@ -156,6 +156,9 @@ public class SolrUrlBuilder {
 		//if (this.indent) {
 		//	sb.append("indent=true");
 		//}
+		
+		// distributed search
+		sb.append("&distrib=true");
 
 		if (LOG.isInfoEnabled()) LOG.info("Select URL=" + sb.toString());
 		return new URL(sb.toString());
