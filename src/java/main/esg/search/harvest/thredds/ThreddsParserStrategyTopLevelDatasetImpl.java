@@ -100,11 +100,37 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 			//
 		}
 
+		
+		this.addThreddsMetadataGroup(dataset);
+		
 		records.add(record);
 		return records;
 		
 	}
 
+	/**
+	 * Method to extract metadata information from a thredds dataset
+	 * Included in this metadata are the geospatial and temporal info contained
+	 * in the xml tags:
+	 * <>
+	 * 
+	 */
+	private void addThreddsMetadataGroup(final InvDataset dataset)
+	{
+		
+	}
+	
+	
+	private void addGeoSpatialCoverage(final InvDataset dataset)
+	{
+		
+	}
+	
+	private void addTimeCoverage(final InvDataset dataset)
+	{
+		
+	}
+	
 	/**
 	 * Method to set the builder for the URL to be associated with each record
 	 * (overriding the default strategy).
