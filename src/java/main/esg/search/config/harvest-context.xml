@@ -59,7 +59,7 @@
 	<bean name="solrIndex" class="esg.search.harvest.impl.solr.SolrIndexer">
 		<!-- <constructor-arg index="0" value="http://localhost:8983/solr"/> -->
 		<!-- <constructor-arg index="0" value="http://localhost:7574/solr"/> -->
-		<constructor-arg index="0" value="http://localhost:8900/solr"/>
+		<constructor-arg index="0" value="http://localhost:8983/solr"/>
 		<!-- <constructor-arg index="0" value="http://jpl-esg.jpl.nasa.gov:8983/solr"/> -->
 	</bean>
 	
