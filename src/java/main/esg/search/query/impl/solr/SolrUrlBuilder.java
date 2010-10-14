@@ -131,10 +131,16 @@ public class SolrUrlBuilder {
 		
 		// search input constraints --> fq=facet_name:"facet_value"
 		final Map<String, List<String>> constraints = input.getConstraints();
+		
+		//obtain a map full of field types (for type check in constraints)
+		final Map<String, String> fieldTypeMap = this.obtainFieldTypeMap();
+	
+		
 		if (!constraints.isEmpty()) {
 			for (final String facet : constraints.keySet()) {
 				for (final String value : constraints.get(facet)) {
 					
+					//only include quotes for string matches on constraints
 					if(fieldTypeMap.get(facet).equalsIgnoreCase("string") ||
 					   !fieldTypeMap.containsKey(facet)) { //dynamic field type catch all condition (*) 
 							
