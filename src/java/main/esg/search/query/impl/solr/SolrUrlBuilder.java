@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -133,8 +134,16 @@ public class SolrUrlBuilder {
 		if (!constraints.isEmpty()) {
 			for (final String facet : constraints.keySet()) {
 				for (final String value : constraints.get(facet)) {
-					// NOTE: include constraint values within quotes to execute exact string match
-					sb.append("&fq="+URLEncoder.encode( facet+":"+"\""+value+"\"","UTF-8" ));
+					
+					if(fieldTypeMap.get(facet).equalsIgnoreCase("string") ||
+					   !fieldTypeMap.containsKey(facet)) { //dynamic field type catch all condition (*) 
+							
+						// NOTE: include constraint values within quotes to execute exact string match
+						sb.append("&fq="+URLEncoder.encode( facet+":"+"\""+value+"\"","UTF-8" ));
+					}
+					else {
+						sb.append("&fq="+URLEncoder.encode( facet+":"+value,"UTF-8" ));
+					}
 				}
 			}
 		}
@@ -165,5 +174,43 @@ public class SolrUrlBuilder {
 		
 	}
 	
-
+	/*
+	 * This helper method was added so that the URL builder knows if the constraint to be added is an 
+	 * exact match string or some other type (like int)
+	 * This is an important distinction for range and date searches
+	 * 
+	 * Obviously, there should be a better way to obtain this information (SolrJ for instance can parse a schema.xml file)/
+	 * They correspond directly to a Lucene data structure
+	 * 
+	 * This is just a quick way to get results for the geo and tim searches
+	 * 
+	 * 
+	 * e.g. <fieldName,fieldType>
+	 * 		<"type","string">
+	 * 		<"west_degrees","float">
+	 */
+	
+	private Map<String,String> obtainFieldTypeMap()
+	{
+		Map<String,String> fieldTypeMap = new HashMap<String,String>();
+		
+		fieldTypeMap.put("id", "string");
+		fieldTypeMap.put("title", "string");
+		fieldTypeMap.put("description", "string");
+		fieldTypeMap.put("url", "string");
+		fieldTypeMap.put("type", "string");
+		fieldTypeMap.put("timestamp", "date");
+		fieldTypeMap.put("datetime_start", "date");
+		fieldTypeMap.put("datetime_stop", "date");
+		fieldTypeMap.put("north_degrees", "float");
+		fieldTypeMap.put("south_degrees", "float");
+		fieldTypeMap.put("east_degrees", "float");
+		fieldTypeMap.put("west_degrees", "float");
+		fieldTypeMap.put("text", "string");
+		
+		
+		return fieldTypeMap;
+		
+	}
+	
 }
