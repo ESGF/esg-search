@@ -19,7 +19,9 @@
 package esg.search.harvest.thredds;
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -36,6 +38,7 @@ import esg.search.harvest.impl.MetadataHarvester;
  * Implementation of {@link MetadataHarvester} for processing a hierarchy of THREDDS catalogs.
  * This class implements the recursive behavior of the THREDDS harvesting process,
  * while delegating the parsing of catalogs and indexing of records to other configurable components.
+ * Additionally, while crawling a hierarchy of catalogs, only the latest version records will be harvested.
  */
 public class ThreddsHarvester extends MetadataHarvester {
 	
@@ -59,6 +62,9 @@ public class ThreddsHarvester extends MetadataHarvester {
 		final InvCatalog catalog = factory.readXML(catalogURI);
 		final StringBuilder buff = new StringBuilder();
 		
+		// map containing latest version of records.
+		final Map<String, Record> vrecords = new HashMap<String,Record>();
+		
 		// valid catalog
 		if (catalog.check(buff)) {
 			
@@ -74,8 +80,15 @@ public class ThreddsHarvester extends MetadataHarvester {
 				} else {
 					// parse this catalog
 					final List<Record> records = parser.parseDataset(dataset);
-					// index all resulting records
-					for (final Record record : records) notify(record);
+					// index all resulting records (latest version only)
+					for (final Record record : records) {
+						System.out.println("indexing record="+record.getId());
+						if (vrecords.get(record.getId())==null
+							|| vrecords.get(record.getId()).getVersion()<record.getVersion()) {
+							notify(record);
+							vrecords.put(record.getId(), record);
+						} 
+					}
 				}
 			}
 			

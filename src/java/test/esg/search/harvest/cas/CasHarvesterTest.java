@@ -19,7 +19,7 @@
 package esg.search.harvest.cas;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -60,7 +60,7 @@ public class CasHarvesterTest {
 		final URI uri = new URI( "file://"+XMLFILE.getFile().getAbsolutePath() );
 		casHarvester.crawl(uri, true);
 		
-		final List<Record> records = consumer.getRecords();
+		final Map<String, Record> records = consumer.getRecords();
 		Assert.assertTrue(records.size()==2);
 		
 		

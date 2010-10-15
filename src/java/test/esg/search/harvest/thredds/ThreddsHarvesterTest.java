@@ -19,7 +19,7 @@
 package esg.search.harvest.thredds;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -61,9 +61,10 @@ public class ThreddsHarvesterTest {
 		threddsHarvester.crawl(uri, true);
 		
 		// tests number of metadata records
-		final List<Record> records = consumer.getRecords();
+		final Map<String, Record> records = consumer.getRecords();
 		Assert.assertEquals(2,records.size());
-		
+		Assert.assertEquals(1,records.get("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run2").getVersion());
+		Assert.assertEquals(2,records.get("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1").getVersion());
 	}
 
 }

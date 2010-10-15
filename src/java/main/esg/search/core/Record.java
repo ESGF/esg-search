@@ -32,24 +32,37 @@ public interface Record {
 	 * Method to return the record's unique identifier.
 	 * @return
 	 */
-	public String getId();
+	String getId();
 
 	/**
 	 * Method to assign the record's unique identifier;
 	 */
-	public void setId(String id);
+	void setId(String id);
 
 	/**
 	 * Method to add a field (name, value) pair to the record.
 	 * @param name
 	 * @param value
 	 */
-	public void addField(final String name, final String value);
+	void addField(final String name, final String value);
 	
 	/**
 	 * Method to return an (unmodifiable) map of multi-valued fields for this record.
 	 * @return
 	 */
-	public Map<String, List<String>> getFields();
+	Map<String, List<String>> getFields();
+	
+	/**
+	 * Method to return the record version, used to only index the latest version.
+	 * Dates can be converted to milliseconds from the Epoch for versioning.
+	 * @return
+	 */
+	long getVersion();
+	
+	/**
+	 * Method to assign a version to the record.
+	 * @param version
+	 */
+	//void setVersion(Comparable<?> version);
 
 }

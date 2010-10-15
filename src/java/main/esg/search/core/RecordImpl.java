@@ -18,11 +18,15 @@
  ******************************************************************************/
 package esg.search.core;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import esg.search.query.impl.solr.SolrXmlPars;
 
 
 /**
@@ -34,13 +38,14 @@ public class RecordImpl implements Record {
 	 * The record unique identifier.
 	 */
 	String id;
-	
 
 	/**
 	 * A map of multi-valued fields applicable to this record.
 	 * The map is ordered on keys to allow for easier testing.
 	 */
 	final Map<String,List<String>> fields = new TreeMap<String, List<String>>();
+	
+	private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	/**
 	 * Constructor for yet unknown record identifier.
@@ -75,6 +80,19 @@ public class RecordImpl implements Record {
 	public Map<String, List<String>> getFields() {
 		return Collections.unmodifiableMap(fields);
 	}
+	
+	/**
+	 * This implementation retrieves the record version for the same named field.
+	 */
+	public long getVersion() {
+		String version = getFieldValue(SolrXmlPars.FIELD_VERSION); 
+		if ( hasText(version) ) {
+			try {
+				return Long.parseLong(version);
+			} catch(NumberFormatException e) {}
+		}
+		return 0; // no version available
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -105,6 +123,15 @@ public class RecordImpl implements Record {
 		}
 		return sb.toString();
 		
+	}
+	
+	/**
+	 * Method to return the first value of a name field, or null if the field is not set.
+	 * @param name
+	 * @return
+	 */
+	public String getFieldValue(final String name) {
+		return ( fields.get(name) !=null && fields.get(name).size() > 0 ? fields.get(name).get(0) : null );
 	}
 
 }

@@ -19,6 +19,7 @@
 <doc>
 	<field name="id">id1</field>
 	<field name="url">http://test.com/id1</field>
+	<field name="version">1</field>
 	<field name="model">model 1</field>
 	<field name="format">netCDF, CF-1.0</field>
 	<field name="type">Dataset</field>

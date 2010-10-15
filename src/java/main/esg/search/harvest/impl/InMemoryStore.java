@@ -18,33 +18,34 @@
  ******************************************************************************/
 package esg.search.harvest.impl;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import esg.search.core.Record;
 import esg.search.harvest.api.RecordConsumer;
 
 /**
- * Implementation of {@link RecordConsumer} that stores in-memory all the records it receives.
+ * Implementation of {@link RecordConsumer} that stores in-memory all the records it receives,
+ * indexing them by ID.
  */
 public class InMemoryStore implements RecordConsumer {
 	
-	private List<Record> records = new ArrayList<Record>();
+	private Map<String, Record> records = new HashMap<String,Record>();
 
 	/**
 	 * Method implementation that adds the given record to the in-memory list.
 	 */
 	public void consume(Record record) throws Exception {
-		records.add(record);
+		records.put(record.getId(), record);
 	}
 	
 	/**
 	 * Method to retrieve all the records consumed so far.
 	 * @return
 	 */
-	public List<Record> getRecords() {
-		return Collections.unmodifiableList(records);
+	public Map<String,Record> getRecords() {
+		return Collections.unmodifiableMap(records);
 	}
 
 }
