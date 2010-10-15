@@ -216,7 +216,6 @@
  
     </metadata>
   </record>
-    
   <record>
     <header>
       <identifier>oai:daac.ornl.gov:ornldaac_10</identifier>
@@ -52276,7 +52275,9 @@
 </DIF>
  
     </metadata>
-  </record><resumptionToken completeListSize="875" cursor="0">0/300/875/oai_dif/null/null/null</resumptionToken>
+  </record>
+      
+  <resumptionToken completeListSize="875" cursor="0">0/300/875/oai_dif/null/null/null</resumptionToken>
 
 </ListRecords>
 
