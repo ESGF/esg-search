@@ -62,7 +62,7 @@ public class ThreddsParserStrategyTopLevelDatasetImplTest {
 		// test record fields
 		final Record record = records.get(0);
 		if (LOG.isInfoEnabled()) LOG.info(record);
-		Assert.assertTrue(record.getId().equals("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1"));
+		Assert.assertTrue(record.getId().equals("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1"));
 		
 		final Map<String, List<String>> fields = record.getFields();
 		Assert.assertTrue(fields.get("type").contains("Dataset"));
@@ -83,7 +83,7 @@ public class ThreddsParserStrategyTopLevelDatasetImplTest {
 		Assert.assertTrue(fields.get("cf_variable").contains("Surface Runoff"));
 		Assert.assertTrue(fields.get("cf_variable").contains("Total Soil Moisture Content"));
 		Assert.assertTrue(fields.get("creation_time").contains("2010-03-31 15:52:44"));
-		Assert.assertTrue(fields.get("dataset_id").contains("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1"));
+		//Assert.assertTrue(fields.get("dataset_id").contains("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1"));
 		Assert.assertTrue(fields.get("dataset_version").contains("1"));
 		Assert.assertTrue(fields.get("variable").contains("mrfso"));
 		Assert.assertTrue(fields.get("variable").contains("snw"));
