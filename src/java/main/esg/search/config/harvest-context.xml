@@ -57,7 +57,7 @@
 
 	<!-- Class that sends search records to a Solr server for indexing -->
 	<bean name="solrIndex" class="esg.search.harvest.impl.solr.SolrIndexer">
-		<constructor-arg index="0" value="http://localhost:8983/solr"/>
+		<constructor-arg index="0" value="http://jpl-esg.jpl.nasa.gov:8984/solr"/>
 		<!-- <constructor-arg index="0" value="http://jpl-esg.jpl.nasa.gov:8982/solr"/> -->
 	</bean>
 	

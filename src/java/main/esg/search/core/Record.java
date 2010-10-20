@@ -23,8 +23,9 @@ import java.util.Map;
 
 /**
  * Interface representing a search record,
- * both as item to be indexed into the search repository,
- * and to be returned as a search result.
+ * both as item to be indexed into the search repository, and to be returned as a search result.
+ * This interface leaves the record attributes as completely generic fields, 
+ * except for the record id and version.
  */
 public interface Record {
 	

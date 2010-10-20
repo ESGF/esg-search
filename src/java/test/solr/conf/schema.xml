@@ -444,6 +444,15 @@
    <!-- The document type, used to enable searching on different targets (mandatory) -->
    <field name="type" type="string" indexed="true" required="true" stored="true"/>
    
+   <!-- The version of the document (optonal) -->
+   <field name="version" type="string" indexed="true" stored="true" required="false" />
+   
+   <!-- The URI identifying the source repository from where this document was harvested (optional) 
+   <field name="source_uri" type="string" indexed="true" stored="true" required="false" /> -->
+   
+   <!-- The type of the source repository (optional)
+   <field name="source_type" type="string" indexed="true" stored="true" required="false" /> -->
+   
    <!-- The date the document was last indexed (set by default to the current time) -->
    <field name="timestamp" type="date" indexed="true" stored="true" default="NOW" multiValued="false"/>
 
