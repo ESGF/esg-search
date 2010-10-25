@@ -26,7 +26,7 @@
 	<classpathentry kind="lib" path="lib/fetched/jaxen-jdom-1.0-FCS.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/jdom-1.1-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/jdom-1.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/jdom-1.1.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/jdom-1.1.jar" sourcepath="/home/John/.m2/repository/org/jdom/jdom/1.1/jdom-1.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/junit-4.8.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/junit-4.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/log4j-1.2.16.jar"/>

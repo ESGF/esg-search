@@ -131,25 +131,14 @@ public class SolrUrlBuilder {
 		
 		// search input constraints --> fq=facet_name:"facet_value"
 		final Map<String, List<String>> constraints = input.getConstraints();
-		
-		//obtain a map full of field types (for type check in constraints)
-		final Map<String, String> fieldTypeMap = this.obtainFieldTypeMap();
 	
+		
 		
 		if (!constraints.isEmpty()) {
 			for (final String facet : constraints.keySet()) {
 				for (final String value : constraints.get(facet)) {
 					
-					//only include quotes for string matches on constraints
-					if(fieldTypeMap.get(facet).equalsIgnoreCase("string") ||
-					   !fieldTypeMap.containsKey(facet)) { //dynamic field type catch all condition (*) 
-							
-						// NOTE: include constraint values within quotes to execute exact string match
-						sb.append("&fq="+URLEncoder.encode( facet+":"+"\""+value+"\"","UTF-8" ));
-					}
-					else {
-						sb.append("&fq="+URLEncoder.encode( facet+":"+value,"UTF-8" ));
-					}
+					sb.append("&fq="+URLEncoder.encode( facet+":"+"\""+value+"\"","UTF-8" ));
 				}
 			}
 		}
@@ -175,48 +164,25 @@ public class SolrUrlBuilder {
 		// distributed search
 		sb.append("&distrib=true");
 
+		
+		//added Oct 22
+		// search input geospatial range constraints --> fq=west_degrees:[* TO 45]
+		final Map<String, String> geospatialRangeConstraints = input.getGeospatialRangeConstraint();
+		
+		// geospatialRangeConstraints
+		if (!geospatialRangeConstraints.isEmpty()) {
+			for (final String rangeConstraint : geospatialRangeConstraints.keySet()) {
+				String value = geospatialRangeConstraints.get(rangeConstraint);
+					sb.append("&fq="+URLEncoder.encode( rangeConstraint+":"+value,"UTF-8" ));
+			}
+		}
+		
+		
 		if (LOG.isInfoEnabled()) LOG.info("Select URL=" + sb.toString());
 		return new URL(sb.toString());
 		
 	}
 	
-	/*
-	 * This helper method was added so that the URL builder knows if the constraint to be added is an 
-	 * exact match string or some other type (like int)
-	 * This is an important distinction for range and date searches
-	 * 
-	 * Obviously, there should be a better way to obtain this information (SolrJ for instance can parse a schema.xml file)/
-	 * They correspond directly to a Lucene data structure
-	 * 
-	 * This is just a quick way to get results for the geo and tim searches
-	 * 
-	 * 
-	 * e.g. <fieldName,fieldType>
-	 * 		<"type","string">
-	 * 		<"west_degrees","float">
-	 */
 	
-	private Map<String,String> obtainFieldTypeMap()
-	{
-		Map<String,String> fieldTypeMap = new HashMap<String,String>();
-		
-		fieldTypeMap.put("id", "string");
-		fieldTypeMap.put("title", "string");
-		fieldTypeMap.put("description", "string");
-		fieldTypeMap.put("url", "string");
-		fieldTypeMap.put("type", "string");
-		fieldTypeMap.put("timestamp", "date");
-		fieldTypeMap.put("datetime_start", "date");
-		fieldTypeMap.put("datetime_stop", "date");
-		fieldTypeMap.put("north_degrees", "float");
-		fieldTypeMap.put("south_degrees", "float");
-		fieldTypeMap.put("east_degrees", "float");
-		fieldTypeMap.put("west_degrees", "float");
-		fieldTypeMap.put("text", "string");
-		
-		
-		return fieldTypeMap;
-		
-	}
 	
 }
