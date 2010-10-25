@@ -19,6 +19,7 @@
 package esg.search.harvest.oai;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.logging.Log;

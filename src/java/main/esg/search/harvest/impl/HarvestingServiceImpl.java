@@ -22,6 +22,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 
 import esg.search.harvest.api.HarvestingService;
@@ -38,6 +40,8 @@ public class HarvestingServiceImpl implements HarvestingService {
 	final Map<MetadataRepositoryType, MetadataHarvester> harvesters;
 	
 	final List<RecordConsumer> consumers;
+	
+	private static final Log LOG = LogFactory.getLog(HarvestingServiceImpl.class);
 	
 	public HarvestingServiceImpl(final Map<MetadataRepositoryType, MetadataHarvester> harvesters, final List<RecordConsumer> consumers) {
 		
@@ -56,11 +60,12 @@ public class HarvestingServiceImpl implements HarvestingService {
 	/* (non-Javadoc)
 	 * @see esg.search.harvest.HarvestingService#harvest(java.net.URI, boolean, esg.search.harvest.MetadataRepositoryType)
 	 */
-	public void harvest(final URI uri, boolean recursive, final MetadataRepositoryType metadataRepositoryType) throws Exception {
+	public void harvest(final String uri, boolean recursive, final MetadataRepositoryType metadataRepositoryType) throws Exception {
 		
+		LOG.info("uri="+uri+" recursive="+recursive+" metadataRepositoryType="+metadataRepositoryType);
 		MetadataRepositoryCrawler crawler = harvesters.get(metadataRepositoryType);
 		Assert.notNull(crawler, "Unsupported MetadataRepositoryType:"+metadataRepositoryType);
-		crawler.crawl(uri, recursive);
+		crawler.crawl(new URI(uri), recursive);
 		
 	}
 
