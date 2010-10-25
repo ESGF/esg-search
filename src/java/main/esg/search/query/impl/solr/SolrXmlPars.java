@@ -48,6 +48,7 @@ public class SolrXmlPars {
     // <field name="frequency">Monthly</field>
     // .........
 	final public static String FIELD_ID = "id";
+	final public static String FIELD_DATASET_ID = "dataset_id";
 	final public static String FIELD_TITLE = "title";
 	final public static String FIELD_NAME = "name";
 	final public static String FIELD_DESCRIPTION = "description";
