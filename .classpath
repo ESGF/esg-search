@@ -2,8 +2,13 @@
 <classpath>
 	<classpathentry kind="src" path="src/java/main"/>
 	<classpathentry kind="src" path="src/java/test"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6">
+		<attributes>
+			<attribute name="owner.project.facets" value="java"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="lib" path="lib/ivy-2.1.0.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/netcdf-4.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/ant-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/ant-launcher-1.7.0.jar"/>
@@ -20,12 +25,13 @@
 	<classpathentry kind="lib" path="lib/fetched/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/geronimo-jms_1.1_spec-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/geronimo-stax-api_1.0_spec-1.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/hessian-3.0.20.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/jaxb-xjc-2.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/jaxen-core-1.0-FCS.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/jaxen-jdom-1.0-FCS.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/jdom-1.1-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/jdom-1.1-sources.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/jdom-1.1.jar" sourcepath="/home/John/.m2/repository/org/jdom/jdom/1.1/jdom-1.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/jdom-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/junit-4.8.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/junit-4.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/log4j-1.2.16.jar"/>
@@ -72,6 +78,5 @@
 	<classpathentry kind="lib" path="lib/fetched/xalan-2.5.D1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xercesImpl-2.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xmlParserAPIs-2.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/netcdf-4.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

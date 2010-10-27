@@ -62,14 +62,15 @@ public class SearchServiceMain {
 		//Note: this assumes CDIAC/AmeriFlux site code=AMF_USARM, Site name=ARM SGP Main, Version=V003 
 		//data has been ingested into solr with geospatial data included
 		LOG.info("\nQUERY #1A");
-		input.setText("USARM");
-		SearchOutput output = searchService.search(input, true, true);
-		LOG.info(output.toString());
+		input.setText("CDIAC");
+//		SearchOutput output = searchService.search(input, true, true);
 
 		
 		LOG.info("\nQUERY #1B");
-		input.addGeospatialRangeConstraint("east_degrees", "[-96 TO *]");
-		output = searchService.search(input, true, true);
+		input.addGeospatialRangeConstraint("east_degrees", "[* TO *]");
+		SearchOutput output = searchService.search(input, true, true);
+		
+		
 		LOG.info(output.toString());
 
 		
