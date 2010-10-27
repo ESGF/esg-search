@@ -18,8 +18,6 @@
  ******************************************************************************/
 package esg.search.core;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,7 +43,7 @@ public class RecordImpl implements Record {
 	 */
 	final Map<String,List<String>> fields = new TreeMap<String, List<String>>();
 	
-	private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	//private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	/**
 	 * Constructor for yet unknown record identifier.

@@ -30,30 +30,20 @@ import esg.search.harvest.api.HarvestingService;
 import esg.search.harvest.api.MetadataRepositoryCrawler;
 import esg.search.harvest.api.MetadataRepositoryType;
 import esg.search.harvest.api.RecordConsumer;
-import esg.search.harvest.api.RecordProducer;
 
 /**
  * Service class that manages the harvesting of search records from different remote metadata repositories.
  */
-public class HarvestingServiceImpl implements HarvestingService {
+public class HarvestingServiceImpl extends RecordProducerImpl implements HarvestingService {
 	
-	final Map<MetadataRepositoryType, MetadataHarvester> harvesters;
-	
-	final List<RecordConsumer> consumers;
-	
+	private final Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers;
+		
 	private static final Log LOG = LogFactory.getLog(HarvestingServiceImpl.class);
 	
-	public HarvestingServiceImpl(final Map<MetadataRepositoryType, MetadataHarvester> harvesters, final List<RecordConsumer> consumers) {
+	public HarvestingServiceImpl(final Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers, final List<RecordConsumer> consumers) {
 		
-		this.harvesters = harvesters;
-		this.consumers = consumers;
-		
-		// subscribe record consumers to record producers
-		for (final RecordProducer producer : harvesters.values()) {
-			for (final RecordConsumer consumer : consumers) {
-				producer.subscribe(consumer);
-			}
-		}
+		this.crawlers = crawlers;
+		this.setConsumers(consumers);
 		
 	}
 	
@@ -63,9 +53,9 @@ public class HarvestingServiceImpl implements HarvestingService {
 	public void harvest(final String uri, boolean recursive, final MetadataRepositoryType metadataRepositoryType) throws Exception {
 		
 		LOG.info("uri="+uri+" recursive="+recursive+" metadataRepositoryType="+metadataRepositoryType);
-		MetadataRepositoryCrawler crawler = harvesters.get(metadataRepositoryType);
+		MetadataRepositoryCrawler crawler = crawlers.get(metadataRepositoryType);
 		Assert.notNull(crawler, "Unsupported MetadataRepositoryType:"+metadataRepositoryType);
-		crawler.crawl(new URI(uri), recursive);
+		crawler.crawl(new URI(uri), recursive, this);
 		
 	}
 

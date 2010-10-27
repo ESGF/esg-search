@@ -16,13 +16,51 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-package esg.search.harvest.impl;
+package esg.search.harvest.impl.solr;
 
-import esg.search.harvest.api.MetadataRepositoryCrawler;
+import java.net.URL;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import esg.search.harvest.api.RecordConsumer;
+import esg.search.query.impl.solr.SolrUrlBuilder;
+import esg.search.utils.HttpClient;
 
 /**
- * Abstract class for crawling a metadata repository, 
- * producing metadata records, and notifying all subscribed consumers.
- * The production/notification functionality is derived from the {@link RecordProducerImpl} superclass.
+ * Abstract implementation of {@link RecordConsumer} that sends records to a remote Solr server.
+ * Specific sub-classes define how the records are consumed (inserted, removed, etc.).
  */
-public abstract class MetadataHarvester extends RecordProducerImpl implements MetadataRepositoryCrawler {}
+public abstract class SolrClient implements RecordConsumer {
+	
+	/**
+	 * The base URL of the Solr server.
+	 */
+	protected final URL url;
+				
+	protected final Log LOG = LogFactory.getLog(this.getClass());
+	
+	/**
+	 * Instance attribute shared among all HTTP request,
+	 * since the generation of the POST URL does not depend on the instance's state.
+	 */
+	protected SolrUrlBuilder solrUrlBuilder;
+	
+	/**
+	 * Client used to execute HTTP/POST requests.
+	 */
+	protected HttpClient httpClient = new HttpClient();
+	
+	/**
+	 * Constructor initializes the URL builder.
+	 * @param url
+	 */
+	public SolrClient(final URL url) {
+		
+		this.url = url;
+		solrUrlBuilder = new SolrUrlBuilder(this.url);
+		
+	}
+
+
+}

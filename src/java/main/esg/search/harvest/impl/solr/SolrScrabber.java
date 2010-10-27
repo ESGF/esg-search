@@ -16,30 +16,43 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-package esg.search.core;
+package esg.search.harvest.impl.solr;
 
-import org.jdom.Element;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 
-
+import esg.search.core.Record;
 
 /**
- * Interface to serialize/deserialize a search record into an XML document.
+ * Implementation of {@link SolrClient} that sends (skeleton) records to a Solr server for removal.
  */
-public interface RecordSerializer {
-	
+public class SolrScrabber extends SolrClient {
+				
 	/**
-	 * Method to serialize a search record into an XML <doc> snippet.
-	 * @param record
-	 * @param indent
-	 * @return
+	 * Utility class used to generate Solr XML messages.
 	 */
-	public String serialize(Record record, boolean indent);
-	
+	private SolrXmlBuilder messageBuilder = new SolrXmlBuilder();
+		
 	/**
-	 * Method to deserialize an XML <doc> snippet into a search record object.
-	 * @param xml
-	 * @return
+	 * Constructor delegates to superclass.
+	 * @param url
 	 */
-	public Record deserialize(final Element doc);
+	public SolrScrabber(final URL url) {
+		super(url);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void consume(final Record record) throws Exception {
+		
+		final List<String> ids = Arrays.asList(new String[]{record.getId()} );
+		final String xml = messageBuilder.buildDeleteMessage(ids, true);
+		final URL postUrl = solrUrlBuilder.buildUpdateUrl(true); // commit=true
+		if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
+		httpClient.doPostXml(postUrl, xml);
+		
+	}
 
 }

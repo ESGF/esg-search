@@ -7,26 +7,51 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
-	<!-- Top-level service that manages the harvesting of records from multiple metadata repositories -->
-	<bean name="harvestingService" class="esg.search.harvest.impl.HarvestingServiceImpl">
+	<!-- Top-level service that manages the indexing of records from multiple metadata repositories into Solr-->
+	<bean name="indexingService" class="esg.search.harvest.impl.HarvestingServiceImpl">
 	
 		<!-- Map of metadata harvesters keyed by metadata type -->
 		<constructor-arg index="0">
+			<ref bean="crawlers"/>
+		</constructor-arg>
+		
+		<!-- List of (input) search record consumers -->
+		<constructor-arg index="1">
+			<list>
+				<ref bean="solrIndexer"/>
+				<ref bean="fileWriter"/>
+			</list>
+		</constructor-arg>
+		
+	</bean>
+	
+	<!-- Top-level service that manages the deletion of records from multiple metadata repositories from Solr-->
+	<bean name="scrabbingService" class="esg.search.harvest.impl.HarvestingServiceImpl">
+	
+		<!-- Map of metadata harvesters keyed by metadata type -->
+		<constructor-arg index="0">
+			<ref bean="crawlers"/>
+		</constructor-arg>
+		
+		<!-- List of (input) search record consumers -->
+		<constructor-arg index="1">
+			<list>
+				<ref bean="solrScrabber"/>
+				<ref bean="fileWriter"/>
+			</list>
+		</constructor-arg>
+		
+	</bean>
+	
+	<!-- Map of available MetadataRepositoryCrawlers, indexed by metadata type -->
+	<bean id="crawlers" class="org.springframework.beans.factory.config.MapFactoryBean">
+		<property name="sourceMap">
 			<map>
 				<entry key="THREDDS"><ref bean="threddsHarvester"/></entry>
 				<entry key="OAI"><ref bean="oaiHarvester"/></entry>
 				<entry key="CAS"><ref bean="casHarvester"/></entry>
 			</map>
-		</constructor-arg>
-		
-		<!-- List of search record consumers -->
-		<constructor-arg index="1">
-			<list>
-				<ref bean="solrIndex"/>
-				<ref bean="fileWriter"/>
-			</list>
-		</constructor-arg>
-		
+		</property>
 	</bean>
 	
 	<!-- Class that generates search records from a THREDDS catalogs hierarchy -->
@@ -56,8 +81,13 @@
 	</bean>
 
 	<!-- Class that sends search records to a Solr server for indexing -->
-	<bean name="solrIndex" class="esg.search.harvest.impl.solr.SolrIndexer">
-		<constructor-arg index="0" value="http://jpl-esg.jpl.nasa.gov:8983/solr"/>
+	<bean name="solrIndexer" class="esg.search.harvest.impl.solr.SolrIndexer">
+		<constructor-arg index="0" value="http://localhost:8983/solr"/>
+		<!-- <constructor-arg index="0" value="http://localhost:8983/solr"/> -->
+	</bean>
+	<!-- Class that sends search records to a Solr server for deletion -->
+	<bean name="solrScrabber" class="esg.search.harvest.impl.solr.SolrScrabber">
+		<constructor-arg index="0" value="http://localhost:8983/solr"/>
 		<!-- <constructor-arg index="0" value="http://localhost:8983/solr"/> -->
 	</bean>
 	

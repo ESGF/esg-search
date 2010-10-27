@@ -19,7 +19,6 @@
 package esg.search.harvest.oai;
 
 import java.net.URI;
-import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -29,15 +28,16 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 
 import esg.search.core.Record;
-import esg.search.harvest.impl.MetadataHarvester;
+import esg.search.harvest.api.MetadataRepositoryCrawler;
+import esg.search.harvest.api.RecordProducer;
 import esg.search.harvest.xml.MetadataHandler;
 import esg.search.utils.HttpClient;
 import esg.search.utils.XmlParser;
 
 /**
- * Implementation of {@link MetadataHarvester} that acts as an OAI Harvester to retrieve records from an OAI Repository.
+ * Implementation of {@link MetadataRepositoryCrawler} that acts as an OAI Harvester to retrieve records from an OAI Repository.
  */
-public class OaiHarvester extends MetadataHarvester  {
+public class OaiHarvester implements MetadataRepositoryCrawler  {
 	
 	private final MetadataHandler metadataHandler;
 	
@@ -50,7 +50,7 @@ public class OaiHarvester extends MetadataHarvester  {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void crawl(final URI uri, final boolean recursive) throws Exception {
+	public void crawl(final URI uri, final boolean recursive, final RecordProducer callback) throws Exception {
 		
 		// parse XML document
 		final String xml = (new HttpClient()).doGet( uri.toURL() );
@@ -58,7 +58,7 @@ public class OaiHarvester extends MetadataHarvester  {
 		final Document doc = xmlParser.parseString(xml);
 		
 		// process XML
-		this.parseDocument(doc);
+		this.parseDocument(doc, callback);
 		
 	}
 	
@@ -67,7 +67,7 @@ public class OaiHarvester extends MetadataHarvester  {
 	 * @param doc
 	 * @throws Exception
 	 */
-	private void parseDocument(final Document doc) throws Exception {
+	private void parseDocument(final Document doc, final RecordProducer callback) throws Exception {
 		
 		
 		// parse OAI response header
@@ -84,7 +84,7 @@ public class OaiHarvester extends MetadataHarvester  {
 		// <ListRecords>
 		final Element listRecordsEl = root.getChild("ListRecords", ns);
 		for (final Object recordEl : listRecordsEl.getChildren("record", ns) ) {
-			this.parseRecord( (Element)recordEl );
+			this.parseRecord( (Element)recordEl, callback );
 		}
 		
 	}
@@ -95,7 +95,7 @@ public class OaiHarvester extends MetadataHarvester  {
 	 * @param recordEl
 	 * @return
 	 */
-	private void parseRecord(final Element recordEl) throws Exception {
+	private void parseRecord(final Element recordEl, final RecordProducer callback) throws Exception {
 		
 		/**
 		 * Parse record header.
@@ -122,7 +122,7 @@ public class OaiHarvester extends MetadataHarvester  {
 				final List<Record> records = metadataHandler.parse( (Element)rootEl );
 				
 				// index resulting Solr records
-				for (final Record record : records) notify(record);
+				for (final Record record : records) callback.notify(record);
 			
 			}
 		}

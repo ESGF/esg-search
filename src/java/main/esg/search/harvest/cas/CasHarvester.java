@@ -24,7 +24,8 @@ import java.util.List;
 import org.jdom.Document;
 
 import esg.search.core.Record;
-import esg.search.harvest.impl.MetadataHarvester;
+import esg.search.harvest.api.MetadataRepositoryCrawler;
+import esg.search.harvest.api.RecordProducer;
 import esg.search.harvest.xml.MetadataHandler;
 import esg.search.utils.HttpClient;
 import esg.search.utils.XmlParser;
@@ -32,7 +33,7 @@ import esg.search.utils.XmlParser;
 /**
  * Class to harvest metadata from a remote CAS server.
  */
-public class CasHarvester extends MetadataHarvester {
+public class CasHarvester implements MetadataRepositoryCrawler {
 		
 	private final MetadataHandler metadataHandler;
 	
@@ -43,7 +44,7 @@ public class CasHarvester extends MetadataHarvester {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void crawl(final URI uri, final boolean recursive) throws Exception {
+	public void crawl(final URI uri, final boolean recursive, final RecordProducer callback) throws Exception {
 		
 		// parse XML document
 		final String xml = (new HttpClient()).doGet( uri.toURL() );
@@ -54,7 +55,7 @@ public class CasHarvester extends MetadataHarvester {
 		final List<Record> records = metadataHandler.parse(doc.getRootElement());
 		
 		// index records
-		for (final Record record : records) notify(record);
+		for (final Record record : records) callback.notify(record);
 
 	}
 

@@ -25,8 +25,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 
 import esg.search.core.Record;
-import esg.search.core.RecordSerializer;
-import esg.search.core.RecordSerializerSolrImpl;
+import esg.search.core.RecordImpl;
 import esg.search.query.api.Facet;
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchOutput;
@@ -41,11 +40,6 @@ public class SolrXmlParser {
 	 * The underlying XML parser.
 	 */
 	private final XmlParser xmlParser;
-	
-	/**
-	 * The record-XML serializer/deserializer.
-	 */
-	private final RecordSerializer serializer = new RecordSerializerSolrImpl();
 	
 	/**
 	 * Constructor instantiates the XML parser.
@@ -167,7 +161,7 @@ public class SolrXmlParser {
 
 				for (final Object docEl : _resultEl.getChildren(SolrXmlPars.ELEMENT_DOC)) {
 					final Element _docEl = (Element)docEl;
-					final Record record = serializer.deserialize(_docEl);
+					final Record record = this.parseDoc(_docEl);
 					output.addResult(record);
 				}
 				
@@ -175,6 +169,65 @@ public class SolrXmlParser {
 			
 		}
 		
+	}
+	
+	/**
+	 * Method to parse a result document into a Record object.
+	 * Example input XML:
+	 * 	<doc>  
+  	 * 		<str name="id">test id</str>
+     *		<str name="title">test title</str>
+  	 *		<str name="url">http://test.com/</str>
+  	 *	 	<arr name="type"><str>Dataset</str></arr>
+     *		<arr name="description"><str>test description</str></arr>
+     *		<arr name="property"><str>value A</str><str>value B</str></arr>
+     *		<str name="version">1</str>
+     *	</doc>	 * @param doc
+	 * @return
+	 */
+	public Record parseDoc(final Element doc) {
+		
+		final Record record = new RecordImpl();
+		
+		/*
+		 * 	<str name="url">http://localhost/access?id=1</str>
+			<arr name="description">
+				<str>description #1</str>
+			</arr>
+		 */
+		for (final Object child : doc.getChildren()) {
+			final Element element = (Element)child;
+			final String elName = element.getName();
+			final String nameAttValue = element.getAttributeValue(SolrXmlPars.ATTRIBUTE_NAME);
+			
+			// multi-valued field
+			// <arr name="...">....</arr>
+			if (elName.equals(SolrXmlPars.ELEMENT_ARR)) {
+				for (final Object obj : element.getChildren()) {
+					parseElement(nameAttValue, (Element)obj, record);
+				}
+				
+			// single-valued field
+			} else {
+				parseElement(nameAttValue, element, record);
+			}
+			
+		
+		}
+
+		return record;
+		
+	}
+	
+	private void parseElement(final String fieldName, final Element element, final Record record) {
+		
+		final String value = element.getTextNormalize();
+		if (fieldName.equals(SolrXmlPars.FIELD_ID)) {
+			record.setId(value);
+		} else {
+			record.addField(fieldName, value);
+		}
+
 	}
 	
 }

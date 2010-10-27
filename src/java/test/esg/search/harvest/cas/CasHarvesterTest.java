@@ -29,6 +29,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import esg.search.core.Record;
 import esg.search.harvest.impl.InMemoryStore;
+import esg.search.harvest.impl.RecordProducerImpl;
 import esg.search.harvest.xml.cas.MetadataHandlerCasRdfImpl;
 
 /**
@@ -40,13 +41,15 @@ public class CasHarvesterTest {
 	private final static ClassPathResource XMLFILE = new ClassPathResource("esg/search/harvest/xml/cas/cas_rdf.xml");
 	
 	CasHarvester casHarvester;
+	RecordProducerImpl producer;
 	InMemoryStore consumer;
 	
 	@Before
 	public void setup() {
 		casHarvester = new CasHarvester( new MetadataHandlerCasRdfImpl() );
 		consumer = new InMemoryStore();
-		casHarvester.subscribe(consumer);
+		producer = new RecordProducerImpl();
+		producer.subscribe(consumer);
 		
 	}
 	
@@ -55,10 +58,10 @@ public class CasHarvesterTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void crawl() throws Exception {
+	public void testCrawl() throws Exception {
 		
 		final URI uri = new URI( "file://"+XMLFILE.getFile().getAbsolutePath() );
-		casHarvester.crawl(uri, true);
+		casHarvester.crawl(uri, true, producer);
 		
 		final Map<String, Record> records = consumer.getRecords();
 		Assert.assertTrue(records.size()==2);

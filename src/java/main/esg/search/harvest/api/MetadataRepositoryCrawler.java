@@ -21,7 +21,8 @@ package esg.search.harvest.api;
 import java.net.URI;
 
 /**
- * API for crawling a metadata repository (with optional recursion).
+ * API for crawling a metadata repository (with optional recursion)
+ * and call back a {@link RecordProducer} during the process.
  */
 public interface MetadataRepositoryCrawler {
 	
@@ -31,6 +32,6 @@ public interface MetadataRepositoryCrawler {
 	 * @param uri : the starting URI of metadata repository
 	 * @param recursive : true to recursively crawl the locations referenced by the starting location
 	 */
-	public void crawl(URI uri, boolean recursive) throws Exception;
+	public void crawl(URI uri, boolean recursive, RecordProducer callback) throws Exception;
 
 }

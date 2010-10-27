@@ -32,7 +32,8 @@ import thredds.catalog.InvCatalogRef;
 import thredds.catalog.InvDataset;
 import thredds.catalog.InvDatasetImpl;
 import esg.search.core.Record;
-import esg.search.harvest.impl.MetadataHarvester;
+import esg.search.harvest.api.MetadataRepositoryCrawler;
+import esg.search.harvest.api.RecordProducer;
 
 /**
  * Implementation of {@link MetadataHarvester} for processing a hierarchy of THREDDS catalogs.
@@ -40,7 +41,7 @@ import esg.search.harvest.impl.MetadataHarvester;
  * while delegating the parsing of catalogs and indexing of records to other configurable components.
  * Additionally, while crawling a hierarchy of catalogs, only the latest version records will be harvested.
  */
-public class ThreddsHarvester extends MetadataHarvester {
+public class ThreddsHarvester implements MetadataRepositoryCrawler {
 	
 	private final ThreddsParserStrategy parser;
 		
@@ -56,7 +57,7 @@ public class ThreddsHarvester extends MetadataHarvester {
 	 * @param uri : the URI of the starting THREDDS catalog
 	 * @param recursive : true to crawl the whole catalog hierarchy
 	 */
-	public void crawl(final URI catalogURI, boolean recursive) throws Exception {
+	public void crawl(final URI catalogURI, boolean recursive, final RecordProducer callback) throws Exception {
 		
 		final InvCatalogFactory factory = new InvCatalogFactory("default", true); // validate=true
 		final InvCatalog catalog = factory.readXML(catalogURI);
@@ -75,7 +76,7 @@ public class ThreddsHarvester extends MetadataHarvester {
 					if (recursive) {
 						// crawl catalogs recursively
 						final URI catalogRef = getCatalogRef(dataset);
-						crawl(catalogRef, recursive);
+						crawl(catalogRef, recursive, callback);
 					}
 				} else {
 					// parse this catalog
@@ -85,7 +86,7 @@ public class ThreddsHarvester extends MetadataHarvester {
 						System.out.println("indexing record="+record.getId());
 						if (vrecords.get(record.getId())==null
 							|| vrecords.get(record.getId()).getVersion()<record.getVersion()) {
-							notify(record);
+							callback.notify(record);
 							vrecords.put(record.getId(), record);
 						} 
 					}

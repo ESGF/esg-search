@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,8 +35,7 @@ import org.jdom.JDOMException;
 import org.springframework.core.io.ClassPathResource;
 
 import esg.search.core.Record;
-import esg.search.core.RecordSerializer;
-import esg.search.core.RecordSerializerSolrImpl;
+import esg.search.query.api.SearchOutput;
 import esg.search.utils.XmlParser;
 
 /**
@@ -69,15 +69,20 @@ public class SolrTest extends AbstractSolrTestCase {
 		 	// test document ingestion
 		 	final File dataDir = DATADIR.getFile();
 		 	final XmlParser xmlParser = new XmlParser(false);
-		 	final RecordSerializer serializer = new RecordSerializerSolrImpl();
+		 	final SolrXmlParser solrParser = new SolrXmlParser();
 		 	for (final File file : dataDir.listFiles( (FileFilter)FileFilterUtils.suffixFileFilter("xml")) ) {
 		 		
 		 		if (LOG.isInfoEnabled()) LOG.info(file.getAbsolutePath());
 		 		
 		 		final Document doc = xmlParser.parseFile( file.getAbsolutePath() );
-		 		final Record record = serializer.deserialize(doc.getRootElement());
+		 		final String xml = FileUtils.readFileToString( new File(file.getAbsolutePath()) );
+		 		
+		 		final Record record = solrParser.parseDoc(doc.getRootElement());
+		 		//final SearchOutput output = solrParser.parse(xml, new SearchInputImpl(), true, false);
+		 		//System.out.println(output);
 		 		final List<String> fields = toList(record);
 		 		assertU( adoc(fields.toArray(new String[fields.size()])) );
+
 		 		
 		 	}
 		 	

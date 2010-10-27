@@ -29,6 +29,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import esg.search.core.Record;
 import esg.search.harvest.impl.InMemoryStore;
+import esg.search.harvest.impl.RecordProducerImpl;
 
 /**
  * Test class for {@link ThreddsHarvester}.
@@ -40,12 +41,14 @@ public class ThreddsHarvesterTest {
 	
 	ThreddsHarvester threddsHarvester;
 	InMemoryStore consumer;
+	RecordProducerImpl producer;
 		
 	@Before
 	public void setup() {
 		threddsHarvester = new ThreddsHarvester( new ThreddsParserStrategyTopLevelDatasetImpl() );
 		consumer = new InMemoryStore();
-		threddsHarvester.subscribe(consumer);
+		producer = new RecordProducerImpl();
+		producer.subscribe(consumer);
 		
 	}
 	
@@ -58,7 +61,7 @@ public class ThreddsHarvesterTest {
 	public void crawl() throws Exception {
 		
 		final URI uri = new URI( "file://"+XMLFILE.getFile().getAbsolutePath() );
-		threddsHarvester.crawl(uri, true);
+		threddsHarvester.crawl(uri, true, producer);
 		
 		// tests number of metadata records
 		final Map<String, Record> records = consumer.getRecords();
