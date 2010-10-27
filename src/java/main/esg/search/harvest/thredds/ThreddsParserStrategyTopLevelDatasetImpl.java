@@ -89,8 +89,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		
 		// <property name="..." value="..." />
 		for (final InvProperty property : dataset.getProperties()) {
-			
-			if (property.getName().equals(SolrXmlPars.FIELD_DATASET_ID)) {
+			if (property.getName().equals(ThreddsPars.DATASET_ID)) {
 				// note: override record ID to get rid of version
 				// <dataset name="TES Level 3 Monthly Data (NetCDF)" ID="nasa.jpl.tes.monthly.v1" restrictAccess="esg-user">
 				// <property name="dataset_id" value="nasa.jpl.tes.monthly" />
@@ -98,6 +97,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 			} else if (property.getName().equals(SolrXmlPars.FIELD_TITLE)) {
 				// note: record title already set from dataset name
 				record.addField(SolrXmlPars.FIELD_DESCRIPTION, property.getValue());
+			} else if (property.getName().equals(ThreddsPars.DATASET_VERSION)) {
+				record.addField(SolrXmlPars.FIELD_VERSION, property.getValue());
 			} else {
 				record.addField(property.getName(), property.getValue());
 			}

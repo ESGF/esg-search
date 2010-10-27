@@ -84,7 +84,7 @@ public class ThreddsParserStrategyTopLevelDatasetImplTest {
 		Assert.assertTrue(fields.get("cf_variable").contains("Total Soil Moisture Content"));
 		Assert.assertTrue(fields.get("creation_time").contains("2010-03-31 15:52:44"));
 		//Assert.assertTrue(fields.get("dataset_id").contains("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1"));
-		Assert.assertTrue(fields.get("dataset_version").contains("1"));
+		Assert.assertTrue(fields.get("version").contains("1"));
 		Assert.assertTrue(fields.get("variable").contains("mrfso"));
 		Assert.assertTrue(fields.get("variable").contains("snw"));
 		Assert.assertTrue(fields.get("variable").contains("mrro"));

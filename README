@@ -38,6 +38,8 @@ engine to drive the Lucene free text search.
 
 o A timestamp indicating the last processing time is automatically associated with each incoming record.
 
+o An optional version which can be any string value that will be converted to a long number for comparisons.
+
 
 USING A FACET PROFILE
 

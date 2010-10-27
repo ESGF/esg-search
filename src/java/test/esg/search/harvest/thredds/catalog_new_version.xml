@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright (c) 2010 Earth System Grid Federation
+  ALL RIGHTS RESERVED. 
+  U.S. Government sponsorship acknowledged.
+  
+  Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+  
+  Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+  
+  Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+  
+  Neither the name of the <ORGANIZATION> nor the names of its contributors may be used to endorse or promote products derived from this software without specific prior written permission.
+  
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. 
+  IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+  HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<catalog xmlns="http://www.unidata.ucar.edu/namespaces/thredds/InvCatalog/v1.0" xmlns:xlink="http://www.w3.org/1999/xlink" name="TDS configuration file" version="1.0.1">
+  <service name="gridded" serviceType="OPENDAP" base="/thredds/dodsC/">
+    <property name="requires_authorization" value="false" />
+    <property name="application" value="Web Browser" />
+  </service>
+  <service name="fileservice" serviceType="Compound" base="">
+    <service name="HTTPServer" serviceType="HTTPServer" base="/thredds/fileServer/">
+      <property name="requires_authorization" value="true" />
+      <property name="application" value="Web Browser" />
+      <property name="application" value="Web Script" />
+    </service>
+    <service name="GRIDFTPatPCMDI" serviceType="GridFTP" base="gsiftp://pcmdi3.llnl.gov:2811/">
+      <property name="requires_authorization" value="true" />
+      <property name="application" value="DataMover-Lite" />
+    </service>
+  </service>
+  <service name="HRMatPCMDI" serviceType="SRM" base="srm://datagrid2.lbl.gov:6288/srm/v2/server?SFN=/garchive.nersc.gov/">
+    <property name="requires_authorization" value="false" />
+  </service>
+  <property name="catalog_version" value="2" />
+  <dataset name="IPCC Fourth Assessment Report" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1" restrictAccess="esg-user">
+    <creator>
+      <name>Karl_Taylor</name>
+      <contact url="http://www-pcmdi.llnl.gov/" email="taylor13@llnl.gov" />
+    </creator>
+    <property name="dataset_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1" />
+    <property name="dataset_version" value="2" />
+    <property name="project" value="ipcc4" />
+    <property name="experiment" value="amip" />
+    <property name="model" value="ukmo_hadgem1" />
+    <property name="time_frequency" value="mon" />
+    <property name="realm" value="land" />
+    <property name="run_name" value="run1" />
+    <property name="institute" value="UKMO" />
+    <property name="title" value="Met Office  model output prepared for IPCC Fourth Assessment AMIP experiment" />
+    <property name="creation_time" value="2010-03-31 15:52:44" />
+    <property name="format" value="netCDF, CF-1.0" />
+    <variables vocabulary="CF-1.0">
+      <variable name="mrfso" vocabulary_name="soil_frozen_water_content" units="kg m-2">Soil Frozen Water Content</variable>
+      <variable name="snw" vocabulary_name="Snow Amount" units="kg m-2">Snow Amount</variable>
+      <variable name="mrro" vocabulary_name="runoff_flux" units="kg m-2 s-1">Surface and Subsurface Runoff</variable>
+      <variable name="mrros" vocabulary_name="surface_runoff_flux" units="kg m-2 s-1">Surface Runoff</variable>
+      <variable name="mrso" vocabulary_name="soil_moisture_content" units="kg m-2">Total Soil Moisture Content</variable>
+    </variables>
+    <metadata inherited="true">
+      <dataType>GRID</dataType>
+      <dataFormat>NetCDF</dataFormat>
+    </metadata>
+    <dataset name="mrfso_A1.nc" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1.mrfso_A1.nc" urlPath="ipcc4_amip/land/mo/mrfso/ukmo_hadgem1/run1/mrfso_A1.nc" restrictAccess="esg-user">
+      <serviceName>HTTPServer</serviceName>
+      <dataSize units="Mbytes">29.41</dataSize>
+      <property name="file_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrfso_A1.nc" />
+      <property name="file_version" value="2" />
+      <property name="size" value="29415456" />
+      <property name="mod_time" value="2005-02-08 17:05:44" />
+      <variables vocabulary="CF-1.0">
+        <variable name="mrfso" vocabulary_name="soil_frozen_water_content" units="kg m-2">Soil Frozen Water Content</variable>
+      </variables>
+      <access urlPath="/ipcc/amip/land/mo/mrfso/ukmo_hadgem1/run1/mrfso_A1.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+    </dataset>
+    <dataset name="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrfso.v1.aggregation" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrfso.v1.aggregation" restrictAccess="esg-user">
+      <property name="aggregation_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrfso.v1.aggregation" />
+      <variables vocabulary="CF-1.0">
+        <variable name="mrfso" vocabulary_name="soil_frozen_water_content" units="kg m-2">Soil Frozen Water Content</variable>
+      </variables>
+      <metadata inherited="true">
+        <geospatialCoverage>
+          <northsouth>
+            <start>-90.0</start>
+            <size>180.0</size>
+            <units>degrees_north</units>
+          </northsouth>
+          <eastwest>
+            <start>0.0</start>
+            <size>358.125</size>
+            <units>degrees_east</units>
+          </eastwest>
+        </geospatialCoverage>
+        <timeCoverage>
+          <start>1979-01-16T00:00:00</start>
+          <end>2000-12-16T00:00:00</end>
+        </timeCoverage>
+      </metadata>
+      <dataset name="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrfso.v1.aggregation - Subset 1" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrfso.v1.aggregation.1" urlPath="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrfso.v1.aggregation.1" restrictAccess="esg-user">
+        <serviceName>gridded</serviceName>
+        <property name="aggregation_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrfso.v1.aggregation.1" />
+        <property name="time_delta" value="1 month" />
+        <property name="calendar" value="360_day" />
+        <property name="start" value="1979-1-1 0:0:0.0" />
+        <property name="time_length" value="264" />
+      </dataset>
+    </dataset>
+    <dataset name="snw_A1.nc" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1.snw_A1.nc" urlPath="ipcc4_amip/land/mo/snw/ukmo_hadgem1/run1/snw_A1.nc" restrictAccess="esg-user">
+      <serviceName>HTTPServer</serviceName>
+      <dataSize units="Mbytes">29.41</dataSize>
+      <property name="file_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.snw_A1.nc" />
+      <property name="file_version" value="2" />
+      <property name="size" value="29415440" />
+      <property name="mod_time" value="2005-02-08 17:06:03" />
+      <variables vocabulary="CF-1.0">
+        <variable name="snw" vocabulary_name="Snow Amount" units="kg m-2">Snow Amount</variable>
+      </variables>
+      <access urlPath="/ipcc/amip/land/mo/snw/ukmo_hadgem1/run1/snw_A1.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+    </dataset>
+    <dataset name="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.snw.v1.aggregation" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.snw.v1.aggregation" restrictAccess="esg-user">
+      <property name="aggregation_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.snw.v1.aggregation" />
+      <variables vocabulary="CF-1.0">
+        <variable name="snw" vocabulary_name="Snow Amount" units="kg m-2">Snow Amount</variable>
+      </variables>
+      <metadata inherited="true">
+        <geospatialCoverage>
+          <northsouth>
+            <start>-90.0</start>
+            <size>180.0</size>
+            <units>degrees_north</units>
+          </northsouth>
+          <eastwest>
+            <start>0.0</start>
+            <size>358.125</size>
+            <units>degrees_east</units>
+          </eastwest>
+        </geospatialCoverage>
+        <timeCoverage>
+          <start>1979-01-16T00:00:00</start>
+          <end>2000-12-16T00:00:00</end>
+        </timeCoverage>
+      </metadata>
+      <dataset name="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.snw.v1.aggregation - Subset 1" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.snw.v1.aggregation.1" urlPath="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.snw.v1.aggregation.1" restrictAccess="esg-user">
+        <serviceName>gridded</serviceName>
+        <property name="aggregation_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.snw.v1.aggregation.1" />
+        <property name="time_delta" value="1 month" />
+        <property name="calendar" value="360_day" />
+        <property name="start" value="1979-1-1 0:0:0.0" />
+        <property name="time_length" value="264" />
+      </dataset>
+    </dataset>
+    <dataset name="mrro_A1.nc" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1.mrro_A1.nc" urlPath="ipcc4_amip/land/mo/mrro/ukmo_hadgem1/run1/mrro_A1.nc" restrictAccess="esg-user">
+      <serviceName>HTTPServer</serviceName>
+      <dataSize units="Mbytes">29.41</dataSize>
+      <property name="file_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrro_A1.nc" />
+      <property name="file_version" value="2" />
+      <property name="size" value="29415444" />
+      <property name="mod_time" value="2005-02-08 17:05:45" />
+      <variables vocabulary="CF-1.0">
+        <variable name="mrro" vocabulary_name="runoff_flux" units="kg m-2 s-1">Surface and Subsurface Runoff</variable>
+      </variables>
+      <access urlPath="/ipcc/amip/land/mo/mrro/ukmo_hadgem1/run1/mrro_A1.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+    </dataset>
+    <dataset name="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrro.v1.aggregation" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrro.v1.aggregation" restrictAccess="esg-user">
+      <property name="aggregation_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrro.v1.aggregation" />
+      <variables vocabulary="CF-1.0">
+        <variable name="mrro" vocabulary_name="runoff_flux" units="kg m-2 s-1">Surface and Subsurface Runoff</variable>
+      </variables>
+      <metadata inherited="true">
+        <geospatialCoverage>
+          <northsouth>
+            <start>-90.0</start>
+            <size>180.0</size>
+            <units>degrees_north</units>
+          </northsouth>
+          <eastwest>
+            <start>0.0</start>
+            <size>358.125</size>
+            <units>degrees_east</units>
+          </eastwest>
+        </geospatialCoverage>
+        <timeCoverage>
+          <start>1979-01-16T00:00:00</start>
+          <end>2000-12-16T00:00:00</end>
+        </timeCoverage>
+      </metadata>
+      <dataset name="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrro.v1.aggregation - Subset 1" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrro.v1.aggregation.1" urlPath="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrro.v1.aggregation.1" restrictAccess="esg-user">
+        <serviceName>gridded</serviceName>
+        <property name="aggregation_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrro.v1.aggregation.1" />
+        <property name="time_delta" value="1 month" />
+        <property name="calendar" value="360_day" />
+        <property name="start" value="1979-1-1 0:0:0.0" />
+        <property name="time_length" value="264" />
+      </dataset>
+    </dataset>
+    <dataset name="mrros_A1.nc" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1.mrros_A1.nc" urlPath="ipcc4_amip/land/mo/mrros/ukmo_hadgem1/run1/mrros_A1.nc" restrictAccess="esg-user">
+      <serviceName>HTTPServer</serviceName>
+      <dataSize units="Mbytes">29.41</dataSize>
+      <property name="file_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrros_A1.nc" />
+      <property name="file_version" value="2" />
+      <property name="size" value="29415440" />
+      <property name="mod_time" value="2005-02-08 17:05:46" />
+      <variables vocabulary="CF-1.0">
+        <variable name="mrros" vocabulary_name="surface_runoff_flux" units="kg m-2 s-1">Surface Runoff</variable>
+      </variables>
+      <access urlPath="/ipcc/amip/land/mo/mrros/ukmo_hadgem1/run1/mrros_A1.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+    </dataset>
+    <dataset name="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrros.v1.aggregation" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrros.v1.aggregation" restrictAccess="esg-user">
+      <property name="aggregation_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrros.v1.aggregation" />
+      <variables vocabulary="CF-1.0">
+        <variable name="mrros" vocabulary_name="surface_runoff_flux" units="kg m-2 s-1">Surface Runoff</variable>
+      </variables>
+      <metadata inherited="true">
+        <geospatialCoverage>
+          <northsouth>
+            <start>-90.0</start>
+            <size>180.0</size>
+            <units>degrees_north</units>
+          </northsouth>
+          <eastwest>
+            <start>0.0</start>
+            <size>358.125</size>
+            <units>degrees_east</units>
+          </eastwest>
+        </geospatialCoverage>
+        <timeCoverage>
+          <start>1979-01-16T00:00:00</start>
+          <end>2000-12-16T00:00:00</end>
+        </timeCoverage>
+      </metadata>
+      <dataset name="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrros.v1.aggregation - Subset 1" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrros.v1.aggregation.1" urlPath="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrros.v1.aggregation.1" restrictAccess="esg-user">
+        <serviceName>gridded</serviceName>
+        <property name="aggregation_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrros.v1.aggregation.1" />
+        <property name="time_delta" value="1 month" />
+        <property name="calendar" value="360_day" />
+        <property name="start" value="1979-1-1 0:0:0.0" />
+        <property name="time_length" value="264" />
+      </dataset>
+    </dataset>
+    <dataset name="mrso_A1.nc" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1.mrso_A1.nc" urlPath="ipcc4_amip/land/mo/mrso/ukmo_hadgem1/run1/mrso_A1.nc" restrictAccess="esg-user">
+      <serviceName>HTTPServer</serviceName>
+      <dataSize units="Mbytes">29.41</dataSize>
+      <property name="file_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrso_A1.nc" />
+      <property name="file_version" value="2" />
+      <property name="size" value="29415412" />
+      <property name="mod_time" value="2005-02-08 17:05:47" />
+      <variables vocabulary="CF-1.0">
+        <variable name="mrso" vocabulary_name="soil_moisture_content" units="kg m-2">Total Soil Moisture Content</variable>
+      </variables>
+      <access urlPath="/ipcc/amip/land/mo/mrso/ukmo_hadgem1/run1/mrso_A1.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+    </dataset>
+    <dataset name="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrso.v1.aggregation" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrso.v1.aggregation" restrictAccess="esg-user">
+      <property name="aggregation_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrso.v1.aggregation" />
+      <variables vocabulary="CF-1.0">
+        <variable name="mrso" vocabulary_name="soil_moisture_content" units="kg m-2">Total Soil Moisture Content</variable>
+      </variables>
+      <metadata inherited="true">
+        <geospatialCoverage>
+          <northsouth>
+            <start>-90.0</start>
+            <size>180.0</size>
+            <units>degrees_north</units>
+          </northsouth>
+          <eastwest>
+            <start>0.0</start>
+            <size>358.125</size>
+            <units>degrees_east</units>
+          </eastwest>
+        </geospatialCoverage>
+        <timeCoverage>
+          <start>1979-01-16T00:00:00</start>
+          <end>2000-12-16T00:00:00</end>
+        </timeCoverage>
+      </metadata>
+      <dataset name="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrso.v1.aggregation - Subset 1" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrso.v1.aggregation.1" urlPath="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrso.v1.aggregation.1" restrictAccess="esg-user">
+        <serviceName>gridded</serviceName>
+        <property name="aggregation_id" value="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.mrso.v1.aggregation.1" />
+        <property name="time_delta" value="1 month" />
+        <property name="calendar" value="360_day" />
+        <property name="start" value="1979-1-1 0:0:0.0" />
+        <property name="time_length" value="264" />
+      </dataset>
+    </dataset>
+  </dataset>
+</catalog>

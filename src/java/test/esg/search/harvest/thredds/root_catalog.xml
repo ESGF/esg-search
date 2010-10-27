@@ -19,5 +19,6 @@
 -->
 <catalog xmlns="http://www.unidata.ucar.edu/namespaces/thredds/InvCatalog/v1.0" xmlns:xlink="http://www.w3.org/1999/xlink" name="PCMDI Earth System Grid catalog" version="1.0.1">
   <catalogRef xlink:href="./catalog.xml" xlink:title="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1" name="" />
+  <catalogRef xlink:href="./catalog_new_version.xml" xlink:title="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v2" name="" />
   <catalogRef xlink:href="./another_catalog.xml" xlink:title="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run2.v1" name="" />
 </catalog>

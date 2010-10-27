@@ -5,4 +5,5 @@
   <arr name="type"><str>Dataset</str></arr>
   <arr name="description"><str>test description</str></arr>
   <arr name="property"><str>value A</str><str>value B</str></arr>
+  <str name="version">1</str>
 </doc>

@@ -47,7 +47,7 @@ public class HarvestingServiceMain {
 	    	System.exit(-1);
 	    }
 
-	    final URI uri = new URI(args[0]);
+	    final String uri = args[0];
 	    final MetadataRepositoryType type = MetadataRepositoryType.valueOf(args[1]);
 	    
 	    harvestingService.harvest(uri, true, type);

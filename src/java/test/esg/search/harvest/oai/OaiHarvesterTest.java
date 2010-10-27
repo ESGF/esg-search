@@ -19,7 +19,7 @@
 package esg.search.harvest.oai;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Map;
 
 import junit.framework.Assert;
 
@@ -62,7 +62,7 @@ public class OaiHarvesterTest {
 		
 		// tests number of metadata records
 		// note: "deleted" records are ignored
-		final List<Record> records = consumer.getRecords();
+		final Map<String,Record> records = consumer.getRecords();
 		Assert.assertTrue(records.size()==2);
 		
 		

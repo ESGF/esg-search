@@ -54,6 +54,7 @@ public class RecordSerializerSolrImplTest {
 	private final static String PROPERTY_A = "value A";
 	private final static String PROPERTY_B = "value B";
 	private final static String TYPE = "Dataset";
+	private final static String VERSION = "1";
 	
 	private final Log LOG = LogFactory.getLog(this.getClass());
 	
@@ -68,6 +69,7 @@ public class RecordSerializerSolrImplTest {
 		record.addField(SolrXmlPars.FIELD_TYPE, TYPE);
 		record.addField(SolrXmlPars.FIELD_DESCRIPTION, DESCRIPTION);
 		record.addField(SolrXmlPars.FIELD_URL, URL);
+		record.addField(SolrXmlPars.FIELD_VERSION, VERSION);
 		record.addField("property", PROPERTY_A);
 		record.addField("property", PROPERTY_B);
 		
@@ -99,6 +101,7 @@ public class RecordSerializerSolrImplTest {
 		final Record record = recordSerializer.deserialize(doc.getRootElement());
 		if (LOG.isInfoEnabled()) LOG.info(record);
 		Assert.assertTrue(record.getId().equals(ID));
+		Assert.assertTrue(new Long(record.getVersion()).toString().equals(VERSION));
 		final Map<String, List<String>> fields = record.getFields();
 		Assert.assertTrue(fields.get(SolrXmlPars.FIELD_TITLE).contains(TITLE));
 		Assert.assertTrue(fields.get(SolrXmlPars.FIELD_DESCRIPTION).contains(DESCRIPTION));
