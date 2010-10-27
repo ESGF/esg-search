@@ -28,8 +28,10 @@ import thredds.catalog.InvAccess;
 import thredds.catalog.InvDataset;
 import thredds.catalog.InvDocumentation;
 import thredds.catalog.InvProperty;
+import thredds.catalog.ThreddsMetadata.GeospatialCoverage;
 import thredds.catalog.ThreddsMetadata.Variable;
 import thredds.catalog.ThreddsMetadata.Variables;
+import ucar.nc2.units.DateRange;
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
 import esg.search.query.impl.solr.SolrXmlPars;
@@ -107,11 +109,91 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 			//
 		}
 
+		
+		// helper method for obtaining temporal and spatial metadata (as well as other) info... 
+		//NOTE: might need to change signature for clarification purposes
+		//		this is just a temp fix to get the geospatial data extracted
+		addThreddsMetadataGroup(dataset,record);
+		
 		records.add(record);
 		return records;
 		
 	}
 
+	/**
+	 * Method to extract metadata information from a thredds dataset
+	 * Included in this metadata are the geospatial and temporal info contained
+	 * in the xml tags:
+	 * <>
+	 * 
+	 */
+	private void addThreddsMetadataGroup(final InvDataset dataset,Record record)
+	{
+		this.addGeoSpatialCoverage(dataset,record);
+		
+		this.addTimeCoverage(dataset,record);
+	}
+	
+	/**
+	 * Helper method to extract Geospatial metadata from a thredds dataset
+	 * <geospatialCoverage zpositive="down">
+	 *		<northsouth>
+	 *			<start>36.6058</start>
+	 *			<size>0.0</size>
+	 *			<units>degrees_north</units>
+	 *		</northsouth>
+	 *		<eastwest>
+	 *			<start>-97.4888</start>
+	 *			<size>0.0</size>
+	 *			<units>degrees_west</units>
+	 *		</eastwest>
+	 *		<updown>
+	 *			<start>314.0</start>
+	 *			<size>0.0</size>
+	 *			<units>m</units>
+	 *		</updown>
+	 *	</geospatialCoverage>
+	 * 
+	 */
+	private void addGeoSpatialCoverage(final InvDataset dataset,Record record)
+	{
+		GeospatialCoverage gsc = dataset.getGeospatialCoverage();
+		
+		if(gsc!=null)
+		{
+			record.addField(SolrXmlPars.FIELD_SOUTH, Double.toString(gsc.getNorthSouthRange().getStart()));
+		
+			record.addField(SolrXmlPars.FIELD_NORTH, Double.toString(gsc.getNorthSouthRange().getStart()+gsc.getNorthSouthRange().getSize()));
+			
+			record.addField(SolrXmlPars.FIELD_WEST, Double.toString(gsc.getEastWestRange().getStart()));
+			
+			record.addField(SolrXmlPars.FIELD_EAST, Double.toString(gsc.getEastWestRange().getStart()+gsc.getEastWestRange().getSize()));
+			
+		}
+	}
+	
+	
+	/**
+	 * Helper method to extract temporal metadata from a thredds dataset
+	 * Note: not all representations are covered, just the following
+	 * <timeCoverage zpositive="down">
+	 *		<start>1999-11-16T12:00</start>
+	 *		<end>2009-11-16T12:00</end>
+	 *	</timeCoverage>
+	 * 
+	 */
+	private void addTimeCoverage(final InvDataset dataset,Record record)
+	{
+		DateRange daterange = dataset.getTimeCoverage();
+		
+		if(daterange!=null)
+		{
+			record.addField(SolrXmlPars.FIELD_DATETIME_START, daterange.getStart().toDateTimeStringISO());
+		
+			record.addField(SolrXmlPars.FIELD_DATETIME_STOP, daterange.getEnd().toDateTimeStringISO());
+		}
+	}
+	
 	/**
 	 * Method to set the builder for the URL to be associated with each record
 	 * (overriding the default strategy).

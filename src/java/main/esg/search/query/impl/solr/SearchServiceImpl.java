@@ -70,8 +70,10 @@ public class SearchServiceImpl implements SearchService {
 		if (getFacets) builder.setFacets(input.getFacets());
 		final URL request = builder.buildSelectUrl();		
 		
+		
 		// execute HTTP request
 		final String response = httpClient.doGet(request);
+		
 		
 		// parse XML response
 		final SearchOutput output = xmlParser.parse(response, input, getResults, getFacets);

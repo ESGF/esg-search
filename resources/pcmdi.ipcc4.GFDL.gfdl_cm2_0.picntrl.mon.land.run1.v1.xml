@@ -47,9 +47,25 @@
       <variable name="mrso" vocabulary_name="soil_moisture_content" units="kg m-2">Total Soil Moisture Content</variable>
     </variables>
     <metadata inherited="true">
-      <dataType>GRID</dataType>
+    	<dataType>GRID</dataType>
       <dataFormat>NetCDF</dataFormat>
-    </metadata>
+        <geospatialCoverage>
+          <northsouth>
+            <start>-89.0</start>
+            <size>178.0</size>
+            <units>degrees_north</units>
+          </northsouth>
+          <eastwest>
+            <start>1.25</start>
+            <size>357.5</size>
+            <units>degrees_east</units>
+          </eastwest>
+        </geospatialCoverage>
+        <timeCoverage>
+          <start>0001-01-16T12:00:00</start>
+          <end>0500-12-16T12:00:00</end>
+        </timeCoverage>
+      </metadata>
     <dataset name="snm_A1.000101-050012.nc" ID="pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.snm_A1.000101-050012.nc" urlPath="ipcc4_picntrl/land/mo/snm/gfdl_cm2_0/run1/snm_A1.000101-050012.nc" restrictAccess="esg-user">
       <serviceName>HTTPServer</serviceName>
       <dataSize units="Mbytes">311.1</dataSize>

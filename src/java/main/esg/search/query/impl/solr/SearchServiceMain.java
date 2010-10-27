@@ -45,8 +45,11 @@ public class SearchServiceMain {
 		
 		final FacetProfile facetProfile = (FacetProfile)context.getBean("facetProfile");
 				
+		
 		// test unconstrained facets
 		final SearchInput input = new SearchInputImpl();
+		
+		
 		input.setFacets(new ArrayList<String>(facetProfile.getTopLevelFacets().keySet()));
 		
 		Map<String, Facet> facets = searchService.search(input, true, true).getFacets();
@@ -54,12 +57,31 @@ public class SearchServiceMain {
 			LOG.info(facet.toString());
 		}
 		
+		
+		//added 10-22 - test for geospatial range constraint
+		//Note: this assumes CDIAC/AmeriFlux site code=AMF_USARM, Site name=ARM SGP Main, Version=V003 
+		//data has been ingested into solr with geospatial data included
+		LOG.info("\nQUERY #1A");
+		input.setText("USARM");
+		SearchOutput output = searchService.search(input, true, true);
+		LOG.info(output.toString());
+
+		
+		LOG.info("\nQUERY #1B");
+		input.addGeospatialRangeConstraint("east_degrees", "[-96 TO *]");
+		output = searchService.search(input, true, true);
+		LOG.info(output.toString());
+
+		
+		/*
 		// text query
 		LOG.info("\nQUERY #1");
 		input.setText("boreas");
 		SearchOutput output = searchService.search(input, true, true);
 		LOG.info(output.toString());
 
+		
+		
 		// text + 1 facet query
 		LOG.info("\nQUERY #2");
 		input.addConstraint("project", "EOSDIS");
@@ -97,7 +119,7 @@ public class SearchServiceMain {
 		for (final Facet facet : facets.values()) {
 			LOG.info(facet.toString());
 		}
-
+		*/
 		
 	}
 

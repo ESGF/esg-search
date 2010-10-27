@@ -43,6 +43,22 @@ public class SearchInputImpl implements SearchInput {
 	 */
 	private Map<String, List<String>> constraints = new LinkedHashMap<String, List<String>>();
 	
+	
+	//added Oct 22
+	/**
+	 * The map of geospatial range constraints to be used in the query, composed of (name, value) pairs
+	 */
+	private Map<String, String> geospatialRangeConstraints = new LinkedHashMap<String, String>();
+	
+	/**
+	 * x,y,dist params of the cartesian tier constraints
+	 */
+	private double x = 0;
+	private double y = 0;
+	private double dist = 9999999; //large number by default means the whole earth is covered
+	
+	//end add
+	
 	/**
 	 * The ordered list of facets to be returned in the search output.
 	 */
@@ -197,6 +213,19 @@ public class SearchInputImpl implements SearchInput {
 			}
 			s.append(NEWLINE);
 		}
+		//added Oct 22
+		// geospatialRangeconstraints
+		for (final String name : this.geospatialRangeConstraints.keySet()) {
+			s.append("Search Constraint: ").append(name).append("=");
+			final String value = this.geospatialRangeConstraints.get(name);
+			s.append(value).append(" ");
+			s.append(NEWLINE);
+		}
+		/*
+		// x,y,dist
+		s.append("x: "+x+" ").append(" y: ").append(y).append(" dist: ").append(dist).append(NEWLINE);
+		*/
+		//end add
 		// facets
 		for (final String facet : facets) {
 			s.append("Search Facet: ").append(facet).append("=").append(facet).append(NEWLINE);
@@ -207,4 +236,36 @@ public class SearchInputImpl implements SearchInput {
 		
 	}
 
+	//added Oct 22
+	/**
+	 * {@inheritDoc}
+	 */
+	public void addGeospatialRangeConstraint(String name, String value) {
+		if (StringUtils.hasText(name) && !value.isEmpty()) {
+			this.geospatialRangeConstraints.put(name, value);
+		}
+		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	//Note this is really a setter...might need to reconsider how this is done
+	public void addGeospatialCartesianTierConstraint(double x, double y,
+			double dist) {
+		this.x = x;
+		this.y = y;
+		this.dist = dist; 
+		
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Map<String, String> getGeospatialRangeConstraint() {
+		return Collections.unmodifiableMap(geospatialRangeConstraints);
+	}
+	
+	
+	
 }

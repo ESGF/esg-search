@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -130,10 +131,13 @@ public class SolrUrlBuilder {
 		
 		// search input constraints --> fq=facet_name:"facet_value"
 		final Map<String, List<String>> constraints = input.getConstraints();
+	
+		
+		
 		if (!constraints.isEmpty()) {
 			for (final String facet : constraints.keySet()) {
 				for (final String value : constraints.get(facet)) {
-					// NOTE: include constraint values within quotes to execute exact string match
+					
 					sb.append("&fq="+URLEncoder.encode( facet+":"+"\""+value+"\"","UTF-8" ));
 				}
 			}
@@ -160,10 +164,25 @@ public class SolrUrlBuilder {
 		// distributed search
 		sb.append("&distrib=true");
 
+		
+		//added Oct 22
+		// search input geospatial range constraints --> fq=west_degrees:[* TO 45]
+		final Map<String, String> geospatialRangeConstraints = input.getGeospatialRangeConstraint();
+		
+		// geospatialRangeConstraints
+		if (!geospatialRangeConstraints.isEmpty()) {
+			for (final String rangeConstraint : geospatialRangeConstraints.keySet()) {
+				String value = geospatialRangeConstraints.get(rangeConstraint);
+					sb.append("&fq="+URLEncoder.encode( rangeConstraint+":"+value,"UTF-8" ));
+			}
+		}
+		
+		
 		if (LOG.isInfoEnabled()) LOG.info("Select URL=" + sb.toString());
 		return new URL(sb.toString());
 		
 	}
 	
-
+	
+	
 }
