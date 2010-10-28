@@ -22,11 +22,16 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import esg.search.core.Record;
 
 /**
  * Implementation of {@link SolrClient} that sends (skeleton) records to a Solr server for removal.
  */
+@Component
 public class SolrScrabber extends SolrClient {
 				
 	/**
@@ -38,7 +43,8 @@ public class SolrScrabber extends SolrClient {
 	 * Constructor delegates to superclass.
 	 * @param url
 	 */
-	public SolrScrabber(final String url) {
+	@Autowired
+	public SolrScrabber(final @Value("${esg.search.solr.url}") URL url) {
 		super(url);
 	}
 

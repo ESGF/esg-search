@@ -39,7 +39,7 @@ public class SolrUrlBuilder {
 	/**
 	 * The base URL of the Solr server.
 	 */
-	private final String url;
+	private final URL url;
 	
 	/**
 	 * The search input constraints.
@@ -65,7 +65,7 @@ public class SolrUrlBuilder {
 	 * @param url
 	 * @throws MalformedURLException
 	 */
-	public SolrUrlBuilder(final String url) {
+	public SolrUrlBuilder(final URL url) {
 		this.url = url;
 	}
 	
@@ -114,7 +114,7 @@ public class SolrUrlBuilder {
 	 */
 	public URL buildSelectUrl() throws MalformedURLException, UnsupportedEncodingException {
 		
-		final StringBuilder sb = new StringBuilder(url).append("/select/?indent=true");
+		final StringBuilder sb = new StringBuilder(url.toString()).append("/select/?indent=true");
 		
 		// search input text --> q=....
 		if (StringUtils.hasText(input.getText())) {

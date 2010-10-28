@@ -21,15 +21,15 @@ package esg.search.publish.impl.solr;
 import java.net.URL;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import esg.search.core.Record;
 
 /**
  * Implementation of {@link SolrClient} that sends (fully populated) records to a Solr server for indexing.
  */
-@Service
+@Component
 public class SolrIndexer extends SolrClient {
 				
 	/**
@@ -42,7 +42,7 @@ public class SolrIndexer extends SolrClient {
 	 * @param url
 	 */
 	@Autowired
-	public SolrIndexer(final @Qualifier("esg.search.solr.url") String url) {
+	public SolrIndexer(final @Value("${esg.search.solr.url}") URL url) {
 		super(url);
 	}
 

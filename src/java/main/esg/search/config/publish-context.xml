@@ -8,7 +8,7 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
   
     <context:component-scan base-package="eske.search"/>
-                           
+                               
     <!-- Top-level service for publishing/unpublishing search metadata into/from the system. -->
     <bean name="publishingService" class="esg.search.publish.impl.PublishingServiceImpl">
     	<constructor-arg index="0">
@@ -103,30 +103,7 @@
 			<bean name="casRdfMetadataHandler" class="esg.search.publish.xml.cas.MetadataHandlerCasRdfImpl"/>
 		</constructor-arg>
 	</bean>
-
-	<!-- Class that sends search records to a Solr server for indexing
-	<bean name="solrIndexer" class="esg.search.publish.impl.solr.SolrIndexer">
-		<constructor-arg index="0" value="${esg.search.solr.url}"/>
-	</bean> -->
-	<!-- Class that sends search records to a Solr server for deletion -->
-	<bean name="solrScrabber" class="esg.search.publish.impl.solr.SolrScrabber">
-		<constructor-arg index="0" value="${esg.search.solr.url}"/>
-		<!-- <constructor-arg index="0" value="http://localhost:8983/solr"/> -->
-	</bean>
 	
-	<!-- Class that writes search records to the file system -->
-	<bean name="fileWriter" class="esg.search.publish.impl.FileWriter">
-		<constructor-arg index="0" value="/tmp"/>
-	</bean>
                            
-    <!-- Class that generates simulated search records -->
-    <bean name="recordGenerator" class="esg.search.publish.impl.RecordGenerator">
-    	<property name="consumers">
-    		<list>
-    			<ref bean="fileWriter"/>
-    		</list>
-    	</property>
-    	<property name="numRecords" value="20" />
-    </bean>
     
 </beans>

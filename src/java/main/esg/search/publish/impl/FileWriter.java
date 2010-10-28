@@ -23,6 +23,8 @@ import java.io.File;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import esg.search.core.Record;
@@ -32,19 +34,26 @@ import esg.search.publish.impl.solr.SolrXmlBuilder;
 /**
  * Implementation of {@link RecordConsumer} that writes the serialized record XML to the file system.
  */
+@Component
 public class FileWriter implements RecordConsumer {
 	
 	/**
 	 * The directory where the serialized records are written.
+	 * By default it is set to the value pointed by the enviromental variable "java.io.tmpdir",
+	 * but it can be overridden via the setter method.
 	 */
-	private final File directory;
+	private File directory;
 		
 	private static final Log LOG = LogFactory.getLog(FileWriter.class);
 	
 	private SolrXmlBuilder serializer = new SolrXmlBuilder();
 	
-	public FileWriter(final File directory) {
+	/**
+	 * Constructor uses "java.io.tmpdir" environment by default
+	 */
+	public FileWriter() {
 		
+		final File directory = new File( System.getProperty("java.io.tmpdir") );
 		Assert.isTrue(directory.exists(),"Directory: "+directory.getAbsolutePath()+" does not exist");
 		this.directory = directory;
 		
@@ -61,5 +70,10 @@ public class FileWriter implements RecordConsumer {
 		FileUtils.writeStringToFile(file, xml);
 		
 	}
+	
+	public void setDirectory(File directory) {
+		this.directory = directory;
+	}
+
 
 }
