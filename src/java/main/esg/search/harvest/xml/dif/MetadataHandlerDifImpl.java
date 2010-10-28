@@ -109,6 +109,51 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 			}
 		}
 		
+		// <Spatial_Coverage>
+		//   <Southernmost_Latitude>39.07</Southernmost_Latitude>
+		//	 <Northernmost_Latitude>39.07</Northernmost_Latitude>
+		//	 <Westernmost_Longitude>-96.54</Westernmost_Longitude>
+		//	 <Easternmost_Longitude>-96.54</Easternmost_Longitude>
+		// </Spatial_Coverage>
+		for (final Object _geoEl : root.getChildren("Spatial_Coverage", ns)) {
+			
+			final Element _spatial_coverageEl = (Element)_geoEl;
+			
+			final Element _Southernmost_LatitudeEl = _spatial_coverageEl.getChild("Southernmost_Latitude", ns);
+			record.addField(SolrXmlPars.FIELD_SOUTH, _Southernmost_LatitudeEl.getTextNormalize());
+			
+			final Element _Northernmost_LatitudeEl = _spatial_coverageEl.getChild("Northernmost_Latitude", ns);
+			record.addField(SolrXmlPars.FIELD_NORTH, _Northernmost_LatitudeEl.getTextNormalize());
+			
+			final Element _Westernmost_LatitudeEl = _spatial_coverageEl.getChild("Westernmost_Longitude", ns);
+			record.addField(SolrXmlPars.FIELD_WEST, _Westernmost_LatitudeEl.getTextNormalize());
+			
+			final Element _Easternmost_LatitudeEl = _spatial_coverageEl.getChild("Easternmost_Longitude", ns);
+			record.addField(SolrXmlPars.FIELD_EAST, _Easternmost_LatitudeEl.getTextNormalize());
+			
+		}
+		
+		//<Temporal_Coverage>
+		//<Start_Date>1987-06-24</Start_Date>
+		//<Stop_Date>1987-07-11</Stop_Date>
+		//</Temporal_Coverage>
+		/*
+		for (final Object _geoEl : root.getChildren("Spatial_Coverage", ns)) {
+			final Element _spatial_coverageEl = (Element)_geoEl;
+			
+			final Element _Southernmost_LatitudeEl = _spatial_coverageEl.getChild("Southernmost_Latitude", ns);
+			record.addField(SolrXmlPars.FIELD_SOUTH, _Southernmost_LatitudeEl.getTextNormalize());
+			
+			final Element _Northernmost_LatitudeEl = _spatial_coverageEl.getChild("Northernmost_Latitude", ns);
+			record.addField(SolrXmlPars.FIELD_NORTH, _Northernmost_LatitudeEl.getTextNormalize());
+			
+			final Element _Westernmost_LatitudeEl = _spatial_coverageEl.getChild("Westernmost_Latitude", ns);
+			record.addField(SolrXmlPars.FIELD_WEST, _Westernmost_LatitudeEl.getTextNormalize());
+			
+			final Element _Easternmost_LatitudeEl = _spatial_coverageEl.getChild("Easternmost_Latitude", ns);
+			record.addField(SolrXmlPars.FIELD_EAST, _Easternmost_LatitudeEl.getTextNormalize());
+		}
+		*/
 		
 		final List<Record> records = new ArrayList<Record>();
 		records.add(record);
