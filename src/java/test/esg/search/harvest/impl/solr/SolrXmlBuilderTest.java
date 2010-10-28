@@ -71,7 +71,7 @@ public class SolrXmlBuilderTest {
 	}
 	
 	/**
-	 * Tests generatio of an <add> XML document.
+	 * Tests generation of an <add> XML document.
 	 * @throws IOException
 	 */
 	@Test

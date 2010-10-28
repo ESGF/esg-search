@@ -26,7 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 
-import esg.search.harvest.api.HarvestingService;
+import esg.search.harvest.api.MetadataRepositoryCrawlerManager;
 import esg.search.harvest.api.MetadataRepositoryCrawler;
 import esg.search.harvest.api.MetadataRepositoryType;
 import esg.search.harvest.api.RecordConsumer;
@@ -34,13 +34,13 @@ import esg.search.harvest.api.RecordConsumer;
 /**
  * Service class that manages the harvesting of search records from different remote metadata repositories.
  */
-public class HarvestingServiceImpl extends RecordProducerImpl implements HarvestingService {
+public class MetadataRepositoryCrawlerManagerImpl extends RecordProducerImpl implements MetadataRepositoryCrawlerManager {
 	
 	private final Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers;
 		
-	private static final Log LOG = LogFactory.getLog(HarvestingServiceImpl.class);
+	private static final Log LOG = LogFactory.getLog(MetadataRepositoryCrawlerManagerImpl.class);
 	
-	public HarvestingServiceImpl(final Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers, final List<RecordConsumer> consumers) {
+	public MetadataRepositoryCrawlerManagerImpl(final Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers, final List<RecordConsumer> consumers) {
 		
 		this.crawlers = crawlers;
 		this.setConsumers(consumers);
@@ -50,7 +50,7 @@ public class HarvestingServiceImpl extends RecordProducerImpl implements Harvest
 	/* (non-Javadoc)
 	 * @see esg.search.harvest.HarvestingService#harvest(java.net.URI, boolean, esg.search.harvest.MetadataRepositoryType)
 	 */
-	public void harvest(final String uri, boolean recursive, final MetadataRepositoryType metadataRepositoryType) throws Exception {
+	public void crawl(final String uri, boolean recursive, final MetadataRepositoryType metadataRepositoryType) throws Exception {
 		
 		LOG.info("uri="+uri+" recursive="+recursive+" metadataRepositoryType="+metadataRepositoryType);
 		MetadataRepositoryCrawler crawler = crawlers.get(metadataRepositoryType);
