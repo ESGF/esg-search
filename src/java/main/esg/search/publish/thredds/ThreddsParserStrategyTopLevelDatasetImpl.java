@@ -21,6 +21,9 @@ package esg.search.publish.thredds;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -39,6 +42,7 @@ import esg.search.query.impl.solr.SolrXmlPars;
 /**
  * Implementation of {@link ThreddsParserStrategy} that produces a single {@link Record} for each top-level THREDDS dataset.
  */
+@Component
 public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserStrategy {
 	
 	//private final Log LOG = LogFactory.getLog(this.getClass());
@@ -49,6 +53,17 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	private ThreddsDataseUrlBuilder urlBuilder = new ThreddsDatasetUrlBuilderCatalogUrlImpl();
 		
 	public ThreddsParserStrategyTopLevelDatasetImpl() {}
+	
+	/**
+	 * Method to set the builder for the URL to be associated with each record
+	 * (overriding the default strategy).
+	 * 
+	 * @param urlBuilder
+	 */
+	@Autowired
+	public void setUrlBuilder(final @Qualifier("threddsDatasetUrlBuilderCatalogViewImpl") ThreddsDataseUrlBuilder urlBuilder) {
+		this.urlBuilder = urlBuilder;
+	}
 	
 	public List<Record> parseDataset(final InvDataset dataset) {
 		
@@ -155,8 +170,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 *	</geospatialCoverage>
 	 * 
 	 */
-	private void addGeoSpatialCoverage(final InvDataset dataset,Record record)
-	{
+	private void addGeoSpatialCoverage(final InvDataset dataset,Record record) {
 		GeospatialCoverage gsc = dataset.getGeospatialCoverage();
 		
 		if(gsc!=null)
@@ -182,8 +196,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 *	</timeCoverage>
 	 * 
 	 */
-	private void addTimeCoverage(final InvDataset dataset,Record record)
-	{
+	private void addTimeCoverage(final InvDataset dataset,Record record) {
 		DateRange daterange = dataset.getTimeCoverage();
 		
 		if(daterange!=null)
@@ -194,14 +207,4 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		}
 	}
 	
-	/**
-	 * Method to set the builder for the URL to be associated with each record
-	 * (overriding the default strategy).
-	 * 
-	 * @param urlBuilder
-	 */
-	public void setUrlBuilder(ThreddsDataseUrlBuilder urlBuilder) {
-		this.urlBuilder = urlBuilder;
-	}
-
 }

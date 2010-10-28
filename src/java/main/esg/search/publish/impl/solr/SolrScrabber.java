@@ -31,7 +31,7 @@ import esg.search.core.Record;
 /**
  * Implementation of {@link SolrClient} that sends (skeleton) records to a Solr server for removal.
  */
-@Component
+@Component("scrabber")
 public class SolrScrabber extends SolrClient {
 				
 	/**

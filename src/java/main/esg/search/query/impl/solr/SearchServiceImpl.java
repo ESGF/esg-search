@@ -21,6 +21,10 @@ package esg.search.query.impl.solr;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchOutput;
 import esg.search.query.api.SearchService;
@@ -29,6 +33,7 @@ import esg.search.utils.HttpClient;
 /**
  * Implementation of {@link SearchService} based on an Apache-Solr back-end.
  */
+@Service("searchService")
 public class SearchServiceImpl implements SearchService {
 	
 	/**
@@ -55,7 +60,8 @@ public class SearchServiceImpl implements SearchService {
 	 * @param url
 	 * @throws MalformedURLException
 	 */
-	public SearchServiceImpl(final URL url) throws MalformedURLException {
+	@Autowired
+	public SearchServiceImpl(final @Value("${esg.search.solr.url}") URL url) throws MalformedURLException {
 		this.url = url;
 	}
 

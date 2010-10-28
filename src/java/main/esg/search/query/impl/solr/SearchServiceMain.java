@@ -33,7 +33,7 @@ import esg.search.query.api.SearchService;
 
 public class SearchServiceMain {
 	
-	private static String[] configLocations = new String[] { "classpath:esg/search/config/search-context.xml" };
+	private static String[] configLocations = new String[] { "classpath:esg/search/config/application-context.xml" };
 	private static final Log LOG = LogFactory.getLog(SearchServiceMain.class);
 	
 	public static void main(String[] args) throws Exception {

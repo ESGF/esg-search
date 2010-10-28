@@ -23,6 +23,7 @@ import java.util.List;
 
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.springframework.stereotype.Component;
 
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
@@ -34,6 +35,7 @@ import esg.search.query.impl.solr.SolrXmlPars;
  * This class extracts information from the DIF XML metadata
  * and transfers it to a Record object(s).
  */
+@Component
 public class MetadataHandlerDifImpl implements MetadataHandler {
 
 	/**

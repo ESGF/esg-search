@@ -26,9 +26,13 @@ import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import esg.search.core.Record;
 import esg.search.publish.api.MetadataRepositoryCrawler;
+import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.RecordProducer;
 import esg.search.publish.xml.MetadataHandler;
 import esg.search.utils.HttpClient;
@@ -37,13 +41,15 @@ import esg.search.utils.XmlParser;
 /**
  * Implementation of {@link MetadataRepositoryCrawler} that acts as an OAI Harvester to retrieve records from an OAI Repository.
  */
+@Service
 public class OaiHarvester implements MetadataRepositoryCrawler  {
 	
 	private final MetadataHandler metadataHandler;
 	
 	private final Log LOG = LogFactory.getLog(this.getClass());
 	
-	public OaiHarvester(final MetadataHandler metadataHandler) {
+	@Autowired
+	public OaiHarvester(final @Qualifier("metadataHandlerDifImpl") MetadataHandler metadataHandler) {
 		this.metadataHandler = metadataHandler;
 	}
 
@@ -60,6 +66,13 @@ public class OaiHarvester implements MetadataRepositoryCrawler  {
 		// process XML
 		this.parseDocument(doc, callback);
 		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public MetadataRepositoryType supports() {
+		return MetadataRepositoryType.OAI;
 	}
 	
 	/**

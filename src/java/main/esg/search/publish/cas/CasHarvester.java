@@ -22,9 +22,13 @@ import java.net.URI;
 import java.util.List;
 
 import org.jdom.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import esg.search.core.Record;
 import esg.search.publish.api.MetadataRepositoryCrawler;
+import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.RecordProducer;
 import esg.search.publish.xml.MetadataHandler;
 import esg.search.utils.HttpClient;
@@ -33,11 +37,13 @@ import esg.search.utils.XmlParser;
 /**
  * Class to harvest metadata from a remote CAS server.
  */
+@Service
 public class CasHarvester implements MetadataRepositoryCrawler {
 		
 	private final MetadataHandler metadataHandler;
 	
-	public CasHarvester(final MetadataHandler metadataHandler) {
+	@Autowired
+	public CasHarvester(final @Qualifier("metadataHandlerCasRdfImpl") MetadataHandler metadataHandler) {
 		this.metadataHandler = metadataHandler;
 	}
 
@@ -57,6 +63,13 @@ public class CasHarvester implements MetadataRepositoryCrawler {
 		// index records
 		for (final Record record : records) callback.notify(record);
 
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public MetadataRepositoryType supports() {
+		return MetadataRepositoryType.CAS;
 	}
 
 }

@@ -21,9 +21,8 @@ public class MetadataDeletionServiceImplTest {
 	@Before
 	public void setup() {
 		
-		service = new MetadataDeletionServiceImpl();
 		consumer = new InMemoryStore();
-		service.subscribe(consumer);
+		service = new MetadataDeletionServiceImpl(consumer);
 		
 	}
 	

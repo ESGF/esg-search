@@ -18,12 +18,15 @@
  ******************************************************************************/
 package esg.search.publish.thredds;
 
+import org.springframework.stereotype.Component;
+
 import thredds.catalog.InvDataset;
 
 /**
  * Implementation of {@link ThreddsDataseUrlBuilder} 
  * that simply returns the THREDDS catalog URL.
  */
+@Component
 public class ThreddsDatasetUrlBuilderCatalogUrlImpl implements ThreddsDataseUrlBuilder {
 
 	/**

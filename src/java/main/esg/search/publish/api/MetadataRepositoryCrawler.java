@@ -34,5 +34,11 @@ public interface MetadataRepositoryCrawler {
 	 * @param callback: a {@link RecordProducer} that is triggered every time a new Record is generated while crawling
 	 */
 	public void crawl(URI uri, boolean recursive, RecordProducer callback) throws Exception;
+	
+	/**
+	 * Method to indicate the {@link MetadataRepositoryType} supported by this crawler.
+	 * @return
+	 */
+	public MetadataRepositoryType supports();
 
 }

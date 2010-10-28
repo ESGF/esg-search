@@ -19,8 +19,33 @@
 	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="classpath:esg/search/config/application.properties" />
 	</bean>
-      	
-  	<import resource="classpath:esg/search/config/publish-context.xml"/>
-  	<import resource="classpath:esg/search/config/search-context.xml"/>
+
+	<!-- publish context -->    
+  	<context:component-scan base-package="eske.search.publish"/>
+
+	<!-- search context -->
+	<context:component-scan base-package="eske.search.search"/>
+  	<!-- Facet profile -->
+	<bean name="facetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
+		<constructor-arg index="0">
+			 <map>
+			 
+			 	<!-- CMIP5 profile -->
+	          	<entry key="project"><value>Project</value></entry>
+	          	<entry key="model"><value>Model</value></entry>
+	          	<entry key="experiment"><value>Experiment</value></entry>
+	          	<entry key="time_frequency"><value>Frequency</value></entry>
+	          	<entry key="realm"><value>Realm</value></entry>
+	          	<entry key="cf_variable"><value>CF Variable</value></entry>
+	          	
+	          	<!-- Obs profile -->
+	          	<entry key="instrument_type"><value>Instrument</value></entry>
+	          	<entry key="data_type"><value>Instrument</value></entry>
+	          	<entry key="platform_type"><value>Instrument</value></entry>
+	          	<entry key="variable"><value>Instrument</value></entry>
+		      
+		      </map>
+		</constructor-arg>
+	</bean>
 
 </beans>

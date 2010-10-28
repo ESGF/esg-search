@@ -40,7 +40,7 @@ public class SolrUrlBuilderTest {
 	
 	@Before
 	public void setup() throws MalformedURLException {
-		solrUrlBuilder = new SolrUrlBuilder(SOLR_URL);
+		solrUrlBuilder = new SolrUrlBuilder(new URL(SOLR_URL));
 	}
 	
 	@Test

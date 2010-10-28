@@ -19,7 +19,7 @@
 package esg.search.publish.impl;
 
 import java.net.URI;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -29,22 +29,21 @@ import org.springframework.util.Assert;
 import esg.search.publish.api.MetadataRepositoryCrawler;
 import esg.search.publish.api.MetadataRepositoryCrawlerManager;
 import esg.search.publish.api.MetadataRepositoryType;
-import esg.search.publish.api.RecordConsumer;
 
 /**
  * Service class that manages the harvesting of search records from different remote metadata repositories.
  */
 public class MetadataRepositoryCrawlerManagerImpl extends RecordProducerImpl implements MetadataRepositoryCrawlerManager {
 	
-	private final Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers;
+	private Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers = new HashMap<MetadataRepositoryType, MetadataRepositoryCrawler>();
 		
 	private static final Log LOG = LogFactory.getLog(MetadataRepositoryCrawlerManagerImpl.class);
 	
-	public MetadataRepositoryCrawlerManagerImpl(final Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers, final List<RecordConsumer> consumers) {
-		
-		this.crawlers = crawlers;
-		this.setConsumers(consumers);
-		
+	
+	public MetadataRepositoryCrawlerManagerImpl(final MetadataRepositoryCrawler[] _crawlers) {
+		for (final MetadataRepositoryCrawler crawler : _crawlers) {
+			crawlers.put(crawler.supports(), crawler);
+		}
 	}
 	
 	/* (non-Javadoc)

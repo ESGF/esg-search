@@ -25,6 +25,8 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import thredds.catalog.InvCatalog;
 import thredds.catalog.InvCatalogFactory;
@@ -33,6 +35,7 @@ import thredds.catalog.InvDataset;
 import thredds.catalog.InvDatasetImpl;
 import esg.search.core.Record;
 import esg.search.publish.api.MetadataRepositoryCrawler;
+import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.RecordProducer;
 
 /**
@@ -41,14 +44,23 @@ import esg.search.publish.api.RecordProducer;
  * while delegating the parsing of catalogs and indexing of records to other configurable components.
  * Additionally, while crawling a hierarchy of catalogs, only the latest version records will be harvested.
  */
+@Service
 public class ThreddsHarvester implements MetadataRepositoryCrawler {
 	
 	private final ThreddsParserStrategy parser;
 		
 	private final Log LOG = LogFactory.getLog(this.getClass());
 	
+	@Autowired
 	public ThreddsHarvester(final ThreddsParserStrategy parser) {
 		this.parser = parser;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public MetadataRepositoryType supports() {
+		return MetadataRepositoryType.THREDDS;
 	}
 	
 	/**

@@ -29,7 +29,7 @@ import esg.search.core.Record;
 /**
  * Implementation of {@link SolrClient} that sends (fully populated) records to a Solr server for indexing.
  */
-@Component
+@Component("indexer")
 public class SolrIndexer extends SolrClient {
 				
 	/**
