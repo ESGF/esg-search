@@ -121,11 +121,9 @@ public class SolrUrlBuilder {
 		if (StringUtils.hasText(input.getText())) {
 			sb.append( "&q="+URLEncoder.encode(input.getText(), "UTF-8") );
 		} 
-		/*
 		else {
 			sb.append( "&q="+URLEncoder.encode("*", "UTF-8") );
 		}
-		*/
 		
 		// search input type --> fq=type:Dataset
 		if (StringUtils.hasText(input.getType())) {
