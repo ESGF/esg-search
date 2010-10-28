@@ -42,14 +42,14 @@ import esg.search.utils.XmlParser;
  * Implementation of {@link MetadataRepositoryCrawler} that acts as an OAI Harvester to retrieve records from an OAI Repository.
  */
 @Service
-public class OaiHarvester implements MetadataRepositoryCrawler  {
+public class OaiCrawler implements MetadataRepositoryCrawler  {
 	
 	private final MetadataHandler metadataHandler;
 	
 	private final Log LOG = LogFactory.getLog(this.getClass());
 	
 	@Autowired
-	public OaiHarvester(final @Qualifier("metadataHandlerDifImpl") MetadataHandler metadataHandler) {
+	public OaiCrawler(final @Qualifier("metadataHandlerDifImpl") MetadataHandler metadataHandler) {
 		this.metadataHandler = metadataHandler;
 	}
 

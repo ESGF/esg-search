@@ -16,7 +16,7 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-package esg.search.publish.thredds;
+package esg.search.publish.oai;
 
 import java.net.URI;
 import java.util.Map;
@@ -30,46 +30,45 @@ import org.springframework.core.io.ClassPathResource;
 import esg.search.core.Record;
 import esg.search.publish.impl.InMemoryStore;
 import esg.search.publish.impl.RecordProducerImpl;
-import esg.search.publish.thredds.ThreddsHarvester;
-import esg.search.publish.thredds.ThreddsParserStrategyTopLevelDatasetImpl;
+import esg.search.publish.oai.OaiCrawler;
+import esg.search.publish.xml.dif.MetadataHandlerDifImpl;
 
 /**
- * Test class for {@link ThreddsHarvester}.
+ * Test class for {@link OaiCrawler}.
  *
  */
-public class ThreddsHarvesterTest {
+public class OaiCrawlerTest {
 	
-	private final static ClassPathResource XMLFILE = new ClassPathResource("esg/search/publish/thredds/root_catalog.xml");
+	private final static ClassPathResource XMLFILE = new ClassPathResource("esg/search/publish/oai/oai_dif.xml");
 	
-	ThreddsHarvester threddsHarvester;
-	InMemoryStore consumer;
+	OaiCrawler oaiHarvester;
 	RecordProducerImpl producer;
-		
+	InMemoryStore consumer;
+	
 	@Before
 	public void setup() {
-		threddsHarvester = new ThreddsHarvester( new ThreddsParserStrategyTopLevelDatasetImpl() );
+		oaiHarvester = new OaiCrawler( new MetadataHandlerDifImpl() );
 		consumer = new InMemoryStore();
 		producer = new RecordProducerImpl();
 		producer.subscribe(consumer);
-		
 	}
 	
 	/**
-	 * Tests crawling of a THREDDS root catalog
-	 * (i.e. the recursive behavior of harvesting a THREDDS catalogs hierarchy).
+	 * Tests crawling of a OAI/DIF XML document (as serialized to the file system).
 	 * @throws Exception
 	 */
 	@Test
-	public void crawl() throws Exception {
+	public void testCrawl() throws Exception {
 		
 		final URI uri = new URI( "file://"+XMLFILE.getFile().getAbsolutePath() );
-		threddsHarvester.crawl(uri, true, producer);
+		oaiHarvester.crawl(uri, true, producer);
 		
 		// tests number of metadata records
-		final Map<String, Record> records = consumer.getRecords();
-		Assert.assertEquals(2,records.size());
-		Assert.assertEquals(1,records.get("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run2").getVersion());
-		Assert.assertEquals(2,records.get("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1").getVersion());
+		// note: "deleted" records are ignored
+		final Map<String,Record> records = consumer.getRecords();
+		Assert.assertTrue(records.size()==2);
+		
+		
 	}
 
 }

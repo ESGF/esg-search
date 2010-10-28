@@ -39,20 +39,20 @@ import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.RecordProducer;
 
 /**
- * Implementation of {@link MetadataHarvester} for processing a hierarchy of THREDDS catalogs.
+ * Implementation of {@link MetadataRepositoryCrawler} for processing a hierarchy of THREDDS catalogs.
  * This class implements the recursive behavior of the THREDDS harvesting process,
  * while delegating the parsing of catalogs and indexing of records to other configurable components.
  * Additionally, while crawling a hierarchy of catalogs, only the latest version records will be harvested.
  */
 @Service
-public class ThreddsHarvester implements MetadataRepositoryCrawler {
+public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	
 	private final ThreddsParserStrategy parser;
 		
 	private final Log LOG = LogFactory.getLog(this.getClass());
 	
 	@Autowired
-	public ThreddsHarvester(final ThreddsParserStrategy parser) {
+	public ThreddsCrawler(final ThreddsParserStrategy parser) {
 		this.parser = parser;
 	}
 	

@@ -19,57 +19,55 @@
 package esg.search.publish.cas;
 
 import java.net.URI;
-import java.util.List;
+import java.util.Map;
 
-import org.jdom.Document;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import junit.framework.Assert;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
 import esg.search.core.Record;
-import esg.search.publish.api.MetadataRepositoryCrawler;
-import esg.search.publish.api.MetadataRepositoryType;
-import esg.search.publish.api.RecordProducer;
-import esg.search.publish.xml.MetadataHandler;
-import esg.search.utils.HttpClient;
-import esg.search.utils.XmlParser;
+import esg.search.publish.cas.CasCrawler;
+import esg.search.publish.impl.InMemoryStore;
+import esg.search.publish.impl.RecordProducerImpl;
+import esg.search.publish.xml.cas.MetadataHandlerCasRdfImpl;
 
 /**
- * Class to harvest metadata from a remote CAS server.
+ * Test class for {@link CasCrawler}.
+ *
  */
-@Service
-public class CasHarvester implements MetadataRepositoryCrawler {
-		
-	private final MetadataHandler metadataHandler;
+public class CasCrawlerTest {
 	
-	@Autowired
-	public CasHarvester(final @Qualifier("metadataHandlerCasRdfImpl") MetadataHandler metadataHandler) {
-		this.metadataHandler = metadataHandler;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public void crawl(final URI uri, final boolean recursive, final RecordProducer callback) throws Exception {
+	private final static ClassPathResource XMLFILE = new ClassPathResource("esg/search/publish/xml/cas/cas_rdf.xml");
+	
+	CasCrawler casHarvester;
+	RecordProducerImpl producer;
+	InMemoryStore consumer;
+	
+	@Before
+	public void setup() {
+		casHarvester = new CasCrawler( new MetadataHandlerCasRdfImpl() );
+		consumer = new InMemoryStore();
+		producer = new RecordProducerImpl();
+		producer.subscribe(consumer);
 		
-		// parse XML document
-		final String xml = (new HttpClient()).doGet( uri.toURL() );
-		final XmlParser xmlParser = new XmlParser(false);
-		final Document doc = xmlParser.parseString(xml);
-		
-		// process XML
-		final List<Record> records = metadataHandler.parse(doc.getRootElement());
-		
-		// index records
-		for (final Record record : records) callback.notify(record);
-
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Tests crawling of a CAS XML document (as serialized to the file system).
+	 * @throws Exception
 	 */
-	public MetadataRepositoryType supports() {
-		return MetadataRepositoryType.CAS;
+	@Test
+	public void testCrawl() throws Exception {
+		
+		final URI uri = new URI( "file://"+XMLFILE.getFile().getAbsolutePath() );
+		casHarvester.crawl(uri, true, producer);
+		
+		final Map<String, Record> records = consumer.getRecords();
+		Assert.assertTrue(records.size()==2);
+		
+		
 	}
 
 }

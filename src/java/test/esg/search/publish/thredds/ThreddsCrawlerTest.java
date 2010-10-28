@@ -16,7 +16,7 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-package esg.search.publish.oai;
+package esg.search.publish.thredds;
 
 import java.net.URI;
 import java.util.Map;
@@ -30,45 +30,46 @@ import org.springframework.core.io.ClassPathResource;
 import esg.search.core.Record;
 import esg.search.publish.impl.InMemoryStore;
 import esg.search.publish.impl.RecordProducerImpl;
-import esg.search.publish.oai.OaiHarvester;
-import esg.search.publish.xml.dif.MetadataHandlerDifImpl;
+import esg.search.publish.thredds.ThreddsCrawler;
+import esg.search.publish.thredds.ThreddsParserStrategyTopLevelDatasetImpl;
 
 /**
- * Test class for {@link OaiHarvester}.
+ * Test class for {@link ThreddsCrawler}.
  *
  */
-public class OaiHarvesterTest {
+public class ThreddsCrawlerTest {
 	
-	private final static ClassPathResource XMLFILE = new ClassPathResource("esg/search/publish/oai/oai_dif.xml");
+	private final static ClassPathResource XMLFILE = new ClassPathResource("esg/search/publish/thredds/root_catalog.xml");
 	
-	OaiHarvester oaiHarvester;
-	RecordProducerImpl producer;
+	ThreddsCrawler threddsHarvester;
 	InMemoryStore consumer;
-	
+	RecordProducerImpl producer;
+		
 	@Before
 	public void setup() {
-		oaiHarvester = new OaiHarvester( new MetadataHandlerDifImpl() );
+		threddsHarvester = new ThreddsCrawler( new ThreddsParserStrategyTopLevelDatasetImpl() );
 		consumer = new InMemoryStore();
 		producer = new RecordProducerImpl();
 		producer.subscribe(consumer);
+		
 	}
 	
 	/**
-	 * Tests crawling of a OAI/DIF XML document (as serialized to the file system).
+	 * Tests crawling of a THREDDS root catalog
+	 * (i.e. the recursive behavior of harvesting a THREDDS catalogs hierarchy).
 	 * @throws Exception
 	 */
 	@Test
-	public void testCrawl() throws Exception {
+	public void crawl() throws Exception {
 		
 		final URI uri = new URI( "file://"+XMLFILE.getFile().getAbsolutePath() );
-		oaiHarvester.crawl(uri, true, producer);
+		threddsHarvester.crawl(uri, true, producer);
 		
 		// tests number of metadata records
-		// note: "deleted" records are ignored
-		final Map<String,Record> records = consumer.getRecords();
-		Assert.assertTrue(records.size()==2);
-		
-		
+		final Map<String, Record> records = consumer.getRecords();
+		Assert.assertEquals(2,records.size());
+		Assert.assertEquals(1,records.get("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run2").getVersion());
+		Assert.assertEquals(2,records.get("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1").getVersion());
 	}
 
 }
