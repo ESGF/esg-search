@@ -30,7 +30,7 @@ import esg.search.harvest.api.RecordProducer;
  * that immediately notifies all subscribed consumers whenever a new search record is produced
  * (i.e. there is no queuing or multi-threaded functionality).
  */
-public abstract class RecordProducerImpl implements RecordProducer {
+public class RecordProducerImpl implements RecordProducer {
 	
 	private List<RecordConsumer> consumers = new ArrayList<RecordConsumer>();
 

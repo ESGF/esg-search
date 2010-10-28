@@ -26,9 +26,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 
 import esg.search.core.Record;
-import esg.search.core.RecordSerializer;
-import esg.search.core.RecordSerializerSolrImpl;
 import esg.search.harvest.api.RecordConsumer;
+import esg.search.harvest.impl.solr.SolrXmlBuilder;
 
 /**
  * Implementation of {@link RecordConsumer} that writes the serialized record XML to the file system.
@@ -42,7 +41,7 @@ public class FileWriter implements RecordConsumer {
 		
 	private static final Log LOG = LogFactory.getLog(FileWriter.class);
 	
-	private RecordSerializer serializer = new RecordSerializerSolrImpl();
+	private SolrXmlBuilder serializer = new SolrXmlBuilder();
 	
 	public FileWriter(final File directory) {
 		
@@ -58,7 +57,7 @@ public class FileWriter implements RecordConsumer {
 		
 		final File file = new File(directory, record.getId()+".xml");
 		if (LOG.isInfoEnabled()) LOG.info("Indexing record:"+record.getId()+" to file:"+file.getAbsolutePath());
-		final String xml = serializer.serialize(record, true);
+		final String xml = serializer.buildAddMessage(record, true);
 		FileUtils.writeStringToFile(file, xml);
 		
 	}

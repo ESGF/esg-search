@@ -29,6 +29,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import esg.search.core.Record;
 import esg.search.harvest.impl.InMemoryStore;
+import esg.search.harvest.impl.RecordProducerImpl;
 import esg.search.harvest.xml.dif.MetadataHandlerDifImpl;
 
 /**
@@ -40,13 +41,15 @@ public class OaiHarvesterTest {
 	private final static ClassPathResource XMLFILE = new ClassPathResource("esg/search/harvest/oai/oai_dif.xml");
 	
 	OaiHarvester oaiHarvester;
+	RecordProducerImpl producer;
 	InMemoryStore consumer;
 	
 	@Before
 	public void setup() {
 		oaiHarvester = new OaiHarvester( new MetadataHandlerDifImpl() );
 		consumer = new InMemoryStore();
-		oaiHarvester.subscribe(consumer);
+		producer = new RecordProducerImpl();
+		producer.subscribe(consumer);
 		
 	}
 	
@@ -55,10 +58,10 @@ public class OaiHarvesterTest {
 	 * @throws Exception
 	 */
 	@Test
-	public void crawl() throws Exception {
+	public void testCrawl() throws Exception {
 		
 		final URI uri = new URI( "file://"+XMLFILE.getFile().getAbsolutePath() );
-		oaiHarvester.crawl(uri, true);
+		oaiHarvester.crawl(uri, true, producer);
 		
 		// tests number of metadata records
 		// note: "deleted" records are ignored

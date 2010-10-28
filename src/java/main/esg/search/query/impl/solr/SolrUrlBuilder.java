@@ -22,7 +22,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -132,8 +131,6 @@ public class SolrUrlBuilder {
 		
 		// search input constraints --> fq=facet_name:"facet_value"
 		final Map<String, List<String>> constraints = input.getConstraints();
-	
-		
 		
 		if (!constraints.isEmpty()) {
 			for (final String facet : constraints.keySet()) {

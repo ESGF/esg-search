@@ -31,6 +31,8 @@ public class SolrXmlPars {
 	final public static String ELEMENT_INT = "int";
 	final public static String ELEMENT_STR = "str";
 	final public static String ELEMENT_ARR = "arr";
+	final public static String ELEMENT_DELETE = "delete";
+	final public static String ELEMENT_ID = "id";
 	
 	final public static String  ELEMENT_FACET_COUNTS = "facet_counts";
 	final public static String  ELEMENT_FACET_FIELDS = "facet_fields";

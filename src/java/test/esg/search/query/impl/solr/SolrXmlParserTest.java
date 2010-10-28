@@ -27,6 +27,7 @@ import junit.framework.Assert;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
@@ -35,6 +36,7 @@ import esg.search.core.Record;
 import esg.search.query.api.Facet;
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchOutput;
+import esg.search.utils.XmlParser;
 
 /**
  * Test class for {@link SolrXmlParser}.
@@ -42,6 +44,7 @@ import esg.search.query.api.SearchOutput;
 public class SolrXmlParserTest {
 	
 	private final static ClassPathResource XMLFILE = new ClassPathResource("esg/search/query/impl/solr/response.xml");
+	private final static ClassPathResource DOCFILE = new ClassPathResource("esg/search/query/impl/solr/doc.xml");
 	
 	private SolrXmlParser solrXmlParser = new SolrXmlParser();
 	
@@ -165,6 +168,30 @@ public class SolrXmlParserTest {
 		Assert.assertEquals("variable A",facets.get("variable").getSubFacets().get(0).getLabel());
 
 		
+	}
+	
+	/**
+	 * Tests parsing of a <doc> XML document into a Record object.
+	 * @throws IOException
+	 * @throws JDOMException
+	 */
+	@Test
+	public void testParseDoc() throws IOException, JDOMException {
+		
+		final String xml = FileUtils.readFileToString( DOCFILE.getFile() );
+		final Document doc = (new XmlParser(false)).parseString(xml);
+		final Record record = solrXmlParser.parseDoc(doc.getRootElement());
+		if (LOG.isInfoEnabled()) LOG.info(record);
+		Assert.assertTrue(record.getId().equals("test id"));
+		Assert.assertTrue(new Long(record.getVersion()).toString().equals("1"));
+		final Map<String, List<String>> fields = record.getFields();
+		Assert.assertTrue(fields.get(SolrXmlPars.FIELD_TITLE).contains("test title"));
+		Assert.assertTrue(fields.get(SolrXmlPars.FIELD_DESCRIPTION).contains("test description"));
+		Assert.assertTrue(fields.get(SolrXmlPars.FIELD_TYPE).contains("Dataset"));
+		Assert.assertTrue(fields.get("property").contains("value A"));
+		Assert.assertTrue(fields.get("property").contains("value B"));
+		Assert.assertTrue(fields.get("url").contains("http://test.com/"));
+	
 	}
 
 }

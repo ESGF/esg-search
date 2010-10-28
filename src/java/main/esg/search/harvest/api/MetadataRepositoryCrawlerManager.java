@@ -20,9 +20,9 @@ package esg.search.harvest.api;
 
 
 /**
- * Service for harvesting search records from different remote metadata repositories.
+ * API for managing crawling of heterogeneous metadata repositories.
  */
-public interface HarvestingService {
+public interface MetadataRepositoryCrawlerManager {
 
 	/**
 	 * 
@@ -31,6 +31,6 @@ public interface HarvestingService {
 	 * @param metadataRepositoryType
 	 * @throws Exception
 	 */
-	void harvest(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws Exception;
+	void crawl(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws Exception;
 
 }

@@ -34,8 +34,6 @@ import org.jdom.JDOMException;
 import org.springframework.core.io.ClassPathResource;
 
 import esg.search.core.Record;
-import esg.search.core.RecordSerializer;
-import esg.search.core.RecordSerializerSolrImpl;
 import esg.search.utils.XmlParser;
 
 /**
@@ -69,15 +67,16 @@ public class SolrTest extends AbstractSolrTestCase {
 		 	// test document ingestion
 		 	final File dataDir = DATADIR.getFile();
 		 	final XmlParser xmlParser = new XmlParser(false);
-		 	final RecordSerializer serializer = new RecordSerializerSolrImpl();
+		 	final SolrXmlParser solrParser = new SolrXmlParser();
 		 	for (final File file : dataDir.listFiles( (FileFilter)FileFilterUtils.suffixFileFilter("xml")) ) {
 		 		
 		 		if (LOG.isInfoEnabled()) LOG.info(file.getAbsolutePath());
 		 		
 		 		final Document doc = xmlParser.parseFile( file.getAbsolutePath() );
-		 		final Record record = serializer.deserialize(doc.getRootElement());
+		 		final Record record = solrParser.parseDoc(doc.getRootElement());
 		 		final List<String> fields = toList(record);
 		 		assertU( adoc(fields.toArray(new String[fields.size()])) );
+
 		 		
 		 	}
 		 	

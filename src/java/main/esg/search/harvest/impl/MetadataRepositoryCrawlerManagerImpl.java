@@ -19,39 +19,44 @@
 package esg.search.harvest.impl;
 
 import java.net.URI;
+import java.util.List;
+import java.util.Map;
 
-import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.util.Assert;
 
-import esg.search.harvest.api.HarvestingService;
+import esg.search.harvest.api.MetadataRepositoryCrawlerManager;
+import esg.search.harvest.api.MetadataRepositoryCrawler;
 import esg.search.harvest.api.MetadataRepositoryType;
+import esg.search.harvest.api.RecordConsumer;
 
-public class HarvestingServiceMain {
+/**
+ * Service class that manages the harvesting of search records from different remote metadata repositories.
+ */
+public class MetadataRepositoryCrawlerManagerImpl extends RecordProducerImpl implements MetadataRepositoryCrawlerManager {
 	
-	
-    private static String[] configLocations = new String[] { "classpath:esg/search/config/harvest-context.xml" };
-	
-	//private static final Log LOG = LogFactory.getLog(ThreddsParserMain.class);
-    
-	public static void main(String[] args) throws Exception {
+	private final Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers;
 		
-	    final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(configLocations);
-	    final HarvestingService harvestingService = (HarvestingService)context.getBean("harvestingService");
-	    
-	    if (args.length!=2) {
-	    	System.out.println("Usage: java esg.search.harvest.impl.HarvestingServiceMain <Metadata Repository URL> <Metadata repository Type>");
-	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS");
-	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain http://pcmdi3.llnl.gov/thredds/esgcet/catalog.xml THREDDS");
-	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain http://esg-datanode.jpl.nasa.gov/thredds/esgcet/catalog.xml THREDDS");
-	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml OAI");
-	    	System.out.println("Example: java esg.search.harvest.impl.HarvestingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/cas_rdf.xml CAS");
-	    	System.exit(-1);
-	    }
-
-	    final String uri = args[0];
-	    final MetadataRepositoryType type = MetadataRepositoryType.valueOf(args[1]);
-	    
-	    harvestingService.harvest(uri, true, type);
+	private static final Log LOG = LogFactory.getLog(MetadataRepositoryCrawlerManagerImpl.class);
+	
+	public MetadataRepositoryCrawlerManagerImpl(final Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers, final List<RecordConsumer> consumers) {
+		
+		this.crawlers = crawlers;
+		this.setConsumers(consumers);
 		
 	}
 	
+	/* (non-Javadoc)
+	 * @see esg.search.harvest.HarvestingService#harvest(java.net.URI, boolean, esg.search.harvest.MetadataRepositoryType)
+	 */
+	public void crawl(final String uri, boolean recursive, final MetadataRepositoryType metadataRepositoryType) throws Exception {
+		
+		LOG.info("uri="+uri+" recursive="+recursive+" metadataRepositoryType="+metadataRepositoryType);
+		MetadataRepositoryCrawler crawler = crawlers.get(metadataRepositoryType);
+		Assert.notNull(crawler, "Unsupported MetadataRepositoryType:"+metadataRepositoryType);
+		crawler.crawl(new URI(uri), recursive, this);
+		
+	}
+
 }
