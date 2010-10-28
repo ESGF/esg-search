@@ -36,6 +36,12 @@ public abstract class SolrClient implements RecordConsumer {
 	protected final Log LOG = LogFactory.getLog(this.getClass());
 	
 	/**
+	 * Utility class used to generate Solr XML messages.
+	 */
+	protected SolrXmlBuilder messageBuilder = new SolrXmlBuilder();
+
+	
+	/**
 	 * Instance attribute shared among all HTTP request,
 	 * since the generation of the POST URL does not depend on the instance's state.
 	 */

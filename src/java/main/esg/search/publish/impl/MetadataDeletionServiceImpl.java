@@ -22,8 +22,8 @@ import esg.search.publish.api.RecordConsumer;
 public class MetadataDeletionServiceImpl extends RecordProducerImpl implements MetadataDeletionService {
 	
 	@Autowired
-	public MetadataDeletionServiceImpl(final @Qualifier("scrabber") RecordConsumer consumer) {
-		this.subscribe(consumer);
+	public MetadataDeletionServiceImpl(final @Qualifier("scrabber") RecordConsumer scrabber) {
+		this.subscribe(scrabber);
 	}
 
 	@Override

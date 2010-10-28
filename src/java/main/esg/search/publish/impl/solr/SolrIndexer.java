@@ -33,11 +33,6 @@ import esg.search.core.Record;
 public class SolrIndexer extends SolrClient {
 				
 	/**
-	 * Utility class used to generate Solr XML messages.
-	 */
-	private SolrXmlBuilder messageBuilder = new SolrXmlBuilder();
-		
-	/**
 	 * Constructor delegates to superclass.
 	 * @param url
 	 */

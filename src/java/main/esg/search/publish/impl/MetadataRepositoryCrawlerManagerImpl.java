@@ -46,12 +46,12 @@ public class MetadataRepositoryCrawlerManagerImpl extends RecordProducerImpl imp
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see esg.search.publish.HarvestingService#harvest(java.net.URI, boolean, esg.search.publish.MetadataRepositoryType)
+	/**
+	 * {@inheritDoc}
 	 */
 	public void crawl(final String uri, boolean recursive, final MetadataRepositoryType metadataRepositoryType) throws Exception {
 		
-		LOG.info("uri="+uri+" recursive="+recursive+" metadataRepositoryType="+metadataRepositoryType);
+		if (LOG.isInfoEnabled()) LOG.info("uri="+uri+" recursive="+recursive+" metadataRepositoryType="+metadataRepositoryType);
 		MetadataRepositoryCrawler crawler = crawlers.get(metadataRepositoryType);
 		Assert.notNull(crawler, "Unsupported MetadataRepositoryType:"+metadataRepositoryType);
 		crawler.crawl(new URI(uri), recursive, this);

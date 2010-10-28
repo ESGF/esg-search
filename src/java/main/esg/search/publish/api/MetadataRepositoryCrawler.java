@@ -21,7 +21,7 @@ package esg.search.publish.api;
 import java.net.URI;
 
 /**
- * API for crawling a metadata repository (with optional recursion)
+ * API for crawling a remote metadata repository (with optional recursion)
  * and call back a {@link RecordProducer} during the process.
  */
 public interface MetadataRepositoryCrawler {
