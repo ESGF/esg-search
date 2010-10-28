@@ -19,32 +19,35 @@
 package esg.search.harvest.impl;
 
 import java.net.URI;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import esg.search.harvest.api.MetadataRepositoryCrawlerManager;
 import esg.search.harvest.api.MetadataRepositoryCrawler;
+import esg.search.harvest.api.MetadataRepositoryCrawlerManager;
 import esg.search.harvest.api.MetadataRepositoryType;
-import esg.search.harvest.api.RecordConsumer;
 
 /**
  * Service class that manages the harvesting of search records from different remote metadata repositories.
  */
+@Service
 public class MetadataRepositoryCrawlerManagerImpl extends RecordProducerImpl implements MetadataRepositoryCrawlerManager {
 	
-	private final Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers;
+	private Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers = new HashMap<MetadataRepositoryType, MetadataRepositoryCrawler>();
 		
 	private static final Log LOG = LogFactory.getLog(MetadataRepositoryCrawlerManagerImpl.class);
 	
-	public MetadataRepositoryCrawlerManagerImpl(final Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers, final List<RecordConsumer> consumers) {
-		
-		this.crawlers = crawlers;
-		this.setConsumers(consumers);
-		
+	
+	@Autowired
+	public void setCrawlers(final MetadataRepositoryCrawler[] _crawlers) {
+		for (final MetadataRepositoryCrawler crawler : _crawlers) {
+			crawlers.put(crawler.supports(), crawler);
+		}
 	}
 	
 	/* (non-Javadoc)

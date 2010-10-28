@@ -33,6 +33,7 @@ import thredds.catalog.InvDataset;
 import thredds.catalog.InvDatasetImpl;
 import esg.search.core.Record;
 import esg.search.harvest.api.MetadataRepositoryCrawler;
+import esg.search.harvest.api.MetadataRepositoryType;
 import esg.search.harvest.api.RecordProducer;
 
 /**
@@ -49,6 +50,13 @@ public class ThreddsHarvester implements MetadataRepositoryCrawler {
 	
 	public ThreddsHarvester(final ThreddsParserStrategy parser) {
 		this.parser = parser;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public MetadataRepositoryType supports() {
+		return MetadataRepositoryType.THREDDS;
 	}
 	
 	/**

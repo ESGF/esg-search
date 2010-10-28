@@ -22,36 +22,26 @@
 
 	<!-- Remote metadata repository crawler configured for publishing metadata into the system. -->
 	<bean name="publishingCrawler" class="esg.search.harvest.impl.MetadataRepositoryCrawlerManagerImpl">
-	
-		<!-- Map of metadata harvesters keyed by metadata type -->
-		<constructor-arg index="0">
-			<ref bean="crawlers"/>
-		</constructor-arg>
-		
-		<!-- List of (input) search record consumers -->
-		<constructor-arg index="1">
+			
+		<!-- List of (input) search record consumers 
+		<property name="consumers">
 			<list>
 				<ref bean="solrIndexer"/>
 				<ref bean="fileWriter"/>
 			</list>
-		</constructor-arg>
+		</property> -->
 		
 	</bean>	
 	
 	<!-- Remote metadata repository crawler configured for unpublishing metadata from the system. -->
 	<bean name="unpublishingCrawler" class="esg.search.harvest.impl.MetadataRepositoryCrawlerManagerImpl">
-	
-		<!-- Map of metadata harvesters keyed by metadata type -->
-		<constructor-arg index="0">
-			<ref bean="crawlers"/>
-		</constructor-arg>
-		
-		<!-- List of (input) search record consumers -->
-		<constructor-arg index="1">
+			
+		<!-- List of (input) search record consumers 
+		<property name="consumers">
 			<list>
 				<ref bean="solrScrabber"/>
 			</list>
-		</constructor-arg>
+		</property> -->
 		
 	</bean>
 	

@@ -25,6 +25,7 @@ import org.jdom.Document;
 
 import esg.search.core.Record;
 import esg.search.harvest.api.MetadataRepositoryCrawler;
+import esg.search.harvest.api.MetadataRepositoryType;
 import esg.search.harvest.api.RecordProducer;
 import esg.search.harvest.xml.MetadataHandler;
 import esg.search.utils.HttpClient;
@@ -57,6 +58,13 @@ public class CasHarvester implements MetadataRepositoryCrawler {
 		// index records
 		for (final Record record : records) callback.notify(record);
 
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public MetadataRepositoryType supports() {
+		return MetadataRepositoryType.CAS;
 	}
 
 }
