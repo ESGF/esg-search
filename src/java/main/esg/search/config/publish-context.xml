@@ -6,9 +6,11 @@
 	   xmlns:context="http://www.springframework.org/schema/context"
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+  
+    <context:component-scan base-package="eske.search"/>
                            
     <!-- Top-level service for publishing/unpublishing search metadata into/from the system. -->
-    <bean name="publishingService" class="esg.search.harvest.impl.PublishingServiceImpl">
+    <bean name="publishingService" class="esg.search.publish.impl.PublishingServiceImpl">
     	<constructor-arg index="0">
     		<ref bean="publishingCrawler"/>
     	</constructor-arg>
@@ -21,7 +23,7 @@
     </bean>
 
 	<!-- Remote metadata repository crawler configured for publishing metadata into the system. -->
-	<bean name="publishingCrawler" class="esg.search.harvest.impl.MetadataRepositoryCrawlerManagerImpl">
+	<bean name="publishingCrawler" class="esg.search.publish.impl.MetadataRepositoryCrawlerManagerImpl">
 	
 		<!-- Map of metadata harvesters keyed by metadata type -->
 		<constructor-arg index="0">
@@ -39,7 +41,7 @@
 	</bean>	
 	
 	<!-- Remote metadata repository crawler configured for unpublishing metadata from the system. -->
-	<bean name="unpublishingCrawler" class="esg.search.harvest.impl.MetadataRepositoryCrawlerManagerImpl">
+	<bean name="unpublishingCrawler" class="esg.search.publish.impl.MetadataRepositoryCrawlerManagerImpl">
 	
 		<!-- Map of metadata harvesters keyed by metadata type -->
 		<constructor-arg index="0">
@@ -56,7 +58,7 @@
 	</bean>
 	
 	<!-- Service for deleting records with known identifiers. -->
-	<bean name="recordRemover" class="esg.search.harvest.impl.MetadataDeletionServiceImpl">
+	<bean name="recordRemover" class="esg.search.publish.impl.MetadataDeletionServiceImpl">
 		<property name="consumers">
 			<list>
 				<ref bean="solrScrabber"/>
@@ -77,49 +79,49 @@
 	</bean>
 	
 	<!-- Class that generates search records from a THREDDS catalogs hierarchy -->
-	<bean name="threddsHarvester" class="esg.search.harvest.thredds.ThreddsHarvester">
+	<bean name="threddsHarvester" class="esg.search.publish.thredds.ThreddsHarvester">
 		<constructor-arg index="0">
-			<bean name="threddsParserStrategy" class="esg.search.harvest.thredds.ThreddsParserStrategyTopLevelDatasetImpl">
+			<bean name="threddsParserStrategy" class="esg.search.publish.thredds.ThreddsParserStrategyTopLevelDatasetImpl">
 				<!-- configure to hyper-link records to HTML pages -->
 				<property name="urlBuilder">
-					<bean class="esg.search.harvest.thredds.ThreddsDatasetUrlBuilderCatalogViewImpl"/>
+					<bean class="esg.search.publish.thredds.ThreddsDatasetUrlBuilderCatalogViewImpl"/>
 				</property>
 			</bean>
 		</constructor-arg>
 	</bean>
 	
 	<!-- Class that generates search records by harvesting a remote OAI repository -->
-	<bean name="oaiHarvester" class="esg.search.harvest.oai.OaiHarvester">
+	<bean name="oaiHarvester" class="esg.search.publish.oai.OaiHarvester">
 		<constructor-arg index="0">
-			<bean name="difMetadataHandler" class="esg.search.harvest.xml.dif.MetadataHandlerDifImpl"/>
+			<bean name="difMetadataHandler" class="esg.search.publish.xml.dif.MetadataHandlerDifImpl"/>
 		</constructor-arg>
 	</bean>
 	
 	<!-- Class that generates search records by harvesting a CAS metadata repository -->
-	<bean name="casHarvester" class="esg.search.harvest.cas.CasHarvester">
+	<bean name="casHarvester" class="esg.search.publish.cas.CasHarvester">
 		<constructor-arg index="0">
-			<bean name="casRdfMetadataHandler" class="esg.search.harvest.xml.cas.MetadataHandlerCasRdfImpl"/>
+			<bean name="casRdfMetadataHandler" class="esg.search.publish.xml.cas.MetadataHandlerCasRdfImpl"/>
 		</constructor-arg>
 	</bean>
 
 	<!-- Class that sends search records to a Solr server for indexing -->
-	<bean name="solrIndexer" class="esg.search.harvest.impl.solr.SolrIndexer">
+	<bean name="solrIndexer" class="esg.search.publish.impl.solr.SolrIndexer">
 		<constructor-arg index="0" value="http://localhost:8983/solr"/>
 		<!-- <constructor-arg index="0" value="http://localhost:8983/solr"/> -->
 	</bean>
 	<!-- Class that sends search records to a Solr server for deletion -->
-	<bean name="solrScrabber" class="esg.search.harvest.impl.solr.SolrScrabber">
+	<bean name="solrScrabber" class="esg.search.publish.impl.solr.SolrScrabber">
 		<constructor-arg index="0" value="http://localhost:8983/solr"/>
 		<!-- <constructor-arg index="0" value="http://localhost:8983/solr"/> -->
 	</bean>
 	
 	<!-- Class that writes search records to the file system -->
-	<bean name="fileWriter" class="esg.search.harvest.impl.FileWriter">
+	<bean name="fileWriter" class="esg.search.publish.impl.FileWriter">
 		<constructor-arg index="0" value="/tmp"/>
 	</bean>
                            
     <!-- Class that generates simulated search records -->
-    <bean name="recordGenerator" class="esg.search.harvest.impl.RecordGenerator">
+    <bean name="recordGenerator" class="esg.search.publish.impl.RecordGenerator">
     	<property name="consumers">
     		<list>
     			<ref bean="fileWriter"/>

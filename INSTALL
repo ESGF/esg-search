@@ -47,12 +47,12 @@ For example, to test ingestion of a single THREDDS catalog run the following com
 
 o cd <esg-search install>
 o cd build (this directory contains the .class files after you have run "ant make_dist")
-o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib/:../lib/fetched esg.search.harvest.impl.PublishingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS
+o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib/:../lib/fetched esg.search.publish.impl.PublishingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS
 o a search for "snow" in the Solr admin interface available at http://localhost:8983/solr/admin/ will return one record
 
 Or, to ingest all XML records contained in a serialized OAI feed:
 o cd <esg-search install>/build
-o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib/:../lib/fetched esg.search.harvest.impl.PublishingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml OAI
+o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib/:../lib/fetched esg.search.publish.impl.PublishingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml OAI
 o a search for "eosdis" in the Solr admin interface available at http://localhost:8983/solr/admin/ will return 293 records
 
 RUNNING THE SEARCH TOOL
