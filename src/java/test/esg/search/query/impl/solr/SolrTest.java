@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.FileFilterUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -35,7 +34,6 @@ import org.jdom.JDOMException;
 import org.springframework.core.io.ClassPathResource;
 
 import esg.search.core.Record;
-import esg.search.query.api.SearchOutput;
 import esg.search.utils.XmlParser;
 
 /**
@@ -75,11 +73,7 @@ public class SolrTest extends AbstractSolrTestCase {
 		 		if (LOG.isInfoEnabled()) LOG.info(file.getAbsolutePath());
 		 		
 		 		final Document doc = xmlParser.parseFile( file.getAbsolutePath() );
-		 		final String xml = FileUtils.readFileToString( new File(file.getAbsolutePath()) );
-		 		
 		 		final Record record = solrParser.parseDoc(doc.getRootElement());
-		 		//final SearchOutput output = solrParser.parse(xml, new SearchInputImpl(), true, false);
-		 		//System.out.println(output);
 		 		final List<String> fields = toList(record);
 		 		assertU( adoc(fields.toArray(new String[fields.size()])) );
 

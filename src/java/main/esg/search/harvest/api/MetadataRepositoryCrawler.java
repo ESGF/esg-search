@@ -31,6 +31,7 @@ public interface MetadataRepositoryCrawler {
 	 * and optionally follow the symbolic links encountered while crawling.
 	 * @param uri : the starting URI of metadata repository
 	 * @param recursive : true to recursively crawl the locations referenced by the starting location
+	 * @param callback: a {@link RecordProducer} that is triggered every time a new Record is generated while crawling
 	 */
 	public void crawl(URI uri, boolean recursive, RecordProducer callback) throws Exception;
 
