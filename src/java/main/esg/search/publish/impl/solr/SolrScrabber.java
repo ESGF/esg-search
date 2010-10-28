@@ -38,7 +38,7 @@ public class SolrScrabber extends SolrClient {
 	 * Constructor delegates to superclass.
 	 * @param url
 	 */
-	public SolrScrabber(final URL url) {
+	public SolrScrabber(final String url) {
 		super(url);
 	}
 

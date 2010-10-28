@@ -50,7 +50,7 @@ public abstract class SolrClient implements RecordConsumer {
 	 * Constructor initializes the URL builder.
 	 * @param url
 	 */
-	public SolrClient(final URL url) {
+	public SolrClient(final String url) {
 		
 		solrUrlBuilder = new SolrUrlBuilder(url);
 		

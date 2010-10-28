@@ -34,7 +34,7 @@ public class SearchServiceImpl implements SearchService {
 	/**
 	 * The base URL of the Apache-Sol server.
 	 */
-	private final URL url;
+	private final String url;
 
 	/**
 	 * The client used to communicate with the Solr server via its REST API.
@@ -56,7 +56,7 @@ public class SearchServiceImpl implements SearchService {
 	 * @throws MalformedURLException
 	 */
 	public SearchServiceImpl(final String url) throws MalformedURLException {
-		this.url = new URL(url);
+		this.url = url;
 	}
 
 	/**

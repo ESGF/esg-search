@@ -35,7 +35,7 @@ import esg.search.publish.api.PublishingService;
 public class PublishingServiceMain {
 	
 	
-    private static String[] configLocations = new String[] { "classpath:esg/search/config/publish-context.xml" };
+    private static String[] configLocations = new String[] { "classpath:esg/search/config/application-context.xml" };
     
 	public static void main(String[] args) throws Exception {
 		

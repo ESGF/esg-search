@@ -104,14 +104,13 @@
 		</constructor-arg>
 	</bean>
 
-	<!-- Class that sends search records to a Solr server for indexing -->
+	<!-- Class that sends search records to a Solr server for indexing
 	<bean name="solrIndexer" class="esg.search.publish.impl.solr.SolrIndexer">
-		<constructor-arg index="0" value="http://localhost:8983/solr"/>
-		<!-- <constructor-arg index="0" value="http://localhost:8983/solr"/> -->
-	</bean>
+		<constructor-arg index="0" value="${esg.search.solr.url}"/>
+	</bean> -->
 	<!-- Class that sends search records to a Solr server for deletion -->
 	<bean name="solrScrabber" class="esg.search.publish.impl.solr.SolrScrabber">
-		<constructor-arg index="0" value="http://localhost:8983/solr"/>
+		<constructor-arg index="0" value="${esg.search.solr.url}"/>
 		<!-- <constructor-arg index="0" value="http://localhost:8983/solr"/> -->
 	</bean>
 	

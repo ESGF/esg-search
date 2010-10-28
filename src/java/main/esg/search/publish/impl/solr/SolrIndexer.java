@@ -20,11 +20,16 @@ package esg.search.publish.impl.solr;
 
 import java.net.URL;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
 import esg.search.core.Record;
 
 /**
  * Implementation of {@link SolrClient} that sends (fully populated) records to a Solr server for indexing.
  */
+@Service
 public class SolrIndexer extends SolrClient {
 				
 	/**
@@ -36,7 +41,8 @@ public class SolrIndexer extends SolrClient {
 	 * Constructor delegates to superclass.
 	 * @param url
 	 */
-	public SolrIndexer(final URL url) {
+	@Autowired
+	public SolrIndexer(final @Qualifier("esg.search.solr.url") String url) {
 		super(url);
 	}
 
