@@ -82,11 +82,39 @@ o cd <esg-search install>/build
 o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=.:../lib/:../lib/fetched esg.search.query.impl.solr.SearchServiceMain
 
 
-INCLUDING THE SEARCH MODULE IN A WEB SPRING APPLICATION
+SPRING CONTEXT DEPLOYMENT
 
-The ESGF search module can be easily included in a web application running within the Spring container as follows:
+The ESG search module is already configured to be easily included in any application that runs within the Spring Framework container
+(IMPORTANT NOTE: Spring Framework version 3 or later is required).
+Specifically, the module beans are auto-wired via Spring annotations, including injecting specific parameters defined in a property
+file into the beans configuration. 
+To bootstrap the ESGF search services within a Spring container, modify the application Spring XML configuration as follows:
 
-o run the ant target to build the distribution: ant make_dist
-o copy the search jar (dist/esg-search.XXX.jar) to the web application library directory (WEB-INF/lib).
+o In the XML file header, make sure to include the Spring namespace for context support:
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+o Insert support for Spring annotations:
+	<bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/> 
+
+o Load a Java property file containing the application parameters:
+	<bean id="searchPropertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="classpath:path/to/your/application.properties" />
+	</bean>
+	
+  Currently the only required entry in the application.properties file is the URL of the Solr server:
+  esg.search.solr.url=http://localhost:8983/solr
+  
+o To use the publishing service and related beans, include the instruction to scan the publish sub-package:
+<context:component-scan base-package="esg.search.publish"/>
+
+o To use the search service and related beans, include the instruction to scan the query sub-package:
+<context:component-scan base-package="esg.search.query"/>
+
+Finally, make sure that the esg-search.X.X.X.X.jar is available to the application.
+For a web application, this means copying the jar file to the WEB-INF/lib directory of the servlet container.
 
 
