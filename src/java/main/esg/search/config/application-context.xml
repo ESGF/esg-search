@@ -21,7 +21,7 @@
   	<context:component-scan base-package="esg.search.publish"/>
 
 	<!-- search context -->
-	<context:component-scan base-package="esg.search.search"/>
+	<context:component-scan base-package="esg.search.query"/>
 	
   	<!-- Facet profile example
 	<bean name="facetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
