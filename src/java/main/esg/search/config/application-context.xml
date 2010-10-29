@@ -16,7 +16,7 @@
     <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/> 
     
     <!-- Configurable properties -->
-	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean id="searchPropertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="classpath:esg/search/config/application.properties" />
 	</bean>
 
@@ -25,12 +25,12 @@
 
 	<!-- search context -->
 	<context:component-scan base-package="eske.search.search"/>
-  	<!-- Facet profile -->
+	
+  	<!-- Facet profile example
 	<bean name="facetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
 		<constructor-arg index="0">
 			 <map>
 			 
-			 	<!-- CMIP5 profile -->
 	          	<entry key="project"><value>Project</value></entry>
 	          	<entry key="model"><value>Model</value></entry>
 	          	<entry key="experiment"><value>Experiment</value></entry>
@@ -38,7 +38,6 @@
 	          	<entry key="realm"><value>Realm</value></entry>
 	          	<entry key="cf_variable"><value>CF Variable</value></entry>
 	          	
-	          	<!-- Obs profile -->
 	          	<entry key="instrument_type"><value>Instrument</value></entry>
 	          	<entry key="data_type"><value>Instrument</value></entry>
 	          	<entry key="platform_type"><value>Instrument</value></entry>
@@ -46,6 +45,6 @@
 		      
 		      </map>
 		</constructor-arg>
-	</bean>
+	</bean> -->
 
 </beans>

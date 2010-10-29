@@ -29,31 +29,43 @@ o start the server:
 o test the server is running by accessing the URL: http://localhost:8983/solr/ in a web browser
 
 
-RUNNING THE HARVESTING TOOL
+RUNNING THE COMMAND LINE PUBLISHING TOOL
 
-The application comes with a command-line program that can be used to experiment with harvesting metadata records into a Solr engine.
+The application comes with a command-line program that can be used to experiment with publishing/unpublishing metadata records 
+into/from a Solr engine.
 
 o Start an Apache Solr engine configured with the specific ESGF schema as described above.
 
-o If desired, edit the file src/java/main/esg/search/config/harvest-context.xml to customize the consumption of incoming XML metadata records.
-By default, the application is configured to send the records for processing to the Solr engine available at: http://localhost:8983/solr, and at the same
-time to write the serialized records to the /tmp directory (for debugging and informative purposes).
+o Edit the file src/java/main/esg/search/config/application.properties and insert the URL of the Solr server you just started.
+By default, the application is configured to publish/unpublish records from a Solr server at http://localhost:8983/solr
 
-o Run the Java class HarvestingServiceMain supplying it with the URL of a metadata repository, and the type of that repository. Note that at
-this time the application can parse THREDDS catalogs, records coming from a OAI/DIF repository, and from  CAS/RDF repository. Also, some example
-XML documents are provided in the "resources/" subdirectory.
+o Run the Java class PublishingServiceMain supplying it with the URL of a metadata repository, the type of that repository, 
+and a switch flag for publishing or unpublishing. 
+Note that at this time the application can parse THREDDS catalogs, records coming from a OAI/DIF repository, and from a CAS/RDF metadata catalog. 
+Some example XML documents of these kinds are provided in the "resources/" subdirectory.
 
-For example, to test ingestion of a single THREDDS catalog run the following command:
+Examples:
 
+a) Publishing a single THREDDS catalog
 o cd <esg-search install>
 o cd build (this directory contains the .class files after you have run "ant make_dist")
-o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib/:../lib/fetched esg.search.publish.impl.PublishingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS
+o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib/:../lib/fetched esg.search.publish.impl.PublishingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS true
 o a search for "snow" in the Solr admin interface available at http://localhost:8983/solr/admin/ will return one record
 
-Or, to ingest all XML records contained in a serialized OAI feed:
+b) Unpublishing a single THREDDS catalog
+o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib/:../lib/fetched esg.search.publish.impl.PublishingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS false
+
+c) Publish all XML records contained in a serialized OAI feed:
 o cd <esg-search install>/build
-o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib/:../lib/fetched esg.search.publish.impl.PublishingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml OAI
+o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib/:../lib/fetched esg.search.publish.impl.PublishingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml OAI true
 o a search for "eosdis" in the Solr admin interface available at http://localhost:8983/solr/admin/ will return 293 records
+
+d) Unpublish a single XML record:
+o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib/:../lib/fetched esg.search.publish.impl.PublishingServiceMain OTTER_LICOR
+
+d) Unpublish all the XML records from the OAI feed:
+o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib/:../lib/fetched esg.search.publish.impl.PublishingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml OAI false
+
 
 RUNNING THE SEARCH TOOL
 
@@ -65,7 +77,16 @@ content of the XML records that were inserted.
 To run the search command line tool, do the following:
 
 o Start the Apache Solr engine. 
-o If necessary, customize the XML configuration of the ESG service in the file "src/java/main/esg/search/config/search-context.xml":
-by default, the search service is configured to contact the Solr engine at http://localhost:8983/solr .
+o Edit the file src/java/main/esg/search/config/application.properties and insert the URL of the Solr server you want to query.
 o cd <esg-search install>/build
 o java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=.:../lib/:../lib/fetched esg.search.query.impl.solr.SearchServiceMain
+
+
+INCLUDING THE SEARCH MODULE IN A WEB SPRING APPLICATION
+
+The ESGF search module can be easily included in a web application running within the Spring container as follows:
+
+o run the ant target to build the distribution: ant make_dist
+o copy the search jar (dist/esg-search.XXX.jar) to the web application library directory (WEB-INF/lib).
+
+
