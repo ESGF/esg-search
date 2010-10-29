@@ -18,6 +18,7 @@
  ******************************************************************************/
 package esg.search.query.impl.solr;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -31,7 +32,7 @@ import esg.search.query.api.SearchOutput;
 /**
  * Standard bean implementation of {@link SearchOutput}.
  */
-public class SearchOutputImpl implements SearchOutput {
+public class SearchOutputImpl implements SearchOutput, Serializable {
 	
 	/**
 	 * The list of records returned by the search.
@@ -54,6 +55,8 @@ public class SearchOutputImpl implements SearchOutput {
 	private int offset = 0;
 	
 	private final static String NEWLINE = System.getProperty("line.separator");
+	
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * {@inheritDoc}

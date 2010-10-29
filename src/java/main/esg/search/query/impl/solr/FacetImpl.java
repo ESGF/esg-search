@@ -18,13 +18,14 @@
  ******************************************************************************/
 package esg.search.query.impl.solr;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import esg.search.query.api.Facet;
 
-public class FacetImpl implements Facet {
+public class FacetImpl implements Facet, Serializable {
 	
 	/**
 	 * The facet key used for programmatic access (immutable).
@@ -50,6 +51,8 @@ public class FacetImpl implements Facet {
 	 * The current list of sub-facets.
 	 */
 	private List<Facet> subFacets = new ArrayList<Facet>();
+	
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * Constructor sets the immutable properties of the facet.

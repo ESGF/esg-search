@@ -18,6 +18,7 @@
  ******************************************************************************/
 package esg.search.query.impl.solr;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -28,9 +29,11 @@ import esg.search.query.api.FacetProfile;
 /**
  * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs.
  */
-public class FacetProfileImpl implements FacetProfile {
+public class FacetProfileImpl implements FacetProfile, Serializable {
 	
 	private Map<String, Facet> facets = new LinkedHashMap<String, Facet>();
+	
+	private static final long serialVersionUID = 1L;
 
 	/**
 	 * Constructor builds the list of facets from a configuration map composed of (facet key, facet label) pairs.
