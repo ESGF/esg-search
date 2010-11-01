@@ -29,6 +29,7 @@ import org.jdom.Namespace;
 
 import esg.search.core.Record;
 import esg.search.harvest.api.MetadataRepositoryCrawler;
+import esg.search.harvest.api.MetadataRepositoryType;
 import esg.search.harvest.api.RecordProducer;
 import esg.search.harvest.xml.MetadataHandler;
 import esg.search.utils.HttpClient;
@@ -60,6 +61,13 @@ public class OaiHarvester implements MetadataRepositoryCrawler  {
 		// process XML
 		this.parseDocument(doc, callback);
 		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public MetadataRepositoryType supports() {
+		return MetadataRepositoryType.OAI;
 	}
 	
 	/**
