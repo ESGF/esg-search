@@ -1,0 +1,20 @@
+#*****************************************************************#
+# Copyright (c) 2009  Larence Livermore National Security (LLNS)  #
+# All rights reserved.						  #
+#*****************************************************************#
+
+# This is a manifest, listing all the files to be posted to the
+# distribution server.
+
+[esg-search]
+
+../INSTALL
+../TODO
+../LICENSE
+
+../dist/esg-search-common.1.0.0.0.jar
+../dist/esg-search-connector.1.0.0.0.jar
+../dist/esg-search-fe.1.0.0.0.jar
+../dist/esg-search-test.1.0.0.0.jar
+../dist/esg-search.1.0.0.0.jar
+../dist/esg-search.1.0.0.0.tar.gz
