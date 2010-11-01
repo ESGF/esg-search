@@ -73,6 +73,15 @@ public interface SearchOutput {
 	public void addResult(Record record) ;
 	
 	/**
+	 * Method to remove a single result from the list.
+	 * Note: Added primarily to filter results AFTER a query to solr
+	 * (used for radius based-search)
+	 * @param record
+	 */
+	public void removeResult(Record record);
+	
+	
+	/**
 	 * Method to add a facet to the map.
 	 * @param key
 	 * @param facet

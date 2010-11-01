@@ -65,6 +65,16 @@ public class SearchOutputImpl implements SearchOutput {
 	/**
 	 * {@inheritDoc}
 	 */
+	public void removeResult(Record record)
+	{
+		this.results.remove(record);
+	}
+	
+	
+	
+	/**
+	 * {@inheritDoc}
+	 */
 	public List<Record> getResults() {
 		return Collections.unmodifiableList(results);
 	}
