@@ -21,6 +21,10 @@ package esg.search.query.api;
 
 /**
  * Interface defining the API for mix faceted/text search.
+ * The search criteria are completely contained in the bean {@link SearchInput},
+ * and the search results in the bean {@link SearchOutput}. The two boolean parameters "getResults" and "getFacets"
+ * determine whether the search operation is executed to return search results, a new set of search facets subject to
+ * the constrained contained in {@link SearchInput}, or both.
  */
 public interface SearchService {
 	

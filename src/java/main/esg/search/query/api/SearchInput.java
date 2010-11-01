@@ -18,7 +18,6 @@
  ******************************************************************************/
 package esg.search.query.api;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
