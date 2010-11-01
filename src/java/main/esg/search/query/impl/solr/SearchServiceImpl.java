@@ -32,6 +32,11 @@ import esg.search.utils.HttpClient;
 
 /**
  * Implementation of {@link SearchService} based on an Apache-Solr back-end.
+ * This service is configured to send and receive XML messages to a fixed Solr server
+ * specified by the constructor URL argument. 
+ * The URL for the HTTP/GET request is built by the collaborator bean {@link SolrUrlBuilder} based on the content
+ * of the {@link SearchInput} instance, while the content of the HTTP response is parsed by the collaborator bean
+ * {@link SolrXmlPars}. 
  */
 @Service("searchService")
 public class SearchServiceImpl implements SearchService {
