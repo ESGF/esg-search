@@ -30,18 +30,17 @@ import org.jdom.input.SAXBuilder;
  */
 public class XmlParser {
 	
-	/**
-	 * The underlying XML parser.
-	 */
-	private final SAXBuilder builder;
 
 	/**
-	 * Constructor instantiates the underlying XML parser.
+	 * Flag to validate the XML document.
+	 */
+	private final boolean validate;
+
+	/**
+	 * Constructor.
 	 */
 	public XmlParser(final boolean validate) {
-		builder = new SAXBuilder(); 
-		builder.setValidation(validate); 
-		builder.setIgnoringElementContentWhitespace(true); 
+		this.validate = validate;
 	}
 	
 	/**
@@ -53,7 +52,7 @@ public class XmlParser {
 	 */
 	public Document parseString(final String xml) throws IOException, JDOMException {
 		final StringReader sr = new StringReader(xml);
-		return builder.build(sr); 
+		return this.getBuilder().build(sr); 
 	}
 
 	/**
@@ -64,7 +63,20 @@ public class XmlParser {
 	 * @throws JDOMException
 	 */
 	public Document parseFile(final String filepath) throws IOException, JDOMException {
-		return builder.build(filepath);
+		return this.getBuilder().build(filepath);
+	}
+	
+	/**
+	 * Method to obtain an XML parser.
+	 * Note: the XML parser is NOT thread-safe, so it must be re-instantiated every time.
+	 */
+	private SAXBuilder getBuilder() {
+		
+		final SAXBuilder builder = new SAXBuilder(); 
+		builder.setValidation(validate); 
+		builder.setIgnoringElementContentWhitespace(true); 
+		return builder;
+		
 	}
 
 }
