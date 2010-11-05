@@ -297,78 +297,78 @@ stop_zookeeper() {
 #---------------------------------------------------------
 # Solr/Lucene Setup and Configuration
 #---------------------------------------------------------
-setup_solr() {
-# installation
-    cd $ESGF_INSTALL_DIR
-    cp $ESGF_SOURCE_DIR/solr/esgf-solr-cloud.tar.gz .
-    tar xvfz esgf-solr-cloud.tar.gz
-    export SOLR_DIR=$ESGF_INSTALL_DIR/esgf-solr-cloud
-    
-# configuration
-    cp $ESGF_SOURCE_DIR/solr/solrconfig.xml $SOLR_DIR/solr/conf/.
-    cp $ESGF_SOURCE_DIR/solr/schema.xml $SOLR_DIR/solr/conf/.
-    sed "s:@@myid@@:$ZKID:" < $ESGF_SOURCE_DIR/solr/solr.xml > $SOLR_DIR/solr/solr.xml
-    cat $SOLR_DIR/solr/solr.xml
-    
-# start Solr server on port 8983 connecting to Zookeeper on port 2181
-    cd esgf-solr-cloud
-    java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:2181 -jar start.jar &
-    
-# check server port
-    netstat -na | grep -i 8983
-    
-}
-
-stop_search_services() {
-    
-# stop Solr server
-    pid=`/usr/sbin/lsof -i:8983 | grep -i java | awk '{print $2}'`
-    kill -9 $pid
-    
-# stop ZK server
-    $ESGF_INSTALL_DIR/zookeeper/bin/zkServer.sh stop
-    
-}
-
-setup_search_tomcat() {
-# installation
-    cd $ESGF_INSTALL_DIR
-    cp $ESGF_SOURCE_DIR/tomcat/apache-tomcat-6.0.26.tar .
-    tar xvf apache-tomcat-6.0.26.tar
-    ln -s ./apache-tomcat-6.0.26 ./apache-tomcat
-    
-# esgf-web-fe
-    export WEB_APP_DIR=$ESGF_INSTALL_DIR/apache-tomcat/webapps/esg-web
-    mkdir $WEB_APP_DIR
-    cp $ESGF_SOURCE_DIR/esg-web-fe/esg-search-web.war $WEB_APP_DIR/esg-web.war
-    cd $WEB_APP_DIR
-    jar xvf $WEB_APP_DIR/esg-web.war
-    
-# start
-    export CATALINA_HOME=$ESGF_INSTALL_DIR/apache-tomcat
-    export CATALINA_BASE=$ESGF_INSTALL_DIR/apache-tomcat
-    $CATALINA_BASE/bin/catalina.sh start
-    
-# check server port
-    sleep 10
-    netstat -na | grep -i 8080
-    
-    
-}
-
-test_search() {
-# publish test catalog
-    cd $WEB_APP_DIR
-    java -Dlog4j.configuration=./WEB-INF/classes/log4j.xml -Djava.ext.dirs=./WEB-INF/lib esg.search.publish.impl.PublishingServiceMain file://$ESGF_TESTDATA_DIR/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS true
-
-}
+#setup_solr() {
+## installation
+#    cd $ESGF_INSTALL_DIR
+#    cp $ESGF_SOURCE_DIR/solr/esgf-solr-cloud.tar.gz .
+#    tar xvfz esgf-solr-cloud.tar.gz
+#    export SOLR_DIR=$ESGF_INSTALL_DIR/esgf-solr-cloud
+#    
+## configuration
+#    cp $ESGF_SOURCE_DIR/solr/solrconfig.xml $SOLR_DIR/solr/conf/.
+#    cp $ESGF_SOURCE_DIR/solr/schema.xml $SOLR_DIR/solr/conf/.
+#    sed "s:@@myid@@:$ZKID:" < $ESGF_SOURCE_DIR/solr/solr.xml > $SOLR_DIR/solr/solr.xml
+#    cat $SOLR_DIR/solr/solr.xml
+#    
+## start Solr server on port 8983 connecting to Zookeeper on port 2181
+#    cd esgf-solr-cloud
+#    java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:2181 -jar start.jar &
+#    
+## check server port
+#    netstat -na | grep -i 8983
+#    
+#}
+#
+#stop_search_services() {
+#    
+## stop Solr server
+#    pid=`/usr/sbin/lsof -i:8983 | grep -i java | awk '{print $2}'`
+#    kill -9 $pid
+#    
+## stop ZK server
+#    $ESGF_INSTALL_DIR/zookeeper/bin/zkServer.sh stop
+#    
+#}
+#
+#setup_search_tomcat() {
+## installation
+#    cd $ESGF_INSTALL_DIR
+#    cp $ESGF_SOURCE_DIR/tomcat/apache-tomcat-6.0.26.tar .
+#    tar xvf apache-tomcat-6.0.26.tar
+#    ln -s ./apache-tomcat-6.0.26 ./apache-tomcat
+#    
+## esgf-web-fe
+#    export WEB_APP_DIR=$ESGF_INSTALL_DIR/apache-tomcat/webapps/esg-web
+#    mkdir $WEB_APP_DIR
+#    cp $ESGF_SOURCE_DIR/esg-web-fe/esg-search-web.war $WEB_APP_DIR/esg-web.war
+#    cd $WEB_APP_DIR
+#    jar xvf $WEB_APP_DIR/esg-web.war
+#    
+## start
+#    export CATALINA_HOME=$ESGF_INSTALL_DIR/apache-tomcat
+#    export CATALINA_BASE=$ESGF_INSTALL_DIR/apache-tomcat
+#    $CATALINA_BASE/bin/catalina.sh start
+#    
+## check server port
+#    sleep 10
+#    netstat -na | grep -i 8080
+#    
+#    
+#}
+#
+#test_search() {
+## publish test catalog
+#    cd $WEB_APP_DIR
+#    java -Dlog4j.configuration=./WEB-INF/classes/log4j.xml -Djava.ext.dirs=./WEB-INF/lib esg.search.publish.impl.PublishingServiceMain file://$ESGF_TESTDATA_DIR/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS true
+#
+#}
 
 
 ############################################
 # General - Utility Functions
 ############################################
 
-#this function is identical to the one in the esg-node script it is
+#These functions are identical to the ones in the esg-node script they are
 #being copied here in the case where we are not running this script as
 #a sub process of esg-node.  In other words, this allows this script
 #to be stand-alone.
@@ -382,4 +382,11 @@ checked_done() {
         exit 1
     fi
     return 0
+}
+
+dedup() {
+    local infile=${1:-${envfile}}
+    [ ! -w "${infile}" ] && echo "WARNING: dedup() - unable to write to ${infile}" && return 1
+    local tmp=$(tac ${infile} | awk 'BEGIN {FS="[ =]"} !($2 in a) {a[$2];print $0}' | sort -k2,2)
+    echo "$tmp" > ${infile}
 }
