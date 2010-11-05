@@ -241,7 +241,8 @@ check_zookeeper_version() {
 configure_zookeeper() {
     echo "configuring zookeeper... "
     pushd ${zookeeper_install_dir} >& /dev/null
-    export ZK_DIR=${zookeeper_install_dir} #NOTE: Is this a special variable used by zookeeper? If not get rid of line.
+    #Luca: ZK_DIR was simply a local variable to enable installation, I have commented it out for now
+    #export ZK_DIR=${zookeeper_install_dir} #NOTE: Is this a special variable used by zookeeper? If not get rid of line.
 
     sed "s:/tmp/zookeeper:${zookeeper_data_dir}:" <(curl -s -L --insecure ${esg_dist_url}/esg-search/zoo.cfg) > ${zookeeper_install_dir}/conf/zoo.cfg
     (($DEBUG)) && cat ${zookeeper_install_dir}/conf/zoo.cfg
@@ -277,6 +278,8 @@ start_zookeeper() {
     ${zookeeper_install_dir}/bin/zkServer.sh start
     
     #Don't wait 10 seconds if you don't have to...
+    #Luca: the wait is because Solr, on startup, needs to send information to Zookeeper
+    # - not sure if it is enough to wait for the client port to be accessible, we'll test
     #just check every second up till 10 seconds (or <= 10x)
     local wait_time=10
     local ret=1
