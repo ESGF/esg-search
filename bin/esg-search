@@ -119,6 +119,7 @@ write_search_install_log() {
 
 start_search_services() {
     echo "Starting search services..."
+    start_zookeeper
 }
 
 stop_search_services() {
@@ -249,7 +250,7 @@ configure_zookeeper() {
 test_zookeeper() {
     echo -n "Testing zookeeper..."
     #test client connection
-    ${zookeeper_install_dir}/bin/zkCli.sh -server localhost:2181 ls / quit
+    ${zookeeper_install_dir}/bin/zkCli.sh -server localhost:${zookeeper_client_port} ls / quit >& /dev/null
     ret=$?
     [ ${ret} == 0 ] && echo " [OK]" || echo " [FAIL]"
     return ${ret}
@@ -286,7 +287,7 @@ start_zookeeper() {
 
 stop_zookeeper() {
     echo "Stopping zookeeper..."
-    ${zookeeper_install_dir}bin/zkServer.sh stop
+    ${zookeeper_install_dir}/bin/zkServer.sh stop
 }
 #---------------------------------------------------------
 
