@@ -124,11 +124,12 @@ start_search_services() {
 
 stop_search_services() {
     echo "Stopping search services..."
+    stop_zookeeper
 }
 
 test_search_services() {
     echo "Testing search services..."
-
+    test_zookeeper
 }
 
 #---------------------------------------------------------
