@@ -69,6 +69,7 @@
 #              ${workdir}, etc....
 
 
+DEBUG=${DEBUG:-0}
 esg_dist_url=http://198.128.245.140/dist
 
 install_prefix=${install_prefix:-"/usr/local"}
@@ -106,6 +107,7 @@ setup_search() {
     #write_search_install_log
 
     echo "done"
+    echo
     return 0
 }
 
@@ -230,15 +232,15 @@ check_zookeeper_version() {
 
 configure_zookeeper() {
     echo "configuring zookeeper... "
-    pushd ${zookeeper_install_dir}
+    pushd ${zookeeper_install_dir} >& /dev/null
     export ZK_DIR=${zookeeper_install_dir} #NOTE: Is this a special variable used by zookeeper? If not get rid of line.
 
-    sed "s:/tmp/zookeeper:${zookeeper_install_dir}:" <(curl -s -L --insecure ${esg_dist_url}/zoo.cfg) > ${zookeeper_install_dir}/conf/zoo.cfg
-    cat ${zookeeper_install_dir}/conf/zoo.cfg
+    sed "s:/tmp/zookeeper:${zookeeper_data_dir}:" <(curl -s -L --insecure ${esg_dist_url}/esg-search/zoo.cfg) > ${zookeeper_install_dir}/conf/zoo.cfg
+    (($DEBUG)) && cat ${zookeeper_install_dir}/conf/zoo.cfg
     mkdir -p ${zookeeper_data_dir}
     
     sha1sum <(echo esgf$(hostname -i)) | awk '{print $1}' > ${zookeeper_data_dir}/myid
-    echo "zookeeper id: $(cat ${zookeeper_data_dir}/myid)"
+    echo -n "zookeeper id: $(cat ${zookeeper_data_dir}/myid)"
     popd >& /dev/null
     echo " [OK]"
     return 0
