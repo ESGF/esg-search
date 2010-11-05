@@ -79,6 +79,12 @@ install_logfile=${ESG_INSTALL_LOGFILE:-"/etc/esg.install_log"}
 date_format=${date_format:-"+%Y_%m_%d_%H%M%S"}
 compress_extensions=${compress_extensions:-".tar.gz|.tar.bz2|.tgz|.bz2"}
 
+installer_uid=${installer_uid:-$(id ${HOME##*/} | sed 's/.*uid=\([0-9]*\).*/\1/')}
+[ $? != 0 ] || [ -z "$installer_uid" ] && echo "installer_uid is not set" && exit 1
+installer_gid=${installer_gid:-$(id ${HOME##*/} | sed 's/.*gid=\([0-9]*\).*/\1/')}
+[ $? != 0 ] || [ -z "$installer_gid" ] && echo "installer_gid is not set" && exit 1
+installer_home=${HOME}
+
 search_version=${search_version:-"1.0.0.0"}
 search_install_dir=${ESGF_INSTALL_DIR:-"${install_prefix}/esgf_search"}
 seach_data_dir=${ESGF_DATA_DIR:="${esg_root_dir}/search_data"}
