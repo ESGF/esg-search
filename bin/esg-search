@@ -76,6 +76,7 @@ esg_root_dir=${esg_root_dir:-"/esg"}
 workdir=${workdir:-~/workbench/esg}
 install_logfile=${ESG_INSTALL_LOGFILE:-"/etc/esg.install_log"}
 date_format=${date_format:-"+%Y_%m_%d_%H%M%S"}
+compress_extensions=${compress_extensions:-".tar.gz|.tar.bz2|.tgz|.bz2"}
 
 search_version=${search_version:-"1.0.0.0"}
 search_install_dir=${ESGF_INSTALL_DIR:-"${install_prefix}/esgf_search"}
@@ -356,4 +357,25 @@ test_search() {
     cd $WEB_APP_DIR
     java -Dlog4j.configuration=./WEB-INF/classes/log4j.xml -Djava.ext.dirs=./WEB-INF/lib esg.search.publish.impl.PublishingServiceMain file://$ESGF_TESTDATA_DIR/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS true
 
+}
+
+
+############################################
+# General - Utility Functions
+############################################
+
+#this function is identical to the one in the esg-node script it is
+#being copied here in the case where we are not running this script as
+#a sub process of esg-node.  In other words, this allows this script
+#to be stand-alone.
+checked_done() {
+    if (($1)); then
+        echo ""
+        echo "Sorry..."
+        echo "This action did not complete successfully"
+        echo "Please re-run this task until successful before continuing further"
+        echo ""
+        exit 1
+    fi
+    return 0
 }
