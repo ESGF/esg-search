@@ -208,7 +208,7 @@ setup_zookeeper() {
         [ $? != 0 ] && \
             echo " ERROR*: Could not create sym link ${zookeeper_install_dir%/*}/${zookeeper_dist_dir} -> ${zookeeper_install_dir}" && popd && checked_done 1
     fi
-    (($DEBUG)) && echo "chown -R ${installer_uid}:${installer_gid} ${java_install_dir}"
+    (($DEBUG)) && echo "chown -R ${installer_uid}:${installer_gid} ${zookeeper_install_dir}"
     chown    ${installer_uid}:${installer_gid} ${zookeeper_install_dir}
     chown -R ${installer_uid}:${installer_gid} $(readlink -f ${zookeeper_install_dir})
     
