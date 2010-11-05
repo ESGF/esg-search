@@ -6,12 +6,11 @@
 # This is a manifest, listing all the files to be posted to the
 # distribution server.
 
-[esgf-drslib]
+[esg-search]
 
+../INSTALL
 ../LICENSE
-../NEWS
-../NOTES
-../README
+../TODO
 
-./esg-drslib
-
+./esg-search
+../etc/conf/zookeeper/zoo.cfg 
