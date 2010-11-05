@@ -18,6 +18,7 @@
  ******************************************************************************/
 package esg.search.query.impl.solr;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -31,8 +32,10 @@ import esg.search.query.api.SearchInput;
 /**
  * Standard bean implementation of {@link SearchInput}.
  */
-public class SearchInputImpl implements SearchInput {
+public class SearchInputImpl implements SearchInput, Serializable {
 	
+	private static final long serialVersionUID = 1L;
+
 	/**
 	 * The free text used in the query.
 	 */

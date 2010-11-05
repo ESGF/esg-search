@@ -16,42 +16,19 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-package esg.search.query.impl.solr;
-
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import esg.search.query.api.Facet;
-import esg.search.query.api.FacetProfile;
+package esg.search.publish.thredds;
 
 /**
- * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs.
+ * Class containing THREDDS constants.
  */
-public class FacetProfileImpl implements FacetProfile, Serializable {
-	
-	private Map<String, Facet> facets = new LinkedHashMap<String, Facet>();
-	
-	private static final long serialVersionUID = 1L;
+public class ThreddsPars {
 
-	/**
-	 * Constructor builds the list of facets from a configuration map composed of (facet key, facet label) pairs.
-	 * @param facets
-	 */
-	public FacetProfileImpl(final LinkedHashMap<String, String> map) {
-		
-		for (final String key : map.keySet()) {
-			facets.put(key, new FacetImpl(key, map.get(key), ""));
-		}
-		
-	}
+	public final static String CF = "CF-1.0";
 	
-	/**
-	 * {@inheritDoc}
-	 */
-	public Map<String, Facet> getTopLevelFacets() {
-		return Collections.unmodifiableMap(facets);
-	}
-
+	public final static String ID = "ID";
+	public final static String DATASET_ID = "dataset_id";
+	public final static String DATASET_VERSION = "dataset_version";
+	
+	private ThreddsPars() {};
+	
 }

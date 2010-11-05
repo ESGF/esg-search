@@ -16,42 +16,47 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-package esg.search.query.impl.solr;
+package esg.search.publish.thredds;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.junit.Assert;
+import org.junit.Test;
+import org.springframework.core.io.ClassPathResource;
 
-import esg.search.query.api.Facet;
-import esg.search.query.api.FacetProfile;
+import esg.search.publish.thredds.ThreddsDatasetUrlBuilderCatalogUrlImpl;
+
+import thredds.catalog.InvCatalog;
+import thredds.catalog.InvCatalogFactory;
+import thredds.catalog.InvDataset;
 
 /**
- * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs.
+ * Test class for {@link ThreddsDatasetUrlBuilderCatalogUrlImpl}.
+ * @author luca.cinquini
+ *
  */
-public class FacetProfileImpl implements FacetProfile, Serializable {
+public class ThreddsDatasetUrlBuilderCatalogUrlImplTest {
 	
-	private Map<String, Facet> facets = new LinkedHashMap<String, Facet>();
+	private final static ClassPathResource XMLFILE = new ClassPathResource("esg/search/publish/thredds/catalog.xml");
 	
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Constructor builds the list of facets from a configuration map composed of (facet key, facet label) pairs.
-	 * @param facets
-	 */
-	public FacetProfileImpl(final LinkedHashMap<String, String> map) {
-		
-		for (final String key : map.keySet()) {
-			facets.put(key, new FacetImpl(key, map.get(key), ""));
-		}
-		
-	}
+	private final Log LOG = LogFactory.getLog(this.getClass());
 	
 	/**
-	 * {@inheritDoc}
+	 * Tests the construction of the URL associated with a THREDDS metadata record.
+	 * @throws Exception
 	 */
-	public Map<String, Facet> getTopLevelFacets() {
-		return Collections.unmodifiableMap(facets);
+	@Test
+	public void testBuildUrl() throws Exception {
+		
+		final InvCatalogFactory factory = new InvCatalogFactory("default", true); // validate=true
+		final InvCatalog catalog = factory.readXML( XMLFILE.getURI() );
+		final InvDataset dataset = catalog.getDatasets().get(0);
+		
+		final ThreddsDatasetUrlBuilderCatalogUrlImpl target = new ThreddsDatasetUrlBuilderCatalogUrlImpl();
+		final String url = target.buildUrl(dataset);
+		if (LOG.isDebugEnabled()) LOG.info("Dataset URL="+url);
+		Assert.assertTrue(url.matches("file:(.+)esg/search/publish/thredds/catalog.xml#pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1$"));
+		
 	}
 
 }

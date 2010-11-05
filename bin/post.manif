@@ -9,12 +9,8 @@
 [esg-search]
 
 ../INSTALL
-../TODO
 ../LICENSE
+../TODO
 
-../dist/esg-search-common.1.0.0.0.jar
-../dist/esg-search-connector.1.0.0.0.jar
-../dist/esg-search-fe.1.0.0.0.jar
-../dist/esg-search-test.1.0.0.0.jar
-../dist/esg-search.1.0.0.0.jar
-../dist/esg-search.1.0.0.0.tar.gz
+./esg-search
+../etc/conf/zookeeper/zoo.cfg 

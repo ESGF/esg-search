@@ -16,42 +16,57 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-package esg.search.query.impl.solr;
+package esg.search.publish.impl;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
-import esg.search.query.api.Facet;
-import esg.search.query.api.FacetProfile;
+import esg.search.core.Record;
+import esg.search.publish.api.RecordConsumer;
+import esg.search.publish.api.RecordProducer;
 
 /**
- * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs.
+ * Straightforward implementation of {@link RecordProducer} 
+ * that immediately notifies all subscribed consumers whenever a new search record is produced
+ * (i.e. there is no queuing or multi-threaded functionality).
  */
-public class FacetProfileImpl implements FacetProfile, Serializable {
+public class RecordProducerImpl implements RecordProducer {
 	
-	private Map<String, Facet> facets = new LinkedHashMap<String, Facet>();
-	
-	private static final long serialVersionUID = 1L;
+	private List<RecordConsumer> consumers = new ArrayList<RecordConsumer>();
 
-	/**
-	 * Constructor builds the list of facets from a configuration map composed of (facet key, facet label) pairs.
-	 * @param facets
-	 */
-	public FacetProfileImpl(final LinkedHashMap<String, String> map) {
-		
-		for (final String key : map.keySet()) {
-			facets.put(key, new FacetImpl(key, map.get(key), ""));
-		}
-		
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map<String, Facet> getTopLevelFacets() {
-		return Collections.unmodifiableMap(facets);
+	public void subscribe(final RecordConsumer consumer) {
+		consumers.add(consumer);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void unsubscribe(final RecordConsumer consumer) {
+		consumers.remove(consumer);
+	}
+	
+	/**
+	 * Method for synchronous notification of generated records to all subscribed consumers.
+	 * @param record
+	 * @throws Exception
+	 */
+	public void notify(final Record record) throws Exception {
+		for (final RecordConsumer consumer : consumers) {
+			consumer.consume(record);
+		}
+	}
+	
+	/**
+	 * Method to bulk-subscribe a list of record consumers
+	 * (and automatically un-subscribe all previously consumers).
+	 * @param consumers
+	 */
+	public void setConsumers(final List<RecordConsumer> consumers) {
+		this.consumers.clear();
+		this.consumers.addAll(consumers);
 	}
 
 }

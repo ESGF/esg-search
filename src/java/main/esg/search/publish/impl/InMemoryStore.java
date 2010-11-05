@@ -16,42 +16,36 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-package esg.search.query.impl.solr;
+package esg.search.publish.impl;
 
-import java.io.Serializable;
 import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Map;
 
-import esg.search.query.api.Facet;
-import esg.search.query.api.FacetProfile;
+import esg.search.core.Record;
+import esg.search.publish.api.RecordConsumer;
 
 /**
- * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs.
+ * Implementation of {@link RecordConsumer} that stores in-memory all the records it receives,
+ * indexing them by ID.
  */
-public class FacetProfileImpl implements FacetProfile, Serializable {
+public class InMemoryStore implements RecordConsumer {
 	
-	private Map<String, Facet> facets = new LinkedHashMap<String, Facet>();
-	
-	private static final long serialVersionUID = 1L;
+	private Map<String, Record> records = new HashMap<String,Record>();
 
 	/**
-	 * Constructor builds the list of facets from a configuration map composed of (facet key, facet label) pairs.
-	 * @param facets
+	 * Method implementation that adds the given record to the in-memory list.
 	 */
-	public FacetProfileImpl(final LinkedHashMap<String, String> map) {
-		
-		for (final String key : map.keySet()) {
-			facets.put(key, new FacetImpl(key, map.get(key), ""));
-		}
-		
+	public void consume(Record record) throws Exception {
+		records.put(record.getId(), record);
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Method to retrieve all the records consumed so far.
+	 * @return
 	 */
-	public Map<String, Facet> getTopLevelFacets() {
-		return Collections.unmodifiableMap(facets);
+	public Map<String,Record> getRecords() {
+		return Collections.unmodifiableMap(records);
 	}
 
 }

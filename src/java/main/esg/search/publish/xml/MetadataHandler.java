@@ -16,42 +16,24 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-package esg.search.query.impl.solr;
+package esg.search.publish.xml;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.List;
 
-import esg.search.query.api.Facet;
-import esg.search.query.api.FacetProfile;
+import org.jdom.Element;
+
+import esg.search.core.Record;
 
 /**
- * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs.
+ * API for harvesting XML metadata documents conforming to different schemas.
  */
-public class FacetProfileImpl implements FacetProfile, Serializable {
-	
-	private Map<String, Facet> facets = new LinkedHashMap<String, Facet>();
-	
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Constructor builds the list of facets from a configuration map composed of (facet key, facet label) pairs.
-	 * @param facets
-	 */
-	public FacetProfileImpl(final LinkedHashMap<String, String> map) {
-		
-		for (final String key : map.keySet()) {
-			facets.put(key, new FacetImpl(key, map.get(key), ""));
-		}
-		
-	}
+public interface MetadataHandler {
 	
 	/**
-	 * {@inheritDoc}
+	 * Method to harvest a single XML document into one or more search records.
+	 * @param root : the document top-level element.
+	 * @return
 	 */
-	public Map<String, Facet> getTopLevelFacets() {
-		return Collections.unmodifiableMap(facets);
-	}
+	List<Record> parse(Element root);
 
 }

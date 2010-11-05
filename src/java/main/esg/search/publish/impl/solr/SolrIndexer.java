@@ -16,42 +16,41 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-package esg.search.query.impl.solr;
+package esg.search.publish.impl.solr;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.net.URL;
 
-import esg.search.query.api.Facet;
-import esg.search.query.api.FacetProfile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import esg.search.core.Record;
 
 /**
- * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs.
+ * Implementation of {@link SolrClient} that sends (fully populated) records to a Solr server for indexing.
  */
-public class FacetProfileImpl implements FacetProfile, Serializable {
-	
-	private Map<String, Facet> facets = new LinkedHashMap<String, Facet>();
-	
-	private static final long serialVersionUID = 1L;
-
+@Component("indexer")
+public class SolrIndexer extends SolrClient {
+				
 	/**
-	 * Constructor builds the list of facets from a configuration map composed of (facet key, facet label) pairs.
-	 * @param facets
+	 * Constructor delegates to superclass.
+	 * @param url
 	 */
-	public FacetProfileImpl(final LinkedHashMap<String, String> map) {
-		
-		for (final String key : map.keySet()) {
-			facets.put(key, new FacetImpl(key, map.get(key), ""));
-		}
-		
+	@Autowired
+	public SolrIndexer(final @Value("${esg.search.solr.url}") URL url) {
+		super(url);
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map<String, Facet> getTopLevelFacets() {
-		return Collections.unmodifiableMap(facets);
+	public void consume(final Record record) throws Exception {
+		
+		final String xml = messageBuilder.buildAddMessage(record, true);
+		final URL postUrl = solrUrlBuilder.buildUpdateUrl(true); // commit=true
+		if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
+		httpClient.doPostXml(postUrl, xml);
+		
 	}
 
 }

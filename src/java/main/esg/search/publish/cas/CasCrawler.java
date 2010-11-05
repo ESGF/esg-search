@@ -16,42 +16,60 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-package esg.search.query.impl.solr;
+package esg.search.publish.cas;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.net.URI;
+import java.util.List;
 
-import esg.search.query.api.Facet;
-import esg.search.query.api.FacetProfile;
+import org.jdom.Document;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+
+import esg.search.core.Record;
+import esg.search.publish.api.MetadataRepositoryCrawler;
+import esg.search.publish.api.MetadataRepositoryType;
+import esg.search.publish.api.RecordProducer;
+import esg.search.publish.xml.MetadataHandler;
+import esg.search.utils.HttpClient;
+import esg.search.utils.XmlParser;
 
 /**
- * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs.
+ * Class to harvest metadata from a remote CAS server.
  */
-public class FacetProfileImpl implements FacetProfile, Serializable {
+@Service
+public class CasCrawler implements MetadataRepositoryCrawler {
+		
+	private final MetadataHandler metadataHandler;
 	
-	private Map<String, Facet> facets = new LinkedHashMap<String, Facet>();
-	
-	private static final long serialVersionUID = 1L;
+	@Autowired
+	public CasCrawler(final @Qualifier("metadataHandlerCasRdfImpl") MetadataHandler metadataHandler) {
+		this.metadataHandler = metadataHandler;
+	}
 
 	/**
-	 * Constructor builds the list of facets from a configuration map composed of (facet key, facet label) pairs.
-	 * @param facets
+	 * {@inheritDoc}
 	 */
-	public FacetProfileImpl(final LinkedHashMap<String, String> map) {
+	public void crawl(final URI uri, final boolean recursive, final RecordProducer callback) throws Exception {
 		
-		for (final String key : map.keySet()) {
-			facets.put(key, new FacetImpl(key, map.get(key), ""));
-		}
+		// parse XML document
+		final String xml = (new HttpClient()).doGet( uri.toURL() );
+		final XmlParser xmlParser = new XmlParser(false);
+		final Document doc = xmlParser.parseString(xml);
 		
+		// process XML
+		final List<Record> records = metadataHandler.parse(doc.getRootElement());
+		
+		// index records
+		for (final Record record : records) callback.notify(record);
+
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map<String, Facet> getTopLevelFacets() {
-		return Collections.unmodifiableMap(facets);
+	public MetadataRepositoryType supports() {
+		return MetadataRepositoryType.CAS;
 	}
 
 }

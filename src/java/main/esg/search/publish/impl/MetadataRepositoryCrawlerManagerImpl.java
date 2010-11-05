@@ -16,42 +16,46 @@
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  ******************************************************************************/
-package esg.search.query.impl.solr;
+package esg.search.publish.impl;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.LinkedHashMap;
+import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
 
-import esg.search.query.api.Facet;
-import esg.search.query.api.FacetProfile;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.util.Assert;
+
+import esg.search.publish.api.MetadataRepositoryCrawler;
+import esg.search.publish.api.MetadataRepositoryCrawlerManager;
+import esg.search.publish.api.MetadataRepositoryType;
 
 /**
- * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs.
+ * Service class that manages the harvesting of search records from different remote metadata repositories.
  */
-public class FacetProfileImpl implements FacetProfile, Serializable {
+public class MetadataRepositoryCrawlerManagerImpl extends RecordProducerImpl implements MetadataRepositoryCrawlerManager {
 	
-	private Map<String, Facet> facets = new LinkedHashMap<String, Facet>();
-	
-	private static final long serialVersionUID = 1L;
-
-	/**
-	 * Constructor builds the list of facets from a configuration map composed of (facet key, facet label) pairs.
-	 * @param facets
-	 */
-	public FacetProfileImpl(final LinkedHashMap<String, String> map) {
+	private Map<MetadataRepositoryType, MetadataRepositoryCrawler> crawlers = new HashMap<MetadataRepositoryType, MetadataRepositoryCrawler>();
 		
-		for (final String key : map.keySet()) {
-			facets.put(key, new FacetImpl(key, map.get(key), ""));
+	private static final Log LOG = LogFactory.getLog(MetadataRepositoryCrawlerManagerImpl.class);
+	
+	
+	public MetadataRepositoryCrawlerManagerImpl(final MetadataRepositoryCrawler[] _crawlers) {
+		for (final MetadataRepositoryCrawler crawler : _crawlers) {
+			crawlers.put(crawler.supports(), crawler);
 		}
-		
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
-	public Map<String, Facet> getTopLevelFacets() {
-		return Collections.unmodifiableMap(facets);
+	public void crawl(final String uri, boolean recursive, final MetadataRepositoryType metadataRepositoryType) throws Exception {
+		
+		if (LOG.isInfoEnabled()) LOG.info("uri="+uri+" recursive="+recursive+" metadataRepositoryType="+metadataRepositoryType);
+		MetadataRepositoryCrawler crawler = crawlers.get(metadataRepositoryType);
+		Assert.notNull(crawler, "Unsupported MetadataRepositoryType:"+metadataRepositoryType);
+		crawler.crawl(new URI(uri), recursive, this);
+		
 	}
 
 }
