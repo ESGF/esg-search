@@ -65,19 +65,25 @@
 
 # Description: Installation of the esg-search submodule.  This
 #              file is meant to be sourced by the esg-node
-#              script that has the definition of checked_get(), dedup(),
+#              script that has the definition of checked_done(), dedup(),
 #              ${workdir}, etc....
 
 
 DEBUG=${DEBUG:-0}
 esg_dist_url=http://198.128.245.140/dist
 
+#--------------
+#User Defined / Settable (public)
+#--------------
 install_prefix=${install_prefix:-"/usr/local"}
 esg_root_dir=${esg_root_dir:-"/esg"}
 workdir=${workdir:-~/workbench/esg}
-install_logfile=${ESG_INSTALL_LOGFILE:-"/etc/esg.install_log"}
+install_logfile=${install_logfile:-"/etc/esg.install_log"}
+#--------------
+
 date_format=${date_format:-"+%Y_%m_%d_%H%M%S"}
 compress_extensions=${compress_extensions:-".tar.gz|.tar.bz2|.tgz|.bz2"}
+force_install=${force_install:-0}
 
 installer_uid=${installer_uid:-$(id ${HOME##*/} | sed 's/.*uid=\([0-9]*\).*/\1/')}
 [ $? != 0 ] || [ -z "$installer_uid" ] && echo "installer_uid is not set" && exit 1
@@ -106,11 +112,11 @@ setup_search() {
 
     setup_zookeeper && configure_zookeeper && write_zookeeper_install_log
     [ $? != 0 ] && echo " ERROR: Could not fully install zookeeper :-( "
-
-    #setup_solr && configure_solr && write_solr_install_log
-    #[ $? != 0 ] && echo " ERROR: Could not fully install solr :-( "
-    #
-    #write_search_install_log
+    
+    setup_solr && configure_solr && write_solr_install_log
+    [ $? != 0 ] && echo " ERROR: Could not fully install solr :-( "
+    
+    write_search_install_log
 
     echo "done"
     echo
@@ -126,16 +132,20 @@ write_search_install_log() {
 start_search_services() {
     echo "Starting search services..."
     start_zookeeper
+    echo "..." && sleep 3
+    start_solr
 }
 
 stop_search_services() {
     echo "Stopping search services..."
+    stop_solr
     stop_zookeeper
 }
 
 test_search_services() {
     echo "Testing search services..."
     test_zookeeper
+    test_solr
 }
 
 #---------------------------------------------------------
@@ -241,10 +251,8 @@ check_zookeeper_version() {
 configure_zookeeper() {
     echo "configuring zookeeper... "
     pushd ${zookeeper_install_dir} >& /dev/null
-    #Luca: ZK_DIR was simply a local variable to enable installation, I have commented it out for now
-    #export ZK_DIR=${zookeeper_install_dir} #NOTE: Is this a special variable used by zookeeper? If not get rid of line.
 
-    sed "s:/tmp/zookeeper:${zookeeper_data_dir}:" <(curl -s -L --insecure ${esg_dist_url}/esg-search/zoo.cfg) > ${zookeeper_install_dir}/conf/zoo.cfg
+    sed "s:/tmp/zookeeper:${zookeeper_data_dir}:" <(curl -s -L --insecure ${esg_dist_url}/esg-search/zookeeper/zoo.cfg) > ${zookeeper_install_dir}/conf/zoo.cfg
     (($DEBUG)) && cat ${zookeeper_install_dir}/conf/zoo.cfg
     mkdir -p ${zookeeper_data_dir}
     
@@ -272,14 +280,19 @@ write_zookeeper_install_log() {
 }
 
 start_zookeeper() {
-    #start server (client port: 2181)
+
     echo -n "Starting zookeeper server on port ${zookeeper_client_port}"
+    check_zookeeper_process && return 1
 
     ${zookeeper_install_dir}/bin/zkServer.sh start
-    
-    #Don't wait 10 seconds if you don't have to...
+
+    #-----
+    #NOTE: (potential timing issue)
     #Luca: the wait is because Solr, on startup, needs to send information to Zookeeper
-    # - not sure if it is enough to wait for the client port to be accessible, we'll test
+    #  not sure if it is enough to wait for the client port to be accessible, we'll test
+    #-----
+
+    #Don't wait 10 seconds if you don't have to...
     #just check every second up till 10 seconds (or <= 10x)
     local wait_time=10
     local ret=1
@@ -298,6 +311,15 @@ start_zookeeper() {
 stop_zookeeper() {
     echo "Stopping zookeeper..."
     ${zookeeper_install_dir}/bin/zkServer.sh stop
+    local ret=$?
+    [ ${ret} == 0 ] && echo " [OK]" || echo " [FAIL]"
+    return ${ret}
+}
+
+#status
+check_zookeeper_process() {
+    local pid=`/usr/sbin/lsof -i:${zookeeper_client_port} | grep -i java | awk '{print $2}'`
+    [ -n "$pid" ] && echo "Zookeeper process running on port ${zookeeper_client_port}... " && return 0
 }
 #---------------------------------------------------------
 
@@ -306,39 +328,159 @@ stop_zookeeper() {
 #---------------------------------------------------------
 # Solr/Lucene Setup and Configuration
 #---------------------------------------------------------
-#setup_solr() {
-## installation
-#    cd $ESGF_INSTALL_DIR
-#    cp $ESGF_SOURCE_DIR/solr/esgf-solr-cloud.tar.gz .
-#    tar xvfz esgf-solr-cloud.tar.gz
-#    export SOLR_DIR=$ESGF_INSTALL_DIR/esgf-solr-cloud
-#    
-## configuration
-#    cp $ESGF_SOURCE_DIR/solr/solrconfig.xml $SOLR_DIR/solr/conf/.
-#    cp $ESGF_SOURCE_DIR/solr/schema.xml $SOLR_DIR/solr/conf/.
-#    sed "s:@@myid@@:$ZKID:" < $ESGF_SOURCE_DIR/solr/solr.xml > $SOLR_DIR/solr/solr.xml
-#    cat $SOLR_DIR/solr/solr.xml
-#    
-## start Solr server on port 8983 connecting to Zookeeper on port 2181
-#    cd esgf-solr-cloud
-#    java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:2181 -jar start.jar &
-#    
-## check server port
-#    netstat -na | grep -i 8983
-#    
-#}
+solr_version=1.0.0.0
+solr_dist_url=${esg_dist_url}/esg-search/solr/esgf-solr-cloud-${solr_version}.tar.gz
+solr_workdir=${workdir}/esgf-solr-cloud
+solr_install_dir=${install_prefix}/esgf-solr-cloud
+solr_server_port=8983
+
+setup_solr() {
+    echo -n "Checking for solr ${solr_version}... "
+    [ -x ${solr_install_dir}/start.jar ]
+    [ $? == 0 ] && (( ! force_install )) && echo " [OK]" && return 0
+
+    echo
+    echo "*******************************"
+    echo "Setting up (ESGF) Solr... ${solr_version}"
+    echo "*******************************"
+    echo
+
+    local dosetup
+    if [ -x ${_install_dir}/start.jar ]; then 
+        echo "Detected an existing esgf-solr installation..."
+        read -p "Do you want to continue with esgf-solr installation and setup? [y/N] " dosetup
+        if [ "${dosetup}" != "Y" ] && [ "${dosetup}" != "y" ]; then
+            echo "Skipping esgf-solr installation and setup - will assume esgf-solr is setup properly"
+            return 0
+        fi
+        echo
+    fi
+    
+    echo "Installing esgf-solr ${solr_version}..."
+    mkdir -p ${solr_workdir}
+    pushd ${solr_workdir} >& /dev/null
+
+    local solr_dist_file=${solr_dist_url##*/}
+    local solr_dist_dir=$(echo ${solr_dist_file} | awk 'gsub(/('$compress_extensions')/,"")')
+
+    #There is this pesky case of having a zero sized dist file... WTF!?
+    if [ -e ${solr_dist_file} ]; then
+        ls -l ${solr_dist_file}
+        local size=$(stat -c%s ${solr_dist_file})
+        (( size == 0 )) && rm -v ${solr_dist_file}
+    fi
+
+    #Check to see if we already have a solr distribution directory
+    if [ ! -e ${solr_install_dir%/*}/${solr_dist_dir} ]; then
+        echo "Don't see solr distribution dir ${solr_install_dir%/*}/${solr_dist_dir}"
+        if [ ! -e ${solr_dist_file} ]; then
+            echo "Don't see solr distribution file $(pwd)/${solr_dist_file} either"
+            echo "Downloading solr from ${solr_dist_url}"
+            #NOTE: should change this to call checked_get (but don't want to copy and paste that function here)
+            #When I do the refactoring of some of the functions, then I can source that functions file and use checked_get.
+            #For now just fetch it.
+            wget -O ${solr_dist_file} ${solr_dist_url}
+            [ $? != 0 ] && echo " ERROR: Could not download solr ${solr_dist_file}" && popd && checked_done 1
+            echo "unpacking ${solr_dist_file}... into ${solr_install_dir%/*}"
+            tar xzf ${solr_dist_file} -C ${solr_install_dir%/*}
+            [ $? != 0 ] && echo " ERROR: Could not extract solr :-( " && popd && checked_done 1
+        fi
+    fi
+
+    #If you don't see the directory but see the tar.gz distribution
+    #then expand it and go from there....
+    if [ -e ${solr_dist_file} ] && [ ! -e ${solr_install_dir%/*}/${solr_dist_dir} ]; then
+        echo "unpacking* ${solr_dist_file} into ${solr_install_dir%/*}"
+        tar xzf ${solr_dist_file} -C ${solr_install_dir%/*}
+        [ $? != 0 ] && echo " ERROR: Could not extract solr :-( " && popd && checked_done 1
+    fi
+
+    #NOTE: no need to deal with symlinking logic since untarring the file results in simply the esgf-solr-cloud directory
+    #This will make versioning an issue... but we can deal with that when it is on fire...
+
+    (($DEBUG)) && echo "chown -R ${installer_uid}:${installer_gid} ${solr_install_dir}"
+    chown    ${installer_uid}:${installer_gid} ${solr_install_dir}
+    chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_install_dir})
+    
+    popd >& /dev/null
+    echo "esgf-solr setup [OK]"
+    return 0
+}
+
+configure_solr() {
+    pushd ${solr_install_dir}/solr/conf >& /dev/null
+    [ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
+ 
+    #NOTE: These wget calls should also be changed to check_get() calls (once I factor that function out)
+    wget -O ${solr_install_dir}/solr/conf/solrconfig.xml ${solr_dist_url%/*}/solrconfig.xml
+    [ $? != 0 ] && echo "Problem configuring solr (2)" && return 2
+    chmod 755 ${solr_install_dir}/solr/conf/solrconfig.xml
+
+    #NOTE: These wget calls should also be changed to check_get() calls (once I factor that function out)
+    wget -O ${solr_install_dir}/solr/conf/schema.xml ${solr_dist_url%/*}/schema.xml
+    [ $? != 0 ] && echo "Problem configuring solr (3)" && return 3
+    chmod 755 ${solr_install_dir}/solr/conf/schema.xml
+    
+    #determine the id of this host and edit the xml file appropriately - in place
+    #NOTE: this should be tightened up to use an in-flight checked_get bit of integrity checking...
+    sed "s:@@myid@@:$(echo esgf$(hostname -i) | sha1sum | awk '{print $1}'):" <(curl -s -L --insecure ${solr_dist_url%/*}/solr.xml) > ${solr_install_dir}/solr/solr.xml
+    [ $? != 0 ] && echo "Problem configuring solr (4)" && return 4
+    (($DEBUG)) && cat ${solr_install_dir}/solr/solr.xml
+    
+    popd >& /dev/null
+    echo " [OK]"
+    return 0
+    
+}
+
+#TODO
+test_solr() {
+## publish test catalog
+#    cd $WEB_APP_DIR
+#    java -Dlog4j.configuration=./WEB-INF/classes/log4j.xml -Djava.ext.dirs=./WEB-INF/lib esg.search.publish.impl.PublishingServiceMain file://$ESGF_TESTDATA_DIR/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS true
 #
-#stop_search_services() {
-#    
-## stop Solr server
-#    pid=`/usr/sbin/lsof -i:8983 | grep -i java | awk '{print $2}'`
-#    kill -9 $pid
-#    
-## stop ZK server
-#    $ESGF_INSTALL_DIR/zookeeper/bin/zkServer.sh stop
-#    
-#}
-#
+}
+
+write_solr_install_log() {
+    local entry="$(date ${date_format}) esg-search:solr=${solr_version} ${solr_install_dir}"
+    echo ${entry} >> ${install_logfile}
+    dedup ${install_logfile}
+    return 0
+}
+
+# start Solr server on port 8983 connecting to Zookeeper on port 2181
+start_solr() {  
+    check_solr_process && return 1
+
+    pushd ${solr_install_dir} >& /dev/null
+    java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar &
+    popd >& /dev/null
+    
+    echo "..." && sleep 3
+    check_solr_process
+    ret=$?
+    [ ${ret} == 0 ] && echo " [OK]" || echo " [FAIL]"
+    return ${ret}
+    
+}
+
+stop_solr() {
+    echo "Stopping Solr on port ${solr_server_port}"
+    local pid=`/usr/sbin/lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
+    kill -9 $pid
+    check_solr_process
+    [ $? != 0 ] && echo " [OK]" || echo " [FAIL]"
+}
+
+#status
+check_solr_process() {
+    local pid=`/usr/sbin/lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
+    [ -n "$pid" ] && echo "Solr process running on port ${solr_server_port}... " && return 0
+}
+
+
+
+#TODO
 #setup_search_tomcat() {
 ## installation
 #    cd $ESGF_INSTALL_DIR
@@ -364,13 +506,7 @@ stop_zookeeper() {
 #    
 #    
 #}
-#
-#test_search() {
-## publish test catalog
-#    cd $WEB_APP_DIR
-#    java -Dlog4j.configuration=./WEB-INF/classes/log4j.xml -Djava.ext.dirs=./WEB-INF/lib esg.search.publish.impl.PublishingServiceMain file://$ESGF_TESTDATA_DIR/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS true
-#
-#}
+
 
 
 ############################################
