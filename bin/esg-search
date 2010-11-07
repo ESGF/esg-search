@@ -148,6 +148,22 @@ test_search_services() {
 }
 
 #---------------------------------------------------------
+# Solr Search Service Setup and Configuration
+#---------------------------------------------------------
+
+#TODO
+#setup_search_service() {
+## esgf-web-fe
+#    export WEB_APP_DIR=$ESGF_INSTALL_DIR/apache-tomcat/webapps/esg-web
+#    mkdir $WEB_APP_DIR
+#    cp $ESGF_SOURCE_DIR/esg-web-fe/esg-search-web.war $WEB_APP_DIR/esg-web.war
+#    cd $WEB_APP_DIR
+#    jar xvf $WEB_APP_DIR/esg-web.war
+#
+#}
+
+
+#---------------------------------------------------------
 # Zookeeper Setup and Configuration
 #---------------------------------------------------------
 zookeeper_version="3.3.1"
@@ -506,34 +522,6 @@ check_solr_process() {
     [ -n "$pid" ] && echo "Solr process running on port ${solr_server_port}... " && return 0
 }
 
-
-
-#TODO
-#setup_search_tomcat() {
-## installation
-#    cd $ESGF_INSTALL_DIR
-#    cp $ESGF_SOURCE_DIR/tomcat/apache-tomcat-6.0.26.tar .
-#    tar xvf apache-tomcat-6.0.26.tar
-#    ln -s ./apache-tomcat-6.0.26 ./apache-tomcat
-#    
-## esgf-web-fe
-#    export WEB_APP_DIR=$ESGF_INSTALL_DIR/apache-tomcat/webapps/esg-web
-#    mkdir $WEB_APP_DIR
-#    cp $ESGF_SOURCE_DIR/esg-web-fe/esg-search-web.war $WEB_APP_DIR/esg-web.war
-#    cd $WEB_APP_DIR
-#    jar xvf $WEB_APP_DIR/esg-web.war
-#    
-## start
-#    export CATALINA_HOME=$ESGF_INSTALL_DIR/apache-tomcat
-#    export CATALINA_BASE=$ESGF_INSTALL_DIR/apache-tomcat
-#    $CATALINA_BASE/bin/catalina.sh start
-#    
-## check server port
-#    sleep 10
-#    netstat -na | grep -i 8080
-#    
-#    
-#}
 
 
 
