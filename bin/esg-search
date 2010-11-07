@@ -111,10 +111,10 @@ setup_search() {
     local upgrade=${1:-0}
 
     setup_zookeeper && configure_zookeeper && write_zookeeper_install_log
-    [ $? != 0 ] && echo " ERROR: Could not fully install zookeeper :-( "
+    [ $? != 0 ] && echo " ERROR: Could not fully install zookeeper :-( " && checked_done 1
     
     setup_solr && configure_solr && write_solr_install_log
-    [ $? != 0 ] && echo " ERROR: Could not fully install solr :-( "
+    [ $? != 0 ] && echo " ERROR: Could not fully install solr :-( " && checked_done 1
     
     write_search_install_log
 
