@@ -132,7 +132,6 @@ write_search_install_log() {
 start_search_services() {
     echo "Starting search services..."
     start_zookeeper
-    echo "..." && sleep 3
     start_solr
 }
 
@@ -238,7 +237,7 @@ setup_zookeeper() {
     return 0
 }
 
-#Helper Method to figure out the version of Zookeeper running
+#Helper Method to figure out the version of Zookeeper installation
 check_zookeeper_version() {
     #NOTE: This would have been much sexier with sed and probably in one line... 
     #but my sed is a bit weak at the moment. :-(
@@ -281,8 +280,8 @@ write_zookeeper_install_log() {
 
 start_zookeeper() {
 
-    echo -n "Starting zookeeper server on port ${zookeeper_client_port}"
     check_zookeeper_process && return 1
+    echo "Starting zookeeper server on port ${zookeeper_client_port}"
 
     ${zookeeper_install_dir}/bin/zkServer.sh start
 
@@ -336,7 +335,7 @@ solr_server_port=8983
 
 setup_solr() {
     echo -n "Checking for solr ${solr_version}... "
-    [ -x ${solr_install_dir}/start.jar ]
+    [ -x ${solr_install_dir}/start.jar ] && check_solr_version
     [ $? == 0 ] && (( ! force_install )) && echo " [OK]" && return 0
 
     echo
@@ -363,6 +362,13 @@ setup_solr() {
     local solr_dist_file=${solr_dist_url##*/}
     local solr_dist_dir=$(echo ${solr_dist_file} | awk 'gsub(/('$compress_extensions')/,"")')
 
+    #NOTE: In this case the distribution tar file
+    #(esgf-solr-cloud-1.0.0.0.tar.gz) when stripped results in
+    #esgf-solr-cloud and NOT esgf-solr-cloud-1.0.0.0 as expected we
+    #have to additionally strip off the version number.
+    local solr_dist_version=${solr_dist_dir##*-}
+    solr_dist_dir=${solr_dist_dir%-*}
+
     #There is this pesky case of having a zero sized dist file... WTF!?
     if [ -e ${solr_dist_file} ]; then
         ls -l ${solr_dist_file}
@@ -372,7 +378,7 @@ setup_solr() {
 
     #Check to see if we already have a solr distribution directory
     if [ ! -e ${solr_install_dir%/*}/${solr_dist_dir} ]; then
-        echo "Don't see solr distribution dir ${solr_install_dir%/*}/${solr_dist_dir}"
+        echo "Don't see solr installation dir ${solr_install_dir%/*}/${solr_dist_dir}"
         if [ ! -e ${solr_dist_file} ]; then
             echo "Don't see solr distribution file $(pwd)/${solr_dist_file} either"
             echo "Downloading solr from ${solr_dist_url}"
@@ -395,8 +401,12 @@ setup_solr() {
         [ $? != 0 ] && echo " ERROR: Could not extract solr :-( " && popd && checked_done 1
     fi
 
-    #NOTE: no need to deal with symlinking logic since untarring the file results in simply the esgf-solr-cloud directory
-    #This will make versioning an issue... but we can deal with that when it is on fire...
+    echo "${solr_dist_version}" > ${solr_install_dir}/VERSION
+
+    #NOTE: no need to deal with sym-linking logic since untarring the
+    #file esgf-solr-cloud-1.0.0.0.tar.gz results in simply the
+    #esgf-solr-cloud directory This will make versioning an
+    #issue... but we can deal with that when it is on fire... (later)
 
     (($DEBUG)) && echo "chown -R ${installer_uid}:${installer_gid} ${solr_install_dir}"
     chown    ${installer_uid}:${installer_gid} ${solr_install_dir}
@@ -407,7 +417,13 @@ setup_solr() {
     return 0
 }
 
+#Helper Method to figure out the version of esgf-solr installation
+check_solr_version() {
+    [ "$(cat ${solr_install_dir}/VERSION)" = "${solr_version}" ]
+}
+
 configure_solr() {
+    echo "configuring solr... "
     pushd ${solr_install_dir}/solr/conf >& /dev/null
     [ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
  
@@ -433,13 +449,16 @@ configure_solr() {
     
 }
 
-#TODO
 test_solr() {
-## publish test catalog
-#    cd $WEB_APP_DIR
-#    java -Dlog4j.configuration=./WEB-INF/classes/log4j.xml -Djava.ext.dirs=./WEB-INF/lib esg.search.publish.impl.PublishingServiceMain file://$ESGF_TESTDATA_DIR/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS true
-#
+    echo "empty solr test"
 }
+
+#TODO
+#test_solr() {
+	## publish test catalog
+	#    cd $WEB_APP_DIR
+	#    java -Dlog4j.configuration=./WEB-INF/classes/log4j.xml -Djava.ext.dirs=./WEB-INF/lib esg.search.publish.impl.PublishingServiceMain file://$ESGF_TESTDATA_DIR/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS true
+#}
 
 write_solr_install_log() {
     local entry="$(date ${date_format}) esg-search:solr=${solr_version} ${solr_install_dir}"
@@ -451,17 +470,26 @@ write_solr_install_log() {
 # start Solr server on port 8983 connecting to Zookeeper on port 2181
 start_solr() {  
     check_solr_process && return 1
+    echo "Starting solr server on port ${zookeeper_client_port}"
 
     pushd ${solr_install_dir} >& /dev/null
-    java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar &
+    java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
     popd >& /dev/null
     
-    echo "..." && sleep 3
-    check_solr_process
-    ret=$?
-    [ ${ret} == 0 ] && echo " [OK]" || echo " [FAIL]"
-    return ${ret}
-    
+    #Don't wait 10 seconds if you don't have to...
+    #just check every second up till 10 seconds (or <= 10x)
+    local wait_time=10
+    local ret=1
+    while [[ $wait_time > 0 ]]; do
+        check_solr_process
+        ret=$?
+        [ $ret == 0 ] && break
+        sleep 1
+        ((wait_time--))
+        echo -n "."
+    done
+    [ $ret == 0 ] && echo " [OK]" || echo " [FAIL]"
+    return $ret
 }
 
 stop_solr() {
