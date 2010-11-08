@@ -264,13 +264,46 @@ check_zookeeper_version() {
 }
 
 configure_zookeeper() {
-    echo "configuring zookeeper... "
+    echo "configuring zookeeper... $@"
     pushd ${zookeeper_install_dir} >& /dev/null
+    [ $? != 0 ] && echo " ERROR: Unable to peform configuration: no such dir ${zookeeper_install_dir}" && checked_done 1
 
-    sed "s:/tmp/zookeeper:${zookeeper_data_dir}:" <(curl -s -L --insecure ${esg_dist_url}/esg-search/zookeeper/zoo.cfg) > ${zookeeper_install_dir}/conf/zoo.cfg
-    (($DEBUG)) && cat ${zookeeper_install_dir}/conf/zoo.cfg
-    mkdir -p ${zookeeper_data_dir}
+    #old line
+    #sed "s:/tmp/zookeeper:${zookeeper_data_dir}:" <(curl -s -L --insecure ${esg_dist_url}/esg-search/zookeeper/zoo.cfg) > ${zookeeper_install_dir}/conf/zoo.cfg
+
+    #-------------
+    #new hotness....
+    local config_file="${zookeeper_install_dir}/conf/zoo.cfg"
+    local config_info=""
+    local key="${1:-dataDir}"
+    local value="${2:-${zookeeper_data_dir}}"
+
+    #Look for the local config file first.  If it is there and the key is present then do a local replacement of the value with ${zookeeper_data_dir}
+    #If the file is not there OR this particular key is not present, pull the distribution config file down and to the replacement based on that content.
+
+    if [ -f "${config_file}" ] && (grep "${key}" "${config_file}" >& /dev/null) && (( ! $force_install )); then
+        config_info=$(cat "${config_file}")
+    else 
+        echo "fetching base config file ${config_file##*/} from distribution server..."
+        config_info=$(curl -s -L --insecure ${esg_dist_url}/esg-search/zookeeper/${config_file##*/})
+        (($force_install)) && cp ${config_file} ${config_file}.last
+    fi
     
+    (($DEBUG)) && echo "(pre) Configuration Infos:" && echo "${config_info}"
+
+    #Now, do the value replacement based on matching against the KEY not the VALUE! (more flexible and robust)
+    sed 's#\('${key}'=\)\(.*\)#\1'${value}'#g'  <(echo "${config_info}") >> ${config_file}
+
+    #dedup the configuration file
+    local tmp=$(tac ${config_file} | awk 'BEGIN {FS="="} !($1 in a) {a[$1];print $0}' | sort -k1,1)
+    echo "$tmp" > ${config_file}
+
+    
+    (($DEBUG)) && echo "(post) Configuration Info:" && cat ${config_file}
+    #-------------
+
+    #Set this node's zookeeper ID
+    mkdir -p ${zookeeper_data_dir}
     sha1sum <(echo esgf$(hostname -i)) | awk '{print $1}' > ${zookeeper_data_dir}/myid
     echo -n "zookeeper id: $(cat ${zookeeper_data_dir}/myid)"
     popd >& /dev/null
