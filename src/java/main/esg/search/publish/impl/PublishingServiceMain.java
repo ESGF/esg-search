@@ -37,24 +37,34 @@ public class PublishingServiceMain {
 	
     private static String[] configLocations = new String[] { "classpath:esg/search/config/application-context.xml" };
     
+    /**
+     * Main method loads the proper web service to invoke from the Spring context.
+     * 
+     * @param args
+     * @throws Exception
+     */
 	public static void main(String[] args) throws Exception {
 		
 	    final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(configLocations);
 	    final PublishingService publishingService = (PublishingService)context.getBean("publishingService");
 	    
+	    final PublishingServiceMain self = new PublishingServiceMain();
+	    self.run(publishingService, args);
+	    
+	}
+	    
+	    
+	/**
+	 * Method to execute the web service invocation.
+	 * 
+	 * @param publishingService
+	 * @param args
+	 * @throws Exception
+	 */
+    protected void run(final PublishingService publishingService, final String[] args) throws Exception {
+    	
 	    if (args.length!=1 && args.length!=3) {
-	    	System.out.println("Usage #1: to unpublish a single record:");
-	    	System.out.println("          java esg.search.publish.impl.PublishingServiceMain <id>");
-	    	System.out.println("Usage #2: to publish or unpublish a remote metadata repository: ");
-	    	System.out.println("          java esg.search.publish.impl.PublishingServiceMain <Metadata Repository URL> <Metadata repository Type> true|false");
-	    	System.out.println("          where true:publish, false:unpublish");
-	    	System.out.println("Example: java esg.search.publish.impl.PublishingServiceMain nasa.jpl.tes.monthly");
-	    	System.out.println("Example: java esg.search.publish.impl.PublishingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS true|false");
-	    	System.out.println("Example: java esg.search.publish.impl.PublishingServiceMain http://pcmdi3.llnl.gov/thredds/esgcet/catalog.xml THREDDS true|false");
-	    	System.out.println("Example: java esg.search.publish.impl.PublishingServiceMain http://esg-datanode.jpl.nasa.gov/thredds/esgcet/catalog.xml THREDDS true|false");
-	    	System.out.println("Example: java esg.search.publish.impl.PublishingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml OAI true|false");
-	    	System.out.println("Example: java esg.search.publish.impl.PublishingServiceMain file:///Users/cinquini/Documents/workspace/esg-search/resources/cas_rdf.xml CAS true|false");
-	    	System.exit(-1);
+	    	exit();
 	    }
 
 	    // unpublish single record
@@ -75,6 +85,26 @@ public class PublishingServiceMain {
 		    }
 	    }
 		
+	}
+	
+	/**
+	 * Method to indicate usage and exit the program.
+	 */
+	protected void exit() {
+		
+    	System.out.println("Usage #1: to unpublish a single record:");
+    	System.out.println("          java esg.search.publish.impl."+this.getClass().getName()+" <id>");
+    	System.out.println("Usage #2: to publish or unpublish a remote metadata repository: ");
+    	System.out.println("          java esg.search.publish.impl."+this.getClass().getName()+" <Metadata Repository URL> <Metadata repository Type> true|false");
+    	System.out.println("          where true:publish, false:unpublish");
+    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" nasa.jpl.tes.monthly");
+    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS true|false");
+    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" http://pcmdi3.llnl.gov/thredds/esgcet/catalog.xml THREDDS true|false");
+    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" http://esg-datanode.jpl.nasa.gov/thredds/esgcet/catalog.xml THREDDS true|false");
+    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml OAI true|false");
+    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/cas_rdf.xml CAS true|false");
+    	System.exit(-1);
+
 	}
 	
 }

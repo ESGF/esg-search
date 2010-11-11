@@ -33,10 +33,30 @@ public class LegacyPublishingServiceMain {
 	
     private static String[] configLocations = new String[] { "classpath:esg/search/config/application-context.xml" };
     
+    /**
+     * Main method loads the proper web service to invoke from the Spring context.
+     * 
+     * @param args
+     * @throws Exception
+     */
 	public static void main(String[] args) throws Exception {
 		
 	    final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(configLocations);
 	    final LegacyPublishingService publishingService = (LegacyPublishingService)context.getBean("legacyPublishingService");
+	    
+	    final LegacyPublishingServiceMain self = new LegacyPublishingServiceMain();
+	    self.run(publishingService, args);
+	    
+	}
+	
+	/**
+	 * Method to execute the web service invocation.
+	 * 
+	 * @param publishingService
+	 * @param args
+	 * @throws Exception
+	 */
+	protected void run(final LegacyPublishingService publishingService, final String[] args) throws Exception {
 	    
 	    if (args.length!=2) {
 	    	exit();
@@ -62,15 +82,18 @@ public class LegacyPublishingServiceMain {
 		
 	}
 	
-	private static void exit() {
+	/**
+	 * Method to indicate usage and exit the program.
+	 */
+	protected void exit() {
 		
     	System.out.println("Usage #1: to publish a THREDDS catalog: ");
-    	System.out.println("          java esg.search.publish.impl.LegacyPublishingServiceMain publish <THREDDS URL>");
-    	System.out.println("          java esg.search.publish.impl.LegacyPublishingServiceMain publish file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml");
+    	System.out.println("          java esg.search.publish.impl."+this.getClass().getName()+" publish <THREDDS URL>");
+    	System.out.println("          java esg.search.publish.impl."+this.getClass().getName()+" publish file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml");
 
     	System.out.println("Usage #2: to unpublish a single dataset:");
-    	System.out.println("          java esg.search.publish.impl.LegacyPublishingServiceMain unpublish <id>");
-    	System.out.println("          java esg.search.publish.impl.LegacyPublishingServiceMain unpublish nasa.jpl.tes.monthly");
+    	System.out.println("          java esg.search.publish.impl."+this.getClass().getName()+" unpublish <id>");
+    	System.out.println("          java esg.search.publish.impl."+this.getClass().getName()+" unpublish nasa.jpl.tes.monthly");
 
 	    System.exit(-1);
 
