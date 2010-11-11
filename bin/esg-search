@@ -216,6 +216,9 @@ setup_zookeeper() {
         if [ ! -e ${zookeeper_dist_file} ]; then
             echo "Don't see zookeeper distribution file $(pwd)/${zookeeper_dist_file} either"
             echo "Downloading zookeeper from ${zookeeper_dist_url}"
+            #NOTE: this should be a checked_get call!
+            #When I do the refactoring of some of the functions, then I can source that functions file and use checked_get.
+            #For now just fetch it.
             wget -O ${zookeeper_dist_file} ${zookeeper_dist_url}
             [ $? != 0 ] && echo " ERROR: Could not download zookeeper ${zookeeper_dist_file}" && popd && checked_done 1
             echo "unpacking ${zookeeper_dist_file}... into ${zookeeper_install_dir%/*}"
@@ -304,7 +307,9 @@ configure_zookeeper() {
 
     #Set this node's zookeeper ID
     mkdir -p ${zookeeper_data_dir}
-    sha1sum <(echo esgf$(hostname -i)) | awk '{print $1}' > ${zookeeper_data_dir}/myid
+    get_node_id > ${zookeeper_data_dir}/myid
+    chown    ${installer_uid}:${installer_gid} ${zookeeper_data_dir}
+    chown -R ${installer_uid}:${installer_gid} $(readlink -f ${zookeeper_data_dir})
     echo -n "zookeeper id: $(cat ${zookeeper_data_dir}/myid)"
     popd >& /dev/null
     echo " [OK]"
@@ -367,7 +372,7 @@ stop_zookeeper() {
 #status
 check_zookeeper_process() {
     local pid=`/usr/sbin/lsof -i:${zookeeper_client_port} | grep -i java | awk '{print $2}'`
-    [ -n "$pid" ] && echo "Zookeeper process running on port ${zookeeper_client_port}... " && return 0
+    [ -n "$pid" ] && echo " Zookeeper process running on port [${zookeeper_client_port}]... " && return 0
 }
 #---------------------------------------------------------
 
@@ -380,6 +385,7 @@ solr_version=1.0.0.0
 solr_dist_url=${esg_dist_url}/esg-search/solr/esgf-solr-cloud-${solr_version}.tar.gz
 solr_workdir=${workdir}/esgf-solr-cloud
 solr_install_dir=${install_prefix}/esgf-solr-cloud
+solr_data_dir=${esg_root_dir}/data.index
 solr_server_port=8983
 
 setup_solr() {
@@ -477,18 +483,23 @@ configure_solr() {
     [ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
  
     #NOTE: These wget calls should also be changed to check_get() calls (once I factor that function out)
-    wget -O ${solr_install_dir}/solr/conf/solrconfig.xml ${solr_dist_url%/*}/solrconfig.xml
+    echo "fetching ${solr_dist_url%/*}/solrconfig.xml"
+    sed "s:@@esgf-solr-data-dir@@:${solr_data_dir}:" <(curl -s -L --insecure ${solr_dist_url%/*}/solrconfig.xml) > ${solr_install_dir}/solr/conf/solrconfig.xml
     [ $? != 0 ] && echo "Problem configuring solr (2)" && return 2
     chmod 755 ${solr_install_dir}/solr/conf/solrconfig.xml
+    mkdir -p ${solr_data_dir}
+    chown    ${installer_uid}:${installer_gid} ${solr_data_dir}
+    chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_data_dir})
 
     #NOTE: These wget calls should also be changed to check_get() calls (once I factor that function out)
-    wget -O ${solr_install_dir}/solr/conf/schema.xml ${solr_dist_url%/*}/schema.xml
+    echo "fetching ${solr_dist_url%/*}/schema.xml"
+    curl -s -L --insecure ${solr_dist_url%/*}/schema.xml > ${solr_install_dir}/solr/conf/schema.xml
     [ $? != 0 ] && echo "Problem configuring solr (3)" && return 3
     chmod 755 ${solr_install_dir}/solr/conf/schema.xml
     
     #determine the id of this host and edit the xml file appropriately - in place
     #NOTE: this should be tightened up to use an in-flight checked_get bit of integrity checking...
-    sed "s:@@myid@@:$(echo esgf$(hostname -i) | sha1sum | awk '{print $1}'):" <(curl -s -L --insecure ${solr_dist_url%/*}/solr.xml) > ${solr_install_dir}/solr/solr.xml
+    sed "s:@@myid@@:$(get_node_id):" <(curl -s -L --insecure ${solr_dist_url%/*}/solr.xml) > ${solr_install_dir}/solr/solr.xml
     [ $? != 0 ] && echo "Problem configuring solr (4)" && return 4
     (($DEBUG)) && cat ${solr_install_dir}/solr/solr.xml
     
@@ -552,7 +563,7 @@ stop_solr() {
 #status
 check_solr_process() {
     local pid=`/usr/sbin/lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
-    [ -n "$pid" ] && echo "Solr process running on port ${solr_server_port}... " && return 0
+    [ -n "$pid" ] && echo " Solr process running on port [${solr_server_port}]... " && return 0
 }
 
 
@@ -561,6 +572,17 @@ check_solr_process() {
 ############################################
 # General - Utility Functions
 ############################################
+
+#Get (or generate) the id suitable for use in the context of zookeeper
+#and thus the sharded solr install.  If this variable is not set then
+#an ID is generated, unique to this host.  
+#NOTE: A lot of things rely on this ID so at the moment it is okay to
+#provide a simple way to be able to determine an id externally... but
+#this is only something for the testing phase for the most part.
+get_node_id() {
+    esgf_node_id=${esgf_node_id:-$(sha1sum <(echo esgf$(hostname -i)) | awk '{print $1}')}
+    echo ${esgf_node_id}
+}
 
 #These functions are identical to the ones in the esg-node script they are
 #being copied here in the case where we are not running this script as
