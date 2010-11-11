@@ -313,7 +313,7 @@ Builds the project via ant (obviously).
     <jar destfile="${dist_dir}/${module}.${version_num}.jar">
       <fileset dir="${build_dir}"
 	       includes="esg/**,**/*.properties"
-	       excludes="**/test/**"/>
+	       excludes="**/test/**, **/log4j.properties"/>
       <manifest>
 	<attribute name="Organization" value="${organization}"/>
 	<attribute name="Author"       value="${author}"/>
