@@ -117,4 +117,33 @@ o To use the search service and related beans, include the instruction to scan t
 Finally, make sure that the esg-search.X.X.X.X.jar is available to the application.
 For a web application, this means copying the jar file to the WEB-INF/lib directory of the servlet container.
 
+DEPLOYING THE SEARCH MODULE WEB SERVICES
 
+The Ant target "make_war" allows to build the esg-search-XXXX.war artifact, 
+which is a web application that exposes the ESGF search publishing services as (hessian) web services
+that can be invoked by remoting clients.
+
+The application deployment descriptor web.xml loads the Spring application context from the file esg/search/config/web-application-context.xml,
+which in turns combines the configuration from two files: application-context.xml, which contains the core search services, and ws-context.xml,
+which contains the search web services.
+
+Example web services clients can be found in the package esg.search.ws.hessian.client.
+
+To run the web services application within Eclipse:
+o execute the Ant target "make_web_dir", which builds the web application directory
+o refresh the project
+o add the project to an embedded instance of Tomcat
+
+To execute a secure Hessian call with client authentication:
+
+o Server side:
+	- configure Tomcat secure port to use SSL cert and request client ceertificate:
+	   <Connector SSLEnabled="true" clientAuth="true" keystoreFile="/Users/cinquini/myApplications/apache-tomcat/localhost-server-cert.ks" maxThreads="150" port="8443" protocol="HTTP/1.1" scheme="https" secure="true" sslProtocol="TLS"/>
+	- start Tomcat with trustore that contains client CA:
+	  -Djavax.net.ssl.trustStore=/Users/cinquini/myApplications/apache-tomcat/esg-truststore.ts  -Djavax.net.ssl.trustStorePassword=changeit
+
+o Client side:
+	- use a certificate issued by some CA: 
+	  CertUtils.setKeystore("esg/search/ws/hessian/client/client-cert.ks");
+	- trust the server certificate:
+	  CertUtils.setTruststore("esg/search/ws/hessian/client/localhost-client-trustore.ks");

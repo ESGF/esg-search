@@ -61,20 +61,21 @@ Note: Check Maven for propery dependency parameter values @
             
   <info organisation="esgf" module="esg-search"/>
   <dependencies>
-  
+      
     <dependency org="org.apache.solr" name="solr-core" rev="1.4.0"/>
     <dependency org="org.apache.solr" name="solr-solrj" rev="1.4.0"/>
-  
+      
     <dependency org="org.springframework" name="spring-core" rev="3.0.1.RELEASE" transitive="false" />
-    <!--
     <dependency org="org.springframework" name="spring-web" rev="3.0.1.RELEASE" transitive="false" />
     <dependency org="org.springframework" name="spring-webmvc" rev="3.0.1.RELEASE" transitive="false" />
-    -->
     <dependency org="org.springframework" name="spring-beans" rev="3.0.1.RELEASE" transitive="false" />
     <dependency org="org.springframework" name="spring-context" rev="3.0.1.RELEASE" transitive="false" />
     <dependency org="org.springframework" name="spring-context-support" rev="3.0.1.RELEASE" transitive="false" />
+    <dependency org="org.springframework" name="spring-tx" rev="3.0.1.RELEASE" transitive="false" />
     <dependency org="org.springframework" name="spring-asm" rev="3.0.1.RELEASE" transitive="false" />
+    <dependency org="org.springframework" name="spring-aop" rev="3.0.1.RELEASE" transitive="false" />
     <dependency org="org.springframework" name="spring-expression" rev="3.0.1.RELEASE" transitive="false" />
+    
     
     <dependency org="org.jdom" name="jdom" rev="1.1"/>
     
@@ -90,8 +91,10 @@ Note: Check Maven for propery dependency parameter values @
     </dependency>  
     <dependency org="junit" name="junit" rev="4.8.1"/>
     <dependency org="com.sun.xml.bind" name="jaxb-xjc" rev="2.2"/>
-<!--<dependency org="com.caucho" name="hessian" rev="3.1.5"/> -->
+
     <dependency org="com.caucho" name="hessian" rev="3.0.20" />    
+    <!-- <dependency org="com.caucho" name="com.springsource.com.caucho" rev="3.2.1" /> -->
+    <dependency org="aopalliance" name="aopalliance" rev="1.0"/>
 
   </dependencies>
    

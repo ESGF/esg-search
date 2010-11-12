@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Spring context configuration for search web services -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+                           
+   	<!-- URLs configuration -->
+	<bean id="urlMappings" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+	    <property name="order" value="1" />
+		<property name="mappings">
+			<props>
+				<!-- Web Services -->
+				<prop key="/hessian/publishingWebService">publishingWebService</prop>
+				<prop key="/hessian/legacyPublishingWebService">legacyPublishingWebService</prop>
+				<!-- legacy URL -->
+				<prop key="/secure/client-cert/hessian/publishingService">legacyPublishingWebService</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Publishing Web Service -->
+    <bean name="publishingWebService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service">
+            <ref bean="publishingService"/>
+        </property>
+        <property name="serviceInterface">
+            <value>esg.search.publish.api.PublishingService</value>
+        </property>
+    </bean> 
+    
+    <!-- Legacy Publishing Web Service -->
+    <bean name="legacyPublishingWebService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service">
+            <ref bean="legacyPublishingService"/>
+        </property>
+        <property name="serviceInterface">
+            <value>esg.search.publish.api.LegacyPublishingService</value>
+        </property>
+    </bean> 
+
+</beans>
