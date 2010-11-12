@@ -5,6 +5,7 @@
         <property name="serviceUrl">
             <!-- <value>http://localhost:8080/esg-search/ws/hessian/publishingWebService</value> -->
             <value>https://localhost:8443/esg-search/ws/hessian/publishingWebService</value>
+            <!-- <value>https://jpl-esg.jpl.nasa.gov:2443/esg-search/ws/hessian/publishingWebService</value> -->
         </property>
         <property name="serviceInterface">
             <value>esg.search.publish.api.PublishingService</value>
@@ -14,6 +15,7 @@
     <bean id="legacyPublishingWebServiceProxy" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
         <property name="serviceUrl">
             <value>https://localhost:8443/esg-search/remote/secure/client-cert/hessian/publishingService</value>
+            <!-- <value>https://jpl-esg.jpl.nasa.gov:2443/esg-search/remote/secure/client-cert/hessian/publishingService</value> -->
         </property>
         <property name="serviceInterface">
             <value>esg.search.publish.api.LegacyPublishingService</value>

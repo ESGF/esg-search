@@ -24,7 +24,8 @@ public class PublishingWebServiceClient extends PublishingServiceMain {
  	    // setup client certificate and trustore for mutual authentication
         CertUtils.setKeystore("esg/search/ws/hessian/client/client-cert.ks");
 	    CertUtils.setTruststore("esg/search/ws/hessian/client/localhost-client-trustore.ks");
-	    //CertUtils.setTruststore("esg/security/resources/esg-truststore-openid.ts");
+	    //CertUtils.setTruststore("esg/search/ws/hessian/client/esg-truststore-openid.ts");
+	    //CertUtils.setTruststore("esg/search/ws/hessian/client/jpl-esg-trustore.ts");
 
 	    final PublishingWebServiceClient self = new PublishingWebServiceClient();
 	    self.run(publishingService, args);
