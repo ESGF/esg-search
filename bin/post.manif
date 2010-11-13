@@ -1,0 +1,33 @@
+#*****************************************************************#
+# Copyright (c) 2009  Larence Livermore National Security (LLNS)  #
+# All rights reserved.						  #
+#*****************************************************************#
+
+# This is a manifest, listing all the files to be posted to the
+# distribution server.
+
+[esg-search]
+../INSTALL
+../LICENSE
+../TODO
+./esg-search
+
+#These really need to be posted into our IVY repo
+#But for now they need to be posted somewhere so
+#we can use this mechanism. TEMPORARY FIX
+
+../dist/esg-search-common.1.0.0.0.jar
+../dist/esg-search-connector.1.0.0.0.jar
+../dist/esg-search-fe.1.0.0.0.jar
+../dist/esg-search-test.1.0.0.0.jar
+../dist/esg-search.1.0.0.0.jar
+../dist/esg-search.1.0.0.0.tar.gz
+
+
+[esg-search/zookeeper]
+../etc/conf/zookeeper/zoo.cfg
+
+[esg-search/solr]
+../etc/conf/solr/schema.xml
+../etc/conf/solr/solr.xml
+../etc/conf/solr/solrconfig.xml

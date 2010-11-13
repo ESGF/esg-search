@@ -1,0 +1,608 @@
+#!/bin/bash
+
+#####
+# ESG SEARCH
+# This script is intended to be an adjunct to the esg-node script
+#             (author: gavin@llnl.gov)
+#****************************************************************************
+#*                                                                          *
+#*  Organization: Lawrence Livermore National Lab (LLNL)                    *
+#*   Directorate: Computation                                               *
+#*    Department: Computing Applications and Research                       *
+#*      Division: S&T Global Security                                       *
+#*        Matrix: Atmospheric, Earth and Energy Division                    *
+#*       Program: PCMDI                                                     *
+#*       Project: Earth Systems Grid (ESG) Data Node Software Stack         *
+#*  First Author: Gavin M. Bell (gavin@llnl.gov)                            *
+#*                                                                          *
+#****************************************************************************
+#*                                                                          *
+#*   Copyright (c) 2009, Lawrence Livermore National Security, LLC.         *
+#*   Produced at the Lawrence Livermore National Laboratory                 *
+#*   Written by: Gavin M. Bell (gavin@llnl.gov)                             *
+#*   LLNL-CODE-420962                                                       *
+#*                                                                          *
+#*   All rights reserved. This file is part of the:                         *
+#*   Earth System Grid (ESG) Data Node Software Stack, Version 1.0          *
+#*                                                                          *
+#*   For details, see http://esg-repo.llnl.gov/esg-node/                    *
+#*   Please also read this link                                             *
+#*    http://esg-repo.llnl.gov/LICENSE                                      *
+#*                                                                          *
+#*   * Redistribution and use in source and binary forms, with or           *
+#*   without modification, are permitted provided that the following        *
+#*   conditions are met:                                                    *
+#*                                                                          *
+#*   * Redistributions of source code must retain the above copyright       *
+#*   notice, this list of conditions and the disclaimer below.              *
+#*                                                                          *
+#*   * Redistributions in binary form must reproduce the above copyright    *
+#*   notice, this list of conditions and the disclaimer (as noted below)    *
+#*   in the documentation and/or other materials provided with the          *
+#*   distribution.                                                          *
+#*                                                                          *
+#*   Neither the name of the LLNS/LLNL nor the names of its contributors    *
+#*   may be used to endorse or promote products derived from this           *
+#*   software without specific prior written permission.                    *
+#*                                                                          *
+#*   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS    *
+#*   "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT      *
+#*   LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS      *
+#*   FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL LAWRENCE    *
+#*   LIVERMORE NATIONAL SECURITY, LLC, THE U.S. DEPARTMENT OF ENERGY OR     *
+#*   CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,           *
+#*   SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT       *
+#*   LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF       *
+#*   USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND    *
+#*   ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,     *
+#*   OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT     *
+#*   OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF     *
+#*   SUCH DAMAGE.                                                           *
+#*                                                                          *
+#****************************************************************************
+######
+
+
+# Description: Installation of the esg-search submodule.  This
+#              file is meant to be sourced by the esg-node
+#              script that has the definition of checked_done(), dedup(),
+#              ${workdir}, etc....
+
+
+DEBUG=${DEBUG:-0}
+esg_dist_url=http://198.128.245.140/dist
+
+#--------------
+#User Defined / Settable (public)
+#--------------
+install_prefix=${install_prefix:-"/usr/local"}
+esg_root_dir=${esg_root_dir:-"/esg"}
+workdir=${workdir:-~/workbench/esg}
+install_logfile=${install_logfile:-"/etc/esg.install_log"}
+#--------------
+
+date_format=${date_format:-"+%Y_%m_%d_%H%M%S"}
+compress_extensions=${compress_extensions:-".tar.gz|.tar.bz2|.tgz|.bz2"}
+force_install=${force_install:-0}
+
+installer_uid=${installer_uid:-$(id ${HOME##*/} | sed 's/.*uid=\([0-9]*\).*/\1/')}
+[ $? != 0 ] || [ -z "$installer_uid" ] && echo "installer_uid is not set" && exit 1
+installer_gid=${installer_gid:-$(id ${HOME##*/} | sed 's/.*gid=\([0-9]*\).*/\1/')}
+[ $? != 0 ] || [ -z "$installer_gid" ] && echo "installer_gid is not set" && exit 1
+installer_home=${HOME}
+
+search_version=${search_version:-"1.0.0.0"}
+search_install_dir=${ESGF_INSTALL_DIR:-"${install_prefix}/esgf_search"}
+seach_data_dir=${ESGF_DATA_DIR:="${esg_root_dir}/search_data"}
+
+
+#---------------------------------------------------------
+# The "main" method for this script
+#---------------------------------------------------------
+#arg (1) - install = 0 [default]
+#          upgrade = 1 
+setup_search() {
+    echo
+    echo "*******************************"
+    echo "Setting up The ESGF Search Sub-Project..."
+    echo "*******************************"
+    echo
+
+    local upgrade=${1:-0}
+
+    setup_zookeeper && configure_zookeeper && write_zookeeper_install_log
+    [ $? != 0 ] && echo " ERROR: Could not fully install zookeeper :-( " && checked_done 1
+    
+    setup_solr && configure_solr && write_solr_install_log
+    [ $? != 0 ] && echo " ERROR: Could not fully install solr :-( " && checked_done 1
+    
+    write_search_install_log
+
+    echo "done"
+    echo
+    return 0
+}
+
+write_search_install_log() {
+    echo "$(date ${date_format}) esg-search=${search_version} ${search_install_dir}" >> ${install_logfile}
+    dedup ${install_logfile}
+    return 0
+}
+
+start_search_services() {
+    echo "Starting search services..."
+    start_zookeeper
+    start_solr
+}
+
+stop_search_services() {
+    echo "Stopping search services..."
+    stop_solr
+    stop_zookeeper
+}
+
+test_search_services() {
+    echo "Testing search services..."
+    test_zookeeper
+    test_solr
+}
+
+#---------------------------------------------------------
+# Solr Search Service Setup and Configuration
+#---------------------------------------------------------
+
+#TODO
+#setup_search_service() {
+## esgf-web-fe
+#    export WEB_APP_DIR=$ESGF_INSTALL_DIR/apache-tomcat/webapps/esg-web
+#    mkdir $WEB_APP_DIR
+#    cp $ESGF_SOURCE_DIR/esg-web-fe/esg-search-web.war $WEB_APP_DIR/esg-web.war
+#    cd $WEB_APP_DIR
+#    jar xvf $WEB_APP_DIR/esg-web.war
+#
+#}
+
+
+#---------------------------------------------------------
+# Zookeeper Setup and Configuration
+#---------------------------------------------------------
+zookeeper_version="3.3.1"
+zookeeper_dist_url=http://apache.osuosl.org//hadoop/zookeeper/zookeeper-${zookeeper_version}/zookeeper-${zookeeper_version}.tar.gz
+zookeeper_workdir=${workdir}/zookeeper
+zookeeper_install_dir=${install_prefix}/zookeeper
+zookeeper_data_dir=${esg_root_dir}/zookeeper
+zookeeper_client_port=2181
+
+setup_zookeeper() {
+
+    echo -n "Checking for zookeeper ${zookeeper_version}... "
+    [ -x ${zookeeper_install_dir}/bin/zkServer.sh ] && check_zookeeper_version
+    [ $? == 0 ] && (( ! force_install )) && echo " [OK]" && return 0
+
+    echo
+    echo "*******************************"
+    echo "Setting up Zookeeper... ${zookeeper_version}"
+    echo "*******************************"
+    echo
+
+    local dosetup
+    if [ -x ${zookeeper_install_dir}/bin/zkServer.sh ]; then 
+        echo "Detected an existing zookeeper installation..."
+        read -p "Do you want to continue with zookeeper installation and setup? [y/N] " dosetup
+        if [ "${dosetup}" != "Y" ] && [ "${dosetup}" != "y" ]; then
+            echo "Skipping zookeeper installation and setup - will assume zookeeper is setup properly"
+            return 0
+        fi
+        echo
+    fi
+
+    echo "Installing zookeeper v${zookeeper_version}"
+    mkdir -p ${zookeeper_workdir}
+    pushd ${zookeeper_workdir} >& /dev/null
+
+    local zookeeper_dist_file=${zookeeper_dist_url##*/}
+    local zookeeper_dist_dir=$(echo ${zookeeper_dist_file} | awk 'gsub(/('$compress_extensions')/,"")')
+
+    #There is this pesky case of having a zero sized dist file... WTF!?
+    if [ -e ${zookeeper_dist_file} ]; then
+        ls -l ${zookeeper_dist_file}
+        local size=$(stat -c%s ${zookeeper_dist_file})
+        (( size == 0 )) && rm -v ${zookeeper_dist_file}
+    fi
+
+    #Check to see if we already have a zookeeper distribution directory
+    if [ ! -e ${zookeeper_install_dir%/*}/${zookeeper_dist_dir} ]; then
+        echo "Don't see zookeeper distribution dir ${zookeeper_install_dir%/*}/${zookeeper_dist_dir}"
+        if [ ! -e ${zookeeper_dist_file} ]; then
+            echo "Don't see zookeeper distribution file $(pwd)/${zookeeper_dist_file} either"
+            echo "Downloading zookeeper from ${zookeeper_dist_url}"
+            #NOTE: this should be a checked_get call!
+            #When I do the refactoring of some of the functions, then I can source that functions file and use checked_get.
+            #For now just fetch it.
+            wget -O ${zookeeper_dist_file} ${zookeeper_dist_url}
+            [ $? != 0 ] && echo " ERROR: Could not download zookeeper ${zookeeper_dist_file}" && popd && checked_done 1
+            echo "unpacking ${zookeeper_dist_file}... into ${zookeeper_install_dir%/*}"
+            tar xzf ${zookeeper_dist_file} -C ${zookeeper_install_dir%/*}
+            [ $? != 0 ] && echo " ERROR: Could not extract zookeeper :-( " && popd && checked_done 1
+        fi
+    fi
+    
+    #If you don't see the directory but see the tar.gz distribution
+    #then expand it and go from there....
+    if [ -e ${zookeeper_dist_file} ] && [ ! -e ${zookeeper_install_dir%/*}/${zookeeper_dist_dir} ]; then
+        echo "unpacking* ${zookeeper_dist_file} into ${zookeeper_install_dir%/*}"
+        tar xzf ${zookeeper_dist_file} -C ${zookeeper_install_dir%/*}
+        [ $? != 0 ] && echo " ERROR: Could not extract zookeeper :-( " && popd && checked_done 1
+    fi
+
+    if [ ! -e ${zookeeper_install_dir} ]; then
+        ln -s ${zookeeper_install_dir%/*}/${zookeeper_dist_dir} ${zookeeper_install_dir}
+        [ $? != 0 ] && \
+            echo " ERROR: Could not create sym link ${zookeeper_install_dir%/*}/${zookeeper_dist_dir} -> ${zookeeper_install_dir}" && popd && checked_done 1
+    else
+        unlink ${zookeeper_install_dir}
+        [ $? != 0 ] && mv ${zookeeper_install_dir} ${zookeeper_install_dir}.$(date ${date_format}).bak
+        
+        ln -s ${zookeeper_install_dir%/*}/${zookeeper_dist_dir} ${zookeeper_install_dir}
+        [ $? != 0 ] && \
+            echo " ERROR*: Could not create sym link ${zookeeper_install_dir%/*}/${zookeeper_dist_dir} -> ${zookeeper_install_dir}" && popd && checked_done 1
+    fi
+    (($DEBUG)) && echo "chown -R ${installer_uid}:${installer_gid} ${zookeeper_install_dir}"
+    chown    ${installer_uid}:${installer_gid} ${zookeeper_install_dir}
+    chown -R ${installer_uid}:${installer_gid} $(readlink -f ${zookeeper_install_dir})
+    
+    popd >& /dev/null
+    echo "zookeeper setup [OK]"
+    return 0
+}
+
+#Helper Method to figure out the version of Zookeeper installation
+check_zookeeper_version() {
+    #NOTE: This would have been much sexier with sed and probably in one line... 
+    #but my sed is a bit weak at the moment. :-(
+    local f=$(/bin/ls ${zookeeper_install_dir} | egrep '^zookeeper.*jar$')
+    f=${f%*.jar}
+    f=${f#*-}
+    [ "${f}" = "${zookeeper_version}" ]
+}
+
+configure_zookeeper() {
+    echo "configuring zookeeper... $@"
+    pushd ${zookeeper_install_dir} >& /dev/null
+    [ $? != 0 ] && echo " ERROR: Unable to peform configuration: no such dir ${zookeeper_install_dir}" && checked_done 1
+
+    #old line
+    #sed "s:/tmp/zookeeper:${zookeeper_data_dir}:" <(curl -s -L --insecure ${esg_dist_url}/esg-search/zookeeper/zoo.cfg) > ${zookeeper_install_dir}/conf/zoo.cfg
+
+    #-------------
+    #new hotness....
+    local config_file="${zookeeper_install_dir}/conf/zoo.cfg"
+    local config_info=""
+    local key="${1:-dataDir}"
+    local value="${2:-${zookeeper_data_dir}}"
+
+    #Look for the local config file first.  If it is there and the key is present then do a local replacement of the value with ${zookeeper_data_dir}
+    #If the file is not there OR this particular key is not present, pull the distribution config file down and to the replacement based on that content.
+
+    if [ -f "${config_file}" ] && (grep "${key}" "${config_file}" >& /dev/null) && (( ! $force_install )); then
+        config_info=$(cat "${config_file}")
+    else 
+        echo "fetching base config file ${config_file##*/} from distribution server..."
+        config_info=$(curl -s -L --insecure ${esg_dist_url}/esg-search/zookeeper/${config_file##*/})
+        (($force_install)) && cp ${config_file} ${config_file}.last
+    fi
+    
+    (($DEBUG)) && echo "(pre) Configuration Infos:" && echo "${config_info}"
+
+    #Now, do the value replacement based on matching against the KEY not the VALUE! (more flexible and robust)
+    sed 's#\('${key}'=\)\(.*\)#\1'${value}'#g'  <(echo "${config_info}") >> ${config_file}
+
+    #dedup the configuration file
+    local tmp=$(tac ${config_file} | awk 'BEGIN {FS="="} !($1 in a) {a[$1];print $0}' | sort -k1,1)
+    echo "$tmp" > ${config_file}
+
+    
+    (($DEBUG)) && echo "(post) Configuration Info:" && cat ${config_file}
+    #-------------
+
+    #Set this node's zookeeper ID
+    mkdir -p ${zookeeper_data_dir}
+    get_node_id > ${zookeeper_data_dir}/myid
+    chown    ${installer_uid}:${installer_gid} ${zookeeper_data_dir}
+    chown -R ${installer_uid}:${installer_gid} $(readlink -f ${zookeeper_data_dir})
+    echo -n "zookeeper id: $(cat ${zookeeper_data_dir}/myid)"
+    popd >& /dev/null
+    echo " [OK]"
+    return 0
+}
+
+test_zookeeper() {
+    echo -n "Testing zookeeper..."
+    #test client connection
+    ${zookeeper_install_dir}/bin/zkCli.sh -server localhost:${zookeeper_client_port} ls / quit >& /dev/null
+    ret=$?
+    [ ${ret} == 0 ] && echo " [OK]" || echo " [FAIL]"
+    return ${ret}
+}
+
+write_zookeeper_install_log() {
+    local entry="$(date ${date_format}) esg-search:zookeeper=${zookeeper_version} ${zookeeper_install_dir}"
+    echo ${entry} >> ${install_logfile}
+    dedup ${install_logfile}
+    return 0
+}
+
+start_zookeeper() {
+
+    check_zookeeper_process && return 1
+    echo "Starting zookeeper server on port ${zookeeper_client_port}"
+
+    ${zookeeper_install_dir}/bin/zkServer.sh start
+
+    #-----
+    #NOTE: (potential timing issue)
+    #Luca: the wait is because Solr, on startup, needs to send information to Zookeeper
+    #  not sure if it is enough to wait for the client port to be accessible, we'll test
+    #-----
+
+    #Don't wait 10 seconds if you don't have to...
+    #just check every second up till 10 seconds (or <= 10x)
+    local wait_time=10
+    local ret=1
+    while [[ $wait_time > 0 ]]; do
+        netstat -na | grep -i ${zookeeper_client_port}
+        ret=$?
+        [ $ret == 0 ] && break
+        sleep 1
+        ((wait_time--))
+        echo -n "."
+    done
+    [ $ret == 0 ] && echo " [OK]" || echo " [FAIL]"
+    return $ret
+}
+
+stop_zookeeper() {
+    echo "Stopping zookeeper..."
+    ${zookeeper_install_dir}/bin/zkServer.sh stop
+    local ret=$?
+    [ ${ret} == 0 ] && echo " [OK]" || echo " [FAIL]"
+    return ${ret}
+}
+
+#status
+check_zookeeper_process() {
+    local pid=`/usr/sbin/lsof -i:${zookeeper_client_port} | grep -i java | awk '{print $2}'`
+    [ -n "$pid" ] && echo " Zookeeper process running on port [${zookeeper_client_port}]... " && return 0
+}
+#---------------------------------------------------------
+
+
+
+#---------------------------------------------------------
+# Solr/Lucene Setup and Configuration
+#---------------------------------------------------------
+solr_version=1.0.0.0
+solr_dist_url=${esg_dist_url}/esg-search/solr/esgf-solr-cloud-${solr_version}.tar.gz
+solr_workdir=${workdir}/esgf-solr-cloud
+solr_install_dir=${install_prefix}/esgf-solr-cloud
+solr_data_dir=${esg_root_dir}/data.index
+solr_server_port=8983
+
+setup_solr() {
+    echo -n "Checking for solr ${solr_version}... "
+    [ -x ${solr_install_dir}/start.jar ] && check_solr_version
+    [ $? == 0 ] && (( ! force_install )) && echo " [OK]" && return 0
+
+    echo
+    echo "*******************************"
+    echo "Setting up (ESGF) Solr... ${solr_version}"
+    echo "*******************************"
+    echo
+
+    local dosetup
+    if [ -x ${_install_dir}/start.jar ]; then 
+        echo "Detected an existing esgf-solr installation..."
+        read -p "Do you want to continue with esgf-solr installation and setup? [y/N] " dosetup
+        if [ "${dosetup}" != "Y" ] && [ "${dosetup}" != "y" ]; then
+            echo "Skipping esgf-solr installation and setup - will assume esgf-solr is setup properly"
+            return 0
+        fi
+        echo
+    fi
+    
+    echo "Installing esgf-solr ${solr_version}..."
+    mkdir -p ${solr_workdir}
+    pushd ${solr_workdir} >& /dev/null
+
+    local solr_dist_file=${solr_dist_url##*/}
+    local solr_dist_dir=$(echo ${solr_dist_file} | awk 'gsub(/('$compress_extensions')/,"")')
+
+    #NOTE: In this case the distribution tar file
+    #(esgf-solr-cloud-1.0.0.0.tar.gz) when stripped results in
+    #esgf-solr-cloud and NOT esgf-solr-cloud-1.0.0.0 as expected we
+    #have to additionally strip off the version number.
+    local solr_dist_version=${solr_dist_dir##*-}
+    solr_dist_dir=${solr_dist_dir%-*}
+
+    #There is this pesky case of having a zero sized dist file... WTF!?
+    if [ -e ${solr_dist_file} ]; then
+        ls -l ${solr_dist_file}
+        local size=$(stat -c%s ${solr_dist_file})
+        (( size == 0 )) && rm -v ${solr_dist_file}
+    fi
+
+    #Check to see if we already have a solr distribution directory
+    if [ ! -e ${solr_install_dir%/*}/${solr_dist_dir} ]; then
+        echo "Don't see solr installation dir ${solr_install_dir%/*}/${solr_dist_dir}"
+        if [ ! -e ${solr_dist_file} ]; then
+            echo "Don't see solr distribution file $(pwd)/${solr_dist_file} either"
+            echo "Downloading solr from ${solr_dist_url}"
+            #NOTE: should change this to call checked_get (but don't want to copy and paste that function here)
+            #When I do the refactoring of some of the functions, then I can source that functions file and use checked_get.
+            #For now just fetch it.
+            wget -O ${solr_dist_file} ${solr_dist_url}
+            [ $? != 0 ] && echo " ERROR: Could not download solr ${solr_dist_file}" && popd && checked_done 1
+            echo "unpacking ${solr_dist_file}... into ${solr_install_dir%/*}"
+            tar xzf ${solr_dist_file} -C ${solr_install_dir%/*}
+            [ $? != 0 ] && echo " ERROR: Could not extract solr :-( " && popd && checked_done 1
+        fi
+    fi
+
+    #If you don't see the directory but see the tar.gz distribution
+    #then expand it and go from there....
+    if [ -e ${solr_dist_file} ] && [ ! -e ${solr_install_dir%/*}/${solr_dist_dir} ]; then
+        echo "unpacking* ${solr_dist_file} into ${solr_install_dir%/*}"
+        tar xzf ${solr_dist_file} -C ${solr_install_dir%/*}
+        [ $? != 0 ] && echo " ERROR: Could not extract solr :-( " && popd && checked_done 1
+    fi
+
+    echo "${solr_dist_version}" > ${solr_install_dir}/VERSION
+
+    #NOTE: no need to deal with sym-linking logic since untarring the
+    #file esgf-solr-cloud-1.0.0.0.tar.gz results in simply the
+    #esgf-solr-cloud directory This will make versioning an
+    #issue... but we can deal with that when it is on fire... (later)
+
+    (($DEBUG)) && echo "chown -R ${installer_uid}:${installer_gid} ${solr_install_dir}"
+    chown    ${installer_uid}:${installer_gid} ${solr_install_dir}
+    chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_install_dir})
+    
+    popd >& /dev/null
+    echo "esgf-solr setup [OK]"
+    return 0
+}
+
+#Helper Method to figure out the version of esgf-solr installation
+check_solr_version() {
+    [ "$(cat ${solr_install_dir}/VERSION)" = "${solr_version}" ]
+}
+
+configure_solr() {
+    echo "configuring solr... "
+    pushd ${solr_install_dir}/solr/conf >& /dev/null
+    [ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
+ 
+    #NOTE: These wget calls should also be changed to check_get() calls (once I factor that function out)
+    echo "fetching ${solr_dist_url%/*}/solrconfig.xml"
+    sed "s:@@esgf-solr-data-dir@@:${solr_data_dir}:" <(curl -s -L --insecure ${solr_dist_url%/*}/solrconfig.xml) > ${solr_install_dir}/solr/conf/solrconfig.xml
+    [ $? != 0 ] && echo "Problem configuring solr (2)" && return 2
+    chmod 755 ${solr_install_dir}/solr/conf/solrconfig.xml
+    mkdir -p ${solr_data_dir}
+    chown    ${installer_uid}:${installer_gid} ${solr_data_dir}
+    chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_data_dir})
+
+    #NOTE: These wget calls should also be changed to check_get() calls (once I factor that function out)
+    echo "fetching ${solr_dist_url%/*}/schema.xml"
+    curl -s -L --insecure ${solr_dist_url%/*}/schema.xml > ${solr_install_dir}/solr/conf/schema.xml
+    [ $? != 0 ] && echo "Problem configuring solr (3)" && return 3
+    chmod 755 ${solr_install_dir}/solr/conf/schema.xml
+    
+    #determine the id of this host and edit the xml file appropriately - in place
+    #NOTE: this should be tightened up to use an in-flight checked_get bit of integrity checking...
+    sed "s:@@myid@@:$(get_node_id):" <(curl -s -L --insecure ${solr_dist_url%/*}/solr.xml) > ${solr_install_dir}/solr/solr.xml
+    [ $? != 0 ] && echo "Problem configuring solr (4)" && return 4
+    (($DEBUG)) && cat ${solr_install_dir}/solr/solr.xml
+    
+    popd >& /dev/null
+    echo " [OK]"
+    return 0
+    
+}
+
+test_solr() {
+    echo "empty solr test"
+}
+
+#TODO
+#test_solr() {
+	## publish test catalog
+	#    cd $WEB_APP_DIR
+	#    java -Dlog4j.configuration=./WEB-INF/classes/log4j.xml -Djava.ext.dirs=./WEB-INF/lib esg.search.publish.impl.PublishingServiceMain file://$ESGF_TESTDATA_DIR/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS true
+#}
+
+write_solr_install_log() {
+    local entry="$(date ${date_format}) esg-search:solr=${solr_version} ${solr_install_dir}"
+    echo ${entry} >> ${install_logfile}
+    dedup ${install_logfile}
+    return 0
+}
+
+# start Solr server on port 8983 connecting to Zookeeper on port 2181
+start_solr() {  
+    check_solr_process && return 1
+    echo "Starting solr server on port ${zookeeper_client_port}"
+
+    pushd ${solr_install_dir} >& /dev/null
+    java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
+    popd >& /dev/null
+    
+    #Don't wait 10 seconds if you don't have to...
+    #just check every second up till 10 seconds (or <= 10x)
+    local wait_time=10
+    local ret=1
+    while [[ $wait_time > 0 ]]; do
+        check_solr_process
+        ret=$?
+        [ $ret == 0 ] && break
+        sleep 1
+        ((wait_time--))
+        echo -n "."
+    done
+    [ $ret == 0 ] && echo " [OK]" || echo " [FAIL]"
+    return $ret
+}
+
+stop_solr() {
+    echo "Stopping Solr on port ${solr_server_port}"
+    local pid=`/usr/sbin/lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
+    kill -9 $pid
+    check_solr_process
+    [ $? != 0 ] && echo " [OK]" || echo " [FAIL]"
+}
+
+#status
+check_solr_process() {
+    local pid=`/usr/sbin/lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
+    [ -n "$pid" ] && echo " Solr process running on port [${solr_server_port}]... " && return 0
+}
+
+
+
+
+############################################
+# General - Utility Functions
+############################################
+
+#Get (or generate) the id suitable for use in the context of zookeeper
+#and thus the sharded solr install.  If this variable is not set then
+#an ID is generated, unique to this host.  
+#NOTE: A lot of things rely on this ID so at the moment it is okay to
+#provide a simple way to be able to determine an id externally... but
+#this is only something for the testing phase for the most part.
+get_node_id() {
+    esgf_node_id=${esgf_node_id:-$(sha1sum <(echo esgf$(hostname -i)) | awk '{print $1}')}
+    echo ${esgf_node_id}
+}
+
+#These functions are identical to the ones in the esg-node script they are
+#being copied here in the case where we are not running this script as
+#a sub process of esg-node.  In other words, this allows this script
+#to be stand-alone.
+checked_done() {
+    if (($1)); then
+        echo ""
+        echo "Sorry..."
+        echo "This action did not complete successfully"
+        echo "Please re-run this task until successful before continuing further"
+        echo ""
+        exit 1
+    fi
+    return 0
+}
+
+dedup() {
+    local infile=${1:-${envfile}}
+    [ ! -w "${infile}" ] && echo "WARNING: dedup() - unable to write to ${infile}" && return 1
+    local tmp=$(tac ${infile} | awk 'BEGIN {FS="[ =]"} !($2 in a) {a[$2];print $0}' | sort -k2,2)
+    echo "$tmp" > ${infile}
+}
