@@ -9,14 +9,14 @@ package esg.search.publish.api;
 public interface LegacyPublishingService {
 	
 	/**
-	 * Method to publish a hierarchy of THREDDS catalogs.
+	 * Method to publish a hierarchy of THREDDS catalogs. 
 	 * Note: all input parameters are ignored except for the THREDDS URL.
 	 * 
 	 * @param parentId: ignored, since the underlying model does not constrain datasets in fixed hierarchies.
 	 * @param threddsURL: the URL of the root THREDDS catalogs.
 	 * @param resursionLevel: ignored (full recursion is always assumed).
 	 * @param status: ignored.
-	 * @return: the string "SUCCESS" if the operation completed successfully.
+	 * @return: the string "SUCCESSFUL" if the operation completed successfully.
 	 * 
 	 * throws Exception: if the operation did not complete successfully.
 	 */
@@ -33,5 +33,15 @@ public interface LegacyPublishingService {
 	 * @throws Exception: if the unpublishing operation did not complete successfully.
 	 */
 	void deleteDataset(String datasetId, boolean recursive, String message) throws Exception;
+	
+    /**
+     * Legacy method to check for the status of a current (asynchronous) ongoing publishing operation.
+     * This method is only meant to be implemented to support clients of the legacy asynchronous API.
+     * 
+     * @param operationHandle: the publishing operation identifier (ignored)
+     *
+     * @return always "SUCCESSFUL".
+     */
+	String getPublishingStatus(final String operationHandle) throws Exception;
 
 }
