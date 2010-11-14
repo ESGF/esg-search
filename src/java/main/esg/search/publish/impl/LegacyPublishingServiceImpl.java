@@ -32,7 +32,7 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	 */
 	private final static boolean RECURSIVE = true;
 	
-	private final static String RETURN_VALUE = "SUCCESS";
+	private final static String RETURN_VALUE = "SUCCESSFUL";
 	
 	@Autowired
 	public LegacyPublishingServiceImpl(final PublishingService publishingService) {
@@ -60,6 +60,16 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 		this.publishingService.unpublish(ids);
 		
 	}
+
+	/**
+	 *{@inheritDoc}
+	 */
+	@Override
+	public String getPublishingStatus(String operationHandle) throws Exception {
+		return RETURN_VALUE;
+	}
+	
+	
 	
 
 }
