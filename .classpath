@@ -84,5 +84,5 @@
 	<classpathentry kind="lib" path="lib/fetched/spring-web-3.0.1.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/spring-webmvc-3.0.1.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/com.springsource.com.caucho-3.2.1.jar"/>
-	<classpathentry kind="output" path="bin"/>
+	<classpathentry kind="output" path="build"/>
 </classpath>
