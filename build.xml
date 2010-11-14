@@ -313,7 +313,7 @@ Builds the project via ant (obviously).
 	        <include name="**/*.jar"/>
 	        <exclude name="**/*-test*.jar,**/*-common*.jar"/>
 	      </lib>
-	      <classes dir="${build_dir}"/>
+	      <classes dir="${build_dir}" excludes="**/test*/**"/>
 	      <manifest>
 		<attribute name="Organization" value="${organization}"/>
 		<attribute name="Author"       value="${author}"/>
@@ -481,7 +481,7 @@ Builds the project via ant (obviously).
 
   <target name="make_all_jars" depends="make_jar,make_test_jar,make_common_jar,make_fe_jar,make_connector_jar"/>
 
-  <target name="make_dist" depends="make_all_jars"
+  <target name="make_dist" depends="make_war,make_all_jars"
 	  description="(Creates full software distribution)">
     <delete file="${dist_dir}/${module}.${version_num}.tar.gz"/> 
     <tar destfile="${dist_dir}/${module}.${version_num}.tar">

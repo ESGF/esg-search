@@ -232,16 +232,15 @@ setup_search_service() {
 
     stop_tomcat
 
-    #strip the version number off(.#.#.#.#) the dir and append .war to get the name of war file
-    #(Ex: esg-search.1.0.0.4 -> esg-search.1.0.0.1.war) 
-    search_service_war_file=$(pwd)/${search_service_dist_dir}.war
+    #(esg-search.1.0.0.4 -> esg-search.1.0.0.1.war) 
+    local search_service_war_file=$(pwd)/${search_service_dist_dir}.war
     echo "search_service_war_file = "${search_service_war_file}
 
     mkdir -p ${search_web_service_dir}
     cd ${search_web_service_dir}
     
     echo "Expanding war ${search_service_war_file} in $(pwd)"
-    $JAVA_HOME/bin/jar xvf  ${search_service_war_file}
+    $JAVA_HOME/bin/jar xf ${search_service_war_file}
     chown -R ${tomcat_user}  ${search_web_service_dir}
     chgrp -R ${tomcat_group} ${search_web_service_dir}
 
