@@ -101,7 +101,7 @@ Builds the project via ant (obviously).
   <property name="release_name" value="no_name"/>
   <filter token="release_name" value="${release_name}"/>
 
-  <property name="log_dir" value="/esg/logs"/>
+  <property name="log_dir" value="${basedir}/logs"/>
   <mkdir dir="${log_dir}" />
   <filter token="log_dir"  value="${log_dir}"/>
   
@@ -296,7 +296,61 @@ Builds the project via ant (obviously).
     <tstamp/>
   </target>
   
+  <target name="make_war" depends="make,init"
+	          description="(Creates war file of this project)">
+	    <mkdir dir="${dist_dir}" />
+	    <mkdir dir="${dist_dir}/tmplib"/>
 
+	    <copy todir="${dist_dir}/tmplib" overwrite="true" flatten="yes">
+	      <fileset dir="${lib_dir}" includes="**/*.jar" excludes="servlet-api*.jar,**/junit*.jar,**/*sources.jar,**/*javadoc.jar"/>
+	    </copy>
+	  	<echo message="${conf_dir}"/>
+	    <delete file="${dist_dir}/${module}.${version_num}.war"/>
+	    <war destfile="${dist_dir}/${module}.${version_num}.war" webxml="${conf_dir}/${module}-web.xml">
+	      <!-- <fileset dir="${web_dir}" excludes="WEB-INF/**/web.xml/**,**semantic.cache**"/> -->
+	      <webinf dir="${conf_dir}" includes="**/*.xml" excludes="${module}-web.xml"/>
+	      <lib dir="${dist_dir}/tmplib">
+	        <include name="**/*.jar"/>
+	        <exclude name="**/*-test*.jar,**/*-common*.jar"/>
+	      </lib>
+	      <classes dir="${build_dir}" excludes="**/test*/**"/>
+	      <manifest>
+		<attribute name="Organization" value="${organization}"/>
+		<attribute name="Author"       value="${author}"/>
+		<attribute name="Project"      value="${project_name} ${module}"/>
+		<attribute name="Module"       value="${module}"/>
+		<attribute name="Version"      value="${version_num}"/>
+		<attribute name="Release-Name" value="${release_name}"/>
+	      </manifest>
+	    </war>
+	    <delete dir="${dist_dir}/tmplib"/>
+	  </target>
+	
+	<target name="make_web_dir" depends="make, init" 
+			description="(Assembles the WEB-INF directory to run the web application in place.)">
+
+	    <mkdir dir="${basedir}/WebContent" />
+	    <mkdir dir="${basedir}/WebContent/WEB-INF" />
+	  	<property name="web_deploy_dir" value="${basedir}/WebContent/WEB-INF"/>
+
+		<!-- web configuration files -->
+	  	<copy file="${conf_dir}/${module}-web.xml" tofile="${web_deploy_dir}/web.xml"/>
+	    <copy todir="${web_deploy_dir}">
+	      <fileset dir="${conf_dir}" includes="**/*.xml, **/*.properties" excludes="**/${module}-web.xml"/>
+	    </copy>
+		
+		<!-- web views 
+		<copy file="${web_dir}/index.jsp" tofile="${basedir}/WebContent/index.jsp"/>
+	    <copy todir="${web_deploy_dir}/views">
+	      <fileset dir="${web_dir}/WEB-INF/views" />
+	    </copy> -->
+		
+		<!-- web lib -->
+	    <copy todir="${web_deploy_dir}/lib" flatten="true">
+	      <fileset dir="${lib_dir}" includes="**/*.jar" excludes="**/junit*.jar,**/*sources.jar,**/*javadoc.jar"/>
+	    </copy>
+	  	
+	  </target>
 
   <!--
       ************************************************************
@@ -313,7 +367,7 @@ Builds the project via ant (obviously).
     <jar destfile="${dist_dir}/${module}.${version_num}.jar">
       <fileset dir="${build_dir}"
 	       includes="esg/**,**/*.properties"
-	       excludes="**/test/**"/>
+	       excludes="**/test/**, **/log4j.properties"/>
       <manifest>
 	<attribute name="Organization" value="${organization}"/>
 	<attribute name="Author"       value="${author}"/>
@@ -427,7 +481,7 @@ Builds the project via ant (obviously).
 
   <target name="make_all_jars" depends="make_jar,make_test_jar,make_common_jar,make_fe_jar,make_connector_jar"/>
 
-  <target name="make_dist" depends="make_all_jars"
+  <target name="make_dist" depends="make_war,make_all_jars"
 	  description="(Creates full software distribution)">
     <delete file="${dist_dir}/${module}.${version_num}.tar.gz"/> 
     <tar destfile="${dist_dir}/${module}.${version_num}.tar">

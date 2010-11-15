@@ -16,12 +16,7 @@
 #But for now they need to be posted somewhere so
 #we can use this mechanism. TEMPORARY FIX
 
-../dist/esg-search-common.1.0.0.0.jar
-../dist/esg-search-connector.1.0.0.0.jar
-../dist/esg-search-fe.1.0.0.0.jar
-../dist/esg-search-test.1.0.0.0.jar
-../dist/esg-search.1.0.0.0.jar
-../dist/esg-search.1.0.0.0.tar.gz
+../dist/esg-search.1.0.0.1.tar.gz
 
 
 [esg-search/zookeeper]

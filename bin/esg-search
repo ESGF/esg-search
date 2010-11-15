@@ -115,8 +115,10 @@ setup_search() {
     
     setup_solr && configure_solr && write_solr_install_log
     [ $? != 0 ] && echo " ERROR: Could not fully install solr :-( " && checked_done 1
-    
-    write_search_install_log
+
+    setup_search_service && write_search_install_log
+    [ $? != 0 ] && echo " ERROR: Could not fully install search service" && checked_done 1
+
 
     echo "done"
     echo
@@ -151,17 +153,102 @@ test_search_services() {
 # Solr Search Service Setup and Configuration
 #---------------------------------------------------------
 
-#TODO
-#setup_search_service() {
-## esgf-web-fe
-#    export WEB_APP_DIR=$ESGF_INSTALL_DIR/apache-tomcat/webapps/esg-web
-#    mkdir $WEB_APP_DIR
-#    cp $ESGF_SOURCE_DIR/esg-web-fe/esg-search-web.war $WEB_APP_DIR/esg-web.war
-#    cd $WEB_APP_DIR
-#    jar xvf $WEB_APP_DIR/esg-web.war
-#
-#}
+tomcat_install_dir=${tomcat_install_dir:-${install_prefix}/tomcat}
+web_app_tld=${tomcat_install_dir}/webapps/
 
+search_web_service_name=esg-search
+search_web_service_dir=${web_app_tld}/${search_web_service_name}
+search_service_version="1.0.0.1"
+search_service_dist_url=${esg_dist_url}/${search_web_service_name}/${search_web_service_name}.${search_service_version}.tar.gz
+
+#####
+# Install The Search Service...
+#####
+# - Takes boolean arg: 0 = setup / install mode (default)
+#                      1 = updated mode
+#
+# In setup mode it is an idempotent install (default)
+# In update mode it will always pull down latest after archiving old
+#
+setup_search_service() {
+    echo
+    echo "*******************************"
+    echo "Setting up The ESGF Search Service..."
+    echo "*******************************"
+    echo
+
+    local upgrade=${1:-0}
+
+    local dosetup
+    if [ -d ${search_web_service_dir} ]; then 
+        echo "Detected an existing search service installation..."
+        read -p "Do you want to continue with node manager installation and setup? [y/N] " dosetup
+        if [ "${dosetup}" != "Y" ] && [ "${dosetup}" != "y" ]; then
+            echo "Skipping search service installation and setup - will assume it's setup properly"
+            return 0
+        fi
+        
+        local dobackup="N"
+        read -p "Do you want to make a back up of the existing installation?? [y/N] " dobackup
+        if [ "${dobackup}" = "Y" ] || [ "${dobackup}" = "y" ]; then
+            echo "Creating a backup archive of this web application $search_web_service_dir"
+            backup ${search_web_service_dir}
+        fi
+
+        echo
+    fi
+
+    mkdir -p ${workdir}
+    [ $? != 0 ] && return 1
+    pushd ${workdir} >& /dev/null
+    local fetch_file
+
+
+    local search_service_dist_file=${search_service_dist_url##*/}
+    #strip off .tar.gz at the end
+    #(Ex: esg-search.1.0.0.1.tar.gz -> esg-search.1.0.0.1)
+    search_service_dist_dir=$(echo ${search_service_dist_file} | awk 'gsub(/('$compress_extensions')/,"")')
+
+    checked_get ${search_service_dist_file} ${search_service_dist_url}
+    no_new_update=$?
+
+    if((upgrade)); then
+        ((no_new_update == 1)) && echo "nothing more to do, you are up2date" && return 1
+        echo "Upgrading the ESG Search Service..."
+        if [ -e ${search_service_dist_dir} ]; then
+            local archive=${search_service_dist_dir}.arch.$(date ${date_format}).tgz
+            echo "...archiving... ${search_service_dist_dir} -> ${archive} ${search_service_dist_dir}"
+            tar czf ${archive} ${search_service_dist_dir}
+            echo "...removing... ${search_service_dist_dir}"
+            rm -rf ${search_service_dist_dir}
+        fi
+    fi
+    
+    echo "unpacking ${search_service_dist_file}... in $(pwd)"
+    tar xzf ${search_service_dist_file}
+    [ $? != 0 ] && echo " ERROR: Could not extract the ESG Search Service: ${search_service_dist_file}" && popd && checked_done 1
+    
+    pushd ${search_service_dist_dir} >& /dev/null
+
+    stop_tomcat
+
+    #(esg-search.1.0.0.4 -> esg-search.1.0.0.1.war) 
+    local search_service_war_file=$(pwd)/${search_service_dist_dir}.war
+    echo "search_service_war_file = "${search_service_war_file}
+
+    mkdir -p ${search_web_service_dir}
+    cd ${search_web_service_dir}
+    
+    echo "Expanding war ${search_service_war_file} in $(pwd)"
+    $JAVA_HOME/bin/jar xf ${search_service_war_file}
+    chown -R ${tomcat_user}  ${search_web_service_dir}
+    chgrp -R ${tomcat_group} ${search_web_service_dir}
+
+    popd >& /dev/null
+    (( ! upgrade )) 
+    checked_done 0
+
+}
 
 #---------------------------------------------------------
 # Zookeeper Setup and Configuration
@@ -400,7 +487,7 @@ setup_solr() {
     echo
 
     local dosetup
-    if [ -x ${_install_dir}/start.jar ]; then 
+    if [ -x ${solr_install_dir}/start.jar ]; then 
         echo "Detected an existing esgf-solr installation..."
         read -p "Do you want to continue with esgf-solr installation and setup? [y/N] " dosetup
         if [ "${dosetup}" != "Y" ] && [ "${dosetup}" != "y" ]; then
