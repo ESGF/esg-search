@@ -18,6 +18,7 @@
  ******************************************************************************/
 package esg.search.core;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,7 +31,9 @@ import esg.search.query.impl.solr.SolrXmlPars;
 /**
  * Standard bean implementation of the {@link Record} interface.
  */
-public class RecordImpl implements Record {
+public class RecordImpl implements Record, Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	
 	/**
 	 * The record unique identifier.
