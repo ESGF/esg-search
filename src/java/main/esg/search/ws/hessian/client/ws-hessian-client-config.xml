@@ -27,7 +27,7 @@
             <value>http://localhost:8080/esg-search/ws/hessian/searchWebService</value>
         </property>
         <property name="serviceInterface">
-            <value>esg.search.query.api.SearchService</value>
+            <value>esg.search.query.api.SearchWebService</value>
         </property>
     </bean>
 

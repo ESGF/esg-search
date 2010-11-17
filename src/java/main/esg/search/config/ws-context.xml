@@ -45,10 +45,10 @@
     <!-- Search Web Service -->
     <bean name="searchWebService" class="org.springframework.remoting.caucho.HessianServiceExporter">
         <property name="service">
-            <ref bean="searchService"/>
+            <ref bean="searchWebServiceImpl"/>
         </property>
         <property name="serviceInterface">
-            <value>esg.search.query.api.SearchService</value>
+            <value>esg.search.query.api.SearchWebService</value>
         </property>
     </bean> 
 

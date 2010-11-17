@@ -25,7 +25,7 @@ public interface SearchWebService {
 	 * @return
 	 */
 	String search(final String text, final Map<String,String[]> constraints, 
-			      int offset, int limit, boolean getResults, boolean getFacets, String returnType) throws Exception;
+			      int offset, int limit, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception;
 	
 	/**
 	 * Simplified method to search for records that match a given identifier expression (possibly containing wildcards)
@@ -39,14 +39,14 @@ public interface SearchWebService {
 	 * @throws Exception
 	 */
 	String searchById(final String idMatch, 
-			          int offset, int limit, boolean getResults, boolean getFacets, String returnType) throws Exception;
+			          int offset, int limit, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception;
 
 	/**
 	 * Simplified method to search for records that were last updated within a given time range.
 	 * Date and times must be specified in ISO8601 format ("YYYYMMDDThh:mm:ssZ") or as special strings: "NOW",...
 	 * 
-	 * @param startDateTime : the lower limit of the temporal search (example: "2010-10-19T22:00:00Z")
-	 * @param stopDateTime : the upper limit of the temporal search (example: "NOW")
+	 * @param fromTimeStamp : the lower limit for the record update timestamp (example: "2010-10-19T22:00:00Z")
+	 * @param toTimeStamp : the upper limit for the record update timestamp (example: "NOW")
 	 * @param offset : offset of returned results
 	 * @param limit : maximum number of returned results
 	 * @param getResults : true to return results matching the query
@@ -55,7 +55,7 @@ public interface SearchWebService {
 	 * @return
 	 * @throws Exception
 	 */
-	String searchByDateAndTime(final String startDateTime, final String stopDateTime,
-			                   int offset, int limit, boolean getResults, boolean getFacets, String returnType) throws Exception;
+	String searchByTimeStamp(final String fromTimeStamp, final String toTimeStamp,
+			                 int offset, int limit, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception;
 
 }

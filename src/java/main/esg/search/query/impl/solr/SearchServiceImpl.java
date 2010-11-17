@@ -42,7 +42,7 @@ import esg.search.utils.HttpClient;
 public class SearchServiceImpl implements SearchService {
 	
 	/**
-	 * The base URL of the Apache-Sol server.
+	 * The base URL of the Apache-Solr server.
 	 */
 	private final URL url;
 
@@ -75,21 +75,39 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	public SearchOutput search(final SearchInput input, final boolean getResults, final boolean getFacets) throws Exception {
 		
+		// execute HTTP request
+		final String response = this.getXml(input, getResults, getFacets);		
+		
+		// parse HTTP response
+		final SearchOutput output = xmlParser.parse(response, input, getResults, getFacets);
+		
+		return output;
+		
+	}
+	
+	/**
+	 * Method to execute an HTTP request to the Solr server and return the response XML.
+	 * This method has package visibility so it can be called directly from the Web Service API implementation.
+	 * 
+	 * @param input
+	 * @param getResults
+	 * @param getFacets
+	 * @return
+	 * @throws Exception
+	 */
+	String getXml(final SearchInput input, final boolean getResults, final boolean getFacets) throws Exception {
+		
 		// formulate HTTP request
 		final SolrUrlBuilder builder = new SolrUrlBuilder(url);
 		builder.setSearchInput(input);
 		if (getFacets) builder.setFacets(input.getFacets());
 		final URL request = builder.buildSelectUrl();		
 		
-		
 		// execute HTTP request
 		final String response = httpClient.doGet(request);
 		
-		
-		// parse XML response
-		final SearchOutput output = xmlParser.parse(response, input, getResults, getFacets);
-		
-		return output;
+		// return response XML
+		return response;
 		
 	}
 	
