@@ -83,6 +83,7 @@ Note: Check Maven for propery dependency parameter values @
     <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.1"/>
     
     <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4" conf="default->default"/>
+    <dependency org="commons-codec" name="commons-codec" rev="1.4"/>
     <dependency org="commons-logging" name="commons-logging" rev="1.1.1"/>
     <dependency org="log4j" name="log4j" rev="1.2.14">
       <exclude org="com.sun.jdmk"/>

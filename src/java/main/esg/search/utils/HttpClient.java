@@ -63,6 +63,12 @@ public class HttpClient {
 	    connection.setDoOutput(true); // POST method
 	    connection.setRequestProperty("Content-Type", "text/xml");
 	    connection.setRequestProperty("Charset", "utf-8");
+	    
+	    // preemptive authentication
+	    //final String userpassword = "<username>" + ":" + "<password>";   
+	    //final byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
+		//final String authStringEnc = new String(authEncBytes);
+	    //connection.setRequestProperty("Authorization", "Basic "+ authStringEnc );   
 	    	    
 	    final OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
 	    wr.write(xml);
