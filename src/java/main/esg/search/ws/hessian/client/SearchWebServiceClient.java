@@ -7,7 +7,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import esg.search.query.api.SearchReturnType;
-import esg.search.query.api.SearchWebService;
+import esg.search.query.ws.hessian.SearchWebService;
 
 
 /**

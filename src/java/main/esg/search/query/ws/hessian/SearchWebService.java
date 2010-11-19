@@ -1,6 +1,8 @@
-package esg.search.query.api;
+package esg.search.query.ws.hessian;
 
 import java.util.Map;
+
+import esg.search.query.api.SearchReturnType;
 
 /**
  * API for querying a remote Search Web Service.
