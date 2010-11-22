@@ -165,14 +165,25 @@ public class SolrUrlBuilder {
 		
 		//added Oct 22
 		// search input geospatial range constraints --> fq=west_degrees:[* TO 45]
+		/*
 		final Map<String, String> geospatialRangeConstraints = input.getGeospatialRangeConstraint();
 		
 		// geospatialRangeConstraints
 		if (!geospatialRangeConstraints.isEmpty()) {
 			for (final String rangeConstraint : geospatialRangeConstraints.keySet()) {
 				String value = geospatialRangeConstraints.get(rangeConstraint);
-					sb.append("&fq="+URLEncoder.encode( rangeConstraint+":"+value,"UTF-8" ));
+					//sb.append("&fq="+URLEncoder.encode( rangeConstraint+":"+value,"UTF-8" ));
+					sb.append("&"+URLEncoder.encode("(" + rangeConstraint + ")","UTF-8" ));
 			}
+		}
+		*/
+		
+		String geospatialRangeConstraints = input.getGeospatialRangeConstraint();
+		
+		if(geospatialRangeConstraints!=null)
+		{
+			String value = geospatialRangeConstraints;
+			sb.append("&fq="+URLEncoder.encode("(" + value + ")","UTF-8" ));
 		}
 		
 		

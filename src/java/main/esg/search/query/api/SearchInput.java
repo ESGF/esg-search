@@ -70,13 +70,19 @@ public interface SearchInput {
 	 * @param name
 	 * @param value
 	 */
-	public void addGeospatialRangeConstraint(String name, String value);
+	//public void addGeospatialRangeConstraint(String name, String value);
+	public void addGeospatialRangeConstraint(String geospatialRangeConstraint);
 	
 	/**
 	 * Method to retrieve the geospatial range query constraints as (name, value) pairs.
 	 * @return
 	 */
-	public Map<String, String> getGeospatialRangeConstraint();
+	//public Map<String, String> getGeospatialRangeConstraint();
+	
+	
+	
+	public String getGeospatialRangeConstraint();
+	
 	
 	//experimental option for cartesian tier constraint (distance queries)
 	/**
