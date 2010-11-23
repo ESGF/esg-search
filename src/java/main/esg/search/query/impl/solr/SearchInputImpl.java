@@ -56,14 +56,6 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	  */
 	private String temporalRangeConstraint;
 	 
-	/**
-	 * x,y,dist params of the cartesian tier constraints
-	 */
-	private double x = 0;
-	private double y = 0;
-	private double dist = 9999999; //large number by default means the whole earth is covered
-	
-	//end add
 	
 	/**
 	 * The ordered list of facets to be returned in the search output.
@@ -260,7 +252,6 @@ public class SearchInputImpl implements SearchInput, Serializable {
      * {@inheritDoc}
      */
     public String getTemporalRangeConstraint() {
-        // TODO Auto-generated method stub
         return this.temporalRangeConstraint;
     }
 	
