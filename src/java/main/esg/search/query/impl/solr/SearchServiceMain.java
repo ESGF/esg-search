@@ -67,10 +67,13 @@ public class SearchServiceMain {
 
 		
 		LOG.info("\nQUERY #1B");
-		input.addGeospatialRangeConstraint("east_degrees", "[* TO *]");
-		SearchOutput output = searchService.search(input, true, true);
+		input.addGeospatialRangeConstraint("east_degrees:[* TO *]");
 		
-		
+		LOG.info("\nQUERY #1B");
+        input.addGeospatialRangeConstraint("datetime_start:[NOW/DAY-1YEAR TO NOW]");
+        
+        SearchOutput output = searchService.search(input, true, true);
+        
 		LOG.info(output.toString());
 
 		

@@ -163,11 +163,10 @@ public class SolrUrlBuilder {
 		sb.append("&distrib=true");
 
 		
-		//added Oct 22
+		//removed 11-22
 		// search input geospatial range constraints --> fq=west_degrees:[* TO 45]
 		/*
 		final Map<String, String> geospatialRangeConstraints = input.getGeospatialRangeConstraint();
-		
 		// geospatialRangeConstraints
 		if (!geospatialRangeConstraints.isEmpty()) {
 			for (final String rangeConstraint : geospatialRangeConstraints.keySet()) {
@@ -179,13 +178,20 @@ public class SolrUrlBuilder {
 		*/
 		
 		String geospatialRangeConstraints = input.getGeospatialRangeConstraint();
-		
+		// search input geospatial range constraints --> fq=(west_degrees:[* TO 45] AND east_degrees:[40 TO *]...)
 		if(geospatialRangeConstraints!=null)
 		{
 			String value = geospatialRangeConstraints;
 			sb.append("&fq="+URLEncoder.encode("(" + value + ")","UTF-8" ));
 		}
 		
+		String temporalRangeConstraints = input.getTemporalRangeConstraint();
+        // search input geospatial range constraints --> fq=(datetime_start:[NOW/DAY-YEAR TO NOW] AND datetime_stop:[NOW/DAY-3MONTH TO NOW]...)
+        if(temporalRangeConstraints!=null)
+        {
+            String value = temporalRangeConstraints;
+            sb.append("&fq="+URLEncoder.encode("(" + value + ")","UTF-8" ));
+        }
 		
 		if (LOG.isInfoEnabled()) LOG.info("Select URL=" + sb.toString());
 		return new URL(sb.toString());

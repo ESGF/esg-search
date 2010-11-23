@@ -61,40 +61,34 @@ public interface SearchInput {
 	public void addConstraint(String name, String value);
 	
 	
-	//Note: Added add and get GeospatiaRangeConstraint 10-25
 	/**
-	 * Method to add a geospatialRangeConstraint as a (name, value) pair
-	 * Note: 
-	 * "Name" will be the field name (most likely xxx_degrees)
-	 * "Value" should be of the form '[ num TO num ]'
-	 * @param name
-	 * @param value
+	 * Method to add a geospatialRangeConstraint as a string
+	 * Note: The string was used so that AND and OR can be included in query.  This may be substituted with another data structure in the near future.
+	 * @param geospatialRangeConstraint
 	 */
 	//public void addGeospatialRangeConstraint(String name, String value);
 	public void addGeospatialRangeConstraint(String geospatialRangeConstraint);
 	
 	/**
-	 * Method to retrieve the geospatial range query constraints as (name, value) pairs.
-	 * @return
-	 */
-	//public Map<String, String> getGeospatialRangeConstraint();
-	
-	
-	
+     * Method to retrieve the geospatial range query constraints as a string.
+     * @return
+     */
 	public String getGeospatialRangeConstraint();
 	
 	
-	//experimental option for cartesian tier constraint (distance queries)
 	/**
-	 * Method to add a geospatialCartesianTierConstraint as a (x,y,dist) triple
-	 * Note:
-	 * "x" is the longitude
-	 * "y" is the latitude
-	 * "dist" is the range distance to be queried
-	 */
-	public void addGeospatialCartesianTierConstraint(double x, double y, double dist);
-	
-	//end add 10-25
+     * Method to add a temporalRangeConstraint as a string
+     * Note: The string was used so that AND and OR can be included in query.  This may be substituted with another data structure in the near future.
+     * @param temporalRangeConstraint
+     */
+    //public void addGeospatialRangeConstraint(String name, String value);
+    public void addTemporalRangeConstraint(String temporalRangeConstraint);
+    
+    /**
+     * Method to retrieve the geospatial range query constraints as a string.
+     * @return
+     */
+    public String getTemporalRangeConstraint();
 	
 	/**
 	 * Method to remove a search constraint
