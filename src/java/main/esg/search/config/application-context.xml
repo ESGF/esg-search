@@ -22,8 +22,8 @@
 	<!-- search context -->
 	<context:component-scan base-package="esg.search.query"/>
 	
-  	<!-- Facet profile example
-	<bean name="facetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
+  	<!-- Facet profile example -->
+	<bean name="wsFacetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
 		<constructor-arg index="0">
 			 <map>
 			 
@@ -41,6 +41,6 @@
 		      
 		      </map>
 		</constructor-arg>
-	</bean> -->
+	</bean>
 
 </beans>

@@ -11,11 +11,21 @@
 	    <property name="order" value="1" />
 		<property name="mappings">
 			<props>
-				<!-- Web Services -->
-				<prop key="/hessian/publishingWebService">publishingWebService</prop>
-				<prop key="/hessian/legacyPublishingWebService">legacyPublishingWebService</prop>
+			
+				<!-- Publishing Web Services -->
+				<prop key="/hessian/publish/">publishingWebService</prop>
+				
 				<!-- legacy URL -->
 				<prop key="/secure/client-cert/hessian/publishingService">legacyPublishingWebService</prop>
+				
+				<!-- Search Web Service -->
+				<prop key="/hessian/search/">searchWebService</prop>
+				
+				<!-- Search Rest Controller -->
+				<prop key="/rest/search/">searchRestController</prop>
+				<prop key="/rest/searchById/">searchRestController</prop>
+				<prop key="/rest/searchByTimeStamp/">searchRestController</prop>
+				
 			</props>
 		</property>
 	</bean>
@@ -37,6 +47,16 @@
         </property>
         <property name="serviceInterface">
             <value>esg.search.publish.api.LegacyPublishingService</value>
+        </property>
+    </bean> 
+    
+    <!-- Search Web Service -->
+    <bean name="searchWebService" class="org.springframework.remoting.caucho.HessianServiceExporter">
+        <property name="service">
+            <ref bean="searchWebServiceImpl"/>
+        </property>
+        <property name="serviceInterface">
+            <value>esg.search.query.ws.hessian.SearchWebService</value>
         </property>
     </bean> 
 

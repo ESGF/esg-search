@@ -91,7 +91,7 @@ installer_gid=${installer_gid:-$(id ${HOME##*/} | sed 's/.*gid=\([0-9]*\).*/\1/'
 [ $? != 0 ] || [ -z "$installer_gid" ] && echo "installer_gid is not set" && exit 1
 installer_home=${HOME}
 
-search_version=${search_version:-"1.0.0.0"}
+search_version=${search_version:-"1.1.0.0"}
 search_install_dir=${ESGF_INSTALL_DIR:-"${install_prefix}/esgf_search"}
 seach_data_dir=${ESGF_DATA_DIR:="${esg_root_dir}/search_data"}
 
@@ -116,7 +116,7 @@ setup_search() {
     setup_solr && configure_solr && write_solr_install_log
     [ $? != 0 ] && echo " ERROR: Could not fully install solr :-( " && checked_done 1
 
-    setup_search_service && write_search_install_log
+    setup_search_service ${upgrade} && write_search_install_log
     [ $? != 0 ] && echo " ERROR: Could not fully install search service" && checked_done 1
 
 
@@ -171,6 +171,11 @@ search_service_dist_url=${esg_dist_url}/${search_web_service_name}/${search_web_
 # In update mode it will always pull down latest after archiving old
 #
 setup_search_service() {
+    echo -n "Checking for search service ${search_service_version}"
+    check_webapp_version "esg-search" ${search_service_version}
+    local ret=$?
+    ((ret == 0)) && (( ! force_install )) && echo " [OK]" && return 0
+
     echo
     echo "*******************************"
     echo "Setting up The ESGF Search Service..."
@@ -178,7 +183,7 @@ setup_search_service() {
     echo
 
     local upgrade=${1:-0}
-
+    
     local dosetup
     if [ -d ${search_web_service_dir} ]; then 
         echo "Detected an existing search service installation..."
@@ -207,7 +212,7 @@ setup_search_service() {
     local search_service_dist_file=${search_service_dist_url##*/}
     #strip off .tar.gz at the end
     #(Ex: esg-search.1.0.0.1.tar.gz -> esg-search.1.0.0.1)
-    search_service_dist_dir=$(echo ${search_service_dist_file} | awk 'gsub(/('$compress_extensions')/,"")')
+    local search_service_dist_dir=$(echo ${search_service_dist_file} | awk 'gsub(/('$compress_extensions')/,"")')
 
     checked_get ${search_service_dist_file} ${search_service_dist_url}
     no_new_update=$?
@@ -215,13 +220,7 @@ setup_search_service() {
     if((upgrade)); then
         ((no_new_update == 1)) && echo "nothing more to do, you are up2date" && return 1
         echo "Upgrading the ESG Search Service..."
-        if [ -e ${search_service_dist_dir} ]; then
-            local archive=${search_service_dist_dir}.arch.$(date ${date_format}).tgz
-            echo "...archiving... ${search_service_dist_dir} -> ${archive} ${search_service_dist_dir}"
-            tar czf ${archive} ${search_service_dist_dir}
-            echo "...removing... ${search_service_dist_dir}"
-            rm -rf ${search_service_dist_dir}
-        fi
+        rm -rf ${search_service_dist_dir}
     fi
     
     echo "unpacking ${search_service_dist_file}... in $(pwd)"

@@ -21,5 +21,14 @@
             <value>esg.search.publish.api.LegacyPublishingService</value>
         </property>
     </bean>
+    
+    <bean id="searchWebServiceProxy" class="org.springframework.remoting.caucho.HessianProxyFactoryBean">
+        <property name="serviceUrl">
+            <value>http://localhost:8080/esg-search/ws/hessian/search/</value>
+        </property>
+        <property name="serviceInterface">
+            <value>esg.search.query.ws.hessian.SearchWebService</value>
+        </property>
+    </bean>
 
 </beans>

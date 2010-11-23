@@ -3,25 +3,20 @@ package esg.search.publish.impl.solr;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import junit.framework.Assert;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
-import org.jdom.JDOMException;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
-import esg.search.publish.impl.solr.SolrXmlBuilder;
 import esg.search.query.impl.solr.SolrXmlPars;
 import esg.search.utils.StringUtils;
-import esg.search.utils.XmlParser;
 
 public class SolrXmlBuilderTest {
 	

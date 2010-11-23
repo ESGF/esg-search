@@ -27,13 +27,14 @@ import org.springframework.stereotype.Service;
 
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchOutput;
+import esg.search.query.api.SearchReturnType;
 import esg.search.query.api.SearchService;
 import esg.search.utils.HttpClient;
 
 /**
  * Implementation of {@link SearchService} based on an Apache-Solr back-end.
- * This service is configured to send and receive XML messages to a fixed Solr server
- * specified by the constructor URL argument. 
+ * This service is configured to send and receive XML messages to a fixed Solr server specified by the constructor URL argument. 
+ * 
  * The URL for the HTTP/GET request is built by the collaborator bean {@link SolrUrlBuilder} based on the content
  * of the {@link SearchInput} instance, while the content of the HTTP response is parsed by the collaborator bean
  * {@link SolrXmlPars}. 
@@ -42,7 +43,7 @@ import esg.search.utils.HttpClient;
 public class SearchServiceImpl implements SearchService {
 	
 	/**
-	 * The base URL of the Apache-Sol server.
+	 * The base URL of the Apache-Solr server.
 	 */
 	private final URL url;
 
@@ -61,7 +62,6 @@ public class SearchServiceImpl implements SearchService {
 	/**
 	 * Constructor with mandatory arguments.
 	 * 
-	 * @param facetProfile
 	 * @param url
 	 * @throws MalformedURLException
 	 */
@@ -75,21 +75,30 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	public SearchOutput search(final SearchInput input, final boolean getResults, final boolean getFacets) throws Exception {
 		
+		// execute HTTP request, return XML
+		final String response = this.query(input, getResults, getFacets, SearchReturnType.XML);		
+		
+		// parse HTTP XML response into Java object
+		final SearchOutput output = xmlParser.parse(response, input, getResults, getFacets);
+		
+		return output;
+		
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public String query(final SearchInput input, final boolean getResults, final boolean getFacets, final SearchReturnType returnType) throws Exception {
+		
 		// formulate HTTP request
 		final SolrUrlBuilder builder = new SolrUrlBuilder(url);
 		builder.setSearchInput(input);
 		if (getFacets) builder.setFacets(input.getFacets());
 		final URL request = builder.buildSelectUrl();		
 		
+		// execute HTTP request, return response
+		return httpClient.doGet(request);
 		
-		// execute HTTP request
-		final String response = httpClient.doGet(request);
-		
-		
-		// parse XML response
-		final SearchOutput output = xmlParser.parse(response, input, getResults, getFacets);
-		
-		return output;
 		
 	}
 	
