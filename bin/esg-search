@@ -641,7 +641,7 @@ start_solr() {
 stop_solr() {
     echo "Stopping Solr on port ${solr_server_port}"
     local pid=`/usr/sbin/lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
-    kill -9 $pid
+    [ -n "${pid}" ] && kill -9 $pid
     check_solr_process
     [ $? != 0 ] && echo " [OK]" || echo " [FAIL]"
 }
