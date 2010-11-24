@@ -60,29 +60,23 @@
 	<classpathentry kind="lib" path="lib/fetched/solr-solrj-1.4.0-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/solr-solrj-1.4.0-sources.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/solr-solrj-1.4.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-asm-3.0.1.RELEASE-sources.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-asm-3.0.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-beans-3.0.1.RELEASE-sources.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-beans-3.0.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-context-3.0.1.RELEASE-sources.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-context-3.0.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-context-support-3.0.1.RELEASE-sources.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-context-support-3.0.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-core-3.0.1.RELEASE-sources.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-core-3.0.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-expression-3.0.1.RELEASE-sources.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-expression-3.0.1.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/wstx-asl-3.2.7.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xalan-2.5.D1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xercesImpl-2.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xmlParserAPIs-2.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/aopalliance-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-aop-3.0.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-tx-3.0.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-web-3.0.1.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-webmvc-3.0.1.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/com.springsource.com.caucho-3.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-codec-1.4.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-web-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-aop-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-asm-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-beans-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-context-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-context-support-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-core-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-expression-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-tx-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-webmvc-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

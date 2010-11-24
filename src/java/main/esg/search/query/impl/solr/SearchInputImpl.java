@@ -46,21 +46,16 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	 */
 	private Map<String, List<String>> constraints = new LinkedHashMap<String, List<String>>();
 	
-	
-	//added Oct 22
 	/**
-	 * The map of geospatial range constraints to be used in the query, composed of (name, value) pairs
-	 */
-	private Map<String, String> geospatialRangeConstraints = new LinkedHashMap<String, String>();
+	  * The string of geospatial range constraints to be used in the query
+	  */
+	private String geospatialRangeConstraint;
 	
 	/**
-	 * x,y,dist params of the cartesian tier constraints
-	 */
-	private double x = 0;
-	private double y = 0;
-	private double dist = 9999999; //large number by default means the whole earth is covered
-	
-	//end add
+	  * The string of temporal range constraints to be used in the query
+	  */
+	private String temporalRangeConstraint;
+	 
 	
 	/**
 	 * The ordered list of facets to be returned in the search output.
@@ -216,18 +211,8 @@ public class SearchInputImpl implements SearchInput, Serializable {
 			}
 			s.append(NEWLINE);
 		}
-		//added Oct 22
 		// geospatialRangeconstraints
-		for (final String name : this.geospatialRangeConstraints.keySet()) {
-			s.append("Search Constraint: ").append(name).append("=");
-			final String value = this.geospatialRangeConstraints.get(name);
-			s.append(value).append(" ");
-			s.append(NEWLINE);
-		}
-		/*
-		// x,y,dist
-		s.append("x: "+x+" ").append(" y: ").append(y).append(" dist: ").append(dist).append(NEWLINE);
-		*/
+		s.append("Search Constraint: " + this.geospatialRangeConstraint);
 		//end add
 		// facets
 		for (final String facet : facets) {
@@ -239,36 +224,35 @@ public class SearchInputImpl implements SearchInput, Serializable {
 		
 	}
 
-	//added Oct 22
 	/**
 	 * {@inheritDoc}
 	 */
-	public void addGeospatialRangeConstraint(String name, String value) {
-		if (StringUtils.hasText(name) && !value.isEmpty()) {
-			this.geospatialRangeConstraints.put(name, value);
-		}
-		
+	public void addGeospatialRangeConstraint(String geospatialRangConstraint) {
+		this.geospatialRangeConstraint = geospatialRangConstraint;
 	}
 
+	
 	/**
 	 * {@inheritDoc}
 	 */
-	//Note this is really a setter...might need to reconsider how this is done
-	public void addGeospatialCartesianTierConstraint(double x, double y,
-			double dist) {
-		this.x = x;
-		this.y = y;
-		this.dist = dist; 
-		
+	public String getGeospatialRangeConstraint() {
+		return this.geospatialRangeConstraint;
 	}
 
+
 	/**
-	 * {@inheritDoc}
-	 */
-	public Map<String, String> getGeospatialRangeConstraint() {
-		return Collections.unmodifiableMap(geospatialRangeConstraints);
-	}
-	
-	
+	  * {@inheritDoc}
+	  */
+    public void addTemporalRangeConstraint(String temporalRangeConstraint) {
+        this.temporalRangeConstraint = temporalRangeConstraint;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public String getTemporalRangeConstraint() {
+        return this.temporalRangeConstraint;
+    }
 	
 }

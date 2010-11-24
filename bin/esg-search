@@ -116,18 +116,12 @@ setup_search() {
     setup_solr && configure_solr && write_solr_install_log
     [ $? != 0 ] && echo " ERROR: Could not fully install solr :-( " && checked_done 1
 
-    setup_search_service ${upgrade} && write_search_install_log
+    setup_search_service ${upgrade} && write_search_service_install_log
     [ $? != 0 ] && echo " ERROR: Could not fully install search service" && checked_done 1
 
 
     echo "done"
     echo
-    return 0
-}
-
-write_search_install_log() {
-    echo "$(date ${date_format}) esg-search=${search_version} ${search_install_dir}" >> ${install_logfile}
-    dedup ${install_logfile}
     return 0
 }
 
@@ -158,7 +152,7 @@ web_app_tld=${tomcat_install_dir}/webapps/
 
 search_web_service_name=esg-search
 search_web_service_dir=${web_app_tld}/${search_web_service_name}
-search_service_version="1.0.0.1"
+search_service_version="0.9.0"
 search_service_dist_url=${esg_dist_url}/${search_web_service_name}/${search_web_service_name}.${search_service_version}.tar.gz
 
 #####
@@ -247,6 +241,12 @@ setup_search_service() {
     (( ! upgrade )) 
     checked_done 0
 
+}
+
+write_search_service_install_log() {
+    echo "$(date ${date_format}) webapp:esg-search=${search_service_version} ${search_web_service_dir}" >> ${install_logfile}
+    dedup ${install_logfile}
+    return 0
 }
 
 #---------------------------------------------------------

@@ -359,12 +359,12 @@ Builds the project via ant (obviously).
     -->
   <target name="make_jar" depends="make"
 	  description="(Creates the jar file distribution of this project)">
-    <echo message="JAR -  ${build_dir} ->> ${dist_dir}/${module}.${version_num}.jar"/>
+    <echo message="JAR -  ${build_dir} ->> ${dist_dir}/${module}-${version_num}.jar"/>
     <delete>
       <fileset dir="." includes="${dist_dir}/${module}.${version_num}.jar"/>
     </delete>
     <mkdir dir="${dist_dir}" />
-    <jar destfile="${dist_dir}/${module}.${version_num}.jar">
+    <jar destfile="${dist_dir}/${module}-${version_num}.jar">
       <fileset dir="${build_dir}"
 	       includes="esg/**,**/*.properties"
 	       excludes="**/test/**, **/log4j.properties"/>
