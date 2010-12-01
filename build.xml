@@ -101,7 +101,7 @@ Builds the project via ant (obviously).
   <property name="release_name" value="no_name"/>
   <filter token="release_name" value="${release_name}"/>
 
-  <property name="log_dir" value="${basedir}/logs"/>
+  <property name="log_dir" value="${java.io.tmpdir}/${module}/logs"/>
   <mkdir dir="${log_dir}" />
   <filter token="log_dir"  value="${log_dir}"/>
   
