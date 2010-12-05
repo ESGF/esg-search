@@ -78,5 +78,6 @@
 	<classpathentry kind="lib" path="lib/fetched/spring-expression-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/spring-tx-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/spring-webmvc-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/esgsearch"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

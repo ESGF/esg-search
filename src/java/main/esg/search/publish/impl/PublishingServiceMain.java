@@ -66,7 +66,8 @@ public class PublishingServiceMain {
 	    if (args.length!=1 && args.length!=3) {
 	    	exit();
 	    }
-
+	    
+	    
 	    // unpublish single record
 	    if (args.length==1) {
 	    	final String id = args[0];
@@ -74,6 +75,7 @@ public class PublishingServiceMain {
 	    	
 	    // publish/unpublish full repository
 	    } else if (args.length==3) {
+	    	
 		    final String uri = args[0];
 		    final MetadataRepositoryType type = MetadataRepositoryType.valueOf(args[1]);
 		    final boolean publish = Boolean.parseBoolean(args[2]);
