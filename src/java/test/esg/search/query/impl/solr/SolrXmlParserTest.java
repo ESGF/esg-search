@@ -83,6 +83,12 @@ public class SolrXmlParserTest {
 			Assert.assertEquals(fields.get("type").get(0), "Dataset");
 			// <str name="url">http://localhost/access?id=0</str>
 			Assert.assertEquals(fields.get("url").get(0), "http://localhost/access?id="+iRecord);
+			// <arr name="service">
+		    // 		<str>LAS|Live Access Server|file:///localhost/data/las/dsid=?id0</str>
+		    // 		<str>GridFTP|High Speed Transfer|file:///gftp/data/las/dsid=?id0</str>
+			// </arr>
+			Assert.assertEquals(fields.get("service").get(0), "LAS|Live Access Server|file:///localhost/data/las/dsid=?id"+iRecord);
+			Assert.assertEquals(fields.get("service").get(1), "GridFTP|High Speed Transfer|file:///gftp/data/las/dsid=?id"+iRecord);
 			// <arr name="description"><str>description #0</str></arr>
 			Assert.assertEquals(fields.get("description").get(0), "description #"+iRecord);
 			// <arr name="variable"><str>variable A</str><str>variable B</str></arr>

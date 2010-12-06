@@ -36,6 +36,10 @@
   <service name="HRMatPCMDI" serviceType="SRM" base="srm://datagrid2.lbl.gov:6288/srm/v2/server?SFN=/garchive.nersc.gov/">
     <property name="requires_authorization" value="false" />
   </service>
+  <service name="LASatPCMDI" serviceType="LAS" base="las/" desc="Live Access Server">
+    <property name="requires_authorization" value="false" />
+    <property name="application" value="Web Browser" />
+  </service>
   <property name="catalog_version" value="2" />
   <dataset name="IPCC Fourth Assessment Report" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1" restrictAccess="esg-user">
     <creator>
@@ -65,6 +69,7 @@
       <dataType>GRID</dataType>
       <dataFormat>NetCDF</dataFormat>
     </metadata>
+    <access urlPath="?dsid=pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1" serviceName="LASatPCMDI" dataFormat="NetCDF" />
     <dataset name="mrfso_A1.nc" ID="pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1.mrfso_A1.nc" urlPath="ipcc4_amip/land/mo/mrfso/ukmo_hadgem1/run1/mrfso_A1.nc" restrictAccess="esg-user">
       <serviceName>HTTPServer</serviceName>
       <dataSize units="Mbytes">29.41</dataSize>

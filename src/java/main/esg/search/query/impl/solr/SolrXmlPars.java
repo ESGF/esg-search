@@ -57,6 +57,7 @@ public class SolrXmlPars {
 	final public static String FIELD_DESCRIPTION = "description";
 	final public static String FIELD_TYPE = "type";
 	final public static String FIELD_URL = "url";
+	final public static String FIELD_SERVICE = "service";
 	final public static String FIELD_XLINK = "xlink";
 	final public static String FIELD_XREF = "xref";
 	final public static String FIELD_TIMESTAMP = "timestamp";

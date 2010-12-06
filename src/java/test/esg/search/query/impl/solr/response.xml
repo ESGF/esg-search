@@ -44,6 +44,10 @@
 				<str>project B</str>
 			</arr>
 			<date name="timestamp">2000-01-01T00:00:00.000Z</date>
+			<arr name="service">
+				<str>LAS|Live Access Server|file:///localhost/data/las/dsid=?id0</str>
+				<str>GridFTP|High Speed Transfer|file:///gftp/data/las/dsid=?id0</str>
+			</arr>
 		</doc>
 		<doc>
 			<str name="id">id #1</str>
@@ -65,6 +69,10 @@
 				<str>project B</str>
 			</arr>
 			<date name="timestamp">2000-01-01T00:00:00.000Z</date>
+			<arr name="service">
+				<str>LAS|Live Access Server|file:///localhost/data/las/dsid=?id1</str>
+				<str>GridFTP|High Speed Transfer|file:///gftp/data/las/dsid=?id1</str>
+			</arr>		
 		</doc>
 	</result>
 	<lst name="facet_counts">

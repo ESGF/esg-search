@@ -77,6 +77,7 @@ public class ThreddsParserStrategyTopLevelDatasetImplTest {
 		Assert.assertTrue(fields.get("model").contains("ukmo_hadgem1"));
 		Assert.assertTrue(fields.get("project").contains("ipcc4"));
 		Assert.assertTrue(fields.get("realm").contains("land"));
+		Assert.assertTrue(fields.get("service").get(0).matches("LAS\\|Live Access Server\\|file:(.+)esg/search/publish/thredds/las/\\?dsid=pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1"));
 		Assert.assertTrue(fields.get("run_name").contains("run1"));
 		Assert.assertTrue(fields.get("time_frequency").contains("mon"));
 		Assert.assertTrue(fields.get("cf_variable").contains("Soil Frozen Water Content"));

@@ -30,6 +30,7 @@
 	<field name="time_frequency">monthly</field>
 	<field name="title">Record #1</field>
 	<field name="realm">atm</field>
+	<field name="service">LAS|Live Access Server|http://las.test.com/?dsid=id1</field>
 	<field name="experiment">sresa2</field>
 	<field name="variable">clivi</field>
 </doc>
