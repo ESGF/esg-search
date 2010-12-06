@@ -21,6 +21,8 @@ package esg.search.publish.xml.fgdc;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -38,14 +40,22 @@ import esg.search.query.impl.solr.SolrXmlPars;
 @Component
 public class MetadataHandlerFgdcImpl implements MetadataHandler {
 
+	private final Log LOG = LogFactory.getLog(this.getClass());
+	
 	/**
 	 * {@inheritDoc}
 	 */
 	public List<Record> parse(final Element root) {
 		
 		
+		
 		final Record record = new RecordImpl();
 		final Namespace ns = root.getNamespace();
+		
+		
+		//add the required field type
+		record.addField(SolrXmlPars.FIELD_TYPE, "dataset");
+		
 		
 		//<citation>
 		//   <citeinfo>
@@ -79,17 +89,40 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 			System.out.println(originEl);
 		}
 		
-		//      <title>
+		//	    <title>Atmospheric Radiation Measurement (ARM) Climate Modeling Best Estimate Product</title>
 		final Element titleEl = citeinfoEl.getChild("title");
+		//LOG.debug("adding title: " + titleEl.getText());
+		final String title = titleEl.getTextNormalize();
+		record.addField(SolrXmlPars.FIELD_TITLE, title);
 		
-		//      <pubdate>
+		
+		//	    <pubdate>20090812</pubdate>
 		final Element pubdateEl = citeinfoEl.getChild("pubdate");
 		
 		
-		//      <onlink>
+		/* This is VERY arbitrary... it should probably be considered more carefully */
+		int count = 0;
 		for (final Object onlinkEl : citeinfoEl.getChildren("onlink")) {
-			System.out.println("onlink");
+			final String onlinkStr = ((Element)onlinkEl).getTextNormalize();
+		
+			//<onlink>http://iop.archive.arm.gov/arm-iop/0showcase-data/cmbe/</onlink>
+			if(count == 0)
+			{
+				record.addField(SolrXmlPars.FIELD_URL, onlinkStr);
+			}
+			//<onlink>http://www.arm.gov/data/pi/36</onlink>
+			else if(count == 1)
+			{
+				record.setId(onlinkStr);
+			}
+			count++;
+			
+			//	  <onlink>http://www.arm.gov</onlink>
+			//    <onlink>http://www.arm.gov/instruments</onlink>
+			
 		}
+		
+		
 		
 		/*
 		<descript>
@@ -115,7 +148,9 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 		final Element descriptEl = idinfoEl.getChild("descript");
 		
 		//   <abstract>
-		final Element abstractEl = descriptEl.getChild("abstractEl");
+		final Element abstractEl = descriptEl.getChild("abstract");
+		//LOG.debug("adding description: " + abstractEl.getText());
+		record.addField(SolrXmlPars.FIELD_DESCRIPTION, abstractEl.getTextNormalize());
 		
 		//   <supplinf>
 		final Element supplinfEl = descriptEl.getChild("supplinf");
@@ -130,16 +165,23 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 		   </timeinfo>
 		  </timeperd>
 		*/
-		
 		final Element timeperdEl = idinfoEl.getChild("timeperd");
-		
 		final Element timeinfoEl = timeperdEl.getChild("timeinfo");
-		
 		final Element rngdatesEl = timeinfoEl.getChild("rngdates");
-		
 		final Element begdateEl = rngdatesEl.getChild("begdate");
-		
 		final Element enddateEl = rngdatesEl.getChild("enddate");
+		
+		
+		if(begdateEl != null && enddateEl != null)
+		{
+			String date = dateConversion(begdateEl.getTextNormalize());
+			record.addField(SolrXmlPars.FIELD_DATETIME_START, date);
+			
+			date = dateConversion(enddateEl.getTextNormalize());
+			record.addField(SolrXmlPars.FIELD_DATETIME_STOP, date);
+			
+			
+		}
 		
 		/*
 		<status>
@@ -148,14 +190,14 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 		   <Maintenance_and_Update_Frequency>hourly</Maintenance_and_Update_Frequency>
 		</status>
 		*/
-		
 		final Element statusEl = idinfoEl.getChild("status");
-		
 		final Element progressEl = statusEl.getChild("progress");
-		
 		final Element updateEl = statusEl.getChild("update");
 		
 		final Element mAndUFreqEl = statusEl.getChild("Maintenance_and_Update_Frequency");
+		if(mAndUFreqEl != null)
+			record.addField("frequency", mAndUFreqEl.getTextNormalize());
+		
 		
 		/*
 		<spdom>
@@ -168,7 +210,6 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 		</spdom>
 		*/
 		final Element spdomEl = idinfoEl.getChild("spdom");
-		
 		final Element boundingEl = spdomEl.getChild("bounding");
 		
 		final Element westbcEl = boundingEl.getChild("westbc");
@@ -176,154 +217,106 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 		final Element northbcEl = boundingEl.getChild("northbc");
 		final Element southbcEl = boundingEl.getChild("southbc");
 		
-		
-		System.exit(0);
-		
-		/*
-		// <Entry_ID>FIFE_TEMP_PRO</Entry_ID>
-		final Element entryIdEl = root.getChild("Entry_ID", ns);
-		final String entryId = entryIdEl.getTextNormalize();
-		record.setId(entryId);
-		
-		// type
-		record.addField(SolrXmlPars.FIELD_TYPE, "Dataset");
-		
-		// <Entry_Title>TEMPERATURE PROFILES: RADIOSONDE (FIFE)</Entry_Title>
-		final Element entryTitleEl = root.getChild("Entry_Title", ns);
-		final String entryTitle = entryTitleEl.getTextNormalize();
-		record.addField(SolrXmlPars.FIELD_TITLE, entryTitle);
-		
-		// <Summary>ABSTRACT: The gravimetrical soil moisture data were collected....
-		final Element summaryEl = root.getChild("Summary", ns);
-		record.addField(SolrXmlPars.FIELD_DESCRIPTION, summaryEl.getTextNormalize());
-		
-		// </Parameters>
-		for (final Object parametersEl : root.getChildren("Parameters", ns)) {
-			final String parameter = parseParameter( (Element)parametersEl );
-			record.addField(SolrXmlPars.FIELD_GCMD_VARIABLE, parameter);
+		if(westbcEl != null && eastbcEl != null && northbcEl != null && southbcEl != null)
+		{
+			record.addField(SolrXmlPars.FIELD_WEST, westbcEl.getTextNormalize());
+			record.addField(SolrXmlPars.FIELD_EAST, eastbcEl.getTextNormalize());
+			record.addField(SolrXmlPars.FIELD_NORTH, northbcEl.getTextNormalize());
+			record.addField(SolrXmlPars.FIELD_SOUTH, southbcEl.getTextNormalize());
 		}
 		
-		// <Project>
-		//   <Short_Name>EOSDIS</Short_Name>
-		//   <Long_Name>Earth Observing System Data Information System</Long_Name>
-		// </Project>
-		for (final Object _projectEl : root.getChildren("Project", ns)) {
-			final Element projectEl = (Element)_projectEl;
-			final Element shortNameEl = projectEl.getChild("Short_Name", ns);
-			final String project = shortNameEl.getTextNormalize();
-			//final Element longNameEl = projectEl.getChild("Long_Name", ns);
-			record.addField(SolrXmlPars.FIELD_PROJECT, project);
-		}
 		
-		// <Sensor_Name>
-		//   <Short_Name/>
-		//   <Long_Name>RADIO ALTIMETER </Long_Name>
-		// </Sensor_Name>
-		for (final Object _sensorEl : root.getChildren("Sensor_Name", ns)) {
-			final Element sensorEl = (Element)_sensorEl;
-			final Element shortNameEl = sensorEl.getChild("Short_Name", ns);
-			final Element longNameEl = sensorEl.getChild("Long_Name", ns);
-			final String instrument = longNameEl.getTextNormalize();
-			record.addField(SolrXmlPars.FIELD_INSTRUMENT, instrument);
-		}
+		final Element keywordsEl = idinfoEl.getChild("keywords");
 		
-		// <Related_URL>
-		//   <URL_Content_Type>
-		//     <Type>GET DATA</Type>
-		//     <Subtype/>
-		//   </URL_Content_Type>
-		//   <URL>http://daac.ornl.gov/cgi-bin/dsviewer.pl?ds_id=110</URL>
-		// </Related_URL>
-		for (final Object _relatedUrlEl : root.getChildren("Related_URL", ns)) {
-			final Element relatedUrlEl = (Element)_relatedUrlEl;
-			final Element urlEl = relatedUrlEl.getChild("URL", ns);
-			final Element contentTypeEl = relatedUrlEl.getChild("URL_Content_Type", ns);
-			final Element typeEl = contentTypeEl.getChild("Type", ns);
-			final String type = typeEl.getTextNormalize();
-			if (type.equals("GET DATA")) {
-				record.addField(SolrXmlPars.FIELD_URL, urlEl.getTextNormalize());
+		for(final Object themeEl : keywordsEl.getChildren("theme")) {
+			
+			final Element themektEl = ((Element)themeEl).getChild("themekt");
+			
+			String themektStr = themektEl.getTextNormalize();
+			
+			
+			//themes -- realm
+			/*
+			<theme>
+		    	<themekt>Realm</themekt>
+		    	<themekey>Land</themekey>
+		    </theme> 
+			*/
+			if(themektStr.equals("Realm"))
+			{
+				final Element themekeyEl = ((Element)themeEl).getChild("themekey");
+				
 			}
+			/*
+			<theme>
+		    <themekt>Instrument Categories</themekt>
+		    <themekey>Cloud properties</themekey>
+		    <themekey>Atmospheric profiling</themekey>
+		    <themekey>Radiometric</themekey>
+		   </theme>
+		   */ 
+			else if(themektStr.equals("Instruments"))
+			{
+				for(final Object themekeyEl : ((Element)themeEl).getChildren("theme")) 
+				{
+					String themekeyStr = ((Element)themekeyEl).getTextNormalize();
+					record.addField(SolrXmlPars.FIELD_INSTRUMENT, themekeyStr);
+				}
+			}
+			/*
+			 <theme>
+			    <themekt>Variable Names</themekt>
+			    <themekey>cld_frac</themekey>
+			    <themekey>cld_frac_MMCR</themekey>
+			*/   
+			else if(themektStr.equals("Variable Names"))
+			{
+				for(final Object themekeyEl : ((Element)themeEl).getChildren("theme")) 
+				{
+					String themekeyStr = ((Element)themekeyEl).getTextNormalize();
+					record.addField(SolrXmlPars.FIELD_VARIABLE, themekeyStr);
+				}
+			}
+			
+			//add more themekt's here
+			
+			
 		}
-		
-		// <Spatial_Coverage>
-		//   <Southernmost_Latitude>39.07</Southernmost_Latitude>
-		//	 <Northernmost_Latitude>39.07</Northernmost_Latitude>
-		//	 <Westernmost_Longitude>-96.54</Westernmost_Longitude>
-		//	 <Easternmost_Longitude>-96.54</Easternmost_Longitude>
-		// </Spatial_Coverage>
-		for (final Object _geoEl : root.getChildren("Spatial_Coverage", ns)) {
-			
-			final Element _spatial_coverageEl = (Element)_geoEl;
-			
-			final Element _Southernmost_LatitudeEl = _spatial_coverageEl.getChild("Southernmost_Latitude", ns);
-			record.addField(SolrXmlPars.FIELD_SOUTH, _Southernmost_LatitudeEl.getTextNormalize());
-			
-			final Element _Northernmost_LatitudeEl = _spatial_coverageEl.getChild("Northernmost_Latitude", ns);
-			record.addField(SolrXmlPars.FIELD_NORTH, _Northernmost_LatitudeEl.getTextNormalize());
-			
-			final Element _Westernmost_LatitudeEl = _spatial_coverageEl.getChild("Westernmost_Longitude", ns);
-			record.addField(SolrXmlPars.FIELD_WEST, _Westernmost_LatitudeEl.getTextNormalize());
-			
-			final Element _Easternmost_LatitudeEl = _spatial_coverageEl.getChild("Easternmost_Longitude", ns);
-			record.addField(SolrXmlPars.FIELD_EAST, _Easternmost_LatitudeEl.getTextNormalize());
-			
-		}
-		*/
-		
-		//<Temporal_Coverage>
-		//<Start_Date>1987-06-24</Start_Date>
-		//<Stop_Date>1987-07-11</Stop_Date>
-		//</Temporal_Coverage>
-		/*
-		for (final Object _geoEl : root.getChildren("Spatial_Coverage", ns)) {
-			final Element _spatial_coverageEl = (Element)_geoEl;
-			
-			final Element _Southernmost_LatitudeEl = _spatial_coverageEl.getChild("Southernmost_Latitude", ns);
-			record.addField(SolrXmlPars.FIELD_SOUTH, _Southernmost_LatitudeEl.getTextNormalize());
-			
-			final Element _Northernmost_LatitudeEl = _spatial_coverageEl.getChild("Northernmost_Latitude", ns);
-			record.addField(SolrXmlPars.FIELD_NORTH, _Northernmost_LatitudeEl.getTextNormalize());
-			
-			final Element _Westernmost_LatitudeEl = _spatial_coverageEl.getChild("Westernmost_Latitude", ns);
-			record.addField(SolrXmlPars.FIELD_WEST, _Westernmost_LatitudeEl.getTextNormalize());
-			
-			final Element _Easternmost_LatitudeEl = _spatial_coverageEl.getChild("Easternmost_Latitude", ns);
-			record.addField(SolrXmlPars.FIELD_EAST, _Easternmost_LatitudeEl.getTextNormalize());
-		}
-		*/
 		
 		final List<Record> records = new ArrayList<Record>();
 		records.add(record);
 		return records;
 	}
 	
-	private String parseParameter(final Element parametersEl) {
-		
-		final StringBuilder sb = new StringBuilder();
-		final Namespace ns = parametersEl.getNamespace();
-		
-		/*
-		
-		// <Category>EARTH SCIENCE</Category>
-		final Element categoryEl = parametersEl.getChild("Category", ns);
-		//sb.append(categoryEl.getTextNormalize());
-		
-		// <Topic>ATMOSPHERE </Topic>
-		final Element topicEl = parametersEl.getChild("Topic", ns);
-		sb.append(topicEl.getTextNormalize());
-		
-		// <Term>ATMOSPHERIC TEMPERATURE </Term>
-		final Element termEl = parametersEl.getChild("Term", ns);
-		sb.append(" > ").append(termEl.getTextNormalize());
-		
-		// <Variable_Level_1>POTENTIAL TEMPERATURE </Variable_Level_1>
-		final Element variableLevel1El = parametersEl.getChild("Variable_Level_1", ns);
-		if (variableLevel1El != null) {
-			sb.append(" > ").append(variableLevel1El.getTextNormalize());
-		}
-		*/
-		return sb.toString();
-		
-	}
 
+	/**
+	 * 
+	 * Static helper method to convert the fgdc date format into the solr date format
+	 * YYYYMMDD -> YYYY-MM-DDTHH:MM:SSZ
+	 * @param oldDateString
+	 * @return dateString
+	 * */
+	private static String dateConversion(String oldDateString)
+	{
+		String dateString = "";
+		
+		if(oldDateString.equals("."))
+		{
+			dateString += "NOW";
+		}
+		else
+		{
+			/* Date type yyyymmdd */
+			String year = oldDateString.substring(0, 4);
+			String month = oldDateString.substring(4, 6);
+			String day = oldDateString.substring(6, oldDateString.length());
+		
+			dateString += year + "-" + month + "-" + day + "T00:00:00Z";
+		}
+		
+		return dateString;
+	}
+	
+	
+	
 }

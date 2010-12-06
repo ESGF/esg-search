@@ -39,7 +39,7 @@ import esg.search.utils.HttpClient;
 import esg.search.utils.XmlParser;
 
 /**
- * Implementation of {@link MetadataRepositoryCrawler} that acts as an OAI Harvester to retrieve records from an OAI Repository.
+ * Implementation of {@link MetadataRepositoryCrawler} that acts as an FGDC Harvester to retrieve records from an FGDC document.
  */
 @Service
 public class FgdcCrawler implements MetadataRepositoryCrawler  {
@@ -57,7 +57,7 @@ public class FgdcCrawler implements MetadataRepositoryCrawler  {
 	 * {@inheritDoc}
 	 */
 	public void crawl(final URI uri, final boolean recursive, final RecordProducer callback) throws Exception {
-		LOG.debug("FGDCCrawler.crawl");
+		//LOG.debug("FGDCCrawler.crawl");
 		
 		// parse XML document
 		final String xml = (new HttpClient()).doGet( uri.toURL() );
@@ -66,11 +66,6 @@ public class FgdcCrawler implements MetadataRepositoryCrawler  {
 		// process XML
 		this.parseDocument(doc, callback);
 		
-		
-		
-		/*
-		
-		*/
 	}
 	
 	/**
@@ -87,109 +82,31 @@ public class FgdcCrawler implements MetadataRepositoryCrawler  {
 	 */
 	private void parseDocument(final Document doc, final RecordProducer callback) throws Exception {
 		
-		LOG.debug("FGDCCrawler.parseDocument");
-		
-		// parse OAI response header
+		//LOG.debug("FGDCCrawler.parseDocument");
 		
 		final Element metadataEl = doc.getRootElement();
 		
+		//This is the header tag called "metadata"
 		// <metadata>
-		
-		//final Element metadataEl = root.getChild("metadata", ns);
-		
 		this.parseRecord(metadataEl, callback);
 		
-		
-		/*
-		// <OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"
-		//	 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-		//	 xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/
-		//	 http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd">
-		//	<responseDate>2010-05-10T14:20:15Z</responseDate>
-		//	<request verb="ListRecords" metadataPrefix="oai_dif">http://mercury.ornl.gov/oai/provider</request>
-		
-		// loop over OAI records
-		// <ListRecords>
-		final Element listRecordsEl = root.getChild("ListRecords", ns);
-		for (final Object recordEl : listRecordsEl.getChildren("record", ns) ) {
-			this.parseRecord( (Element)recordEl, callback );
-		}
-		*/
 	}
 	
 	/**
-	 * Method to parse a single OAI record,
+	 * Method to parse a single FGDC record,
 	 * which contains embedded metadata of some specific format.
 	 * @param recordEl
 	 * @return
 	 */
 	private void parseRecord(final Element recordEl, final RecordProducer callback) throws Exception {
 		
-		LOG.debug("FGDCCrawler.parseRecord");
-		
-		//final Namespace ns = recordEl.getNamespace();
-		
-		//System.out.println(ns.getURI());
-		
-		System.out.println(recordEl.getChildren().get(0));
+		//LOG.debug("FGDCCrawler.parseRecord");
 		
 		final List<Record> records = metadataHandler.parse( (Element)recordEl );
 		
+		// index resulting Solr records
+		for (final Record record : records) callback.notify(record);
 		
-		//<idinfo>
-		
-		/*
-		if (recordEl!=null) {
-			for (final Object rootEl : recordEl.getChildren()) {
-				
-				Element e = (Element)rootEl;
-				
-				System.out.println(e.getChildren());
-				System.exit(0);
-				// parse detailed metadata with specific handler
-				final List<Record> records = metadataHandler.parse( (Element)rootEl );
-				
-				
-
-				System.exit(0);
-				// index resulting Solr records
-				//for (final Record record : records) callback.notify(record);
-			
-			}
-		}	
-		*/
-		
-		/**
-		 * Parse record header.
-		 * <header>
-      	 *   <identifier>oai:daac.ornl.gov:ornldaac_1</identifier>
-         *   <datestamp>2009-07-21T22:28:58Z</datestamp>
-	     * </header>
-		 */
-		/*
-		final Namespace ns = recordEl.getNamespace();
-		final Element headerEl = recordEl.getChild("header", ns);
-		final String status = headerEl.getAttributeValue("status");
-		final Element identifierEl = headerEl.getChild("identifier", ns);
-		final String oaiIdentfier = identifierEl.getTextNormalize();
-		final Element datestampEl = headerEl.getChild("datestamp", ns);
-		final String datestamp = datestampEl.getTextNormalize();
-		
-		if (LOG.isInfoEnabled()) LOG.info("OAI Record identifier="+oaiIdentfier+" date stamp="+datestamp+" status="+status);
-		
-		final Element metadataEl = recordEl.getChild("metadata", ns);
-		if (metadataEl!=null) {
-			for (final Object rootEl : metadataEl.getChildren()) {
-	
-				// parse detailed metadata with specific handler
-				final List<Record> records = metadataHandler.parse( (Element)rootEl );
-				
-				// index resulting Solr records
-				for (final Record record : records) callback.notify(record);
-			
-			}
-		}
-		*/		
 	}
 	
 

@@ -49,7 +49,6 @@ public class PublishingServiceImpl implements PublishingService {
 	@Override
 	public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws Exception {
 		publisherCrawler.crawl(uri, recursive, metadataRepositoryType);
-
 	}
 
 	@Override
