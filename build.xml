@@ -90,6 +90,8 @@ Builds the project via ant (obviously).
 
   <property file="${user.home}/.${module}.ant.properties"/>
   <echo message="user property file ${user.home}/.${module}.ant.properties"/>
+  <property file="${user.home}/.esgf.ant.properties"/>
+  <echo message="user property file ${user.home}/.esgf.ant.properties"/>
   <property file="${basedir}/etc/${module}.ant.properties"/> 
   <echo message="user property file ${basedir}/etc/${module}.ant.properties"/>
 
@@ -205,7 +207,9 @@ Builds the project via ant (obviously).
 	      dest="ivy-${ivy_version}.jar" usetimestamp="true"/> -->
     <taskdef resource="org/apache/ivy/ant/antlib.xml"
              uri="antlib:org.apache.ivy.ant" classpath="${lib_dir}/ivy-${ivy_version}.jar"/>
-    <ivy:settings file="./ivysettings.xml" />
+    <ivy:settings file="./ivysettings.xml">
+      <credentials host="esgf.org" realm="Artifactory Realm" username="${username}" passwd="${passwd}" />
+    </ivy:settings>
   </target>
   
   <target name="deps" depends="init-ivy" description="(Sets up library dependencies: Ivy)">
@@ -229,6 +233,21 @@ Builds the project via ant (obviously).
     <pathconvert property="_cp" refid="main_classpath" pathsep="${line.separator}"/>
     <echo>${_cp}</echo>
     <echo message="--------------------------------"/> 
+  </target>
+
+  <target name="deliver" depends="deps">
+    <ivy:deliver deliverpattern="dist/[artifact]-[revision].[ext]"
+                 pubrevision="${version_num}" status="milestone" />
+  </target>
+  
+  <target name="publish" depends="deliver">
+    <ivy:publish resolver="esgf_repo_devel" 
+                 organisation="org.esgf"
+                 module="${module}"
+                 revision="${version_num}"
+                 overwrite="true" haltonmissing="false">
+      <artifacts pattern="dist/[artifact]-[revision].[ext]"/>
+    </ivy:publish>
   </target>
 
   <target name="dep_report" depends="deps" description="(Generates a report of library dependencies)">
