@@ -91,7 +91,7 @@ installer_gid=${installer_gid:-$(id ${HOME##*/} | sed 's/.*gid=\([0-9]*\).*/\1/'
 [ $? != 0 ] || [ -z "$installer_gid" ] && echo "installer_gid is not set" && exit 1
 installer_home=${HOME}
 
-search_version=${search_version:-"1.1.0.0"}
+search_version=${search_version:-"1.0.1"}
 search_install_dir=${ESGF_INSTALL_DIR:-"${install_prefix}/esgf_search"}
 seach_data_dir=${ESGF_DATA_DIR:="${esg_root_dir}/search_data"}
 
@@ -152,8 +152,8 @@ web_app_tld=${tomcat_install_dir}/webapps/
 
 search_web_service_name=esg-search
 search_web_service_dir=${web_app_tld}/${search_web_service_name}
-search_service_version="0.9.0"
-search_service_dist_url=${esg_dist_url}/${search_web_service_name}/${search_web_service_name}.${search_service_version}.tar.gz
+search_service_version="1.0.1"
+search_service_dist_url=${esg_dist_url}/${search_web_service_name}/${search_web_service_name}-${search_service_version}.tar.gz
 
 #####
 # Install The Search Service...
@@ -205,7 +205,7 @@ setup_search_service() {
 
     local search_service_dist_file=${search_service_dist_url##*/}
     #strip off .tar.gz at the end
-    #(Ex: esg-search.1.0.0.1.tar.gz -> esg-search.1.0.0.1)
+    #(Ex: esg-search-1.0.1.tar.gz -> esg-search-1.0.1)
     local search_service_dist_dir=$(echo ${search_service_dist_file} | awk 'gsub(/('$compress_extensions')/,"")')
 
     checked_get ${search_service_dist_file} ${search_service_dist_url}
@@ -225,8 +225,11 @@ setup_search_service() {
 
     stop_tomcat
 
-    #(esg-search.1.0.0.4 -> esg-search.1.0.0.1.war) 
-    local search_service_war_file=$(pwd)/${search_service_dist_dir}.war
+
+    #strip the version number off(#.#.#) the dir and append .war to get the name of war file
+    #(esg-search-1.0.1 -> esg-search.war) 
+    local trimmed_name=$(pwd)/${search_service_dist_dir%-*}
+    local search_service_war_file=$(pwd)/${trimmed_name}.war
     echo "search_service_war_file = "${search_service_war_file}
 
     mkdir -p ${search_web_service_dir}
