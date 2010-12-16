@@ -153,7 +153,7 @@ web_app_tld=${tomcat_install_dir}/webapps/
 search_web_service_name=esg-search
 search_web_service_dir=${web_app_tld}/${search_web_service_name}
 search_service_version="1.0.1"
-search_service_dist_url=${esg_dist_url}/${search_web_service_name}/${search_web_service_name}.${search_service_version}.tar.gz
+search_service_dist_url=${esg_dist_url}/${search_web_service_name}/${search_web_service_name}-${search_service_version}.tar.gz
 
 #####
 # Install The Search Service...
