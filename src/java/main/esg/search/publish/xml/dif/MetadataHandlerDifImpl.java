@@ -43,6 +43,8 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 	 */
 	public List<Record> parse(final Element root) {
 		
+		System.exit(0);
+		
 		final Record record = new RecordImpl();
 		final Namespace ns = root.getNamespace();
 		
@@ -139,6 +141,8 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 		//<Start_Date>1987-06-24</Start_Date>
 		//<Stop_Date>1987-07-11</Stop_Date>
 		//</Temporal_Coverage>
+		
+		System.exit(0);
 		
 		for (final Object _geoEl : root.getChildren("Temporal_Coverage", ns)) {
 			final Element _spatial_coverageEl = (Element)_geoEl;

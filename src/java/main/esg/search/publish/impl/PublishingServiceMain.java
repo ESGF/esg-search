@@ -44,7 +44,7 @@ public class PublishingServiceMain {
      * @throws Exception
      */
 	public static void main(String[] args) throws Exception {
-		
+		System.exit(0);
 	    final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(configLocations);
 	    final PublishingService publishingService = (PublishingService)context.getBean("publishingService");
 	    
