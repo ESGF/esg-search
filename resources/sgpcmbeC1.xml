@@ -1,0 +1,264 @@
+<?xml version="1.0" ?>
+<?xml-stylesheet type="text/xsl" href="FGDCPlus.xsl"?>
+<metadata>
+ <idinfo>
+  <citation>
+   <citeinfo>
+    <origin>Shaocheng Xie, xie2@llnl.gov</origin>  
+    <origin>Renata McCoy</origin> 
+    <title>Atmospheric Radiation Measurement (ARM) Climate Modeling Best Estimate Product</title>
+    <pubdate>20090812</pubdate>
+    <onlink>http://iop.archive.arm.gov/arm-iop/0showcase-data/cmbe/</onlink>
+    <onlink>http://www.arm.gov/data/pi/36</onlink>
+    <onlink>http://www.arm.gov</onlink>
+    <onlink>http://www.arm.gov/instruments</onlink>
+   </citeinfo>
+  </citation>
+  <descript>
+   <abstract>
+The ARM Climate Modeling Best Estimate (CMBE) product is a new ARM datastream specifically tailored to climate modelers for use in evaluation of global climate models. It contains a best estimate of several selected cloud, radiation and atmospheric quantities from the ACRF observations and Numerical Weather Prediction (NWP) analysis (for upper air data only).
+The data are stored in two different data file streams: CMBE-CLDRAD (former CMBE datastream) for cloud and radiation relevant quantities and CMBE-ATM for atmospheric quantities. Data are averaged over one hour time intervals. Quick look plots and detailed information about the CMBE data can be found at Climate Modeling Working Group web page: http://science.arm.gov/wg/cpm/scm/best_estimate.html.
+The CMBE-CLDRAD data are available for the 5 ARM Climate Research Facility sites: SGP.C1 (Lamont, OK), NSA.C1 (Barrow, AK), TWP.C1 (Manus Island, PNG), TWP.C2 (Nauru), and TWP.C3 (Darwin, AU) for the period when these data are available. This data file contains a best estimate of several selected cloud and radiation relevant quantities from ACRF observations:
+* Cloud fraction profiles
+* Total, high, middle, and low clouds
+* Liquid water path and precipitable water vapor
+* Surface radiative fluxes
+* TOA radiative fluxes
+The CMBE-ATM data are currently only available for SGP.C1. This data file contains a best estimate of several selected atmospheric quantities from ACRF observations and NWP analysis data:
+* Soundings
+* NWP analysis data
+* Surface sensible and latent heat fluxes
+* Surface precipitation
+* Surface temperature, relative humidity, and horizontal winds</abstract>
+   <supplinf> http://science.arm.gov/workinggroup/cpm/scm/best_estimate.html</supplinf>
+   <purpose>The CMBE product was developed to make ARM data better serve the needs of climmate studies and model development. It is intended for use by climate modelers in evaluating global climate models. </purpose>
+  </descript>
+  <timeperd>
+   <timeinfo>
+    <rngdates>
+     <begdate>19960101</begdate>
+     <enddate>. </enddate>
+    </rngdates>
+   </timeinfo>
+  </timeperd>
+  <status>
+   <progress>Ongoing </progress>
+   <update>Annual </update>
+   <Maintenance_and_Update_Frequency>hourly</Maintenance_and_Update_Frequency>
+  </status>
+  <spdom>
+   <bounding>
+    <westbc>-99.31</westbc>
+    <eastbc>-95.59</eastbc>
+    <northbc>38.3</northbc>
+    <southbc>34.98</southbc>
+   </bounding>
+  </spdom>
+  <keywords>
+   <theme>
+    <themekt>Parameter</themekt>
+    <themekey>Cloud properties</themekey>
+    <themekey>Atmospheric state</themekey>
+    <themekey>Radiometric</themekey>
+   </theme>
+   <theme>
+    <themekt>Product Type</themekt>
+    <themekey>ARM Showcase Data</themekey>
+    <themekey>Value Added Product</themekey>
+   </theme>
+   <theme>
+    <themekt>Realm</themekt>
+    <themekey>Land</themekey>
+   </theme> 
+   <theme>
+    <themekt>Instrument Categories</themekt>
+    <themekey>Cloud properties</themekey>
+    <themekey>Atmospheric profiling</themekey>
+    <themekey>Radiometric</themekey>
+   </theme>
+   <theme>
+    <themekt>Instruments</themekt>
+    <themekey>Millimeter Wavelength Cloud Radar</themekey>
+    <themekey>Micropulse Lidar</themekey>
+    <themekey>Geostationary Operational Environmental Satellites</themekey>
+    <themekey>Total Sky Imager</themekey>
+    <themekey>Vaisala Ceilometer</themekey>
+    <themekey>Multifilter Rotating Shadowband Radiometer</themekey>
+   </theme>
+   <theme>
+    <themekt>Measurement Categories</themekt>
+    <themekey>Cloud properties </themekey>
+    <themekey>Atmospheric state </themekey>
+    <themekey>Radiometric</themekey>
+   </theme>
+   <theme>
+    <themekt>Measurement Sub-Categories</themekt>
+    <themekey>Macrophysical</themekey>
+    <themekey>Longwave broadband </themekey>
+    <themekey>Shortwave broadband </themekey>
+    <themekey>Upper air state </themekey>
+    <themekey>Microphysical </themekey>
+   </theme>
+   <theme>
+    <themekt>Primary Measurements</themekt>
+    <themekey>Cloud fraction </themekey>
+    <themekey>Shortwave broadband diffuse downwelling irradiance</themekey>
+    <themekey>Shortwave broadband total downwelling irradiance</themekey>
+    <themekey>Shortwave broadband direct downwelling irradiance</themekey>
+    <themekey>Shortwave broadband diffuse upwelling irradiance</themekey>
+    <themekey>Longwave broadband downwelling irradiance</themekey>
+    <themekey>Longwave broadband upwelling irradiance</themekey>
+    <themekey>Precipitable water</themekey>
+    <themekey>Liquid water path</themekey>
+    <themekey>Longwave broadband net flux at TOA</themekey>
+    <themekey>Shortwave broadband net flux at TOA</themekey>
+    <themekey>Shortwave broadband downwelling insolation at TOA</themekey>
+    <themekey>Cloud low-level fraction</themekey>
+    <themekey>Cloud middle-level fraction</themekey>
+    <themekey>Cloud high-level fraction</themekey>
+    <themekey>Cloud thickness</themekey>
+    <themekey>Cloud top height</themekey>    
+   </theme>   
+   <theme>
+    <themekt>Variable Names</themekt>
+    <themekey>cld_frac</themekey>
+    <themekey>cld_frac_MMCR</themekey>
+    <themekey>cld_frac_MPL</themekey>
+    <themekey>tot_cld</themekey>
+    <themekey>swdn</themekey>
+    <themekey>swdif</themekey>
+    <themekey>swdir</themekey>
+    <themekey>swup</themekey>
+    <themekey>lwdn</themekey>
+    <themekey>lwup</themekey>
+    <themekey>pwv</themekey>
+    <themekey>lwp</themekey>
+    <themekey>tot_cld_tsi</themekey>
+    <themekey>lw_net_TOA</themekey>
+    <themekey>sw_net_TOA</themekey>
+    <themekey>sw_dn_TOA</themekey>
+    <themekey>cld_low</themekey>
+    <themekey>cld_mid</themekey>
+    <themekey>cld_high</themekey>
+    <themekey>cld_tot</themekey>
+    <themekey>cld_thick</themekey>
+    <themekey>cld_top</themekey>    
+   </theme>
+   
+   <theme>
+    <themekt>PrimaryMeasurements_VariableNames</themekt>
+    <themekey>Cloud fraction|cld_frac</themekey>
+    <themekey>Cloud fraction|cld_frac_MMCR</themekey>
+    <themekey>Cloud fraction|cld_frac_MMCR</themekey>
+    <themekey>Cloud fraction|tot_cld</themekey>
+    <themekey>Cloud fraction|tot_cld_tsi</themekey>
+    <themekey>Cloud fraction|cld_tot</themekey>     
+    <themekey>Shortwave broadband diffuse downwelling irradiance|swdif</themekey>
+    <themekey>Shortwave broadband total downwelling irradiance|swdn</themekey>
+    <themekey>Shortwave broadband direct downwelling irradiance|swdir</themekey>
+    <themekey>Shortwave broadband diffuse upwelling irradiance|swup</themekey>
+    <themekey>Longwave broadband downwelling irradiance|lwdn</themekey>
+    <themekey>Longwave broadband upwelling irradiance|lwup</themekey>
+    <themekey>Precipitable water|pwv</themekey>
+    <themekey>Liquid water path|lwp</themekey>
+    <themekey>Longwave broadband net flux at TOA|lw_net_TOA</themekey>
+    <themekey>Shortwave broadband net flux at TOA|sw_net_TOA</themekey>
+    <themekey>Shortwave broadband downwelling insolation at TOA|sw_dn_TOA</themekey>
+    <themekey>Cloud low-level fraction|cld_low</themekey>
+    <themekey>Cloud middle-level fraction|cld_mid</themekey>
+    <themekey>Cloud high-level fraction|cld_high</themekey>
+    <themekey>Cloud thickness|cld_thick</themekey>
+    <themekey>Cloud top height|cld_top</themekey>    
+   </theme>
+ <theme>
+    <themekt>MeasurementCategories_MeasSubCat_PrimaryMeasurements</themekt>
+    <themekey>Cloud properties|Macrophysical|Cloud fraction </themekey>
+    <themekey>Cloud properties|Macrophysical|Cloud low-level fraction </themekey>
+    <themekey>Cloud properties|Macrophysical|Cloud middle-level fraction </themekey>
+    <themekey>Cloud properties|Macrophysical|Cloud high-level fraction </themekey>
+    <themekey>Cloud properties|Macrophysical|Cloud thickness</themekey>
+    <themekey>Cloud properties|Macrophysical|Cloud top height</themekey>    
+    <themekey>Cloud properties|Upper air state|Liquid water path </themekey>
+    <themekey>Cloud properties|Upper air state|Precipitable water </themekey>    
+    <themekey>Cloud properties|Microphysical|Liquid water path </themekey>       
+    <themekey>Radiometric|Longwave broadband|Longwave broadband downwelling irradiance</themekey>
+    <themekey>Radiometric|Longwave broadband|Longwave broadband upwelling irradiance</themekey>
+    <themekey>Radiometric|Longwave broadband|Longwave broadband net flux at TOA</themekey>    
+    <themekey>Radiometric|Shortwave broadband|Shortwave broadband diffuse downwelling irradiance</themekey>
+    <themekey>Radiometric|Shortwave broadband|Shortwave broadband total downwelling irradiance</themekey>
+    <themekey>Radiometric|Shortwave broadband|Shortwave broadband direct downwelling irradiance</themekey>
+    <themekey>Radiometric|Shortwave broadband|Shortwave broadband diffuse upwelling irradiance</themekey>
+    <themekey>Radiometric|Shortwave broadband|Shortwave broadband net flux at TOA</themekey>
+    <themekey>Radiometric|Shortwave broadband|Shortwave broadband downwelling insolation at TOA</themekey>    
+   </theme>
+   <theme>
+    <themekt>Value-Added Products</themekt>
+    <themekey></themekey>  
+   </theme>
+   <theme>
+    <themekt>Output Datastreams</themekt>
+    <themekey>sgpcmbe-cldrad-v2p1C1.c1 : Climate Modeling Best Estimate - CMBE-CLDRAD</themekey>   
+   </theme>
+   <place>
+    <placekt>Place Keywords</placekt>
+    <placekey>Southern Great Plains (sgp), C1, Central Facility, Lamont, OK, USA </placekey>
+    <placekey>North America</placekey>
+   </place>
+  </keywords>
+  <ptcontac>
+   <cntinfo>
+    <cntperp>
+     <cntper>Shaocheng Xie</cntper>
+    </cntperp>
+    <cntemail>xie2@llnl.gov</cntemail>
+    <cntvoice>+1-925-422-6023</cntvoice>
+   </cntinfo>
+  </ptcontac>
+ </idinfo>
+ <distinfo>
+  <distrib>
+   <cntinfo>
+    <cntperp>
+     <cntorg>Oak Ridge National Laboratory (ORNL), Oak Ridge, Tennessee, USA</cntorg>
+     <cntper>ARM Archive User Services</cntper>
+    </cntperp>
+    <cntvoice>+1-865-241-4851</cntvoice>
+    <cntemail>armarchive@ornl.gov</cntemail>
+   </cntinfo>
+  </distrib>
+  <storder>
+   <digform>
+    <digtopt>
+     <onlinopt>
+      <computer>http://www.arm.gov</computer>
+      <accinstr>Public</accinstr>
+     </onlinopt>
+    </digtopt>
+   </digform>
+  </storder>
+  <resdesc>Atmospheric Radiation Measurement (ARM) Program Data Sets. 1993-Ongoing. Available at http://www.archive.arm.gov from the ARM Archive, Oak Ridge National Laboratory (ORNL), Oak Ridge, Tennessee, USA</resdesc>
+ </distinfo>
+ <metainfo>
+  <metc>
+   <cntinfo>
+    <cntorgp>
+     <cntper>ARM Archive User Services</cntper>
+    </cntorgp>
+    <cntaddr>
+     <addrtype>Mailing and Physical Address</addrtype>
+     <address>P.O. Box 2008, MS 6407</address>
+     <city>Oak Ridge</city>
+     <state>Tennessee</state>
+     <postal>37831</postal>
+     <country>USA</country>
+    </cntaddr>
+    <cntperp>
+     <cntper>ARM Archive User Services</cntper>
+    </cntperp>
+    <cntvoice>865-241-4851</cntvoice>
+    <cntemail>armarchive@ornl.gov</cntemail>
+   </cntinfo>
+  </metc>
+  <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+ </metainfo>
+</metadata>
