@@ -22,6 +22,7 @@ public enum MetadataRepositoryType {
 	
 	THREDDS,
 	OAI,
-	CAS;
+	CAS,
+	FGDC;
 
 }
