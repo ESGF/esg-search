@@ -148,7 +148,7 @@ test_search_services() {
 #---------------------------------------------------------
 
 tomcat_install_dir=${tomcat_install_dir:-${install_prefix}/tomcat}
-web_app_tld=${tomcat_install_dir}/webapps/
+web_app_tld=${tomcat_install_dir}/webapps
 
 search_web_service_name=esg-search
 search_web_service_dir=${web_app_tld}/${search_web_service_name}
