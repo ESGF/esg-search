@@ -16,7 +16,7 @@
 #But for now they need to be posted somewhere so
 #we can use this mechanism. TEMPORARY FIX
 
-../dist/esg-search.0.9.0.tar.gz
+../dist/esg-search-1.0.1.tar.gz
 
 
 [esg-search/zookeeper]

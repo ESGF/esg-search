@@ -120,6 +120,8 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 		// </Spatial_Coverage>
 		for (final Object _geoEl : root.getChildren("Spatial_Coverage", ns)) {
 			
+			
+			
 			final Element _spatial_coverageEl = (Element)_geoEl;
 			
 			final Element _Southernmost_LatitudeEl = _spatial_coverageEl.getChild("Southernmost_Latitude", ns);
