@@ -1,6 +1,10 @@
 CHANGES
 
-1.1.0.0
+1.0.0
 Inserted remote Search Web Service API.
 The Search Web Service bean is deployed in Spring context as "searchWebService" and can be queries at endpoint of: 
 http://<hostname>/<context>/ws/hessian/searchWebService
+
+1.1.0
+Inserted support for parsing FGDC records
+Inserted support for storing generic service endpoints from THREDDS catalogs, in particular for LAS integration
