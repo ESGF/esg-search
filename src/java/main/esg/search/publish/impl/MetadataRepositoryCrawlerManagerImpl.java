@@ -53,6 +53,7 @@ public class MetadataRepositoryCrawlerManagerImpl extends RecordProducerImpl imp
 		
 		if (LOG.isInfoEnabled()) LOG.info("uri="+uri+" recursive="+recursive+" metadataRepositoryType="+metadataRepositoryType);
 		MetadataRepositoryCrawler crawler = crawlers.get(metadataRepositoryType);
+		
 		Assert.notNull(crawler, "Unsupported MetadataRepositoryType:"+metadataRepositoryType);
 		crawler.crawl(new URI(uri), recursive, this);
 		

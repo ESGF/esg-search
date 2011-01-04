@@ -43,6 +43,7 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 	 */
 	public List<Record> parse(final Element root) {
 		
+		
 		final Record record = new RecordImpl();
 		final Namespace ns = root.getNamespace();
 		
@@ -119,6 +120,8 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 		// </Spatial_Coverage>
 		for (final Object _geoEl : root.getChildren("Spatial_Coverage", ns)) {
 			
+			
+			
 			final Element _spatial_coverageEl = (Element)_geoEl;
 			
 			final Element _Southernmost_LatitudeEl = _spatial_coverageEl.getChild("Southernmost_Latitude", ns);
@@ -139,23 +142,19 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 		//<Start_Date>1987-06-24</Start_Date>
 		//<Stop_Date>1987-07-11</Stop_Date>
 		//</Temporal_Coverage>
-		/*
-		for (final Object _geoEl : root.getChildren("Spatial_Coverage", ns)) {
+		
+		
+		for (final Object _geoEl : root.getChildren("Temporal_Coverage", ns)) {
 			final Element _spatial_coverageEl = (Element)_geoEl;
 			
-			final Element _Southernmost_LatitudeEl = _spatial_coverageEl.getChild("Southernmost_Latitude", ns);
-			record.addField(SolrXmlPars.FIELD_SOUTH, _Southernmost_LatitudeEl.getTextNormalize());
+			final Element _Start_DateEl = _spatial_coverageEl.getChild("Start_Date", ns);
+			record.addField(SolrXmlPars.FIELD_DATETIME_START, dateToISO8601(_Start_DateEl.getTextNormalize()));
 			
-			final Element _Northernmost_LatitudeEl = _spatial_coverageEl.getChild("Northernmost_Latitude", ns);
-			record.addField(SolrXmlPars.FIELD_NORTH, _Northernmost_LatitudeEl.getTextNormalize());
+			final Element _Stop_DateEl = _spatial_coverageEl.getChild("Stop_Date", ns);
+			record.addField(SolrXmlPars.FIELD_DATETIME_STOP, dateToISO8601(_Stop_DateEl.getTextNormalize()));
 			
-			final Element _Westernmost_LatitudeEl = _spatial_coverageEl.getChild("Westernmost_Latitude", ns);
-			record.addField(SolrXmlPars.FIELD_WEST, _Westernmost_LatitudeEl.getTextNormalize());
-			
-			final Element _Easternmost_LatitudeEl = _spatial_coverageEl.getChild("Easternmost_Latitude", ns);
-			record.addField(SolrXmlPars.FIELD_EAST, _Easternmost_LatitudeEl.getTextNormalize());
 		}
-		*/
+		
 		
 		final List<Record> records = new ArrayList<Record>();
 		records.add(record);
@@ -188,5 +187,29 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 		return sb.toString();
 		
 	}
+	
+	/**
+     * Static method returns the input to the SearchController
+     * @param parValue time in full date format
+     */
+    private static String dateToISO8601(String parValue)
+    {
+        String theDate = "";
+        
+        if(parValue.equals(""))
+        {
+            theDate = "*";
+        }
+        else
+        {
+            String [] tokens = parValue.split("-");
+            String year = tokens[0] + "-";
+            String month = tokens[1] + "-";
+            String day = tokens[2];
+            String time = "T12:00:00Z";
+            theDate = year + month + day + time;
+        }  
+        return theDate;
+    }
 
 }
