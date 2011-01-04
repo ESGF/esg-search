@@ -23,6 +23,8 @@ import java.net.URI;
 /**
  * API for crawling a remote metadata repository (with optional recursion)
  * and call back a {@link RecordProducer} during the process.
+ * Each implementation must declare the specific MetadataRepositoryType that it can handle
+ * through the support() method.
  */
 public interface MetadataRepositoryCrawler {
 	

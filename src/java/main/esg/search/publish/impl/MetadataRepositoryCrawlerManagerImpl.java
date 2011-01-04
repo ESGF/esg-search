@@ -32,6 +32,8 @@ import esg.search.publish.api.MetadataRepositoryType;
 
 /**
  * Service class that manages the harvesting of search records from different remote metadata repositories.
+ * Note that the the specific MetadataRepositoryCrawlers are mapped to the corresponding metadata repository type
+ * through their implementation of the support() method.
  */
 public class MetadataRepositoryCrawlerManagerImpl extends RecordProducerImpl implements MetadataRepositoryCrawlerManager {
 	
