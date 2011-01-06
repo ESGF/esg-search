@@ -441,6 +441,9 @@
    <!-- The main URL that is hyper-linked to the search result (mandatory) -->
    <field name="url" type="string" indexed="true" required="true" stored="true"/>
    
+   <!-- Other optional access services encoded as <service type>|<service name>|<service url> -->
+   <field name="service" type="string" indexed="true" required="false" stored="true" multiValued="true" />
+   
    <!-- The document type, used to enable searching on different targets (mandatory) -->
    <field name="type" type="string" indexed="true" required="true" stored="true"/>
    
@@ -457,8 +460,8 @@
    <field name="timestamp" type="date" indexed="true" stored="true" default="NOW" multiValued="false"/>
 
    <!-- The date/time boundaries -->
-   <field name="start_datetime" type="date" indexed="true" stored="true" multiValued="false"/>
-   <field name="stop_datetime" type="date" indexed="true" stored="true" multiValued="false"/>
+   <field name="datetime_start" type="date" indexed="true" stored="true" multiValued="false"/>
+   <field name="datetime_stop" type="date" indexed="true" stored="true" multiValued="false"/>
 
    <!-- Geographic boundaries -->
    <field name="north_degrees" type="float" indexed="true" stored="true" multiValued="false"/>
