@@ -37,6 +37,7 @@ import thredds.catalog.ThreddsMetadata.Variables;
 import ucar.nc2.units.DateRange;
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
+import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.impl.RecordHelper;
 import esg.search.query.impl.solr.SolrXmlPars;
 
@@ -80,6 +81,12 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		
 		// catalog URL
 		record.addField(SolrXmlPars.FIELD_URL, urlBuilder.buildUrl(dataset));
+		
+		//metadata format
+		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");
+		
+		//metadata file name
+		record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
 		
 		// type
 		record.addField(SolrXmlPars.FIELD_TYPE, "Dataset");

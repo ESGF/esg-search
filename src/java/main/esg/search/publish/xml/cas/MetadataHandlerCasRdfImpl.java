@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
 import esg.search.publish.cas.CasPars;
+import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.xml.MetadataHandler;
 import esg.search.query.impl.solr.SolrXmlPars;
 
@@ -70,6 +71,14 @@ public class MetadataHandlerCasRdfImpl implements MetadataHandler {
 		// <esg:LOCALGRANULEID>"MLS-Aura_L2GP-CO_v02-23-c01_2008d107.he5"</esg:LOCALGRANULEID>
 		String id = element.getChildText("LOCALGRANULEID", CasPars.ESG_NS).replaceAll("\"", "");
 		record.setId(id.trim());
+		
+		//metadata format
+		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "CAS");
+		
+		//metadata file name
+		record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
+		
+		
 		
 		// type
 		record.addField(SolrXmlPars.FIELD_TYPE, "Dataset");

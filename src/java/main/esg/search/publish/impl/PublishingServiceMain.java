@@ -25,6 +25,8 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.PublishingService;
 
+import java.net.URL;
+import java.net.URLEncoder;
 /**
  * Main class to start the indexing or scrabbing of search records from a remote metadata repository,
  * or deletion of a single record with known identifier.
@@ -36,6 +38,8 @@ public class PublishingServiceMain {
 	
 	
     private static String[] configLocations = new String[] { "classpath:esg/search/config/application-context.xml" };
+    
+    public static String METADATA_URL = "";
     
     /**
      * Main method loads the proper web service to invoke from the Spring context.
@@ -78,6 +82,11 @@ public class PublishingServiceMain {
 	    	
 		    final String uri = args[0];
 		    final MetadataRepositoryType type = MetadataRepositoryType.valueOf(args[1]);
+		    
+		    //change the Metadata file's URL
+		    PublishingServiceMain.METADATA_URL = uri;
+		    
+		    
 		    final boolean publish = Boolean.parseBoolean(args[2]);
 		    
 		    if (publish) {

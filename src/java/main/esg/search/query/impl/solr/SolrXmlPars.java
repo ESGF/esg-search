@@ -62,6 +62,12 @@ public class SolrXmlPars {
 	final public static String FIELD_XREF = "xref";
 	final public static String FIELD_TIMESTAMP = "timestamp";
 	
+	//field names: metadata file information
+	final public static String FIELD_METADATA_FORMAT = "metadata_format";
+	final public static String FIELD_METADATA_URL = "metadata_url";
+	final public static String FIELD_METADATA_FILE_NAME = "metadata_file_name";
+
+	   
 	// field names: physical data
 	final public static String FIELD_PROJECT = "project";
 	final public static String FIELD_INSTRUMENT = "instrument";

@@ -29,6 +29,7 @@ import org.springframework.stereotype.Component;
 
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
+import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.xml.MetadataHandler;
 import esg.search.query.impl.solr.SolrXmlPars;
 
@@ -51,6 +52,12 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 		
 		final Record record = new RecordImpl();
 		final Namespace ns = root.getNamespace();
+		
+		//metadata format
+		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "FGDC");
+		
+		//metadata file name
+		record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
 		
 		
 		//add the required field type

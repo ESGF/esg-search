@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
+import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.xml.MetadataHandler;
 import esg.search.query.impl.solr.SolrXmlPars;
 
@@ -51,6 +52,13 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 		final Element entryIdEl = root.getChild("Entry_ID", ns);
 		final String entryId = entryIdEl.getTextNormalize();
 		record.setId(entryId);
+		
+		//metadata format
+		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "OAI");
+		
+		//metadata file name
+		record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
+		
 		
 		// type
 		record.addField(SolrXmlPars.FIELD_TYPE, "Dataset");
