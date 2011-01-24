@@ -101,10 +101,10 @@ public class MetadataHandlerCasRdfImpl implements MetadataHandler {
 		// <esg:RANGEENDINGTIME>"23:59:59.999999Z"</esg:RANGEENDINGTIME>
 		final String beginDate = element.getChildText("RANGEBEGINNINGDATE", CasPars.ESG_NS).replaceAll("\"", "");
 		final String beginTime = element.getChildText("RANGEBEGINNINGTIME", CasPars.ESG_NS).replaceAll("\"", "");
-		record.addField(SolrXmlPars.FIELD_DATETIME_START, beginDate + " " + beginTime);
+		record.addField(SolrXmlPars.FIELD_DATETIME_START, beginDate + "T" + beginTime);
 		final String endDate = element.getChildText("RANGEENDINGDATE", CasPars.ESG_NS).replaceAll("\"", "");
 		final String endTime = element.getChildText("RANGEENDINGTIME", CasPars.ESG_NS).replaceAll("\"", "");
-		record.addField(SolrXmlPars.FIELD_DATETIME_STOP, endDate + " " + endTime);
+		record.addField(SolrXmlPars.FIELD_DATETIME_STOP, endDate + "T" + endTime);
 
 		// <esg:NORTHBOUNDINGCOORDINATE>90.0</esg:NORTHBOUNDINGCOORDINATE>
 		// <esg:EASTBOUNDINGCOORDINATE>180.0</esg:EASTBOUNDINGCOORDINATE>
