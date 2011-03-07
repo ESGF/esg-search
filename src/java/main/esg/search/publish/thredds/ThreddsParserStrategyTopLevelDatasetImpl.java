@@ -21,6 +21,8 @@ package esg.search.publish.thredds;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -47,7 +49,7 @@ import esg.search.query.impl.solr.SolrXmlPars;
 @Component
 public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserStrategy {
 	
-	//private final Log LOG = LogFactory.getLog(this.getClass());
+	private final Log LOG = LogFactory.getLog(this.getClass());
 	
 	/**
 	 * Default URL builder
@@ -64,12 +66,19 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 */
 	@Autowired
 	public void setUrlBuilder(final @Qualifier("threddsDatasetUrlBuilderCatalogViewImpl") ThreddsDataseUrlBuilder urlBuilder) {
+	    System.out.println("URL Builder");
 		this.urlBuilder = urlBuilder;
 	}
 	
 	public List<Record> parseDataset(final InvDataset dataset) {
 		
+	    LOG.debug("ParseDataset");
+	    
+	    
 		final List<Record> records = new ArrayList<Record>();
+		
+		LOG.debug("Dataset: " + dataset);
+        
 		
 		// <dataset name="...." ID="..." restrictAccess="...">
 		final String id = dataset.getID();
@@ -78,7 +87,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		final String name = dataset.getName();
 		Assert.notNull(name, "Dataset name cannot be null");
 		record.addField(SolrXmlPars.FIELD_TITLE, name);
-		
+		//record.addField(SolrXmlPars.FIELD_TITLE, "hello");
+        
 		// catalog URL
 		record.addField(SolrXmlPars.FIELD_URL, urlBuilder.buildUrl(dataset));
 		
@@ -141,11 +151,38 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		//		this is just a temp fix to get the geospatial data extracted
 		addThreddsMetadataGroup(dataset,record);
 		
+		
+		// get subdataset names and urls here
+		crawlTopLevelDataset(dataset,record);
+		
+		
+		LOG.debug("Record: " + record);
+		
 		records.add(record);
 		return records;
 		
 	}
 
+	private void crawlTopLevelDataset(final InvDataset dataset,Record record)
+	{
+	    LOG.debug("\tIn Top Level Dataset");
+	    
+	    ArrayList<InvDataset> datasets = (ArrayList<InvDataset>) dataset.getDatasets();
+	    
+	    for(final InvDataset childDataset : dataset.getDatasets())
+	    {
+	        String serviceType = childDataset.getAccess().get(0).getService().getName();
+	        if(serviceType.equals("HTTPServer")) {
+	            //LOG.debug("\t\tUrl: " + childDataset.getAccess().get(0).getStandardUri());
+	            record.addField(SolrXmlPars.FIELD_CHILD_DATASET_ID, childDataset.getID());
+	            record.addField(SolrXmlPars.FIELD_CHILD_DATASET_URL, childDataset.getAccess().get(0).getStandardUri().toString());
+	        }
+	        
+	    }
+        
+	}
+	
+	
 	/**
 	 * Method to extract metadata information from a thredds dataset
 	 * Included in this metadata are the geospatial and temporal info contained

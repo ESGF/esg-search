@@ -433,7 +433,7 @@
    
    <!-- The main title of the search result (mandatory). 
         Note that because it is of type string (no text processing), it can be used to sort the results. -->
-   <field name="title" type="string" indexed="true" stored="true" required="true" />
+   <field name="title" type="string" indexed="true" stored="true" required="true" multiValued="true" />
    
    <!-- A more detailed description of the search result (optional) -->
    <field name="description" type="text" indexed="true" required="false" stored="true" multiValued="true"/>
@@ -474,7 +474,10 @@
    <field name="metadata_url" type="string" indexed="true" stored="true" multiValued="false"/>
    <field name="metadata_file_name" type="string" indexed="true" stored="true" multiValued="false"/>
    
-
+   <!-- Physical Dataset url and name -->
+   <field name="child_dataset_id" type="string" indexed="true" stored="true" multivalued="true"/>
+   <field name="child_dataset_url" type="string" indexed="true" stored="true" multivalued="true"/>
+   
    <!-- catch-all field, containing all other searchable text fields 
         (implemented via copyField further on in this schema).
         Not stored since it's never presented to the user.  -->

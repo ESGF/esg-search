@@ -67,7 +67,11 @@ public class SolrXmlPars {
 	final public static String FIELD_METADATA_URL = "metadata_url";
 	final public static String FIELD_METADATA_FILE_NAME = "metadata_file_name";
 
-	   
+	// field names:
+	final public static String FIELD_CHILD_DATASET_ID = "child_dataset_id";
+	final public static String FIELD_CHILD_DATASET_URL = "child_dataset_url";
+    
+	
 	// field names: physical data
 	final public static String FIELD_PROJECT = "project";
 	final public static String FIELD_INSTRUMENT = "instrument";
