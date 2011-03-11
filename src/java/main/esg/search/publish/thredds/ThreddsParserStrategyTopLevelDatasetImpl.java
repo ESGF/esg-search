@@ -169,8 +169,17 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    
 	    ArrayList<InvDataset> datasets = (ArrayList<InvDataset>) dataset.getDatasets();
 	    
+	    double dataset_size = 0;
 	    for(final InvDataset childDataset : dataset.getDatasets())
 	    {
+	        for(final InvProperty childDatasetProperty : childDataset.getProperties()) {
+	            System.out.println("property: " + childDatasetProperty.getName() + " " + childDatasetProperty.getValue());
+	            if(childDatasetProperty.getName().equals("size")) {
+	                dataset_size += Double.parseDouble((childDatasetProperty.getValue()));
+	                record.addField(SolrXmlPars.FIELD_CHILD_DATASET_SIZE, childDatasetProperty.getValue());
+	                
+	            }
+	        }
 	        String serviceType = childDataset.getAccess().get(0).getService().getName();
 	        if(serviceType.equals("HTTPServer")) {
 	            //LOG.debug("\t\tUrl: " + childDataset.getAccess().get(0).getStandardUri());
@@ -179,6 +188,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        }
 	        
 	    }
+	    
+	    record.addField(SolrXmlPars.FIELD_DATASET_SIZE, Double.toString(dataset_size));
+        
         
 	}
 	
