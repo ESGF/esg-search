@@ -139,37 +139,37 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 					        		                        access.getService().getDescription(),
 					        		                        access.getStandardUrlName()));
 		}
-
 		
 		// helper method for obtaining temporal and spatial metadata (as well as other) info... 
 		// NOTE: might need to change signature for clarification purposes
 		//		this is just a temp fix to get the geospatial data extracted
 		addThreddsMetadataGroup(dataset,record);
 		
-		// get subdataset names and urls here
-		crawlTopLevelDataset(dataset,record);
+		// harvest files (recursively)
+		long dataset_size = parseFiles(dataset, record);
+		record.addField(SolrXmlPars.FIELD_DATASET_SIZE, Long.toString(dataset_size));
 		
-		LOG.debug("Record: " + record);
-		
+		if (LOG.isDebugEnabled()) LOG.debug("Record: " + record);
 		records.add(record);
+		
 		return records;
 		
 	}
 
-	private void crawlTopLevelDataset(final InvDataset dataset, final Record record) {
+	private long parseFiles(final InvDataset dataset, final Record record) {
 	    
 	    if (LOG.isTraceEnabled()) LOG.trace("Crawling dataset: "+dataset.getID()+" for files");
 	    
-	    long dataset_size = 0;
+	    long dataset_size = 0L;
 	    for (final InvDataset childDataset : dataset.getDatasets()) {
 
 	        // extract file size
 	        for (final InvProperty childDatasetProperty : childDataset.getProperties()) {
 	            if (LOG.isTraceEnabled()) LOG.trace("Property: " + childDatasetProperty.getName() + "=" + childDatasetProperty.getValue());
 	            if (childDatasetProperty.getName().equals(ThreddsPars.SIZE)) {
+	                // add to container dataset size
 	                dataset_size += Long.parseLong((childDatasetProperty.getValue()));
 	                record.addField(SolrXmlPars.FIELD_CHILD_DATASET_SIZE, childDatasetProperty.getValue());
-	                
 	            }
 	        }
 	        
@@ -179,11 +179,15 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
     	            LOG.trace("Dataset="+childDataset.getID()+" Service="+access.getService().getName()+" URL="+access.getStandardUri().toString());
 	            record.addField(SolrXmlPars.FIELD_CHILD_DATASET_ID, childDataset.getID());
 	            record.addField(SolrXmlPars.FIELD_CHILD_DATASET_URL, access.getStandardUri().toString());
+	            record.addField(SolrXmlPars.FIELD_SERVICE_TYPE, access.getService().getServiceType().toString());
 	        }
+	        
+	        // recursion
+	        dataset_size += parseFiles(childDataset, record);
 	        
 	    }
 	    
-	    record.addField(SolrXmlPars.FIELD_DATASET_SIZE, Long.toString(dataset_size));
+	    return dataset_size;
         
 	}
 	
