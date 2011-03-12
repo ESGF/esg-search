@@ -33,10 +33,6 @@ public class ThreddsDatasetUrlBuilderCatalogUrlImpl implements ThreddsDataseUrlB
 	 * {@inheritDoc}
 	 */
 	public String buildUrl(final InvDataset dataset) {
-	    
-	    //System.out.println("\n" + dataset.getCatalogUrl());
-	    //System.out.println("quitting...");
-	    //System.exit(0);
 		return dataset.getCatalogUrl();
 	}
 

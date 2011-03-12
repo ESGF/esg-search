@@ -478,9 +478,8 @@
    <field name="child_dataset_id" type="string" indexed="true" stored="true" multiValued="true"/>
    <field name="child_dataset_url" type="string" indexed="true" stored="true" multiValued="true"/>
    
-   
-   <field name="dataset_size" type="string" indexed="true" stored="true" multiValued="false"/>
-   <field name="child_dataset_size" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="dataset_size" type="long" indexed="true" stored="true" multiValued="false"/>
+   <field name="child_dataset_size" type="long" indexed="true" stored="true" multiValued="true"/>
    
    <!-- catch-all field, containing all other searchable text fields 
         (implemented via copyField further on in this schema).
