@@ -164,14 +164,17 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    for (final InvDataset childDataset : dataset.getDatasets()) {
 
 	        // extract file size
+	        long file_size = -1;
 	        for (final InvProperty childDatasetProperty : childDataset.getProperties()) {
 	            if (LOG.isTraceEnabled()) LOG.trace("Property: " + childDatasetProperty.getName() + "=" + childDatasetProperty.getValue());
 	            if (childDatasetProperty.getName().equals(ThreddsPars.SIZE)) {
-	                // add to container dataset size
-	                dataset_size += Long.parseLong((childDatasetProperty.getValue()));
-	                record.addField(SolrXmlPars.FIELD_FILE_SIZE, childDatasetProperty.getValue());
+	                
+	                file_size = Long.parseLong((childDatasetProperty.getValue()));	                
+	                //record.addField(SolrXmlPars.FIELD_FILE_SIZE, childDatasetProperty.getValue());
 	            }
 	        }
+	        // add to container dataset size
+	        if (file_size!=-1) dataset_size += file_size;
 	        
 	        // extract access endpoints
 	        for (final InvAccess access : childDataset.getAccess()) {
@@ -180,6 +183,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	            record.addField(SolrXmlPars.FIELD_FILE_ID, childDataset.getID());
 	            record.addField(SolrXmlPars.FIELD_FILE_URL, access.getStandardUri().toString());
 	            record.addField(SolrXmlPars.FIELD_SERVICE_TYPE, access.getService().getServiceType().toString());
+	            if (file_size!=-1) record.addField(SolrXmlPars.FIELD_FILE_SIZE, Long.toString(file_size));
 	        }
 	        
 	        // recursion
