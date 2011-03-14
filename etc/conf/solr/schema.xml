@@ -444,6 +444,7 @@
    <!-- Other optional access services encoded as <service type>|<service name>|<service url> -->
    <field name="service" type="string" indexed="true" required="false" stored="true" multiValued="true" />
    
+   
    <!-- The document type, used to enable searching on different targets (mandatory) -->
    <field name="type" type="string" indexed="true" required="true" stored="true"/>
    
@@ -475,11 +476,14 @@
    <field name="metadata_file_name" type="string" indexed="true" stored="true" multiValued="false"/>
    
    <!-- Physical Dataset url and name -->
-   <field name="child_dataset_id" type="string" indexed="true" stored="true" multiValued="true"/>
-   <field name="child_dataset_url" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="file_id" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="file_url" type="string" indexed="true" stored="true" multiValued="true"/>
    
-   <field name="dataset_size" type="long" indexed="true" stored="true" multiValued="false"/>
-   <field name="child_dataset_size" type="long" indexed="true" stored="true" multiValued="true"/>
+   <field name="size" type="long" indexed="true" stored="true" multiValued="false"/>
+   <field name="file_size" type="long" indexed="true" stored="true" multiValued="true"/>
+   
+   <field name="service_type" type="string" indexed="true" stored="true" multiValued="true"/>
+   
    
    <!-- catch-all field, containing all other searchable text fields 
         (implemented via copyField further on in this schema).
