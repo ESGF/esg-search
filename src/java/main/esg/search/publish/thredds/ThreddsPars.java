@@ -28,6 +28,7 @@ public class ThreddsPars {
 	public final static String ID = "ID";
 	public final static String DATASET_ID = "dataset_id";
 	public final static String DATASET_VERSION = "dataset_version";
+	public final static String SIZE = "size";
 	
 	private ThreddsPars() {};
 	

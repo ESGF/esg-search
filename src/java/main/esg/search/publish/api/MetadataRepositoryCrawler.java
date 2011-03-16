@@ -42,5 +42,7 @@ public interface MetadataRepositoryCrawler {
 	 * @return
 	 */
 	public MetadataRepositoryType supports();
+	
+	
 
 }

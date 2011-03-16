@@ -28,14 +28,8 @@
 		</layout>
 	</appender>
 
-	
 	<logger name="esg" additivity="false">
-		<level value="DEBUG" />
-		<appender-ref ref="stdout" />
-	</logger>
-	
-	<logger name="eske" additivity="false">
-		<level value="DEBUG" />
+		<level value="TRACE" />
 		<appender-ref ref="stdout" />
 	</logger>
 	

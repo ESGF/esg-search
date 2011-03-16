@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
 import esg.search.publish.cas.CasPars;
+import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.xml.MetadataHandler;
 import esg.search.query.impl.solr.SolrXmlPars;
 
@@ -71,6 +72,14 @@ public class MetadataHandlerCasRdfImpl implements MetadataHandler {
 		String id = element.getChildText("LOCALGRANULEID", CasPars.ESG_NS).replaceAll("\"", "");
 		record.setId(id.trim());
 		
+		//metadata format
+		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "CAS");
+		
+		//metadata file name
+		record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
+		
+		
+		
 		// type
 		record.addField(SolrXmlPars.FIELD_TYPE, "Dataset");
 		
@@ -92,10 +101,10 @@ public class MetadataHandlerCasRdfImpl implements MetadataHandler {
 		// <esg:RANGEENDINGTIME>"23:59:59.999999Z"</esg:RANGEENDINGTIME>
 		final String beginDate = element.getChildText("RANGEBEGINNINGDATE", CasPars.ESG_NS).replaceAll("\"", "");
 		final String beginTime = element.getChildText("RANGEBEGINNINGTIME", CasPars.ESG_NS).replaceAll("\"", "");
-		record.addField(SolrXmlPars.FIELD_DATETIME_START, beginDate + " " + beginTime);
+		record.addField(SolrXmlPars.FIELD_DATETIME_START, beginDate + "T" + beginTime);
 		final String endDate = element.getChildText("RANGEENDINGDATE", CasPars.ESG_NS).replaceAll("\"", "");
 		final String endTime = element.getChildText("RANGEENDINGTIME", CasPars.ESG_NS).replaceAll("\"", "");
-		record.addField(SolrXmlPars.FIELD_DATETIME_STOP, endDate + " " + endTime);
+		record.addField(SolrXmlPars.FIELD_DATETIME_STOP, endDate + "T" + endTime);
 
 		// <esg:NORTHBOUNDINGCOORDINATE>90.0</esg:NORTHBOUNDINGCOORDINATE>
 		// <esg:EASTBOUNDINGCOORDINATE>180.0</esg:EASTBOUNDINGCOORDINATE>

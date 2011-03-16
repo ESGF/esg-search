@@ -21,6 +21,8 @@ package esg.search.publish.thredds;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -37,6 +39,7 @@ import thredds.catalog.ThreddsMetadata.Variables;
 import ucar.nc2.units.DateRange;
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
+import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.impl.RecordHelper;
 import esg.search.query.impl.solr.SolrXmlPars;
 
@@ -46,7 +49,7 @@ import esg.search.query.impl.solr.SolrXmlPars;
 @Component
 public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserStrategy {
 	
-	//private final Log LOG = LogFactory.getLog(this.getClass());
+	private final Log LOG = LogFactory.getLog(this.getClass());
 	
 	/**
 	 * Default URL builder
@@ -68,6 +71,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	
 	public List<Record> parseDataset(final InvDataset dataset) {
 		
+	    if (LOG.isDebugEnabled()) LOG.debug("Parsing dataset: "+dataset.getID());
+	    
 		final List<Record> records = new ArrayList<Record>();
 		
 		// <dataset name="...." ID="..." restrictAccess="...">
@@ -77,9 +82,16 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		final String name = dataset.getName();
 		Assert.notNull(name, "Dataset name cannot be null");
 		record.addField(SolrXmlPars.FIELD_TITLE, name);
-		
+        
 		// catalog URL
 		record.addField(SolrXmlPars.FIELD_URL, urlBuilder.buildUrl(dataset));
+		
+		// metadata format
+		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");
+		
+		// metadata file name
+		// FIXME
+		record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
 		
 		// type
 		record.addField(SolrXmlPars.FIELD_TYPE, "Dataset");
@@ -127,18 +139,63 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 					        		                        access.getService().getDescription(),
 					        		                        access.getStandardUrlName()));
 		}
-
 		
 		// helper method for obtaining temporal and spatial metadata (as well as other) info... 
-		//NOTE: might need to change signature for clarification purposes
+		// NOTE: might need to change signature for clarification purposes
 		//		this is just a temp fix to get the geospatial data extracted
 		addThreddsMetadataGroup(dataset,record);
 		
+		// harvest files (recursively)
+		long size = parseFiles(dataset, record);
+		record.addField(SolrXmlPars.FIELD_SIZE, Long.toString(size));
+		
+		if (LOG.isDebugEnabled()) LOG.debug("Record: " + record);
 		records.add(record);
+		
 		return records;
 		
 	}
 
+	private long parseFiles(final InvDataset dataset, final Record record) {
+	    
+	    if (LOG.isTraceEnabled()) LOG.trace("Crawling dataset: "+dataset.getID()+" for files");
+	    
+	    long dataset_size = 0L;
+	    for (final InvDataset childDataset : dataset.getDatasets()) {
+
+	        // extract file size
+	        long file_size = -1;
+	        for (final InvProperty childDatasetProperty : childDataset.getProperties()) {
+	            if (LOG.isTraceEnabled()) LOG.trace("Property: " + childDatasetProperty.getName() + "=" + childDatasetProperty.getValue());
+	            if (childDatasetProperty.getName().equals(ThreddsPars.SIZE)) {
+	                
+	                file_size = Long.parseLong((childDatasetProperty.getValue()));	                
+	                //record.addField(SolrXmlPars.FIELD_FILE_SIZE, childDatasetProperty.getValue());
+	            }
+	        }
+	        // add to container dataset size
+	        if (file_size!=-1) dataset_size += file_size;
+	        
+	        // extract access endpoints
+	        for (final InvAccess access : childDataset.getAccess()) {
+    	        if (LOG.isTraceEnabled()) 
+    	            LOG.trace("Dataset="+childDataset.getID()+" Service="+access.getService().getName()+" URL="+access.getStandardUri().toString());
+	            record.addField(SolrXmlPars.FIELD_FILE_ID, childDataset.getID());
+	            record.addField(SolrXmlPars.FIELD_FILE_URL, access.getStandardUri().toString());
+	            record.addField(SolrXmlPars.FIELD_SERVICE_TYPE, access.getService().getServiceType().toString());
+	            if (file_size!=-1) record.addField(SolrXmlPars.FIELD_FILE_SIZE, Long.toString(file_size));
+	        }
+	        
+	        // recursion
+	        dataset_size += parseFiles(childDataset, record);
+	        
+	    }
+	    
+	    return dataset_size;
+        
+	}
+	
+	
 	/**
 	 * Method to extract metadata information from a thredds dataset
 	 * Included in this metadata are the geospatial and temporal info contained
@@ -146,11 +203,11 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * <>
 	 * 
 	 */
-	private void addThreddsMetadataGroup(final InvDataset dataset,Record record)
-	{
+	private void addThreddsMetadataGroup(final InvDataset dataset,Record record) {
+	    
 		this.addGeoSpatialCoverage(dataset,record);
-		
 		this.addTimeCoverage(dataset,record);
+		
 	}
 	
 	/**
@@ -175,10 +232,11 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * 
 	 */
 	private void addGeoSpatialCoverage(final InvDataset dataset,Record record) {
+	    
 		GeospatialCoverage gsc = dataset.getGeospatialCoverage();
 		
-		if(gsc!=null)
-		{
+		if(gsc!=null) {
+		    
 			record.addField(SolrXmlPars.FIELD_SOUTH, Double.toString(gsc.getNorthSouthRange().getStart()));
 		
 			record.addField(SolrXmlPars.FIELD_NORTH, Double.toString(gsc.getNorthSouthRange().getStart()+gsc.getNorthSouthRange().getSize()));
@@ -203,10 +261,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	private void addTimeCoverage(final InvDataset dataset,Record record) {
 		DateRange daterange = dataset.getTimeCoverage();
 		
-		if(daterange!=null)
-		{
-			record.addField(SolrXmlPars.FIELD_DATETIME_START, daterange.getStart().toDateTimeStringISO());
-		
+		if(daterange!=null) {
+			record.addField(SolrXmlPars.FIELD_DATETIME_START, daterange.getStart().toDateTimeStringISO());	
 			record.addField(SolrXmlPars.FIELD_DATETIME_STOP, daterange.getEnd().toDateTimeStringISO());
 		}
 	}

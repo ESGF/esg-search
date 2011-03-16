@@ -58,9 +58,23 @@ public class SolrXmlPars {
 	final public static String FIELD_TYPE = "type";
 	final public static String FIELD_URL = "url";
 	final public static String FIELD_SERVICE = "service";
+	final public static String FIELD_SERVICE_TYPE = "service_type";
 	final public static String FIELD_XLINK = "xlink";
 	final public static String FIELD_XREF = "xref";
 	final public static String FIELD_TIMESTAMP = "timestamp";
+	
+	// field names: metadata file information
+	final public static String FIELD_METADATA_FORMAT = "metadata_format";
+	final public static String FIELD_METADATA_URL = "metadata_url";
+	final public static String FIELD_METADATA_FILE_NAME = "metadata_file_name";
+
+	// field names:
+	final public static String FIELD_FILE_ID = "file_id";
+	final public static String FIELD_FILE_URL = "file_url";
+
+    final public static String FIELD_SIZE = "size";
+    final public static String FIELD_FILE_SIZE = "file_size";
+	
 	
 	// field names: physical data
 	final public static String FIELD_PROJECT = "project";
