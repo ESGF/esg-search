@@ -102,6 +102,7 @@ Builds the project via ant (obviously).
   <filter token="version_num"  value="${version_num}"/>
   <property name="release_name" value="no_name"/>
   <filter token="release_name" value="${release_name}"/>
+  <filter token="module" value="${module}"/>
 
   <property name="log_dir" value="${java.io.tmpdir}/${module}/logs"/>
   <mkdir dir="${log_dir}" />
@@ -135,9 +136,10 @@ Builds the project via ant (obviously).
     <property name="lib_fetched_dir"      value="${basedir}/lib/fetched"/>
     <property name="build_dir"   	  value="${basedir}/build"/>
     <property name="dist_dir"   	  value="${basedir}/dist"/>
+    <property name="bin_dir"              value="${basedir}/bin"/>
     <property name="test_src_dir"  	  value="${basedir}/src/java/test"/>
     <property name="test_build_dir"       value="${basedir}/build/test"/>
-  	<property name="test_build_dir_inst"  value="${basedir}/build/test-instrumented" />
+    <property name="test_build_dir_inst"  value="${basedir}/build/test-instrumented" />
     <property name="etc_dir"   	          value="${basedir}/etc"/>
     <property name="conf_dir"   	  value="${etc_dir}/conf"/>
     <property name="web_dir"   	          value="${basedir}/web"/>
@@ -173,6 +175,7 @@ Builds the project via ant (obviously).
     <echo message="lib_fetched_dir   = ${lib_fetched_dir}"/>
     <echo message="build_dir         = ${build_dir}"/>
     <echo message="dist_dir          = ${dist_dir}"/>
+    <echo message="bin_dir           = ${bin_dir}"/>
     <echo message="test_src_dir      = ${test_src_dir}"/>
     <echo message="test_build_dir    = ${test_build_dir}"/>
     <echo message="etc_dir           = ${etc_dir}"/>
