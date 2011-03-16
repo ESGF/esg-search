@@ -38,3 +38,8 @@ generated/
 /lib/endorsed
 /WebContent
 /.cobertura.ser
+
+################################
+#Generated from templated files
+################################
+bin/post.manif
