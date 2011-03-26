@@ -121,7 +121,7 @@ setup_search() {
     write_as_property index_endpoint "http://${esgf_host}/esg-search/rest/search"
     write_as_property index_app_home ${search_web_service_dir}
     
-    write_as_property publishing_service_endpoint "https://${esgf_host:-$(hostname --fqdn)}/esgcet/remote/secure/client-cert/hessian/publishingService"
+    write_as_property publishing_service_endpoint "https://${esgf_host:-$(hostname --fqdn)}/esg-search/remote/secure/client-cert/hessian/publishingService"
     write_as_property publishing_service_app_home ${search_web_service_dir}
 
     echo "done"
