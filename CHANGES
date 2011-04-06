@@ -8,3 +8,6 @@ http://<hostname>/<context>/ws/hessian/searchWebService
 1.1.0
 Inserted support for parsing FGDC records
 Inserted support for storing generic service endpoints from THREDDS catalogs, in particular for LAS integration
+
+1.1.1
+Removed clause "distrib=true" in searching until federated searches are enabled and tested

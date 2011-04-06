@@ -160,7 +160,7 @@ public class SolrUrlBuilder {
 		//}
 		
 		// distributed search
-		sb.append("&distrib=true");
+		//sb.append("&distrib=true");
 
 		
 		//removed 11-22
