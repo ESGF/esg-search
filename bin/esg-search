@@ -91,7 +91,7 @@ installer_gid=${installer_gid:-$(id ${HOME##*/} | sed 's/.*gid=\([0-9]*\).*/\1/'
 [ $? != 0 ] || [ -z "$installer_gid" ] && echo "installer_gid is not set" && exit 1
 installer_home=${HOME}
 
-search_version=${search_version:-"1.0.1"}
+search_version=${search_version:-"1.1.1"}
 search_install_dir=${ESGF_INSTALL_DIR:-"${install_prefix}/esgf_search"}
 seach_data_dir=${ESGF_DATA_DIR:="${esg_root_dir}/search_data"}
 
@@ -231,7 +231,7 @@ setup_search_service() {
 
 
     #strip the version number off(#.#.#) the dir and append .war to get the name of war file
-    #(esg-search-1.0.1 -> esg-search.war) 
+    #(esg-search-x.x.x -> esg-search.war) 
     local trimmed_name=${search_service_dist_dir%-*}
     local search_service_war_file=$(pwd)/${trimmed_name}.war
     echo "search_service_war_file = "${search_service_war_file}
