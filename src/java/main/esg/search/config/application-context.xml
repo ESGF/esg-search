@@ -31,21 +31,29 @@
 			 	<entry key="type"><value>Type</value></entry>
 			 
 			 	<!-- model facets -->
-	          	<entry key="activity"><value>Activity</value></entry>
+	          	<entry key="project"><value>Project</value></entry>
 	          	<entry key="model"><value>Model</value></entry>
 	          	<entry key="experiment"><value>Experiment</value></entry>
 	          	<entry key="time_frequency"><value>Frequency</value></entry>
 	          	<entry key="realm"><value>Realm</value></entry>
 	          	<entry key="cf_variable"><value>CF Variable</value></entry>
+	          	<entry key="institute"><value>Institute</value></entry>
+	          	<entry key="variable"><value>Variable</value></entry>
+	          	<entry key="product"><value>Product</value></entry>
+	          	
+	          	<!-- 
+	          	<entry key="cmor_table"><value>CMOR Table</value></entry>
+	          	<entry key="format"><value>Format</value></entry>
+	          	-->
 	          	
 	          	<!-- obs facets -->
 	          	<entry key="instrument"><value>Instrument</value></entry>
-	          	<entry key="variable"><value>Variable</value></entry>
+	          	<entry key="obs_project"><value>Observation Project</value></entry>
+	          	<entry key="obs_structure"><value>Observation Structure</value></entry>
+	          	<entry key="obs_type"><value>Observation Type</value></entry>
 	          	<entry key="processing_level"><value>Processing Level</value></entry>
 	          	<entry key="processing_version"><value>Processing Version</value></entry>
-	          	<entry key="mission"><value>Mission</value></entry>
-	          	<entry key="product"><value>Product</value></entry>
-		      
+	          			      
 		      </map>
 		</constructor-arg>
 	</bean>
