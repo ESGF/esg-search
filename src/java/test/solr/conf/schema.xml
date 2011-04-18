@@ -436,13 +436,14 @@
    <field name="title" type="string" indexed="true" stored="true" required="true" />
    
    <!-- A more detailed description of the search result (optional) -->
-   <field name="description" type="text" indexed="true" required="false" stored="true" multiValued="true"/>
+   <field name="description" type="text" indexed="true" required="false" stored="true" />
    
    <!-- The main URL that is hyper-linked to the search result (mandatory) -->
    <field name="url" type="string" indexed="true" required="true" stored="true"/>
    
    <!-- Other optional access services encoded as <service type>|<service name>|<service url> -->
    <field name="service" type="string" indexed="true" required="false" stored="true" multiValued="true" />
+   
    
    <!-- The document type, used to enable searching on different targets (mandatory) -->
    <field name="type" type="string" indexed="true" required="true" stored="true"/>
@@ -469,10 +470,20 @@
    <field name="south_degrees" type="float" indexed="true" stored="true" multiValued="false"/>
    <field name="west_degrees" type="float" indexed="true" stored="true" multiValued="false"/>
 
-	<!-- Metadata file fields -->
+   <!-- Metadata file fields -->
    <field name="metadata_format" type="string" indexed="true" stored="true" multiValued="false"/>
    <field name="metadata_url" type="string" indexed="true" stored="true" multiValued="false"/>
    <field name="metadata_file_name" type="string" indexed="true" stored="true" multiValued="false"/>
+   
+   <!-- Physical Dataset url and name -->
+   <field name="file_id" type="string" indexed="true" stored="true" multiValued="true"/>
+   <field name="file_url" type="string" indexed="true" stored="true" multiValued="true"/>
+   
+   <field name="size" type="long" indexed="true" stored="true" multiValued="false"/>
+   <field name="file_size" type="long" indexed="true" stored="true" multiValued="true"/>
+   
+   <field name="service_type" type="string" indexed="true" stored="true" multiValued="true"/>
+   
    
    <!-- catch-all field, containing all other searchable text fields 
         (implemented via copyField further on in this schema).

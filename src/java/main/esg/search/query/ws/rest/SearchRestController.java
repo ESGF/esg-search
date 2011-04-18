@@ -56,7 +56,7 @@ public class SearchRestController {
 	public void search(final HttpServletRequest request, 
 			           final @ModelAttribute(COMMAND) SearchRestCommand command, 
 			           final HttpServletResponse response) throws Exception {
-		
+	    		
 		// execute query
 		final String xml = searchWebService.search(command.getText(), request.getParameterMap(), 
 				                                   command.getOffset(), command.getLimit(), command.isResults(), command.isFacets(), command.getBack());
@@ -69,11 +69,11 @@ public class SearchRestController {
 	 * @param id : expression matching the document(s) id
 	 */
 	@RequestMapping(value="/rest/searchById/", method=RequestMethod.GET)
-	public void searchById(@RequestParam("id") String id, 
+	public void searchById(@RequestParam("id") String id, @RequestParam(value="type", required=false) String type, 
 			               final @ModelAttribute(COMMAND) SearchRestCommand command,
 			               final HttpServletResponse response) throws Exception {
 		
-		final String xml = searchWebService.searchById(id, 
+		final String xml = searchWebService.searchById(id, type,
 				                                       command.getOffset(), command.getLimit(), command.isResults(), command.isFacets(), command.getBack());
 		writeToResponse(xml, response);
 	}
@@ -86,11 +86,11 @@ public class SearchRestController {
 	 *             or special strings (example: "NOW")
 	 */
 	@RequestMapping(value="/rest/searchByTimeStamp/", method=RequestMethod.GET)
-	public void searchByTimeStamp(@RequestParam("from") String from, @RequestParam("to") String to,
+	public void searchByTimeStamp(@RequestParam("from") String from, @RequestParam("to") String to, @RequestParam(value="type", required=false) String type,
 			                      final @ModelAttribute(COMMAND) SearchRestCommand command,
 			                      final HttpServletResponse response) throws Exception {
 		
-		final String xml = searchWebService.searchByTimeStamp(from, to, 
+		final String xml = searchWebService.searchByTimeStamp(from, to, type,
                                                               command.getOffset(), command.getLimit(), command.isResults(), command.isFacets(), command.getBack());
 		writeToResponse(xml, response);
 	}

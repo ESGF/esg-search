@@ -11,3 +11,6 @@ Inserted support for storing generic service endpoints from THREDDS catalogs, in
 
 1.1.1
 Removed clause "distrib=true" in searching until federated searches are enabled and tested
+
+1.2.0
+Modified Solr schema and harvesting of THREDDS catalogs to store Dataset and File metadata in records of different type (within the same index).
