@@ -91,7 +91,8 @@ installer_gid=${installer_gid:-$(id ${HOME##*/} | sed 's/.*gid=\([0-9]*\).*/\1/'
 [ $? != 0 ] || [ -z "$installer_gid" ] && echo "installer_gid is not set" && exit 1
 installer_home=${HOME}
 
-search_service_version="1.2.0"
+esg_search_version="1.2.0"
+
 search_install_dir=${ESGF_INSTALL_DIR:-"${install_prefix}/esgf_search"}
 seach_data_dir=${ESGF_DATA_DIR:="${esg_root_dir}/search_data"}
 
@@ -118,7 +119,7 @@ setup_search() {
 
     setup_search_service ${upgrade} && write_search_service_install_log
     [ $? != 0 ] && echo " ERROR: Could not fully install search service" && checked_done 1
-    write_as_property index_endpoint "http://${esgf_host:-$(hostname --fqdn)}/esg-search/rest/search"
+    write_as_property index_endpoint "http://${esgf_host:-$(hostname --fqdn)}/esg-search/ws/rest/search"
     write_as_property index_app_home ${search_web_service_dir}
     
     write_as_property publishing_service_endpoint "https://${esgf_host:-$(hostname --fqdn)}/esg-search/remote/secure/client-cert/hessian/publishingService"
@@ -156,8 +157,7 @@ web_app_tld=${tomcat_install_dir}/webapps
 
 search_web_service_name=esg-search
 search_web_service_dir=${web_app_tld}/${search_web_service_name}
-search_service_version="1.2.0"
-search_service_dist_url=${esg_dist_url}/${search_web_service_name}/${search_web_service_name}-${search_service_version}.tar.gz
+search_service_dist_url=${esg_dist_url}/${search_web_service_name}/${search_web_service_name}-${esg_search_version}.tar.gz
 
 #####
 # Install The Search Service...
@@ -169,8 +169,8 @@ search_service_dist_url=${esg_dist_url}/${search_web_service_name}/${search_web_
 # In update mode it will always pull down latest after archiving old
 #
 setup_search_service() {
-    echo -n "Checking for search service ${search_service_version}"
-    check_webapp_version "esg-search" ${search_service_version}
+    echo -n "Checking for search service ${esg_search_version}"
+    check_webapp_version "esg-search" ${esg_search_version}
     local ret=$?
     ((ret == 0)) && (( ! force_install )) && echo " [OK]" && return 0
 
@@ -251,7 +251,7 @@ setup_search_service() {
 }
 
 write_search_service_install_log() {
-    echo "$(date ${date_format}) webapp:esg-search=${search_service_version} ${search_web_service_dir}" >> ${install_logfile}
+    echo "$(date ${date_format}) webapp:esg-search=${esg_search_version} ${search_web_service_dir}" >> ${install_logfile}
     dedup ${install_logfile}
     return 0
 }
@@ -260,7 +260,8 @@ write_search_service_install_log() {
 # Zookeeper Setup and Configuration
 #---------------------------------------------------------
 zookeeper_version="3.3.1"
-zookeeper_dist_url=http://apache.osuosl.org//hadoop/zookeeper/zookeeper-${zookeeper_version}/zookeeper-${zookeeper_version}.tar.gz
+#zookeeper_dist_url=http://apache.osuosl.org//hadoop/zookeeper/zookeeper-${zookeeper_version}/zookeeper-${zookeeper_version}.tar.gz
+zookeeper_dist_url=http://archive.apache.org/dist/hadoop/zookeeper/zookeeper-${zookeeper_version}/zookeeper-${zookeeper_version}.tar.gz
 zookeeper_workdir=${workdir}/zookeeper
 zookeeper_install_dir=${install_prefix}/zookeeper
 zookeeper_data_dir=${esg_root_dir}/zookeeper
