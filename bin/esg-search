@@ -260,7 +260,8 @@ write_search_service_install_log() {
 # Zookeeper Setup and Configuration
 #---------------------------------------------------------
 zookeeper_version="3.3.1"
-zookeeper_dist_url=http://apache.osuosl.org//hadoop/zookeeper/zookeeper-${zookeeper_version}/zookeeper-${zookeeper_version}.tar.gz
+#zookeeper_dist_url=http://apache.osuosl.org//hadoop/zookeeper/zookeeper-${zookeeper_version}/zookeeper-${zookeeper_version}.tar.gz
+zookeeper_dist_url=http://archive.apache.org/dist/hadoop/zookeeper/zookeeper-${zookeeper_version}/zookeeper-${zookeeper_version}.tar.gz
 zookeeper_workdir=${workdir}/zookeeper
 zookeeper_install_dir=${install_prefix}/zookeeper
 zookeeper_data_dir=${esg_root_dir}/zookeeper
