@@ -800,7 +800,7 @@ Builds the project via ant (obviously).
     <copy file="${bin_dir}/post.manif.tmpl" tofile="${bin_dir}/post.manif" filtering="true" overwrite="true"/>
     <echo message="Posting Files To Distribution Server..."/>
     <exec executable="post" dir="${bin_dir}">
-      <arg value="--debug"/>
+      <arg value="--verbose"/>
     </exec>
   </target>
 
