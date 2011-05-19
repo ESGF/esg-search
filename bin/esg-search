@@ -125,43 +125,9 @@ setup_search() {
     write_as_property publishing_service_endpoint "https://${esgf_host:-$(hostname --fqdn)}/esg-search/remote/secure/client-cert/hessian/publishingService"
     write_as_property publishing_service_app_home ${search_web_service_dir}
 
-    search_startup_hook
-
     echo "done"
     echo
     return 0
-}
-#--------------------------------------
-# Callout function called by esg-node
-#--------------------------------------
-#This function is called by esg-node pre-startup!
-#This is how we make sure that the publisher is pointing to the correct publishing service.
-#We edit the esg.ini file with the information in the esgf.properties file, specifically the hessian_service_url value in esg.ini
-search_startup_hook() {
-    #----------------------
-    #edit the esg.ini file...
-    ret=1
-    echo -n "Search/Indexing Startup Hook:... "
-
-    #note: config_file defined in esg-node:init()
-    local esgf_properties_file=${config_file:-${esg_config_dir}/esgf.properties}
-    [ ! -e "${esgf_properties_file}" ] && debug_print " WARNING: Could not locate [${esgf_properties_file}]" && return 1
-
-    local publishing_service_url=$(sed -n 's@[ ]*publishing.service.endpoint[ ]*=[ ]*\(.*\)$@\1@p' ${esgf_properties_file}) && echo -n "0" || (echo -n "x" && ((ret++)) )
-    [ -z "${publishing_service_url}" ] || (( ret > 0 )) && echo && debug_print " WARNING: Will not edit ${target_file}, could not successfully glean needed information" && return ${ret}
-
-    local publisher_home_dir=$(sed -n 's@[ ]*publisher.home[ ]*=[ ]*\(.*\)$@\1@p' ${esgf_properties_file}) && echo -n "0" || (echo -n "x" && ((ret++)) )
-    local publisher_config_file=$(sed -n 's@[ ]*publisher.config[ ]*=[ ]*\(.*\)$@\1@p' ${esgf_properties_file}) && echo -n "0" || (echo -n "x" && ((ret++)) )
-
-    local target_file=${ESGINI:-${publisher_home}/${publisher_config}}
-    [ -z "${target_file}" ] && debug_print " WARNING: Could not discern publisher config file: [${target_file}]" && return 1
-    [ ! -e "${target_file}" ] && debug_print " WARNING: Could not locate publisher config file [${target_file}]" && return 1
-
-    (( ret > 0 )) && echo && debug_print " WARNING: Will not edit ${target_file}, could not successfully glean needed information" && return ${ret}
-
-    sed -i 's#^[ ]*\(hessian_service_url[ ]*=[ ]*\).*$#\1'${publishing_service_url}'#' ${target_file} && echo -n ":" || echo -n "8-)"
-    echo
-    #----------------------
 }
 
 start_search_services() {
