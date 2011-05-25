@@ -146,7 +146,6 @@ public class SearchWebServiceImpl implements SearchWebService {
         if (StringUtils.hasText(type)) {
             text += " AND "+SolrXmlPars.FIELD_TYPE+":"+type;
         }
-
 		
 		// execute call
 		return this.search(text, emptyConstraints, offset, limit, getResults, getFacets, returnType);

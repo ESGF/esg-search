@@ -200,8 +200,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         long size = 0; // 0 file size by default
         this.parseProperties(file, record);
         // set size if found
-        if (StringUtils.hasText( record.getField(SolrXmlPars.FIELD_FILE_SIZE)) ) {
-            size = Long.parseLong(record.getField(SolrXmlPars.FIELD_FILE_SIZE));
+        if (StringUtils.hasText( record.getField(SolrXmlPars.FIELD_SIZE)) ) {
+            size = Long.parseLong(record.getField(SolrXmlPars.FIELD_SIZE));
         }
         
         this.parseVariables(file, record);
@@ -240,7 +240,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
                 record.addField(SolrXmlPars.FIELD_VERSION, property.getValue());
             } else if (property.getName().equals(ThreddsPars.SIZE)) {
                 // FIXME: store THREDDS "size" as "file_size" ?
-                record.addField(SolrXmlPars.FIELD_FILE_SIZE, property.getValue());
+                record.addField(SolrXmlPars.FIELD_SIZE, property.getValue());
             } else {
                 // index all other properties verbatim
                 record.addField(property.getName(), property.getValue());
@@ -284,7 +284,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
            
             // FIXME: remove ?
             if (dataset.getID().indexOf("aggregation")<0) { // FIXME
-                record.addField(SolrXmlPars.FIELD_FILE_URL, access.getStandardUri().toString());
+                record.addField(SolrXmlPars.FIELD_URL, access.getStandardUri().toString());
                 record.addField(SolrXmlPars.FIELD_SERVICE_TYPE, access.getService().getServiceType().toString());
             }
             

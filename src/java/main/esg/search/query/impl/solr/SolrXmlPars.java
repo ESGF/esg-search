@@ -73,10 +73,10 @@ public class SolrXmlPars {
 
 	// field names:
 	
-	final public static String FIELD_FILE_ID = "file_id";
-	final public static String FIELD_FILE_URL = "file_url";
+	//final public static String FIELD_FILE_ID = "file_id";
+	//final public static String FIELD_FILE_URL = "file_url";
     final public static String FIELD_SIZE = "size";
-    final public static String FIELD_FILE_SIZE = "file_size";
+    //#final public static String FIELD_FILE_SIZE = "file_size";
 	
 	
 	// field names: physical data
