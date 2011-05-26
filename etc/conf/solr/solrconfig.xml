@@ -71,7 +71,7 @@
   <dataDir>${solr.data.dir:./solr/data}</dataDir>
   -->
 
-  <dataDir>@@esgf-solr-data-dir@@</dataDir>
+  <dataDir>${solr.data.dir:./solr/data}</dataDir>
 
 
   <!-- WARNING: this <indexDefaults> section only provides defaults for index writers
