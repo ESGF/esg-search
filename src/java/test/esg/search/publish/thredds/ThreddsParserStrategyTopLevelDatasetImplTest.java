@@ -57,9 +57,9 @@ public class ThreddsParserStrategyTopLevelDatasetImplTest {
 		final InvDataset dataset = catalog.getDatasets().get(0);
 		ThreddsParserStrategy parser = new ThreddsParserStrategyTopLevelDatasetImpl();
 		
-		// tests number of metadata records
+		// tests number of metadata records (1 dataset, 5 files)
 		final List<Record> records = parser.parseDataset(dataset);
-		Assert.assertTrue(records.size()==1);
+		Assert.assertTrue(records.size()==6);
 		
 		// test record fields
 		final Record record = records.get(0);

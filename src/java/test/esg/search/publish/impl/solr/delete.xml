@@ -1,4 +1,6 @@
 <delete>
-	<id>123</id>
-	<id>456</id>
+  <id>123</id>
+  <query>parent_id:123</query>
+  <id>456</id>
+  <query>parent_id:456</query>
 </delete>
