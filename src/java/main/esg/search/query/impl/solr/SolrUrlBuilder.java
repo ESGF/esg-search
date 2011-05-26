@@ -22,6 +22,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,6 +30,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
 
+import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
 
 /**
@@ -86,14 +88,6 @@ public class SolrUrlBuilder {
 	}
 	
 	/**
-	 * Method to set the flag for output indentation.
-	 * @param indent
-	 */
-	//public void setIndent(final boolean indent) {
-	//	this.indent = indent;
-	//}
-	
-	/**
 	 * Method to generate the "update" URL.
 	 * This method is independent of the specific state of the object.
 	 * @return
@@ -113,20 +107,33 @@ public class SolrUrlBuilder {
 	 * @return
 	 */
 	public URL buildSelectUrl() throws MalformedURLException, UnsupportedEncodingException {
-		
-		final StringBuilder sb = new StringBuilder(url.toString()).append("/select/?indent=true");
-		
+			
+	    // q=... AND .... AND
+	    final List<String> qs = new ArrayList<String>();
+	    // fq=name1:value1&fq=name2:value2
+	    final StringBuilder fq = new StringBuilder();
+	    // facet=true&facet.field=...&facet.field=...
+	    final StringBuilder ff = new StringBuilder();
+	    
 		// search input text --> q=....
 		if (StringUtils.hasText(input.getText())) {
-			sb.append( "&q="+URLEncoder.encode(input.getText(), "UTF-8") );
-		} 
-		else {
-			sb.append( "&q="+URLEncoder.encode("*", "UTF-8") );
+			qs.add( URLEncoder.encode(input.getText(), "UTF-8") );
 		}
+		// wildcard id --> q=id:....
+		if (StringUtils.hasText(input.getConstraint(QueryParameters.ID))) {
+		    qs.add(SolrXmlPars.FIELD_ID+":"+URLEncoder.encode(input.getConstraint(QueryParameters.ID), "UTF-8") );
+		}
+		// from,to --> q="timestamp:[2010-10-19T22:00:00Z TO NOW]"
+		if (StringUtils.hasText(input.getConstraint(QueryParameters.FROM)) && StringUtils.hasText(input.getConstraint(QueryParameters.TO))) {
+		    qs.add( SolrXmlPars.FIELD_TIMESTAMP+":["+
+		            URLEncoder.encode(input.getConstraint(QueryParameters.FROM)+" TO "+input.getConstraint(QueryParameters.TO)+"]", "UTF-8") );
+		}		
+		// no text constraint
+		if (qs.isEmpty()) qs.add(URLEncoder.encode("*", "UTF-8"));		
 		
 		// search input type --> fq=type:Dataset
 		if (StringUtils.hasText(input.getType())) {
-			sb.append("&fq="+URLEncoder.encode( SolrXmlPars.FIELD_TYPE+":"+"\""+input.getType()+"\"","UTF-8" ));
+			fq.append("&fq="+URLEncoder.encode( SolrXmlPars.FIELD_TYPE+":"+"\""+input.getType()+"\"","UTF-8" ));
 		}
 		
 		// search input constraints --> fq=facet_name:"facet_value"
@@ -134,70 +141,64 @@ public class SolrUrlBuilder {
 		
 		if (!constraints.isEmpty()) {
 			for (final String facet : constraints.keySet()) {
-				for (final String value : constraints.get(facet)) {
-					
-					sb.append("&fq="+URLEncoder.encode( facet+":"+"\""+value+"\"","UTF-8" ));
-				}
+			    if (!QueryParameters.KEYWORDS.contains(facet)) { // skip keywords
+    				for (final String value : constraints.get(facet)) {					
+    					fq.append("&fq="+URLEncoder.encode( facet+":"+"\""+value+"\"","UTF-8" ));
+    				}
+			    }
 			}
 		}
-		
-		
-		// &facet.field=...&facet.field=...
-		if (this.facets!=null) {
-			sb.append("&facet=true");
-			for (final String facet : this.facets) {
-				sb.append("&facet.field=").append( URLEncoder.encode(facet, UTF8 ));
-			}
-		}
-		
-		// &start=...@rows=...
-		sb.append("&start=").append(input.getOffset())
-		  .append("&rows=").append(input.getLimit());
-		
-		// indent=true
-		//if (this.indent) {
-		//	sb.append("indent=true");
-		//}
-		
-		// distributed search
-		//sb.append("&distrib=true");
-
-		
-		//removed 11-22
-		// search input geospatial range constraints --> fq=west_degrees:[* TO 45]
-		/*
-		final Map<String, String> geospatialRangeConstraints = input.getGeospatialRangeConstraint();
-		// geospatialRangeConstraints
-		if (!geospatialRangeConstraints.isEmpty()) {
-			for (final String rangeConstraint : geospatialRangeConstraints.keySet()) {
-				String value = geospatialRangeConstraints.get(rangeConstraint);
-					//sb.append("&fq="+URLEncoder.encode( rangeConstraint+":"+value,"UTF-8" ));
-					sb.append("&"+URLEncoder.encode("(" + rangeConstraint + ")","UTF-8" ));
-			}
-		}
-		*/
-		
+									
 		String geospatialRangeConstraints = input.getGeospatialRangeConstraint();
 		// search input geospatial range constraints --> fq=(west_degrees:[* TO 45] AND east_degrees:[40 TO *]...)
-		if(geospatialRangeConstraints!=null)
-		{
+		if(geospatialRangeConstraints!=null) {
 			String value = geospatialRangeConstraints;
-			sb.append("&fq="+URLEncoder.encode("(" + value + ")","UTF-8" ));
+			fq.append("&fq="+URLEncoder.encode("(" + value + ")","UTF-8" ));
 		}
 		
 		String temporalRangeConstraints = input.getTemporalRangeConstraint();
         // search input geospatial range constraints --> fq=(datetime_start:[NOW/DAY-YEAR TO NOW] AND datetime_stop:[NOW/DAY-3MONTH TO NOW]...)
-        if(temporalRangeConstraints!=null)
-        {
+        if(temporalRangeConstraints!=null) {
             String value = temporalRangeConstraints;
-            sb.append("&fq="+URLEncoder.encode("(" + value + ")","UTF-8" ));
+            fq.append("&fq="+URLEncoder.encode("(" + value + ")","UTF-8" ));
         }
-		
+        
+        // &facet.field=...&facet.field=...
+        if (this.facets!=null) {
+            ff.append("&facet=true");
+            for (final String facet : this.facets) {
+                ff.append("&facet.field=").append( URLEncoder.encode(facet, UTF8 ));
+            }
+        }
+        
+        // compose final URL
+        final StringBuilder sb = new StringBuilder(url.toString()).append("/select/?indent=true");
+        // q=...
+        sb.append("&q=");
+        boolean first = true;
+        for (final String q : qs) {
+            if (!first) sb.append(" AND ");
+            sb.append(q);
+            first = false;
+        }
+        // fq, ff
+        sb.append(fq).append(ff);
+        // &start=...@rows=...
+        sb.append("&start=").append(input.getOffset())
+          .append("&rows=").append(input.getLimit());
+        
+        // indent=true
+        //if (this.indent) {
+        //  sb.append("indent=true");
+        //}
+        
+        // distributed search
+        //sb.append("&distrib=true");
+        
 		if (LOG.isInfoEnabled()) LOG.info("Select URL=" + sb.toString());
 		return new URL(sb.toString());
 		
 	}
-	
 	
 	
 }

@@ -2,7 +2,6 @@ package esg.search.query.ws.hessian;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,12 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import esg.search.query.api.FacetProfile;
+import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchReturnType;
 import esg.search.query.api.SearchService;
 import esg.search.query.impl.solr.SearchInputImpl;
 import esg.search.query.impl.solr.SearchServiceImpl;
-import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
  * Implementation of {@link SearchWebService} that delegates all functionality to the underlying {@link SearchService}.
@@ -47,7 +46,7 @@ public class SearchWebServiceImpl implements SearchWebService {
 	/**
 	 * Unmodifiable empty object used to speed up unconstrained calls.
 	 */
-	final private Map<String,String[]> emptyConstraints = Collections.unmodifiableMap( new HashMap<String, String[]>() );
+	//final private Map<String,String[]> emptyConstraints = Collections.unmodifiableMap( new HashMap<String, String[]>() );
 	
 	private static final Log LOG = LogFactory.getLog(SearchWebServiceImpl.class);
 	
@@ -74,7 +73,7 @@ public class SearchWebServiceImpl implements SearchWebService {
 	 * defined in the application facet profile, and by checking the constraint values for invalid characters.
 	 */
 	@Override
-	public String search(final String text, final Map<String, String[]> constraints, 
+	public String search(final String text, final String type, final Map<String, String[]> constraints,
 			             int offset, int limit, boolean getResults, boolean getFacets, final SearchReturnType returnType) throws Exception {
 		
 		// build search input object
@@ -86,6 +85,10 @@ public class SearchWebServiceImpl implements SearchWebService {
 		// and check constraint values for invalid characters
 		// allow additional parameter "dataset_id" to enable generic queries of files
 
+		// result type
+		if (StringUtils.hasText(type)) {
+		    input.setType(type);
+		}
 		
 		for (final String parName : constraints.keySet()) {
 		    if (!RESERVED_PARAMATER_NAMES.contains( parName.toLowerCase() )) {
@@ -119,16 +122,23 @@ public class SearchWebServiceImpl implements SearchWebService {
 	public String searchByTimeStamp(final String fromTimeStamp, final String toTimeStamp, final String type,
 			                        int offset, int limit, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception {
 		
+	    final Map<String,String[]> constraints = new HashMap<String,String[]>();
+	    
 		// express timestamp search as text query (example: "timestamp:[2010-10-19T22:00:00Z TO NOW])"
-		String text = SolrXmlPars.FIELD_TIMESTAMP+":["+fromTimeStamp+" TO "+toTimeStamp+"]";
+		//String text = SolrXmlPars.FIELD_TIMESTAMP+":["+fromTimeStamp+" TO "+toTimeStamp+"]";
+	    
+	    // mandatory temporal constraints
+	    constraints.put(QueryParameters.FROM, new String[]{ fromTimeStamp } );
+	    constraints.put(QueryParameters.TO, new String[]{ toTimeStamp } );
 		
-		// optional type
-		if (StringUtils.hasText(type)) {
-		    text +=  " AND "+SolrXmlPars.FIELD_TYPE+":"+type;
-		}
+		// optional type constraint
+	    //if (StringUtils.hasText(type)) {
+	    //    constraints.put(QueryParameters.TYPE, new String[]{ type } );
+	        // text +=  " AND "+SolrXmlPars.FIELD_TYPE+":"+type;
+	    //}
 		
 		// execute call
-		return this.search(text, emptyConstraints, offset, limit, getResults, getFacets, returnType);
+		return this.search(null, type, constraints, offset, limit, getResults, getFacets, returnType);
 		
 	}
 
@@ -139,16 +149,13 @@ public class SearchWebServiceImpl implements SearchWebService {
 	public String searchById(String idMatch, final String type,
 			                 int offset, int limit, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception {
 		
-		// express search by id as text query (also in wildcard case) 
-		String text = SolrXmlPars.FIELD_ID+":"+idMatch;
-		
-	    // optional type
-        if (StringUtils.hasText(type)) {
-            text += " AND "+SolrXmlPars.FIELD_TYPE+":"+type;
-        }
-		
+	    final Map<String,String[]> constraints = new HashMap<String,String[]>();
+	    
+	    // mandatory id constraint
+	    constraints.put(QueryParameters.ID, new String[]{ idMatch } );
+				
 		// execute call
-		return this.search(text, emptyConstraints, offset, limit, getResults, getFacets, returnType);
+		return this.search(null, type, constraints, offset, limit, getResults, getFacets, returnType);
 		
 	}
 	
