@@ -70,6 +70,7 @@
 
 
 DEBUG=${DEBUG:-0}
+VERBOSE=${VERBOSE:-0}
 esg_dist_url=http://198.128.245.140/dist
 
 #--------------
@@ -111,8 +112,8 @@ setup_search() {
 
     local upgrade=${1:-0}
 
-    setup_zookeeper && configure_zookeeper && write_zookeeper_install_log
-    [ $? != 0 ] && echo " ERROR: Could not fully install zookeeper :-( " && checked_done 1
+    #setup_zookeeper && configure_zookeeper && write_zookeeper_install_log
+    #[ $? != 0 ] && echo " ERROR: Could not fully install zookeeper :-( " && checked_done 1
     
     setup_solr && configure_solr && write_solr_install_log
     [ $? != 0 ] && echo " ERROR: Could not fully install solr :-( " && checked_done 1
@@ -475,16 +476,16 @@ check_zookeeper_process() {
 #---------------------------------------------------------
 # Solr/Lucene Setup and Configuration
 #---------------------------------------------------------
-solr_version=1.0.0.0
-solr_dist_url=${esg_dist_url}/esg-search/solr/esgf-solr-cloud-${solr_version}.tar.gz
-solr_workdir=${workdir}/esgf-solr-cloud
-solr_install_dir=${install_prefix}/esgf-solr-cloud
+solr_version=3.1.0
+solr_dist_url=http://mirror.metrocast.net/apache//lucene/solr/3.1.0/apache-solr-${solr_version}.tgz
+solr_workdir=${workdir}/solr-${solr_version}
+solr_install_dir=${install_prefix}/esgf-solr-${solr_version}
 solr_data_dir=${esg_root_dir}/data.index
 solr_server_port=8983
 
 setup_solr() {
     echo -n "Checking for solr ${solr_version}... "
-    [ -x ${solr_install_dir}/start.jar ] && check_solr_version
+    [ -e ${solr_install_dir}/start.jar ] && check_solr_version
     [ $? == 0 ] && (( ! force_install )) && echo " [OK]" && return 0
 
     echo
@@ -526,8 +527,8 @@ setup_solr() {
     fi
 
     #Check to see if we already have a solr distribution directory
-    if [ ! -e ${solr_install_dir%/*}/${solr_dist_dir} ]; then
-        echo "Don't see solr installation dir ${solr_install_dir%/*}/${solr_dist_dir}"
+    if [ ! -e ${solr_install_dir} ]; then
+        echo "Don't see solr installation dir ${solr_install_dir}"
         if [ ! -e ${solr_dist_file} ]; then
             echo "Don't see solr distribution file $(pwd)/${solr_dist_file} either"
             echo "Downloading solr from ${solr_dist_url}"
@@ -535,27 +536,25 @@ setup_solr() {
             #When I do the refactoring of some of the functions, then I can source that functions file and use checked_get.
             #For now just fetch it.
             wget -O ${solr_dist_file} ${solr_dist_url}
-            [ $? != 0 ] && echo " ERROR: Could not download solr ${solr_dist_file}" && popd && checked_done 1
-            echo "unpacking ${solr_dist_file}... into ${solr_install_dir%/*}"
-            tar xzf ${solr_dist_file} -C ${solr_install_dir%/*}
-            [ $? != 0 ] && echo " ERROR: Could not extract solr :-( " && popd && checked_done 1
+            [ $? != 0 ] && echo " ERROR: Could not download solr ${solr_dist_file} from ${solr_dist_url}" && popd && checked_done 1
+            echo "unpacking ${solr_dist_file}... into $(pwd)"
+            tar xzf ${solr_dist_file}
+            [ $? != 0 ] && echo " ERROR: Could not extract solr [${solr_dist_file}] ... :-( " && popd && checked_done 1
         fi
     fi
 
     #If you don't see the directory but see the tar.gz distribution
     #then expand it and go from there....
-    if [ -e ${solr_dist_file} ] && [ ! -e ${solr_install_dir%/*}/${solr_dist_dir} ]; then
-        echo "unpacking* ${solr_dist_file} into ${solr_install_dir%/*}"
-        tar xzf ${solr_dist_file} -C ${solr_install_dir%/*}
-        [ $? != 0 ] && echo " ERROR: Could not extract solr :-( " && popd && checked_done 1
+    if [ -e ${solr_dist_file} ] && [ ! -e ${solr_install_dir} ]; then
+        echo "unpacking* ${solr_dist_file} into $(pwd)"
+        tar xzf ${solr_dist_file}
+        [ $? != 0 ] && echo " ERROR: Could not extract solr [${solr_dist_file}] :-( " && popd && checked_done 1
     fi
 
+    [ -d ${solr_install_dir} ] && echo "Backing up previous install... " && backup ${solr_install_dir} && mv ${solr_install_dir}{,.bak} || ( echo "Could not move aside prev install" && checked_done 1)
+    cp -R ${solr_dist_dir}/example ${solr_install_dir}
     echo "${solr_dist_version}" > ${solr_install_dir}/VERSION
 
-    #NOTE: no need to deal with sym-linking logic since untarring the
-    #file esgf-solr-cloud-1.0.0.0.tar.gz results in simply the
-    #esgf-solr-cloud directory This will make versioning an
-    #issue... but we can deal with that when it is on fire... (later)
 
     (($DEBUG)) && echo "chown -R ${installer_uid}:${installer_gid} ${solr_install_dir}"
     chown    ${installer_uid}:${installer_gid} ${solr_install_dir}
@@ -576,26 +575,16 @@ configure_solr() {
     pushd ${solr_install_dir}/solr/conf >& /dev/null
     [ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
  
-    #NOTE: These wget calls should also be changed to check_get() calls (once I factor that function out)
-    echo "fetching ${solr_dist_url%/*}/solrconfig.xml"
-    sed "s:@@esgf-solr-data-dir@@:${solr_data_dir}:" <(curl -s -L --insecure ${solr_dist_url%/*}/solrconfig.xml) > ${solr_install_dir}/solr/conf/solrconfig.xml
-    [ $? != 0 ] && echo "Problem configuring solr (2)" && return 2
+    cp -v /usr/local/tomcat/webapps/esg-search/etc/conf/solr/solrconfig.xml
+    [ $? != 0 ] && echo "Problem configuring solr (2)" && return 3
     chmod 755 ${solr_install_dir}/solr/conf/solrconfig.xml
     mkdir -p ${solr_data_dir}
     chown    ${installer_uid}:${installer_gid} ${solr_data_dir}
     chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_data_dir})
 
-    #NOTE: These wget calls should also be changed to check_get() calls (once I factor that function out)
-    echo "fetching ${solr_dist_url%/*}/schema.xml"
-    curl -s -L --insecure ${solr_dist_url%/*}/schema.xml > ${solr_install_dir}/solr/conf/schema.xml
+    cp -v /usr/local/tomcat/webapps/esg-search/etc/conf/solr/schema.xml    
     [ $? != 0 ] && echo "Problem configuring solr (3)" && return 3
     chmod 755 ${solr_install_dir}/solr/conf/schema.xml
-    
-    #determine the id of this host and edit the xml file appropriately - in place
-    #NOTE: this should be tightened up to use an in-flight checked_get bit of integrity checking...
-    sed "s:@@myid@@:$(get_node_id):" <(curl -s -L --insecure ${solr_dist_url%/*}/solr.xml) > ${solr_install_dir}/solr/solr.xml
-    [ $? != 0 ] && echo "Problem configuring solr (4)" && return 4
-    (($DEBUG)) && cat ${solr_install_dir}/solr/solr.xml
     
     popd >& /dev/null
     echo " [OK]"
@@ -627,22 +616,15 @@ start_solr() {
     echo "Starting solr server on port ${zookeeper_client_port}"
 
     pushd ${solr_install_dir} >& /dev/null
-    java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
+    #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
+    verbose_print java -Djetty.port=8983 -Dsolr.data.dir=${solr_data_dir} -jar start.jar
+    java -Djetty.port=${solr_server_port} -Dsolr.data.dir=${solr_data_dir} -jar start.jar >& /dev/null &
     popd >& /dev/null
     
-    #Don't wait 10 seconds if you don't have to...
-    #just check every second up till 10 seconds (or <= 10x)
-    local wait_time=10
-    local ret=1
-    while [[ $wait_time > 0 ]]; do
-        check_solr_process
-        ret=$?
-        [ $ret == 0 ] && break
-        sleep 1
-        ((wait_time--))
-        echo -n "."
-    done
+    pcheck 10 2 1 -- check_solr_process
+    ret=$?
     [ $ret == 0 ] && echo " [OK]" || echo " [FAIL]"
+
     return $ret
 }
 
@@ -699,4 +681,84 @@ dedup() {
     [ ! -w "${infile}" ] && echo "WARNING: dedup() - unable to write to ${infile}" && return 1
     local tmp=$(tac ${infile} | awk 'BEGIN {FS="[ =]"} !($2 in a) {a[$2];print $0}' | sort -k2,2)
     echo "$tmp" > ${infile}
+}
+
+verbose_print() { ((VERBOSE)) && echo $@; return 0; }
+debug_print() { ((DEBUG)) && echo $@; return 0; }
+
+pcheck() {
+    debug_print "pcheck $@"
+    #initial default values
+    local iterations=5
+    local wait_time=1
+    local return_on_true=1
+    local task_function=""
+
+    local_vars=(iterations wait_time return_on_true)
+    local i=0
+    while [[ -n "$1" ]]; do
+	if [ "$1" == "--" ] ; then
+	    shift
+	    task_function=$1
+	    shift
+	    break
+	fi
+	eval local ${local_vars[((i++))]}=$1
+	shift
+    done
+    debug_print "iterations = ${iterations}"
+    debug_print "wait_time = ${wait_time}"
+    debug_print "return_on_true = ${return_on_true}"
+    debug_print "task_function = ${task_function}"
+    debug_print "args = [$@]"
+
+    local ret=1
+    while [[ $iterations > 0 ]]; do
+	echo -n "."
+	eval ${task_function} $@
+	ret=$?
+	((return_on_true)) && [ $ret == 0 ] && break
+	((iterations != 1)) && sleep ${wait_time}
+	: $((iterations--))
+    done
+    [ $ret == 0 ] && printf "\n${task_function} [OK]\n" || printf "\n${task_function} [FAIL]\n"
+    return $ret
+}
+
+backup() {
+    [ -z "$1" ] && echo "backup - source must be provided as arg1" && return 1
+    [ ! -d "$1" ] && echo "backup - must take a directory! $1 not a directory" && return 1
+    local source="$(readlink -f $1)"
+    echo "Backup - Creating a backup archive of ${source}"
+    pushd ${source%/*} >& /dev/null
+    mkdir -p ${esg_backup_dir} >& /dev/null
+    local backup_filename=$(readlink -f ${esg_backup_dir})/${source##*/}.$(date ${date_format}).tgz
+    tar czf ${backup_filename} ${source##*/}
+    [ $? != 0 ] && echo " ERROR: Problem with creating backup archive: ${backup_filename}" && popd >& /dev/null && return 1
+    if [ -e ${backup_filename} ]; then 
+	echo "Created backup: ${backup_filename}" 
+    else
+	echo "Could not locate backup file ${backup_filename}"
+	popd >& /dev/null
+	return 1
+    fi
+    
+
+    #-------------
+    #keep only the last num_backups_to_keep files
+    num_backups_to_keep=${num_backups_to_keep:-7}
+    pushd ${esg_backup_dir} >& /dev/null
+    files=(`ls -t | grep ${source##*/}.\*.tgz | tail -n +$((${num_backups_to_keep}+1)) | xargs`)
+    if (( ${#files[@]} > 0 )); then
+	echo "Tidying up a bit..."
+	echo "${#files[@]} old backup files to remove: ${files[@]}"
+	rm -v ${files[@]}
+    fi
+    popd >& /dev/null
+    #-------------
+
+    popd >& /dev/null
+    return 0
+
+    
 }
