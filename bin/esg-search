@@ -477,7 +477,7 @@ check_zookeeper_process() {
 # Solr/Lucene Setup and Configuration
 #---------------------------------------------------------
 solr_version=3.1.0
-solr_dist_url=http://mirror.metrocast.net/apache//lucene/solr/3.1.0/apache-solr-${solr_version}.tgz
+solr_dist_url=http://mirror.metrocast.net/apache//lucene/solr/${solr_version}/apache-solr-${solr_version}.tgz
 solr_workdir=${workdir}/solr-${solr_version}
 solr_install_dir=${install_prefix}/esgf-solr-${solr_version}
 solr_data_dir=${esg_root_dir}/data.index
