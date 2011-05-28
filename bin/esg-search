@@ -266,7 +266,6 @@ write_search_service_install_log() {
 # Zookeeper Setup and Configuration
 #---------------------------------------------------------
 zookeeper_version="3.3.1"
-#zookeeper_dist_url=http://apache.osuosl.org//hadoop/zookeeper/zookeeper-${zookeeper_version}/zookeeper-${zookeeper_version}.tar.gz
 zookeeper_dist_url=http://archive.apache.org/dist/hadoop/zookeeper/zookeeper-${zookeeper_version}/zookeeper-${zookeeper_version}.tar.gz
 zookeeper_workdir=${workdir}/zookeeper
 zookeeper_install_dir=${install_prefix}/zookeeper
@@ -367,7 +366,7 @@ check_zookeeper_version() {
 }
 
 configure_zookeeper() {
-    echo "configuring zookeeper... $@"
+    echo -n "Configuring zookeeper... $@"
     pushd ${zookeeper_install_dir} >& /dev/null
     [ $? != 0 ] && echo " ERROR: Unable to peform configuration: no such dir ${zookeeper_install_dir}" && checked_done 1
 
@@ -569,14 +568,14 @@ check_solr_version() {
 }
 
 configure_solr() {
-    echo "configuring solr... "
+    echo -n "Configuring solr... "
     pushd ${solr_install_dir}/solr/conf >& /dev/null
     [ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
  
     #cp -v /usr/local/tomcat/webapps/esg-search/WEB-INF/solr/solrconfig.xml .
     verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml > ${solr_install_dir}/solr/conf/solrconfig.xml"
     curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml > ${solr_install_dir}/solr/conf/solrconfig.xml
-    [ $? != 0 ] && echo "Problem configuring solr (2)" && return 3
+    [ $? != 0 ] && echo && echo "Problem configuring solr (2)" && return 3
     chmod 755 ${solr_install_dir}/solr/conf/solrconfig.xml
     mkdir -p ${solr_data_dir}
     chown    ${installer_uid}:${installer_gid} ${solr_data_dir}
@@ -585,7 +584,7 @@ configure_solr() {
     #cp -v /usr/local/tomcat/webapps/esg-search/WEB-INF/solr/schema.xml .
     verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/schema.xml > ${solr_install_dir}/solr/conf/schema.xml"
     curl -s -L --insecure ${esg_dist_url}/esg-search/schema.xml > ${solr_install_dir}/solr/conf/schema.xml
-    [ $? != 0 ] && echo "Problem configuring solr (3)" && return 3
+    [ $? != 0 ] && echo && echo "Problem configuring solr (3)" && return 3
     chmod 755 ${solr_install_dir}/solr/conf/schema.xml
     
     popd >& /dev/null
