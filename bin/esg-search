@@ -71,7 +71,12 @@
 
 DEBUG=${DEBUG:-0}
 VERBOSE=${VERBOSE:-0}
-esg_dist_url=http://198.128.245.140/dist
+esg_dist_url=${esg_dist_url:-"http://198.128.245.140/dist"}
+
+#maybe I am paranoid but I want to make sure someone can't just set
+#the environment to any place and have us just accept it and pull from
+#it -gavin
+if $(echo "${esg_dist_url}" | grep "http://198.128.245.140/dist" >& /dev/null); then echo "*"; else (echo "illegal distribution url: ${esg_dist_url}" && checked_done 1); fi
 
 #--------------
 #User Defined / Settable (public)
@@ -92,7 +97,7 @@ installer_gid=${installer_gid:-$(id ${HOME##*/} | sed 's/.*gid=\([0-9]*\).*/\1/'
 [ $? != 0 ] || [ -z "$installer_gid" ] && echo "installer_gid is not set" && exit 1
 installer_home=${HOME}
 
-esg_search_version="1.1.1"
+esg_search_version=${esg_search_version:-"1.1.3"}
 
 search_install_dir=${ESGF_INSTALL_DIR:-"${install_prefix}/esgf_search"}
 seach_data_dir=${ESGF_DATA_DIR:="${esg_root_dir}/search_data"}
@@ -133,19 +138,19 @@ setup_search() {
 
 start_search_services() {
     echo "Starting search services..."
-    start_zookeeper
+    #start_zookeeper
     start_solr
 }
 
 stop_search_services() {
     echo "Stopping search services..."
     stop_solr
-    stop_zookeeper
+    #stop_zookeeper
 }
 
 test_search_services() {
     echo "Testing search services..."
-    test_zookeeper
+    #test_zookeeper
     test_solr
 }
 
@@ -512,13 +517,6 @@ setup_solr() {
     local solr_dist_file=${solr_dist_url##*/}
     local solr_dist_dir=$(echo ${solr_dist_file} | awk 'gsub(/('$compress_extensions')/,"")')
 
-    #NOTE: In this case the distribution tar file
-    #(esgf-solr-cloud-1.0.0.0.tar.gz) when stripped results in
-    #esgf-solr-cloud and NOT esgf-solr-cloud-1.0.0.0 as expected we
-    #have to additionally strip off the version number.
-    local solr_dist_version=${solr_dist_dir##*-}
-    solr_dist_dir=${solr_dist_dir%-*}
-
     #There is this pesky case of having a zero sized dist file... WTF!?
     if [ -e ${solr_dist_file} ]; then
         ls -l ${solr_dist_file}
@@ -545,15 +543,15 @@ setup_solr() {
 
     #If you don't see the directory but see the tar.gz distribution
     #then expand it and go from there....
-    if [ -e ${solr_dist_file} ] && [ ! -e ${solr_install_dir} ]; then
+    if [ -e ${solr_dist_file} ] && [ ! -e ${solr_dist_dir} ]; then
         echo "unpacking* ${solr_dist_file} into $(pwd)"
         tar xzf ${solr_dist_file}
         [ $? != 0 ] && echo " ERROR: Could not extract solr [${solr_dist_file}] :-( " && popd && checked_done 1
     fi
 
-    [ -d ${solr_install_dir} ] && echo "Backing up previous install... " && backup ${solr_install_dir} && mv ${solr_install_dir}{,.bak} || ( echo "Could not move aside prev install" && checked_done 1)
+    [ -d ${solr_install_dir} ] && (echo "Backing up previous install... " && (backup ${solr_install_dir} || (mv ${solr_install_dir}{,.bak} || echo "Could not move aside prev install")))
     cp -R ${solr_dist_dir}/example ${solr_install_dir}
-    echo "${solr_dist_version}" > ${solr_install_dir}/VERSION
+    echo "${solr_version}" > ${solr_install_dir}/VERSION
 
 
     (($DEBUG)) && echo "chown -R ${installer_uid}:${installer_gid} ${solr_install_dir}"
@@ -575,14 +573,18 @@ configure_solr() {
     pushd ${solr_install_dir}/solr/conf >& /dev/null
     [ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
  
-    cp -v /usr/local/tomcat/webapps/esg-search/etc/conf/solr/solrconfig.xml
+    #cp -v /usr/local/tomcat/webapps/esg-search/WEB-INF/solr/solrconfig.xml .
+    verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml > ${solr_install_dir}/solr/conf/solrconfig.xml"
+    curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml > ${solr_install_dir}/solr/conf/solrconfig.xml
     [ $? != 0 ] && echo "Problem configuring solr (2)" && return 3
     chmod 755 ${solr_install_dir}/solr/conf/solrconfig.xml
     mkdir -p ${solr_data_dir}
     chown    ${installer_uid}:${installer_gid} ${solr_data_dir}
     chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_data_dir})
 
-    cp -v /usr/local/tomcat/webapps/esg-search/etc/conf/solr/schema.xml    
+    #cp -v /usr/local/tomcat/webapps/esg-search/WEB-INF/solr/schema.xml .
+    verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/schema.xml > ${solr_install_dir}/solr/conf/schema.xml"
+    curl -s -L --insecure ${esg_dist_url}/esg-search/schema.xml > ${solr_install_dir}/solr/conf/schema.xml
     [ $? != 0 ] && echo "Problem configuring solr (3)" && return 3
     chmod 755 ${solr_install_dir}/solr/conf/schema.xml
     
@@ -617,7 +619,7 @@ start_solr() {
 
     pushd ${solr_install_dir} >& /dev/null
     #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
-    verbose_print java -Djetty.port=8983 -Dsolr.data.dir=${solr_data_dir} -jar start.jar
+    verbose_print "java -Djetty.port=8983 -Dsolr.data.dir=${solr_data_dir} -jar start.jar"
     java -Djetty.port=${solr_server_port} -Dsolr.data.dir=${solr_data_dir} -jar start.jar >& /dev/null &
     popd >& /dev/null
     
