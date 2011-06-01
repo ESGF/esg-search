@@ -614,7 +614,7 @@ write_solr_install_log() {
 # start Solr server on port 8983 connecting to Zookeeper on port 2181
 start_solr() {  
     check_solr_process && return 1
-    echo "Starting solr server on port ${zookeeper_client_port}"
+    echo "Starting solr server on port ${solr_server_port}"
 
     pushd ${solr_install_dir} >& /dev/null
     #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
