@@ -116,6 +116,14 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	public Map<String, List<String>> getConstraints() {
 		return Collections.unmodifiableMap(constraints);
 	}
+	
+    /**
+     * {@inheritDoc}
+     */
+	public String getConstraint(final String name) {
+	    if (constraints.containsKey(name)) return constraints.get(name).get(0);
+	    else return null;
+	}
 
 	/**
 	 * {@inheritDoc}

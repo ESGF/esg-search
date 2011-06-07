@@ -1,9 +1,12 @@
 package esg.search.query.ws.hessian;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,12 +16,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import esg.search.query.api.FacetProfile;
+import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchReturnType;
 import esg.search.query.api.SearchService;
 import esg.search.query.impl.solr.SearchInputImpl;
 import esg.search.query.impl.solr.SearchServiceImpl;
-import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
  * Implementation of {@link SearchWebService} that delegates all functionality to the underlying {@link SearchService}.
@@ -43,14 +46,19 @@ public class SearchWebServiceImpl implements SearchWebService {
 	/**
 	 * Unmodifiable empty object used to speed up unconstrained calls.
 	 */
-	final private Map<String,String[]> emptyConstraints = Collections.unmodifiableMap( new HashMap<String, String[]>() );
+	//final private Map<String,String[]> emptyConstraints = Collections.unmodifiableMap( new HashMap<String, String[]>() );
 	
 	private static final Log LOG = LogFactory.getLog(SearchWebServiceImpl.class);
 	
 	/**
 	 * List of invalid text characters - anything that is not within square brackets.
 	 */
-	//private static Pattern pattern = Pattern.compile(".*[^a-zA-Z0-9_\\-\\.\\@\\'\\:\\;\\,\\s/()].*");
+	private static Pattern pattern = Pattern.compile(".*[^a-zA-Z0-9_\\-\\.\\@\\'\\:\\;\\,\\s/()\\*].*");
+	
+	/**
+	 * List of HTTP parameter names that are NOT interpreted as facet constraints.
+	 */
+	private final static List<String> RESERVED_PARAMATER_NAMES = Arrays.asList(new String[] { "offset", "limit", "facets", "results", "text", "back" });
 
 	
 	@Autowired
@@ -61,11 +69,11 @@ public class SearchWebServiceImpl implements SearchWebService {
 
 	/**
 	 * {@inheritDoc}
-	 * Note that this method implementation "sanitizes" the constraints map by just accepting keys that are explicitely
-	 * defined in the application facet profile, and by checking the constraint values for inalid characters.
+	 * Note that this method implementation "sanitizes" the constraints map by just accepting keys that are explicitly
+	 * defined in the application facet profile, and by checking the constraint values for invalid characters.
 	 */
 	@Override
-	public String search(final String text, final Map<String, String[]> constraints, 
+	public String search(final String text, final String type, final Map<String, String[]> constraints,
 			             int offset, int limit, boolean getResults, boolean getFacets, final SearchReturnType returnType) throws Exception {
 		
 		// build search input object
@@ -75,17 +83,27 @@ public class SearchWebServiceImpl implements SearchWebService {
 		// parse constraints
 		// for security reasons, loop ONLY over parameter keys found in facet profile, matching against HTTP request parameters,
 		// and check constraint values for invalid characters
-		for (final String parName : facetProfile.getTopLevelFacets().keySet()) {
-			final String[] parValues = constraints.get(parName);
-			if (parValues!=null) {
-				for (final String parValue : parValues) {
-					if (StringUtils.hasText(parValue)) {
-						input.addConstraint(parName, parValue);
-						if (LOG.isTraceEnabled()) LOG.trace("Set constraint name="+parName+" value="+parValue);
-					}
-				}
-			}
-			
+		// allow additional parameter "dataset_id" to enable generic queries of files
+
+		// result type
+		if (StringUtils.hasText(type)) {
+		    input.setType(type);
+		}
+		
+		for (final String parName : constraints.keySet()) {
+		    if (!RESERVED_PARAMATER_NAMES.contains( parName.toLowerCase() )) {
+    			final String[] parValues = constraints.get(parName);
+    			if (parValues!=null) {
+    				for (final String parValue : parValues) {
+    					if (StringUtils.hasText(parValue)) {
+    					    final Matcher matcher = pattern.matcher(parValue);
+    					    if (matcher.matches()) throw new Exception("Invalid character(s) detected in parameter value="+parValue);
+    						input.addConstraint(parName, parValue);
+    						if (LOG.isTraceEnabled()) LOG.trace("Set constraint name="+parName+" value="+parValue);
+    					}
+    				}
+    			}
+		    }
 		}
 
 		input.setOffset(offset);
@@ -101,14 +119,26 @@ public class SearchWebServiceImpl implements SearchWebService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String searchByTimeStamp(final String fromTimeStamp, final String toTimeStamp, 
+	public String searchByTimeStamp(final String fromTimeStamp, final String toTimeStamp, final String type,
 			                        int offset, int limit, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception {
 		
+	    final Map<String,String[]> constraints = new HashMap<String,String[]>();
+	    
 		// express timestamp search as text query (example: "timestamp:[2010-10-19T22:00:00Z TO NOW])"
-		final String text = SolrXmlPars.FIELD_TIMESTAMP+":["+fromTimeStamp+" TO "+toTimeStamp+"]";
+		//String text = SolrXmlPars.FIELD_TIMESTAMP+":["+fromTimeStamp+" TO "+toTimeStamp+"]";
+	    
+	    // mandatory temporal constraints
+	    constraints.put(QueryParameters.FROM, new String[]{ fromTimeStamp } );
+	    constraints.put(QueryParameters.TO, new String[]{ toTimeStamp } );
+		
+		// optional type constraint
+	    //if (StringUtils.hasText(type)) {
+	    //    constraints.put(QueryParameters.TYPE, new String[]{ type } );
+	        // text +=  " AND "+SolrXmlPars.FIELD_TYPE+":"+type;
+	    //}
 		
 		// execute call
-		return this.search(text, emptyConstraints, offset, limit, getResults, getFacets, returnType);
+		return this.search(null, type, constraints, offset, limit, getResults, getFacets, returnType);
 		
 	}
 
@@ -116,14 +146,16 @@ public class SearchWebServiceImpl implements SearchWebService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String searchById(String idMatch, 
+	public String searchById(String idMatch, final String type,
 			                 int offset, int limit, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception {
 		
-		// express search by id as text query (also in wildcard case) 
-		final String text = SolrXmlPars.FIELD_ID+":"+idMatch;
-		
+	    final Map<String,String[]> constraints = new HashMap<String,String[]>();
+	    
+	    // mandatory id constraint
+	    constraints.put(QueryParameters.ID, new String[]{ idMatch } );
+				
 		// execute call
-		return this.search(text, emptyConstraints, offset, limit, getResults, getFacets, returnType);
+		return this.search(null, type, constraints, offset, limit, getResults, getFacets, returnType);
 		
 	}
 	

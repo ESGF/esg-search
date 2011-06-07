@@ -54,6 +54,12 @@ public interface Record {
 	Map<String, List<String>> getFields();
 	
 	/**
+	 * Method to return the first value of a named field, or null if not available
+	 * @return
+	 */
+	String getField(String name);
+	
+	/**
 	 * Method to return the record version, used to only index the latest version.
 	 * Dates can be converted to milliseconds from the Epoch for versioning.
 	 * @return

@@ -33,6 +33,8 @@ public class SolrXmlPars {
 	final public static String ELEMENT_ARR = "arr";
 	final public static String ELEMENT_DELETE = "delete";
 	final public static String ELEMENT_ID = "id";
+	final public static String ELEMENT_QUERY = "query";
+	
 	
 	final public static String  ELEMENT_FACET_COUNTS = "facet_counts";
 	final public static String  ELEMENT_FACET_FIELDS = "facet_fields";
@@ -51,6 +53,7 @@ public class SolrXmlPars {
 	// <field name="version">0</field>
     // .........
 	final public static String FIELD_ID = "id";
+	final public static String FIELD_PARENT_ID = "parent_id"; // note: generic notation to allow parent-child relations beyond just datasets
 	final public static String FIELD_VERSION = "version";
 	final public static String FIELD_TITLE = "title";
 	final public static String FIELD_NAME = "name";
@@ -69,11 +72,11 @@ public class SolrXmlPars {
 	final public static String FIELD_METADATA_FILE_NAME = "metadata_file_name";
 
 	// field names:
-	final public static String FIELD_FILE_ID = "file_id";
-	final public static String FIELD_FILE_URL = "file_url";
-
+	
+	//final public static String FIELD_FILE_ID = "file_id";
+	//final public static String FIELD_FILE_URL = "file_url";
     final public static String FIELD_SIZE = "size";
-    final public static String FIELD_FILE_SIZE = "file_size";
+    //#final public static String FIELD_FILE_SIZE = "file_size";
 	
 	
 	// field names: physical data
@@ -93,6 +96,9 @@ public class SolrXmlPars {
 	
 	final public static String FIELD_DATA_FORMAT = "data_format";
 	final public static String FIELD_FILE_NAME = "file_name";
+	
+	final public static String TYPE_DATASET = "Dataset";
+	final public static String TYPE_FILE = "File";
 
 	
 	/**

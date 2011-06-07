@@ -44,7 +44,8 @@ import esg.search.publish.impl.RecordHelper;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
- * Implementation of {@link ThreddsParserStrategy} that produces a single {@link Record} for each top-level THREDDS dataset.
+ * Implementation of {@link ThreddsParserStrategy} that produces a single {@link Record} of type "Dataset" for each top-level THREDDS dataset,
+ * and one {@link Record} of type "File" for each file nested anywhere in the hierarchy.
  */
 @Component
 public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserStrategy {
@@ -69,6 +70,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		this.urlBuilder = urlBuilder;
 	}
 	
+	/**
+	 * Method to parse the catalog top-level dataset.
+	 */
 	public List<Record> parseDataset(final InvDataset dataset) {
 		
 	    if (LOG.isDebugEnabled()) LOG.debug("Parsing dataset: "+dataset.getID());
@@ -82,117 +86,216 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		final String name = dataset.getName();
 		Assert.notNull(name, "Dataset name cannot be null");
 		record.addField(SolrXmlPars.FIELD_TITLE, name);
+	    // type
+        record.addField(SolrXmlPars.FIELD_TYPE, SolrXmlPars.TYPE_DATASET);
+		
+		// IMPORTANT: add top-level dataset as first record in the list
+		records.add(record);
         
 		// catalog URL
 		record.addField(SolrXmlPars.FIELD_URL, urlBuilder.buildUrl(dataset));
 		
-		// metadata format
-		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");
-		
-		// metadata file name
 		// FIXME
+		// metadata format
+		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");		
+		// metadata file name
 		record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
 		
-		// type
-		record.addField(SolrXmlPars.FIELD_TYPE, "Dataset");
+		this.parseDocumentation(dataset, record);
 		
-		// <documentation type="...">.......</documentation>
-		for (final InvDocumentation documentation : dataset.getDocumentation()) {
-			final String content = documentation.getInlineContent();
-			if (StringUtils.hasText(content)) {
-				record.addField(SolrXmlPars.FIELD_DESCRIPTION, content);
-			}
-		}
+		this.parseVariables(dataset, record);
 		
-		// <variables vocabulary="CF-1.0">
-        //   <variable name="hfss" vocabulary_name="surface_upward_sensible_heat_flux" units="W m-2">Surface Sensible Heat Flux</variable>
-        // </variables>
-		for (final Variables variables : dataset.getVariables()) {
-			final String vocabulary = variables.getVocabulary();
-			for (final Variable variable : variables.getVariableList()) {
-				record.addField(SolrXmlPars.FIELD_VARIABLE, variable.getName());
-				if (vocabulary.equals(ThreddsPars.CF)) record.addField(SolrXmlPars.FIELD_CF_VARIABLE, variable.getDescription());
-			}
-		}
+		this.parseAccess(dataset, record);
 		
-		// <property name="..." value="..." />
-		for (final InvProperty property : dataset.getProperties()) {
-			if (property.getName().equals(ThreddsPars.DATASET_ID)) {
-				// note: override record ID to get rid of version
-				// <dataset name="TES Level 3 Monthly Data (NetCDF)" ID="nasa.jpl.tes.monthly.v1" restrictAccess="esg-user">
-				// <property name="dataset_id" value="nasa.jpl.tes.monthly" />
-				record.setId(property.getValue());
-			} else if (property.getName().equals(SolrXmlPars.FIELD_TITLE)) {
-				// note: record title already set from dataset name
-				record.addField(SolrXmlPars.FIELD_DESCRIPTION, property.getValue());
-			} else if (property.getName().equals(ThreddsPars.DATASET_VERSION)) {
-				record.addField(SolrXmlPars.FIELD_VERSION, property.getValue());
-			} else {
-				record.addField(property.getName(), property.getValue());
-			}
-		}
+		this.parseProperties(dataset, record);
+
+		this.parseMetadataGroup(dataset,record);
 		
-		// <access urlPath="/ipcc/sresb1/atm/3h/hfss/miroc3_2_hires/run1/hfss_A3_2050.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
-		for (final InvAccess access : dataset.getAccess()) {
-			record.addField(SolrXmlPars.FIELD_SERVICE, 
-					        RecordHelper.encodeServiceField(access.getService().getServiceType().toString(), 
-					        		                        access.getService().getDescription(),
-					        		                        access.getStandardUrlName()));
-		}
-		
-		// helper method for obtaining temporal and spatial metadata (as well as other) info... 
-		// NOTE: might need to change signature for clarification purposes
-		//		this is just a temp fix to get the geospatial data extracted
-		addThreddsMetadataGroup(dataset,record);
-		
-		// harvest files (recursively)
-		long size = parseFiles(dataset, record);
+		// recursion
+		// NOTE: currently only files generate new records
+		long size = parseSubDatasets(dataset, records);
 		record.addField(SolrXmlPars.FIELD_SIZE, Long.toString(size));
 		
-		if (LOG.isDebugEnabled()) LOG.debug("Record: " + record);
-		records.add(record);
+		// debug
+		if (LOG.isDebugEnabled()) {
+    		for (final Record rec : records) LOG.debug(rec);
+	    }
 		
 		return records;
 		
 	}
 
-	private long parseFiles(final InvDataset dataset, final Record record) {
+	/**
+	 * Method to parse the children of a given dataset and store metadata information in the shared list of records.
+	 * The very first record in the list corresponds to the root of the dataset hierarchy.
+	 * @param dataset
+	 * @param records
+	 * @return
+	 */
+	private long parseSubDatasets(final InvDataset dataset, final List<Record> records) {
 	    
 	    if (LOG.isTraceEnabled()) LOG.trace("Crawling dataset: "+dataset.getID()+" for files");
 	    
 	    long dataset_size = 0L;
 	    for (final InvDataset childDataset : dataset.getDatasets()) {
-
-	        // extract file size
-	        long file_size = -1;
-	        for (final InvProperty childDatasetProperty : childDataset.getProperties()) {
-	            if (LOG.isTraceEnabled()) LOG.trace("Property: " + childDatasetProperty.getName() + "=" + childDatasetProperty.getValue());
-	            if (childDatasetProperty.getName().equals(ThreddsPars.SIZE)) {
-	                
-	                file_size = Long.parseLong((childDatasetProperty.getValue()));	                
-	                //record.addField(SolrXmlPars.FIELD_FILE_SIZE, childDatasetProperty.getValue());
-	            }
-	        }
-	        // add to container dataset size
-	        if (file_size!=-1) dataset_size += file_size;
 	        
-	        // extract access endpoints
-	        for (final InvAccess access : childDataset.getAccess()) {
-    	        if (LOG.isTraceEnabled()) 
-    	            LOG.trace("Dataset="+childDataset.getID()+" Service="+access.getService().getName()+" URL="+access.getStandardUri().toString());
-	            record.addField(SolrXmlPars.FIELD_FILE_ID, childDataset.getID());
-	            record.addField(SolrXmlPars.FIELD_FILE_URL, access.getStandardUri().toString());
-	            record.addField(SolrXmlPars.FIELD_SERVICE_TYPE, access.getService().getServiceType().toString());
-	            if (file_size!=-1) record.addField(SolrXmlPars.FIELD_FILE_SIZE, Long.toString(file_size));
+	        if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.FILE_ID) )) {
+	            
+	            // parse files into separate records
+	            dataset_size += this.parseFile(childDataset, records);
+
+	        } else if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.AGGREGATION_ID) )) {
+	            
+	            // parse aggregation INTO TOP LEVEL DATASET
+	            this.parseAggregation(childDataset, records.get(0) );
+	            
 	        }
 	        
 	        // recursion
-	        dataset_size += parseFiles(childDataset, record);
+	        dataset_size += parseSubDatasets(childDataset, records);
 	        
 	    }
 	    
 	    return dataset_size;
         
+	}
+	
+	/**
+	 * Method to parse the aggregation information into given record ( = top-level dataset)
+	 * @param dataset
+	 * @param record
+	 */
+	private void parseAggregation(final InvDataset dataset, final Record record) {
+	    
+	    this.parseAccess(dataset, record);
+	    
+	}
+	
+	/**
+	 * Specific method to parse file information (into a new separate record)
+	 * @param dataset
+	 * @param records
+	 * @return
+	 */
+	private long parseFile(final InvDataset file, final List<Record> records) {
+	    
+	    // <dataset name="hus_AQUA_AIRS_L3_RetStd-v5_200209-201006.nc" 
+        //          ID="obs4cmip5.NASA-JPL.AQUA.AIRS.mon.v1.hus_AQUA_AIRS_L3_RetStd-v5_200209-201006.nc" 
+        //          urlPath="esg_dataroot/obs4cmip5/observations/atmos/hus/mon/grid/NASA-JPL/AQUA/AIRS/r1i1p1/hus_AQUA_AIRS_L3_RetStd-v5_200209-201006.nc" 
+        //          restrictAccess="esg-user">
+
+	    final String id = file.getID();
+	    Assert.notNull(id,"File ID cannot be null");
+	    if (LOG.isTraceEnabled()) LOG.trace("Parsing file id="+id);
+        final Record record = new RecordImpl(id);
+        // name -> title
+        final String name = file.getName();
+        Assert.notNull(name, "File name cannot be null");
+        record.addField(SolrXmlPars.FIELD_TITLE, name);
+        // type
+        record.addField(SolrXmlPars.FIELD_TYPE, SolrXmlPars.TYPE_FILE);       
+        // parent dataset
+        record.addField(SolrXmlPars.FIELD_PARENT_ID, records.get(0).getId());
+
+        long size = 0; // 0 file size by default
+        this.parseProperties(file, record);
+        // set size if found
+        if (StringUtils.hasText( record.getField(SolrXmlPars.FIELD_SIZE)) ) {
+            size = Long.parseLong(record.getField(SolrXmlPars.FIELD_SIZE));
+        }
+        
+        this.parseVariables(file, record);
+        
+        this.parseAccess(file, record);
+        
+        this.parseDocumentation(file, record);
+	    
+        // add this record to the list
+        records.add(record);
+	    return size;
+	    
+	}
+	
+	/**
+	 * Method to parse all (key,value) pair properties of a dataset into a search record fields.
+	 * @param dataset
+	 * @param record
+	 */
+	private void parseProperties(final InvDataset dataset, final Record record) {
+	    
+	    // <property name="..." value="..." />
+        for (final InvProperty property : dataset.getProperties()) {
+            
+            if (LOG.isTraceEnabled()) LOG.trace("Property: " + property.getName() + "=" + property.getValue());
+            
+            if (property.getName().equals(ThreddsPars.DATASET_ID)) {
+                // note: override record ID to get rid of version
+                // <dataset name="TES Level 3 Monthly Data (NetCDF)" ID="nasa.jpl.tes.monthly.v1" restrictAccess="esg-user">
+                // <property name="dataset_id" value="nasa.jpl.tes.monthly" />
+                record.setId(property.getValue());
+            } else if (property.getName().equals(SolrXmlPars.FIELD_TITLE)) {
+                // note: record title already set from dataset name
+                record.addField(SolrXmlPars.FIELD_DESCRIPTION, property.getValue());
+            } else if (property.getName().equals(ThreddsPars.DATASET_VERSION)) {
+                record.addField(SolrXmlPars.FIELD_VERSION, property.getValue());
+            } else if (property.getName().equals(ThreddsPars.SIZE)) {
+                // FIXME: store THREDDS "size" as "file_size" ?
+                record.addField(SolrXmlPars.FIELD_SIZE, property.getValue());
+            } else {
+                // index all other properties verbatim
+                record.addField(property.getName(), property.getValue());
+            }
+        }
+	    
+	}
+	
+	/**
+	 * Method to parse the variable information associated with a dataset into the metadata search record
+	 * @param dataset
+	 * @param record
+	 */
+	private void parseVariables(final InvDataset dataset, final Record record) {
+	    
+	    // <variables vocabulary="CF-1.0">
+        //   <variable name="hfss" vocabulary_name="surface_upward_sensible_heat_flux" units="W m-2">Surface Sensible Heat Flux</variable>
+        // </variables>
+        for (final Variables variables : dataset.getVariables()) {
+            final String vocabulary = variables.getVocabulary();
+            for (final Variable variable : variables.getVariableList()) {
+                record.addField(SolrXmlPars.FIELD_VARIABLE, variable.getName());
+                if (vocabulary.equals(ThreddsPars.CF)) record.addField(SolrXmlPars.FIELD_CF_VARIABLE, variable.getDescription());
+            }
+        }
+	    
+	}
+	
+	/**
+	 * Method to parse the access information associated with a dataset into the metadata record search.
+	 * FIXME: this method is only called for files - for datasets the access information is encoded differently
+	 * @param dataset
+	 * @param record
+	 */
+	private void parseAccess(final InvDataset dataset, final Record record) {
+	    
+	    // <access urlPath="/ipcc/sresb1/atm/3h/hfss/miroc3_2_hires/run1/hfss_A3_2050.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
+        for (final InvAccess access : dataset.getAccess()) {
+            
+            if (LOG.isTraceEnabled()) LOG.trace("Dataset="+dataset.getID()+" Service="+access.getService().getName()+" URL="+access.getStandardUri().toString());
+           
+            // FIXME: remove ?
+            if (dataset.getID().indexOf("aggregation")<0) { // FIXME
+                record.addField(SolrXmlPars.FIELD_URL, access.getStandardUri().toString());
+                record.addField(SolrXmlPars.FIELD_SERVICE_TYPE, access.getService().getServiceType().toString());
+            }
+            
+            // FIXME: or remove ?
+            record.addField(SolrXmlPars.FIELD_SERVICE, 
+                    RecordHelper.encodeServiceField(access.getService().getServiceType().toString(), 
+                                                    access.getService().getDescription(),
+                                                    access.getStandardUrlName()));
+
+        }
+	    
 	}
 	
 	
@@ -203,12 +306,27 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * <>
 	 * 
 	 */
-	private void addThreddsMetadataGroup(final InvDataset dataset,Record record) {
+	private void parseMetadataGroup(final InvDataset dataset, final Record record) {
 	    
-		this.addGeoSpatialCoverage(dataset,record);
-		this.addTimeCoverage(dataset,record);
+		this.parseGeoSpatialCoverage(dataset,record);
+		this.parseTimeCoverage(dataset,record);
 		
 	}
+	
+	/**
+     * Method to extract documentation information from a dataset into the search metadata record.
+     */
+    private void parseDocumentation(final InvDataset dataset, final Record record) {
+        
+        // <documentation type="...">.......</documentation>
+        for (final InvDocumentation documentation : dataset.getDocumentation()) {
+            final String content = documentation.getInlineContent();
+            if (StringUtils.hasText(content)) {
+                record.addField(SolrXmlPars.FIELD_DESCRIPTION, content);
+            }
+        }
+        
+    }
 	
 	/**
 	 * Helper method to extract Geospatial metadata from a thredds dataset
@@ -231,11 +349,11 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 *	</geospatialCoverage>
 	 * 
 	 */
-	private void addGeoSpatialCoverage(final InvDataset dataset,Record record) {
+	private void parseGeoSpatialCoverage(final InvDataset dataset, final Record record) {
 	    
-		GeospatialCoverage gsc = dataset.getGeospatialCoverage();
+		final GeospatialCoverage gsc = dataset.getGeospatialCoverage();
 		
-		if(gsc!=null) {
+		if (gsc!=null) {
 		    
 			record.addField(SolrXmlPars.FIELD_SOUTH, Double.toString(gsc.getNorthSouthRange().getStart()));
 		
@@ -258,13 +376,15 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 *	</timeCoverage>
 	 * 
 	 */
-	private void addTimeCoverage(final InvDataset dataset,Record record) {
-		DateRange daterange = dataset.getTimeCoverage();
+	private void parseTimeCoverage(final InvDataset dataset,Record record) {
+	    
+		final DateRange daterange = dataset.getTimeCoverage();
 		
-		if(daterange!=null) {
+		if (daterange!=null) {
 			record.addField(SolrXmlPars.FIELD_DATETIME_START, daterange.getStart().toDateTimeStringISO());	
 			record.addField(SolrXmlPars.FIELD_DATETIME_STOP, daterange.getEnd().toDateTimeStringISO());
 		}
+		
 	}
 	
 }

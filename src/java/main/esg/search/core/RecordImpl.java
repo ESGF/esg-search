@@ -83,6 +83,14 @@ public class RecordImpl implements Record, Serializable {
 	}
 	
 	/**
+     * {@inheritDoc}
+     */
+	public String getField(String name) {
+	    if (fields.containsKey(name)) return fields.get(name).get(0);
+	    else return null;
+	}
+	
+	/**
 	 * This implementation retrieves the record version for the same named field.
 	 */
 	public long getVersion() {

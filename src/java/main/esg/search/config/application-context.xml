@@ -51,8 +51,8 @@
 	          	<entry key="obs_project"><value>Observation Project</value></entry>
 	          	<entry key="obs_structure"><value>Observation Structure</value></entry>
 	          	<entry key="obs_type"><value>Observation Type</value></entry>
-	          	<entry key="processing_level"><value>Processing Level</value></entry>
-	          	<entry key="processing_version"><value>Processing Version</value></entry>
+	          	<!-- <entry key="processing_level"><value>Processing Level</value></entry> -->
+	          	<!-- <entry key="processing_version"><value>Processing Version</value></entry> -->
 	          			      
 		      </map>
 		</constructor-arg>

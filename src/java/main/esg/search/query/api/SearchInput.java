@@ -112,6 +112,13 @@ public interface SearchInput {
 	public Map<String, List<String>> getConstraints();
 	
 	/**
+	 * Method to return the first value for a named constraint, or null if no constraint exists.
+	 * @param name
+	 * @return
+	 */
+	public String getConstraint(String name);
+	
+	/**
 	 * Setter method for the index of the first result to be returned.
 	 * @param offset
 	 */
