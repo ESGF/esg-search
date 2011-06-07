@@ -433,13 +433,13 @@
    
    <!-- The main title of the search result (mandatory). 
         Note that because it is of type string (no text processing), it can be used to sort the results. -->
-   <field name="title" type="string" indexed="true" stored="true" required="true" multiValued="true" />
+   <field name="title" type="string" indexed="true" stored="true" required="true" />
    
    <!-- A more detailed description of the search result (optional) -->
    <field name="description" type="text" indexed="true" stored="true" required="false" multiValued="true" />
    
    <!-- The main URL that is hyper-linked to the search result (optional because not all objects have a single hyperlink)-->
-   <field name="url" type="string" indexed="true" required="false" stored="true"/>
+   <field name="url" type="string" indexed="true" required="false" stored="true" multiValued="true" />
    
    <!-- Other optional access services encoded as <service type>|<service name>|<service url> -->
    <field name="service" type="string" indexed="true" required="false" stored="true" multiValued="true" />
@@ -447,8 +447,11 @@
    <!-- The document type, used to enable searching on different targets (mandatory) -->
    <field name="type" type="string" indexed="true" required="true" stored="true"/>
    
-   <!-- The version of the document (optonal) -->
+   <!-- The version of the document (optional) -->
    <field name="version" type="string" indexed="true" stored="true" required="false" />
+   
+   <!-- The parent record if (optional) -->
+   <field name="parent_id" type="string" indexed="true" stored="true" required="false" />
    
    <!-- The URI identifying the source repository from where this document was harvested (optional) 
    <field name="source_uri" type="string" indexed="true" stored="true" required="false" /> -->
@@ -480,7 +483,7 @@
    -->
    
    <field name="size" type="long" indexed="true" stored="true" multiValued="false"/>
-   <field name="file_size" type="long" indexed="true" stored="true" multiValued="true"/>
+   <!-- <field name="file_size" type="long" indexed="true" stored="true" multiValued="true"/> -->
    
    <!-- This field is of type string and will be harvested as-is if found - no need to define it explicitly.
    <field name="service_type" type="string" indexed="true" stored="true" multiValued="true"/>
