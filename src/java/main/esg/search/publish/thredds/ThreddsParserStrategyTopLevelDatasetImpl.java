@@ -20,6 +20,7 @@ package esg.search.publish.thredds;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -141,8 +142,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        
 	        if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.FILE_ID) )) {
 	            
-	            // parse files into separate records
-	            dataset_size += this.parseFile(childDataset, records);
+	            // parse files into separate records, inherit top dataset metadata
+	            boolean inherit = true;
+	            dataset_size += this.parseFile(childDataset, records, inherit);
 
 	        } else if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.AGGREGATION_ID) )) {
 	            
@@ -175,9 +177,10 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * Specific method to parse file information (into a new separate record)
 	 * @param dataset
 	 * @param records
+	 * @param inherit : set to true to copy dataset fields as file record fields (without overriding existing fields)
 	 * @return
 	 */
-	private long parseFile(final InvDataset file, final List<Record> records) {
+	private long parseFile(final InvDataset file, final List<Record> records, boolean inherit) {
 	    
 	    // <dataset name="hus_AQUA_AIRS_L3_RetStd-v5_200209-201006.nc" 
         //          ID="obs4cmip5.NASA-JPL.AQUA.AIRS.mon.v1.hus_AQUA_AIRS_L3_RetStd-v5_200209-201006.nc" 
@@ -209,6 +212,19 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         this.parseAccess(file, record);
         
         this.parseDocumentation(file, record);
+        
+        // copy all fields from parent dataset to file
+        if (inherit) {
+            final Map<String, List<String>> datasetFields = records.get(0).getFields();
+            for (final String key : datasetFields.keySet()) {            
+                // don't override file-level properties
+                if (record.getField(key)==null) {
+                    for (final String value : datasetFields.get(key)) {
+                        record.addField(key, value);
+                    }
+                }            
+            }
+        }
 	    
         // add this record to the list
         records.add(record);
