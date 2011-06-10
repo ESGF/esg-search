@@ -66,7 +66,7 @@ public class SearchServiceImpl implements SearchService {
 	 * @throws MalformedURLException
 	 */
 	@Autowired
-	public SearchServiceImpl(final @Value("${esg.search.solr.url}") URL url) throws MalformedURLException {
+	public SearchServiceImpl(final @Value("${esg.search.solr.query.url}") URL url) throws MalformedURLException {
 		this.url = url;
 	}
 

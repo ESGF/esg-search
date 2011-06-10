@@ -39,7 +39,7 @@ public class SolrScrabber extends SolrClient {
 	 * @param url
 	 */
 	@Autowired
-	public SolrScrabber(final @Value("${esg.search.solr.url}") URL url) {
+	public SolrScrabber(final @Value("${esg.search.solr.publish.url}") URL url) {
 		super(url);
 	}
 

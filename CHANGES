@@ -14,3 +14,8 @@ Removed clause "distrib=true" in searching until federated searches are enabled 
 
 1.2.0
 Modified Solr schema and harvesting of THREDDS catalogs to store Dataset and File metadata in records of different type (within the same index).
+
+1.2.1
+Changes to enable master/slave replication: master Solr running on port 8984 (where metadata is published), 
+and slave Solr running on port 8983 (where metadata is queried).
+New configuration files in etc/ to support Solr replication, and Jetty security.

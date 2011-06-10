@@ -37,7 +37,7 @@ public class SolrIndexer extends SolrClient {
 	 * @param url
 	 */
 	@Autowired
-	public SolrIndexer(final @Value("${esg.search.solr.url}") URL url) {
+	public SolrIndexer(final @Value("${esg.search.solr.publish.url}") URL url) {
 		super(url);
 	}
 
