@@ -61,10 +61,15 @@ public class SolrIndexer extends SolrClient {
         
         for (final Record record : records) {
             final String xml = messageBuilder.buildAddMessage(record, true);
-            final URL postUrl = solrUrlBuilder.buildUpdateUrl(true); // commit=true
+            final URL postUrl = solrUrlBuilder.buildUpdateUrl(false); // commit=false
             if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
             httpClient.doPostXml(postUrl, xml);
         }
+        
+        // commit all at once
+        final URL getUrl = solrUrlBuilder.buildUpdateUrl(true); // commit=true
+        if (LOG.isDebugEnabled()) LOG.debug("Issuing commit: URL:"+getUrl.toString());
+        httpClient.doGet(getUrl);
         
     }
 

@@ -20,7 +20,7 @@ Changes to enable master/slave replication: master Solr running on port 8984 (wh
 and slave Solr running on port 8983 (where metadata is queried).
 New configuration files in etc/ to support Solr replication, and Jetty security.
 
-1.2.2
+1.3.0
 Changes to parsing of THREDDS catalogs to enable inheritance of dataset fields into file documents, for better searching.
 Record "dataset_version" and "file_version" from THREDDS catalog into Solr field "version", if found.
 Improve performance and fail-over logic by committing all records from one THREDDS catalog at once.
