@@ -59,6 +59,7 @@ public class SolrIndexer extends SolrClient {
      */
     public void consume(final Collection<Record> records) throws Exception {
         
+        // index one record at a time, do not commit
         for (final Record record : records) {
             final String xml = messageBuilder.buildAddMessage(record, true);
             final URL postUrl = solrUrlBuilder.buildUpdateUrl(false); // commit=false
@@ -66,7 +67,7 @@ public class SolrIndexer extends SolrClient {
             httpClient.doPostXml(postUrl, xml);
         }
         
-        // commit all at once
+        // commit all records at once
         final URL getUrl = solrUrlBuilder.buildUpdateUrl(true); // commit=true
         if (LOG.isDebugEnabled()) LOG.debug("Issuing commit: URL:"+getUrl.toString());
         httpClient.doGet(getUrl);
