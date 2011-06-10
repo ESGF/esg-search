@@ -34,8 +34,9 @@ public interface MetadataRepositoryCrawler {
 	 * @param uri : the starting URI of metadata repository
 	 * @param recursive : true to recursively crawl the locations referenced by the starting location
 	 * @param callback: a {@link RecordProducer} that is triggered every time a new Record is generated while crawling
+	 * @param : a boolean flag indicating whether the repository is crawled for publishing (true) or un-pubishing (false)
 	 */
-	public void crawl(URI uri, boolean recursive, RecordProducer callback) throws Exception;
+	public void crawl(URI uri, boolean recursive, RecordProducer callback, boolean publish) throws Exception;
 	
 	/**
 	 * Method to indicate the {@link MetadataRepositoryType} supported by this crawler.

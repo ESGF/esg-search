@@ -63,7 +63,7 @@ public class ThreddsCrawlerTest {
 	public void crawl() throws Exception {
 		
 		final URI uri = new URI( "file://"+XMLFILE.getFile().getAbsolutePath() );
-		threddsHarvester.crawl(uri, true, producer);
+		threddsHarvester.crawl(uri, true, producer, true);
 		
 		// tests number of metadata records
 		final Map<String, Record> records = consumer.getRecords();

@@ -68,8 +68,9 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	 * and optionally the whole hierarchy of referenced catalogs.
 	 * @param uri : the URI of the starting THREDDS catalog
 	 * @param recursive : true to crawl the whole catalog hierarchy
+	 * @param publish: true to publish, false to unpublish
 	 */
-	public void crawl(final URI catalogURI, boolean recursive, final RecordProducer callback) throws Exception {
+	public void crawl(final URI catalogURI, boolean recursive, final RecordProducer callback, boolean publish) throws Exception {
 		
 		final InvCatalogFactory factory = new InvCatalogFactory("default", true); // validate=true
 		final InvCatalog catalog = factory.readXML(catalogURI);
@@ -88,26 +89,41 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 					if (recursive) {
 						// crawl catalogs recursively
 						final URI catalogRef = getCatalogRef(dataset);
-						crawl(catalogRef, recursive, callback);
+						crawl(catalogRef, recursive, callback, publish);
 					}
 				} else {
 				    
 					// parse this catalog
 					final List<Record> records = parser.parseDataset(dataset);
 					
-					// index all catalog records at once - but first check that top-level dataset isn't an older version
-					final Record drecord = records.get(0);
-					if (drecords.get(drecord.getId())==null
-                        || drecords.get(drecord.getId()).getVersion()<drecord.getVersion()) {
-					    
-					    if (LOG.isDebugEnabled()) LOG.debug("Indexing catalog for top-level dataset="+drecord.getId());
-					    callback.notify(records);
-					    drecords.put(drecord.getId(), drecord);
-					    
+					// top-level dataset
+					final Record drecord = records.get(0);	
+					
+					// publish
+					if (publish) {
+    					
+    					// index all catalog records at once - but first check that top-level dataset isn't an older version
+    					
+    					if (drecords.get(drecord.getId())==null
+                            || drecords.get(drecord.getId()).getVersion()<drecord.getVersion()) {
+    					    
+    					    if (LOG.isDebugEnabled()) LOG.debug("Indexing catalog for top-level dataset="+drecord.getId());
+    					    callback.notify(records);
+    					    drecords.put(drecord.getId(), drecord);
+    					    
+    					} else {
+    					    if (LOG.isDebugEnabled()) LOG.debug("Skip indexing dataset="+drecord.getId()
+    					                                       +" old version="+drecord.getVersion()
+    					                                       +" newer version found="+drecords.get(drecord.getId()).getVersion());
+    					}
+    					
+					// un-publish
 					} else {
-					    if (LOG.isDebugEnabled()) LOG.debug("Skip indexing dataset="+drecord.getId()
-					                                       +" old version="+drecord.getVersion()
-					                                       +" newer version found="+drecords.get(drecord.getId()).getVersion());
+					    
+					    // remove top-level dataset only, files will follow
+                        if (LOG.isDebugEnabled()) LOG.debug("Removing catalog for top-level dataset="+drecord.getId());
+                        callback.notify(drecord);
+					    
 					}
 					
 				}

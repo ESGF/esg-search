@@ -62,7 +62,7 @@ public class CasCrawlerTest {
 	public void testCrawl() throws Exception {
 		
 		final URI uri = new URI( "file://"+XMLFILE.getFile().getAbsolutePath() );
-		casHarvester.crawl(uri, true, producer);
+		casHarvester.crawl(uri, true, producer, true);
 		
 		final Map<String, Record> records = consumer.getRecords();
 		Assert.assertTrue(records.size()==2);

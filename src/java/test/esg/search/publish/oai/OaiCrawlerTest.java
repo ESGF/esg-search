@@ -61,7 +61,7 @@ public class OaiCrawlerTest {
 	public void testCrawl() throws Exception {
 		
 		final URI uri = new URI( "file://"+XMLFILE.getFile().getAbsolutePath() );
-		oaiHarvester.crawl(uri, true, producer);
+		oaiHarvester.crawl(uri, true, producer, true);
 		
 		// tests number of metadata records
 		// note: "deleted" records are ignored

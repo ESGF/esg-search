@@ -224,6 +224,10 @@ public class SolrXmlParser {
 		final String value = element.getTextNormalize();
 		if (fieldName.equals(SolrXmlPars.FIELD_ID)) {
 			record.setId(value);
+		} else if (fieldName.equals(SolrXmlPars.FIELD_VERSION)) {
+		    try {
+		        record.setVersion(Long.parseLong(value));
+		    } catch(NumberFormatException e) {}
 		} else {
 			record.addField(fieldName, value);
 		}

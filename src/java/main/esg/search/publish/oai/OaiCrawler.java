@@ -56,7 +56,7 @@ public class OaiCrawler implements MetadataRepositoryCrawler  {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void crawl(final URI uri, final boolean recursive, final RecordProducer callback) throws Exception {
+	public void crawl(final URI uri, final boolean recursive, final RecordProducer callback, boolean publish) throws Exception {
 		// parse XML document
 		final String xml = (new HttpClient()).doGet( uri.toURL() );
 		final XmlParser xmlParser = new XmlParser(false);

@@ -56,7 +56,7 @@ public class FgdcCrawler implements MetadataRepositoryCrawler  {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void crawl(final URI uri, final boolean recursive, final RecordProducer callback) throws Exception {
+	public void crawl(final URI uri, final boolean recursive, final RecordProducer callback, boolean publish) throws Exception {
 		//LOG.debug("FGDCCrawler.crawl");
 		
 		// parse XML document

@@ -23,5 +23,7 @@ New configuration files in etc/ to support Solr replication, and Jetty security.
 1.3.0
 Changes to parsing of THREDDS catalogs to enable inheritance of dataset fields into file documents, for better searching.
 Record "dataset_version" and "file_version" from THREDDS catalog into Solr field "version", if found.
-Improve performance and fail-over logic by committing all records from one THREDDS catalog at once.
+Improve performance and fail-over logic: 
+ - when publishing, commit all records from one THREDDS catalog at once, 
+ - when unpublishing, issue single delete statement for top-level dataset and all its children (files)
 Start including a version in the schema name (example: ESGF-v1.0).
