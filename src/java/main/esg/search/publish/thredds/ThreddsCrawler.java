@@ -75,8 +75,8 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 		final InvCatalog catalog = factory.readXML(catalogURI);
 		final StringBuilder buff = new StringBuilder();
 		
-		// map containing latest version of records.
-		final Map<String, Record> vrecords = new HashMap<String,Record>();
+		// map containing latest version of top-level dataset records.
+		final Map<String, Record> drecords = new HashMap<String,Record>();
 		
 		// valid catalog
 		if (catalog.check(buff)) {
@@ -91,17 +91,25 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 						crawl(catalogRef, recursive, callback);
 					}
 				} else {
+				    
 					// parse this catalog
 					final List<Record> records = parser.parseDataset(dataset);
-					// index all resulting records (latest version only)
-					for (final Record record : records) {
-						System.out.println("indexing record="+record.getId());
-						if (vrecords.get(record.getId())==null
-							|| vrecords.get(record.getId()).getVersion()<record.getVersion()) {
-							callback.notify(record);
-							vrecords.put(record.getId(), record);
-						} 
+					
+					// index all catalog records at once - but first check that top-level dataset isn't an older version
+					final Record drecord = records.get(0);
+					if (drecords.get(drecord.getId())==null
+                        || drecords.get(drecord.getId()).getVersion()<drecord.getVersion()) {
+					    
+					    if (LOG.isDebugEnabled()) LOG.debug("Indexing catalog for top-level dataset="+drecord.getId());
+					    callback.notify(records);
+					    drecords.put(drecord.getId(), drecord);
+					    
+					} else {
+					    if (LOG.isDebugEnabled()) LOG.debug("Skip indexing dataset="+drecord.getId()
+					                                       +" old version="+drecord.getVersion()
+					                                       +" newer version found="+drecords.get(drecord.getId()).getVersion());
 					}
+					
 				}
 			}
 			

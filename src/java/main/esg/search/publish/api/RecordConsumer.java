@@ -18,10 +18,25 @@
  ******************************************************************************/
 package esg.search.publish.api;
 
+import java.util.Collection;
+
 import esg.search.core.Record;
 
 public interface RecordConsumer {
 	
+    /**
+     * Method to consume one record at a time.
+     * @param record
+     * @throws Exception
+     */
 	void consume(Record record) throws Exception;
+	
+	/**
+	 * Method to consume a collection of records in bulk for increased performance,
+	 * or transactional behavior.
+	 * @param record
+	 * @throws Exception
+	 */
+	void consume(Collection<Record> records) throws Exception;
 
 }

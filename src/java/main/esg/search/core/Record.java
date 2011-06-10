@@ -61,7 +61,7 @@ public interface Record {
 	
 	/**
 	 * Method to return the record version, used to only index the latest version.
-	 * Dates can be converted to milliseconds from the Epoch for versioning.
+	 * Dates can be converted to milliseconds from the Epoch for versioning, or to YYYYMMDD format.
 	 * @return
 	 */
 	long getVersion();
@@ -70,6 +70,6 @@ public interface Record {
 	 * Method to assign a version to the record.
 	 * @param version
 	 */
-	//void setVersion(Comparable<?> version);
+	void setVersion(long version);
 
 }

@@ -30,6 +30,7 @@ public class ThreddsPars {
 	public final static String FILE_ID = "file_id";
 	public final static String AGGREGATION_ID = "aggregation_id";
 	public final static String DATASET_VERSION = "dataset_version";
+	public final static String FILE_VERSION = "file_version";
 	public final static String SIZE = "size";
 	
 	private ThreddsPars() {};

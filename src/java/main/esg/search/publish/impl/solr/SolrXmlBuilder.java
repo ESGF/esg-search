@@ -80,6 +80,14 @@ public class SolrXmlBuilder {
 		idEl.setText(record.getId());
 		docEl.addContent(idEl);
 		
+		// <field name="version">...</field>
+		if (record.getVersion()!=0) {
+		    final Element vEl = new Element(SolrXmlPars.ELEMENT_FIELD);
+		    vEl.setAttribute(SolrXmlPars.ATTRIBUTE_NAME, SolrXmlPars.FIELD_VERSION);
+		    vEl.setText(Long.toString(record.getVersion()));
+		    docEl.addContent(vEl);
+		}
+		
 		// <field name="...">....</field>
 		// (for each value)
 		final Map<String, List<String>> fields = record.getFields();

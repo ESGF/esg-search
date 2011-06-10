@@ -20,6 +20,7 @@ package esg.search.publish.impl.solr;
 
 import java.net.URL;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ import esg.search.core.Record;
 
 /**
  * Implementation of {@link SolrClient} that sends (skeleton) records to a Solr server for removal.
+ * Note that bulk removal is delegated to removal of single records.
  */
 @Component("scrabber")
 public class SolrScrabber extends SolrClient {
@@ -55,5 +57,14 @@ public class SolrScrabber extends SolrClient {
 		httpClient.doPostXml(postUrl, xml);
 		
 	}
+	
+	   /**
+     * {@inheritDoc}
+     */
+    public void consume(final Collection<Record> records) throws Exception {
+        for (final Record record : records) {
+            this.consume(record);
+        }
+    }
 
 }

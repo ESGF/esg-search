@@ -29,7 +29,7 @@ import esg.search.publish.api.RecordConsumer;
  * Implementation of {@link RecordConsumer} that stores in-memory all the records it receives,
  * indexing them by ID.
  */
-public class InMemoryStore implements RecordConsumer {
+public class InMemoryStore extends SingleRecordConsumer {
 	
 	private Map<String, Record> records = new HashMap<String,Record>();
 

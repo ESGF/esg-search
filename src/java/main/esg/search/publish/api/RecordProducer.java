@@ -18,6 +18,8 @@
  ******************************************************************************/
 package esg.search.publish.api;
 
+import java.util.Collection;
+
 import esg.search.core.Record;
 
 /**
@@ -43,5 +45,11 @@ public interface RecordProducer {
 	 * @param record
 	 */
 	void notify(Record record) throws Exception;
+	
+	/**
+     * Method to notify all subscribed consumers of a collection of a whole newly produced records.
+     * @param record
+     */
+    void notify(Collection<Record> records) throws Exception;
 
 }

@@ -252,8 +252,13 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             } else if (property.getName().equals(SolrXmlPars.FIELD_TITLE)) {
                 // note: record title already set from dataset name
                 record.addField(SolrXmlPars.FIELD_DESCRIPTION, property.getValue());
-            } else if (property.getName().equals(ThreddsPars.DATASET_VERSION)) {
-                record.addField(SolrXmlPars.FIELD_VERSION, property.getValue());
+            } else if (property.getName().equals(ThreddsPars.DATASET_VERSION) || property.getName().equals(ThreddsPars.FILE_VERSION)) {
+                // note: map "dataset_version", "file_version" to "version"
+                try {
+                    record.setVersion(Long.parseLong(property.getValue()));
+                } catch (NumberFormatException e) {
+                    // no version, defaults to 0
+                }
             } else if (property.getName().equals(ThreddsPars.SIZE)) {
                 // FIXME: store THREDDS "size" as "file_size" ?
                 record.addField(SolrXmlPars.FIELD_SIZE, property.getValue());

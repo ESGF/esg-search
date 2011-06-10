@@ -19,6 +19,7 @@
 package esg.search.publish.impl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import esg.search.core.Record;
@@ -58,6 +59,17 @@ public class RecordProducerImpl implements RecordProducer {
 			consumer.consume(record);
 		}
 	}
+	
+	/**
+     * Method for bulk synchronous notification of generated records to all subscribed consumers.
+     * @param record
+     * @throws Exception
+     */
+    public void notify(final Collection<Record> records) throws Exception {
+        for (final RecordConsumer consumer : consumers) {
+            consumer.consume(records);
+        }
+    }
 	
 	/**
 	 * Method to bulk-subscribe a list of record consumers

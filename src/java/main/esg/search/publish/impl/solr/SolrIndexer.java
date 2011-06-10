@@ -19,6 +19,7 @@
 package esg.search.publish.impl.solr;
 
 import java.net.URL;
+import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,5 +53,19 @@ public class SolrIndexer extends SolrClient {
 		httpClient.doPostXml(postUrl, xml);
 		
 	}
+	
+	/**
+     * {@inheritDoc}
+     */
+    public void consume(final Collection<Record> records) throws Exception {
+        
+        for (final Record record : records) {
+            final String xml = messageBuilder.buildAddMessage(record, true);
+            final URL postUrl = solrUrlBuilder.buildUpdateUrl(true); // commit=true
+            if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
+            httpClient.doPostXml(postUrl, xml);
+        }
+        
+    }
 
 }

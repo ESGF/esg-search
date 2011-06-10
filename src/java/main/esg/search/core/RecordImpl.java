@@ -46,6 +46,11 @@ public class RecordImpl implements Record, Serializable {
 	 */
 	final Map<String,List<String>> fields = new TreeMap<String, List<String>>();
 	
+	/**
+	 * The record version, defaults to 0.
+	 */
+	private long version = 0;
+	
 	//private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 	
 	/**
@@ -90,17 +95,18 @@ public class RecordImpl implements Record, Serializable {
 	    else return null;
 	}
 	
-	/**
-	 * This implementation retrieves the record version for the same named field.
-	 */
+    /**
+     * {@inheritDoc}
+     */
 	public long getVersion() {
-		String version = getFieldValue(SolrXmlPars.FIELD_VERSION); 
-		if ( hasText(version) ) {
-			try {
-				return Long.parseLong(version);
-			} catch(NumberFormatException e) {}
-		}
-		return 0; // no version available
+	    return version;
+	}
+	
+	/**
+     * {@inheritDoc}
+     */
+	public void setVersion(long version) {
+	    this.version = version;
 	}
 
 	/**

@@ -31,10 +31,10 @@ import esg.search.publish.api.RecordConsumer;
 import esg.search.publish.impl.solr.SolrXmlBuilder;
 
 /**
- * Implementation of {@link RecordConsumer} that writes the serialized record XML to the file system.
+ * Implementation of {@link RecordConsumer} that writes the serialized record XML to the file system (one at a time).
  */
 @Component
-public class FileWriter implements RecordConsumer {
+public class FileWriter extends SingleRecordConsumer {
 	
 	/**
 	 * The directory where the serialized records are written.
