@@ -603,7 +603,7 @@ configure_solr() {
     chmod 755 ${solr_install_dir}/solr/conf/schema.xml
     
     #o FOR THE SLAVE ONLY, override the Jetty files with new ones that support authentication:
-    #	- esg-search/etc/conf/jetty/jetty.xml-auth --> /usr/local/esgf-solr-3.1.0-slave/etc/jetty.xml
+    #	- cp esg-search/etc/conf/jetty/jetty.xml-auth --> /usr/local/esgf-solr-3.1.0-slave/etc/jetty.xml
     #	- cp esg-search/etc/conf/jetty/realm.properties /usr/local/esgf-solr-3.1.0-slave/etc/.
     #	- cp esg-search/etc/conf/jetty/webdefault.xml-auth /usr/local/esgf-solr-3.1.0-slave/etc/webdefault.xml
     #
@@ -612,10 +612,11 @@ configure_solr() {
     #
     #NOTE: we should consider replacing the username, password in
     #realm.properties with values inserted at installation time from
-    #/esg/confif/esgf.properties
+    #/esg/config/esgf.properties
 
 
     if [ "${solr_config_type}" = "slave" ]; then
+        echo -n "Peforming additonal configuration for ${solr_config_type} type "
         pushd ${solr_install_dir}/etc >& /dev/null
         curl -s -L --insecure ${esg_dist_url}/esg-search/jetty.xml-auth > ${solr_install_dir}/etc/jetty.xml && echo -n ":"
         curl -s -L --insecure ${esg_dist_url}/esg-search/realm.properties > ${solr_install_dir}/etc/realm.properties && echo -n "-"
