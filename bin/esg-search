@@ -115,12 +115,17 @@ setup_search() {
     echo
 
     local upgrade=${1:-0}
+    shift
+    solr_config_types=$@
 
     #setup_zookeeper && configure_zookeeper && write_zookeeper_install_log
     #[ $? != 0 ] && echo " ERROR: Could not fully install zookeeper :-( " && checked_done 1
     
-    setup_solr && configure_solr && write_solr_install_log
-    [ $? != 0 ] && echo " ERROR: Could not fully install solr :-( " && checked_done 1
+    for config_type in $solr_config_types; do
+        echo "Doing setup and configuration for type ${config_type}"
+        setup_solr ${config_type} && echo && configure_solr && echo && write_solr_install_log
+        [ $? != 0 ] && echo " ERROR: Could not fully install solr :-( " && checked_done 1
+    done
 
     setup_search_service ${upgrade} && write_search_service_install_log
     [ $? != 0 ] && echo " ERROR: Could not fully install search service" && checked_done 1
@@ -136,21 +141,21 @@ setup_search() {
 }
 
 start_search_services() {
-    echo "Starting search services..."
+    echo "Starting search services... $@"
     #start_zookeeper
-    start_solr
+    start_solr $@
 }
 
 stop_search_services() {
-    echo "Stopping search services..."
+    echo "Stopping search services... $@"
     stop_solr
     #stop_zookeeper
 }
 
 test_search_services() {
-    echo "Testing search services..."
+    echo "Testing search services... $@"
     #test_zookeeper
-    test_solr
+    test_solr $@
 }
 
 #---------------------------------------------------------
@@ -479,27 +484,36 @@ check_zookeeper_process() {
 #---------------------------------------------------------
 # Solr/Lucene Setup and Configuration
 #---------------------------------------------------------
-solr_version=3.1.0
-solr_dist_url=http://mirror.metrocast.net/apache//lucene/solr/${solr_version}/apache-solr-${solr_version}.tgz
-solr_workdir=${workdir}/solr-${solr_version}
-solr_install_dir=${install_prefix}/esgf-solr-${solr_version}
-solr_data_dir=${esg_root_dir}/data.index
-solr_server_port=8983
+
+solr_init() {
+    solr_version=3.1.0
+    solr_dist_url=http://mirror.metrocast.net/apache//lucene/solr/${solr_version}/apache-solr-${solr_version}.tgz
+    solr_workdir=${workdir}/solr-${solr_version}
+
+    #The install of solr pivots on this variable
+    #make this config type "sticky"
+    solr_config_type=${1:-${solr_config_type:-"master"}} 
+
+    solr_install_dir=${install_prefix}/esgf-solr-${solr_version}-${solr_config_type}
+    solr_data_dir=${esg_root_dir}/data-index-${solr_config_type}
+    solr_server_port=$([ "${solr_config_type}" = "master" ] && echo "8984" || echo "8983")
+}
 
 setup_solr() {
+    solr_init ${1}
     echo -n "Checking for solr ${solr_version}... "
     [ -e ${solr_install_dir}/start.jar ] && check_solr_version
     [ $? == 0 ] && (( ! force_install )) && echo " [OK]" && return 0
 
     echo
     echo "*******************************"
-    echo "Setting up (ESGF) Solr... ${solr_version}"
+    echo "Setting up (ESGF) Solr... ${solr_version} ${solr_config_type}"
     echo "*******************************"
     echo
 
     local dosetup
     if [ -x ${solr_install_dir}/start.jar ]; then 
-        echo "Detected an existing esgf-solr installation..."
+        echo "Detected an existing esgf-solr installation for ${solr_config_type} configuration type..."
         read -p "Do you want to continue with esgf-solr installation and setup? [y/N] " dosetup
         if [ "${dosetup}" != "Y" ] && [ "${dosetup}" != "y" ]; then
             echo "Skipping esgf-solr installation and setup - will assume esgf-solr is setup properly"
@@ -508,7 +522,7 @@ setup_solr() {
         echo
     fi
     
-    echo "Installing esgf-solr ${solr_version}..."
+    echo "Installing esgf-solr ${solr_version} ${solr_config_type}..."
     mkdir -p ${solr_workdir}
     pushd ${solr_workdir} >& /dev/null
 
@@ -567,7 +581,8 @@ check_solr_version() {
 }
 
 configure_solr() {
-    echo -n "Configuring solr... "
+    solr_init ${1}
+    echo -n "Configuring solr... ${solr_config_type}"
     pushd ${solr_install_dir}/solr/conf >& /dev/null
     [ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
  
@@ -586,6 +601,23 @@ configure_solr() {
     [ $? != 0 ] && echo && echo "Problem configuring solr (3)" && return 3
     chmod 755 ${solr_install_dir}/solr/conf/schema.xml
     
+    #o FOR THE SLAVE ONLY, override the Jetty files with new ones that support authentication:
+    #	- esg-search/etc/conf/jetty/jetty.xml-auth --> /usr/local/esgf-solr-3.1.0-slave/etc/jetty.xml
+    #	- cp esg-search/etc/conf/jetty/realm.properties /usr/local/esgf-solr-3.1.0-slave/etc/.
+    #	- cp esg-search/etc/conf/jetty/webdefault.xml-auth /usr/local/esgf-solr-3.1.0-slave/etc/webdefault.xml
+    #
+    #This is because the slave is available on port 8983 to the world,
+    #and needs to be protected.
+    #
+    #NOTE: we should consider replacing the username, password in
+    #realm.properties with values inserted at installation time from
+    #/esg/confif/esgf.properties
+
+
+    if [ "${solr_config_type}" = "slave" ]; then
+        
+    fi
+
     popd >& /dev/null
     echo " [OK]"
     return 0
@@ -593,7 +625,11 @@ configure_solr() {
 }
 
 test_solr() {
-    echo "empty solr test"
+    while [ -n "$1" ]; do 
+        solr_init ${1}
+        echo "empty solr test for ${1}"
+        shift
+    done
 }
 
 #TODO
@@ -604,7 +640,7 @@ test_solr() {
 #}
 
 write_solr_install_log() {
-    local entry="$(date ${date_format}) esg-search:solr=${solr_version} ${solr_install_dir}"
+    local entry="$(date ${date_format}) esg-search:solr=${solr_version}-${solr_config_type} ${solr_install_dir}"
     echo ${entry} >> ${install_logfile}
     dedup ${install_logfile}
     return 0
@@ -612,28 +648,36 @@ write_solr_install_log() {
 
 # start Solr server on port 8983 connecting to Zookeeper on port 2181
 start_solr() {  
-    check_solr_process && return 1
-    echo "Starting solr server on port ${solr_server_port}"
-
-    pushd ${solr_install_dir} >& /dev/null
-    #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
-    verbose_print "java -Djetty.port=8983 -Dsolr.data.dir=${solr_data_dir} -jar start.jar"
-    java -Djetty.port=${solr_server_port} -Dsolr.data.dir=${solr_data_dir} -jar start.jar >& /dev/null &
-    popd >& /dev/null
+    while [ -n "$1" ]; do 
+        solr_init ${1}
+        check_solr_process && return 1
+        echo "Starting solr server on port ${solr_server_port}"
+        
+        pushd ${solr_install_dir} >& /dev/null
+        #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
+        verbose_print "java -Djetty.port=${solr_server_port} -Dsolr.data.dir=${solr_data_dir} -jar start.jar"
+        java -Djetty.port=${solr_server_port} -Dsolr.data.dir=${solr_data_dir} -jar start.jar >& /dev/null &
+        popd >& /dev/null
+        
+        pcheck 10 2 1 -- check_solr_process
+        ret=$?
+        [ $ret == 0 ] && echo " [OK]" || echo " [FAIL]"
+        shift
+    done
     
-    pcheck 10 2 1 -- check_solr_process
-    ret=$?
-    [ $ret == 0 ] && echo " [OK]" || echo " [FAIL]"
-
     return $ret
 }
 
 stop_solr() {
-    echo "Stopping Solr on port ${solr_server_port}"
-    local pid=`/usr/sbin/lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
-    [ -n "${pid}" ] && kill -9 $pid
-    check_solr_process
-    [ $? != 0 ] && echo " [OK]" || echo " [FAIL]"
+    while [ -n "$1" ]; do 
+        solr_init ${1}
+        echo "Stopping Solr on port ${solr_server_port}"
+        local pid=`/usr/sbin/lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
+        [ -n "${pid}" ] && kill -9 $pid
+        check_solr_process
+        [ $? != 0 ] && echo " [OK]" || echo " [FAIL]"
+        shift
+    done
 }
 
 #status
