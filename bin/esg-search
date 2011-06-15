@@ -147,8 +147,8 @@ start_search_services() {
 }
 
 stop_search_services() {
-    echo "Stopping search services... $@"
-    stop_solr
+    echo "Stopping search services... (master/slave)"
+    stop_solr master slave
     #stop_zookeeper
 }
 
@@ -580,6 +580,7 @@ check_solr_version() {
     [ "$(cat ${solr_install_dir}/VERSION)" = "${solr_version}" ]
 }
 
+#TODO: change these curls to either get certs to use ssl or use checked_get
 configure_solr() {
     solr_init ${1}
     echo -n "Configuring solr... ${solr_config_type}"
@@ -615,7 +616,11 @@ configure_solr() {
 
 
     if [ "${solr_config_type}" = "slave" ]; then
-        
+        pushd ${solr_install_dir}/etc >& /dev/null
+        curl -s -L --insecure ${esg_dist_url}/esg-search/jetty.xml > ${solr_install_dir}/etc/jetty.xml && echo -n ":"
+        curl -s -L --insecure ${esg_dist_url}/esg-search/realm.properties > ${solr_install_dir}/etc/realm.properties && echo -n "-"
+        curl -s -L --insecure ${esg_dist_url}/esg-search/webdefault.xml-auth > ${solr_install_dir}/etc/webdefault.xml && echo ")"
+        popd >& /dev/null
     fi
 
     popd >& /dev/null
