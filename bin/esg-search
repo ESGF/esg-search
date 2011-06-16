@@ -619,8 +619,12 @@ configure_solr() {
         echo -n " - Peforming additonal configuration for ${solr_config_type} type "
         pushd ${solr_install_dir}/etc >& /dev/null
         curl -s -L --insecure ${esg_dist_url}/esg-search/jetty.xml-auth > ${solr_install_dir}/etc/jetty.xml && echo -n ":"
-        curl -s -L --insecure ${esg_dist_url}/esg-search/realm.properties > ${solr_install_dir}/etc/realm.properties && echo -n "-"
-        curl -s -L --insecure ${esg_dist_url}/esg-search/webdefault.xml-auth > ${solr_install_dir}/etc/webdefault.xml && echo -n ")"
+        curl -s -L --insecure ${esg_dist_url}/esg-search/webdefault.xml-auth > ${solr_install_dir}/etc/webdefault.xml && echo -n "-"
+        curl -s -L --insecure ${esg_dist_url}/esg-search/realm.properties | sed -n 's/[ ]*\(solr-admin[^: ]*\):[ ]*\([^, ]*\)\(.*\)/'${installer_user}': '${security_admin_password}'\3/p' >> ${solr_install_dir}/etc/realm.properties && echo -n ")"
+        dedup_solr_realm ${solr_install_dir}/etc/realm.properties
+        [ $? != 0 ] && checked_done 1
+        chown ${installer_uid}:${installer_gid} realm.properties
+
         popd >& /dev/null
     fi
 
@@ -628,6 +632,15 @@ configure_solr() {
     echo " [OK]"
     return 0
     
+}
+
+#"private function"
+dedup_solr_realm() {
+    local infile=${1:-${envfile}}
+    [ ! -e "${infile}" ] && echo "WARNING: dedup_solr_realm() - unable to locate ${infile} does it exist?" && return 1
+    [ ! -w "${infile}" ] && echo "WARNING: dedup_solr_realm() - unable to write to ${infile}" && return 1
+    local tmp=$(tac ${infile} | awk 'BEGIN {FS="[ :]"} !($1 in a) {a[$1];print $0}' | sort -k1,1)
+    echo "$tmp" > ${infile}
 }
 
 test_solr() {
