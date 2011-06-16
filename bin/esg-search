@@ -657,7 +657,7 @@ start_solr() {
     while [ -n "$1" ]; do 
         solr_init ${1}
         check_solr_process && shift && continue
-        echo "Starting solr server on port ${solr_server_port} [${1}] - (${solr_config_type})"
+        echo "Starting solr server on port ${solr_server_port} [${1}] "
         
         pushd ${solr_install_dir} >& /dev/null
         #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
