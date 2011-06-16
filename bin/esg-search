@@ -656,8 +656,8 @@ write_solr_install_log() {
 start_solr() {  
     while [ -n "$1" ]; do 
         solr_init ${1}
-        check_solr_process && return 1
-        echo "Starting solr server on port ${solr_server_port} [${1}]"
+        check_solr_process && shift && continue
+        echo "Starting solr server on port ${solr_server_port} [${1}] - (${solr_config_type})"
         
         pushd ${solr_install_dir} >& /dev/null
         #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
@@ -689,7 +689,7 @@ stop_solr() {
 #status
 check_solr_process() {
     local pid=`/usr/sbin/lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
-    [ -n "$pid" ] && echo " Solr process running on port [${solr_server_port}]... " && return 0
+    [ -n "$pid" ] && echo " Solr process running on port [${solr_server_port}] - (${solr_config_type}) ... " && return 0
 }
 
 
