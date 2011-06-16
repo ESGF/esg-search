@@ -646,7 +646,7 @@ test_solr() {
 #}
 
 write_solr_install_log() {
-    local entry="$(date ${date_format}) esg-search:solr-${solr_config_type}=${solr_version}-${solr_config_type} ${solr_install_dir}"
+    local entry="$(date ${date_format}) esg-search:solr-${solr_config_type}=${solr_version} ${solr_install_dir}"
     echo ${entry} >> ${install_logfile}
     dedup ${install_logfile}
     return 0
