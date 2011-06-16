@@ -616,11 +616,11 @@ configure_solr() {
 
 
     if [ "${solr_config_type}" = "slave" ]; then
-        echo -n "Peforming additonal configuration for ${solr_config_type} type "
+        echo -n " Peforming additonal configuration for ${solr_config_type} type "
         pushd ${solr_install_dir}/etc >& /dev/null
         curl -s -L --insecure ${esg_dist_url}/esg-search/jetty.xml-auth > ${solr_install_dir}/etc/jetty.xml && echo -n ":"
         curl -s -L --insecure ${esg_dist_url}/esg-search/realm.properties > ${solr_install_dir}/etc/realm.properties && echo -n "-"
-        curl -s -L --insecure ${esg_dist_url}/esg-search/webdefault.xml-auth > ${solr_install_dir}/etc/webdefault.xml && echo ")"
+        curl -s -L --insecure ${esg_dist_url}/esg-search/webdefault.xml-auth > ${solr_install_dir}/etc/webdefault.xml && echo -n ")"
         popd >& /dev/null
     fi
 
