@@ -536,6 +536,33 @@
     </lst>
 </requestHandler>
 
+<requestHandler name="/distrib" class="solr.SearchHandler">
+     <lst name="defaults">
+       <str name="echoParams">all</str>
+       <int name="rows">10</int>
+       <str name="fl">*,score</str>
+       <str name="qf">text</str>
+       <float name="tie">0.01</float>
+       <str name="q.alt">*:*</str>
+     </lst>
+     <lst name="invariants">
+        <!-- always perform faceted search -->
+        <str name="facet">true</str>
+        <!-- sort facet values lexographically (as opposed by count) -->
+        <str name="facet.sort">lex</str>
+        <!-- return ALL facet values (no limit) -->
+        <str name="facet.limit">-1</str>
+        <!-- return only facet values that match one or more documents -->
+        <str name="facet.mincount">1</str>
+        <str name="facet.method">enum</str>
+        <!-- always perform distributed search -->
+        <str name="shards">esg-datanode:8983/solr,esgf-node3.llnl.gov:8983/solr</str>
+     </lst>
+     <int name="shard-socket-timeout">1000</int>
+     <int name="shard-connection-timeout">1000</int>
+     <str name="partial-results">true</str>
+  </requestHandler>
+
   <!-- DisMaxRequestHandler allows easy searching across multiple fields
        for simple user-entered phrases.  It's implementation is now
        just the standard SearchHandler with a default query type
