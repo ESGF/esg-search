@@ -120,7 +120,7 @@ setup_search() {
 
     #setup_zookeeper && configure_zookeeper && write_zookeeper_install_log
     #[ $? != 0 ] && echo " ERROR: Could not fully install zookeeper :-( " && checked_done 1
-    
+    debug_print "solr_config_types = ${solr_config_types}"
     for config_type in $solr_config_types; do
         echo "Doing setup and configuration for type ${config_type}"
         setup_solr ${config_type} && echo && configure_solr && echo && write_solr_install_log
