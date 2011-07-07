@@ -120,7 +120,7 @@ setup_search() {
 
     #setup_zookeeper && configure_zookeeper && write_zookeeper_install_log
     #[ $? != 0 ] && echo " ERROR: Could not fully install zookeeper :-( " && checked_done 1
-    
+    debug_print "solr_config_types = ${solr_config_types}"
     for config_type in $solr_config_types; do
         echo "Doing setup and configuration for type ${config_type}"
         setup_solr ${config_type} && echo && configure_solr && echo && write_solr_install_log
@@ -195,16 +195,18 @@ setup_search_service() {
     local dosetup
     if [ -d ${search_web_service_dir} ]; then 
         echo "Detected an existing search service installation..."
-        read -p "Do you want to continue with search service  installation and setup? [y/N] " dosetup
+        read -p "Do you want to continue with search services installation and setup? $([ "$default" = "N" ] && echo "[y/N]" || echo "[Y/n]") " dosetup
+        [ -z "${dosetup}" ] && dosetup=${default}
         if [ "${dosetup}" != "Y" ] && [ "${dosetup}" != "y" ]; then
             echo "Skipping search service installation and setup - will assume it's setup properly"
             return 0
         fi
-        
-        local dobackup="N"
-        read -p "Do you want to make a back up of the existing installation?? [y/N] " dobackup
+
+        local dobackup="Y"
+        read -p "Do you want to make a back up of the existing distribution?? [Y/n] " dobackup
+        [ -z "${dobackup}" ] && dobackup=${default}
         if [ "${dobackup}" = "Y" ] || [ "${dobackup}" = "y" ]; then
-            echo "Creating a backup archive of this web application $search_web_service_dir"
+            echo "Creating a backup archive of this web application $security_app_home"
             backup ${search_web_service_dir}
         fi
 
