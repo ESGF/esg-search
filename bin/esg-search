@@ -158,6 +158,12 @@ test_search_services() {
     test_solr $@
 }
 
+clean_search_subsystem() {
+    remove_search_service
+    remove_solr
+    remove_zookeeper
+}
+
 #---------------------------------------------------------
 # Solr Search Service Setup and Configuration
 #---------------------------------------------------------
@@ -266,6 +272,11 @@ write_search_service_install_log() {
     echo "$(date ${date_format}) webapp:esg-search=${esg_search_version} ${search_web_service_dir}" >> ${install_manifest}
     dedup ${install_manifest}
     return 0
+}
+
+remove_search_service() {
+    echo "Removing search service... (faux)"
+    //TODO (zoiks)
 }
 
 #---------------------------------------------------------
@@ -479,6 +490,11 @@ check_zookeeper_process() {
     local pid=`/usr/sbin/lsof -i:${zookeeper_client_port} | grep -i java | awk '{print $2}'`
     [ -n "$pid" ] && echo " Zookeeper process running on port [${zookeeper_client_port}]... " && return 0
 }
+
+remove_zookeeper() {
+    echo "Removing Zookeeper... (faux)"
+    //TODO (zoiks)
+}
 #---------------------------------------------------------
 
 
@@ -623,7 +639,7 @@ configure_solr() {
         curl -s -L --insecure ${esg_dist_url}/esg-search/jetty.xml-auth > ${solr_install_dir}/etc/jetty.xml && echo -n ":"
         curl -s -L --insecure ${esg_dist_url}/esg-search/webdefault.xml-auth > ${solr_install_dir}/etc/webdefault.xml && echo -n "-"
         curl -s -L --insecure ${esg_dist_url}/esg-search/realm.properties | sed -n 's/[ ]*\(solr-admin[^: ]*\):[ ]*\([^, ]*\)\(.*\)/'${installer_user}': '${security_admin_password}'\3/p' >> ${solr_install_dir}/etc/realm.properties && echo -n ")"
-        dedup_solr_realm ${solr_install_dir}/etc/realm.properties
+        _dedup_solr_realm ${solr_install_dir}/etc/realm.properties
         [ $? != 0 ] && checked_done 1
         chown ${installer_uid}:${installer_gid} realm.properties
 
@@ -637,7 +653,7 @@ configure_solr() {
 }
 
 #"private function"
-dedup_solr_realm() {
+_dedup_solr_realm() {
     local infile=${1:-${envfile}}
     [ ! -e "${infile}" ] && echo "WARNING: dedup_solr_realm() - unable to locate ${infile} does it exist?" && return 1
     [ ! -w "${infile}" ] && echo "WARNING: dedup_solr_realm() - unable to write to ${infile}" && return 1
@@ -705,6 +721,11 @@ stop_solr() {
 check_solr_process() {
     local pid=`/usr/sbin/lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
     [ -n "$pid" ] && echo " Solr process running on port [${solr_server_port}] - (${solr_config_type}) ... " && return 0
+}
+
+remove_solr() {
+    echo "Removing solr... (faux)"
+    //TODO (zoiks)
 }
 
 
