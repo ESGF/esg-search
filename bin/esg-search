@@ -278,7 +278,7 @@ write_search_service_install_log() {
 
 remove_search_service() {
     echo "Removing search service... (faux)"
-    //TODO (zoiks)
+    #TODO (zoiks)
 }
 
 #---------------------------------------------------------
@@ -495,7 +495,7 @@ check_zookeeper_process() {
 
 remove_zookeeper() {
     echo "Removing Zookeeper... (faux)"
-    //TODO (zoiks)
+    #TODO (zoiks)
 }
 #---------------------------------------------------------
 
@@ -727,7 +727,7 @@ check_solr_process() {
 
 remove_solr() {
     echo "Removing solr... (faux)"
-    //TODO (zoiks)
+    #TODO (zoiks)
 }
 
 
