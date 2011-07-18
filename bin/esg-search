@@ -84,7 +84,7 @@ if $(echo "${esg_dist_url}" | grep "http://198.128.245.140/dist" >& /dev/null); 
 install_prefix=${install_prefix:-"/usr/local"}
 esg_root_dir=${esg_root_dir:-"/esg"}
 workdir=${workdir:-~/workbench/esg}
-install_logfile=${install_logfile:-"/etc/esg.install_log"}
+install_manifest=${install_manifest:-"${esg_root_dir}/esgf-install-manifest"}
 #--------------
 
 date_format=${date_format:-"+%Y_%m_%d_%H%M%S"}
@@ -263,8 +263,8 @@ setup_search_service() {
 }
 
 write_search_service_install_log() {
-    echo "$(date ${date_format}) webapp:esg-search=${esg_search_version} ${search_web_service_dir}" >> ${install_logfile}
-    dedup ${install_logfile}
+    echo "$(date ${date_format}) webapp:esg-search=${esg_search_version} ${search_web_service_dir}" >> ${install_manifest}
+    dedup ${install_manifest}
     return 0
 }
 
@@ -432,8 +432,8 @@ test_zookeeper() {
 
 write_zookeeper_install_log() {
     local entry="$(date ${date_format}) esg-search:zookeeper=${zookeeper_version} ${zookeeper_install_dir}"
-    echo ${entry} >> ${install_logfile}
-    dedup ${install_logfile}
+    echo ${entry} >> ${install_manifest}
+    dedup ${install_manifest}
     return 0
 }
 
@@ -662,8 +662,8 @@ test_solr() {
 
 write_solr_install_log() {
     local entry="$(date ${date_format}) esg-search:solr-${solr_config_type}=${solr_version} ${solr_install_dir}"
-    echo ${entry} >> ${install_logfile}
-    dedup ${install_logfile}
+    echo ${entry} >> ${install_manifest}
+    dedup ${install_manifest}
     return 0
 }
 
