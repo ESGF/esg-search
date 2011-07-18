@@ -192,6 +192,8 @@ setup_search_service() {
 
     local upgrade=${1:-0}
     
+    local default="Y"
+    ((force_install)) && default="N"
     local dosetup
     if [ -d ${search_web_service_dir} ]; then 
         echo "Detected an existing search service installation..."
