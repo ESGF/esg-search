@@ -9,7 +9,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/ivy-2.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/netcdf-4.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/ant-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/ant-launcher-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/asm-3.0.jar"/>
@@ -42,7 +41,6 @@
 	<classpathentry kind="lib" path="lib/fetched/lucene-queries-2.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/lucene-snowball-2.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/lucene-spellchecker-2.9.1.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/mail-1.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/oro-2.0.8.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/saxpath-1.0-FCS.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/servlet-api-2.3.jar"/>
@@ -77,5 +75,8 @@
 	<classpathentry kind="lib" path="lib/fetched/spring-expression-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/spring-tx-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/esgsearch"/>
+	<classpathentry kind="lib" path="lib/fetched/mail-1.4.3.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.5.2.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/commons-cli-1.2.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
