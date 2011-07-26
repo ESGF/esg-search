@@ -3,6 +3,7 @@
     <wb-module deploy-name="esg-search">
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/java/main"/>
         <wb-resource deploy-path="/WEB-INF/classes" source-path="/src/java/test"/>
+        <wb-resource deploy-path="/" source-path="/WebContent"/>
         <property name="context-root" value="esg-search"/>
         <property name="java-output-path" value="/esg-search/build/test"/>
     </wb-module>
