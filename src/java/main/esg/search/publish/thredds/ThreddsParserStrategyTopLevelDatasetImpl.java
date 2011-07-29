@@ -19,6 +19,7 @@
 package esg.search.publish.thredds;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ import thredds.catalog.ThreddsMetadata.Variables;
 import ucar.nc2.units.DateRange;
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
+import esg.search.publish.api.MetadataEnhancer;
 import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.impl.RecordHelper;
 import esg.search.query.impl.solr.SolrXmlPars;
@@ -57,8 +59,17 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * Default URL builder
 	 */
 	private ThreddsDataseUrlBuilder urlBuilder = new ThreddsDatasetUrlBuilderCatalogUrlImpl();
+	
+	/**
+	 * Optional map of metadata enhancers
+	 */
+	private Map<String, MetadataEnhancer> metadataEnhancers = new HashMap<String, MetadataEnhancer>();
 		
-	public ThreddsParserStrategyTopLevelDatasetImpl() {}
+	public ThreddsParserStrategyTopLevelDatasetImpl() {
+	    
+	    metadataEnhancers.put(ThreddsPars.EXPERIMENT, new ExperimentMetadataEnhancer());
+	    
+	}
 	
 	/**
 	 * Method to set the builder for the URL to be associated with each record
@@ -72,6 +83,14 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	}
 	
 	/**
+	 * Method to set a map of {@link MetadataEnhancer}, keyed by the property name.
+	 * @param metadataEnhancers
+	 */
+	public void setMetadataEnhancers(final @Qualifier("metadataEnhancers") Map<String, MetadataEnhancer> metadataEnhancers) {
+        this.metadataEnhancers = metadataEnhancers;
+    }
+
+    /**
 	 * Method to parse the catalog top-level dataset.
 	 */
 	public List<Record> parseDataset(final InvDataset dataset) {
@@ -260,8 +279,22 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
                     // no version, defaults to 0
                 }
             } else if (property.getName().equals(ThreddsPars.SIZE)) {
-                // FIXME: store THREDDS "size" as "file_size" ?
                 record.addField(SolrXmlPars.FIELD_SIZE, property.getValue());
+            
+            } else if (property.getName().equals(ThreddsPars.EXPERIMENT)) {
+                
+                // add "experiment"
+                record.addField(property.getName(), property.getValue());
+                
+                // add "experiment_family"
+                final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.EXPERIMENT);
+                final Map<String, List<String>> emeta = me.enhance(property.getName(), property.getValue());
+                for (final String ekey : emeta.keySet()) {
+                    for (final String evalue : emeta.get(ekey)) {
+                        record.addField(ekey, evalue);
+                    }
+                }
+                
             } else {
                 // index all other properties verbatim
                 record.addField(property.getName(), property.getValue());

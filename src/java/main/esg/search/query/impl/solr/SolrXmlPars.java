@@ -85,6 +85,7 @@ public class SolrXmlPars {
 	final public static String FIELD_VARIABLE = "variable";
 	final public static String FIELD_CF_VARIABLE = "cf_variable";
 	final public static String FIELD_GCMD_VARIABLE = "gcmd_variable";
+	final public static String FIELD_EXPERIMENT_FAMILY = "experiment_family";
 	
 	final public static String FIELD_DATETIME_START = "datetime_start";
 	final public static String FIELD_DATETIME_STOP = "datetime_stop";
