@@ -322,12 +322,12 @@ Builds the project via ant (obviously).
 	    <delete file="${dist_dir}/${module}.war"/>
 	    <war destfile="${dist_dir}/${module}.war" webxml="${conf_dir}/${module}-web.xml">
 	      <!-- <fileset dir="${web_dir}" excludes="WEB-INF/**/web.xml/**,**semantic.cache**"/> -->
-	      <webinf dir="${conf_dir}" includes="**/*.xml" excludes="${module}-web.xml"/>
+	      <webinf dir="${conf_dir}" includes="**/*.xml" excludes="${module}-web.xml,**/solr/**,**/jetty/**"/>
 	      <lib dir="${dist_dir}/tmplib">
 	        <include name="**/*.jar"/>
 	        <exclude name="**/*-test*.jar,**/*-common*.jar"/>
 	      </lib>
-	      <classes dir="${build_dir}" excludes="**/test*/**"/>
+	      <classes dir="${build_dir}" excludes="**/test*/**,**/solr*/*.xml,**/jetty/**"/>
 	      <manifest>
 		<attribute name="Organization" value="${organization}"/>
 		<attribute name="Author"       value="${author}"/>
