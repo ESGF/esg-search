@@ -28,7 +28,7 @@ import esg.search.query.impl.solr.SolrXmlPars;
  */
 public class RssViewBuilder {
     
-    private static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    private static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
     private static SimpleDateFormat df;
     
     private final static String FEED_TITLE_PROPERTY_KEY = "esg.feed.datasets.title";
@@ -38,7 +38,7 @@ public class RssViewBuilder {
     static {
         // must set the time zone of the Date Formatter to GMT
         df = new SimpleDateFormat(DATE_FORMAT);
-        df.setTimeZone(java.util.TimeZone.getTimeZone("Zulu"));
+        //df.setTimeZone(java.util.TimeZone.getTimeZone("Zulu"));
     }
     
     // time to live in minutes
@@ -116,8 +116,10 @@ public class RssViewBuilder {
     }
     
     // <pubDate>Wed, 24 Aug 2011 16:43:47 GMT</pubDate>
-    public final static void addPubDate(Item feedItem, Record record) throws Exception {        
-        feedItem.setPubDate( df.parse( record.getFieldValue(SolrXmlPars.FIELD_TIMESTAMP) ));
+    public final static void addPubDate(Item feedItem, Record record) throws Exception {      
+        // replace Zulu time with GMT time zone
+        String date = record.getFieldValue(SolrXmlPars.FIELD_TIMESTAMP).replace("Z", "+0000");
+        feedItem.setPubDate( df.parse( date )); // result is on locale time
     }
 
     // <guid isPermaLink="true">http://coastwatch.noaa.gov/thredds/fileServer/chloraAquaMODISDailyCWHDFGL05/MODSCW_P2011189_C4_1720_1725_1900_1905_GL05_closest_chlora.hdf</guid>
