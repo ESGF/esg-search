@@ -135,6 +135,8 @@ setup_search() {
     write_as_property publishing_service_endpoint "https://${esgf_host:-$(hostname --fqdn)}/esg-search/remote/secure/client-cert/hessian/publishingService"
     write_as_property publishing_service_app_home ${search_web_service_dir}
 
+    write_search_rss_properties
+
     echo "done"
     echo
     return 0
@@ -162,6 +164,16 @@ clean_search_subsystem() {
     remove_search_service
     remove_solr
     remove_zookeeper
+
+    #---------------
+    #Remove configuration properties
+    #---------------
+    remove_search_rss_properties
+    remove_property index_endpoint
+    remove_property index_app_home
+    remove_property publishing_service_endpoint
+    remove_property publishing_service_app_home
+
 }
 
 #---------------------------------------------------------
@@ -730,7 +742,20 @@ remove_solr() {
     #TODO (zoiks)
 }
 
+write_search_rss_properties() {
+    local esg_feed_datasets_title=${esg_feed_datasets_title:-"${node_short_name} Datasets RSS Feed"}
+    local esg_feed_datasets_desc=${esg_feed_datasets_desc:-"Datasets Accessible from node: ${node_short_name}"}
+    local esg_feed_datasets_link=${esg_feed_datasets_link:-"http://${node_host}/thredds/catalog.html"}
+    write_as_property esg_feed_datasets_title
+    write_as_property esg_feed_datasets_desc
+    write_as_property esg_feed_datasets_link
+}
 
+remove_search_rss_properties() {
+    remove_property esg_feed_datasets_title
+    remove_property esg_feed_datasets_desc
+    remove_property esg_feed_datasets_link
+}
 
 
 ############################################
