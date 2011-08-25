@@ -52,7 +52,7 @@ public class SearchRestController {
 	 * @param text : search text (example: "?text=...")
 	 * @param facet : name of one of the facets in the application facet profile (example: "experiment=control")
 	 */
-	@RequestMapping(value="/rest/search/", method=RequestMethod.GET)
+	@RequestMapping(value="/ws/rest/search/", method=RequestMethod.GET)
 	@SuppressWarnings("unchecked")
 	public void search(final HttpServletRequest request, 
 			           final @ModelAttribute(COMMAND) SearchRestCommand command, 
@@ -69,7 +69,7 @@ public class SearchRestController {
 	 * Allowed HTTP parameters (besides the common parameters listed above):
 	 * @param id : expression matching the document(s) id
 	 */
-	@RequestMapping(value="/rest/searchById/", method=RequestMethod.GET)
+	@RequestMapping(value="/ws/rest/searchById/", method=RequestMethod.GET)
 	public void searchById(@RequestParam(QueryParameters.ID) String id, @RequestParam(value=QueryParameters.TYPE, required=false) String type, 
 			               final @ModelAttribute(COMMAND) SearchRestCommand command,
 			               final HttpServletResponse response) throws Exception {
@@ -86,7 +86,7 @@ public class SearchRestController {
 	 * @param to : upper limit for last update date and time in ISO8601 format (example: "2010-10-19T22:00:00Z") , 
 	 *             or special strings (example: "NOW")
 	 */
-	@RequestMapping(value="/rest/searchByTimeStamp/", method=RequestMethod.GET)
+	@RequestMapping(value="/ws/rest/searchByTimeStamp/", method=RequestMethod.GET)
 	public void searchByTimeStamp(@RequestParam(QueryParameters.FROM) String from, 
 	                              @RequestParam(QueryParameters.TO) String to, 
 	                              @RequestParam(value=QueryParameters.TYPE, required=false) String type,

@@ -54,10 +54,17 @@ public interface Record {
 	Map<String, List<String>> getFields();
 	
 	/**
-	 * Method to return the first value of a named field, or null if not available
+	 * Method to return the first value of a named field, or null if not available.
 	 * @return
 	 */
-	String getField(String name);
+	String getFieldValue(String name);
+	
+	/**
+	 * Method to return all the values of a named field, or an empty list if not available.
+	 * @param name
+	 * @return
+	 */
+	List<String> getFieldValues(String name);
 	
 	/**
 	 * Method to return the record version, used to only index the latest version.

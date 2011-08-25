@@ -24,6 +24,9 @@
 	<!-- search context -->
 	<context:component-scan base-package="esg.search.query"/>
 	
+	<!-- feed context -->
+	<context:component-scan base-package="esg.search.feed"/>
+	
   	<!-- Facet profile example -->
 	<bean name="wsFacetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
 		<constructor-arg index="0">

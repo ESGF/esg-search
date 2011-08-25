@@ -17,8 +17,9 @@
       <!-- Public Maven 2 repository -->
       <include url="${ivy.default.root.url}/ivysettings-public.xml"/>
       
+      <include url="http://jpl-esg.jpl.nasa.gov/climate/ivysettings-spring.xml"/>
 
-      <include url="${ivy.default.root.url}/ivysettings-default-chain.xml"/>
+      <include url="http://jpl-esg.jpl.nasa.gov/climate/ivysettings-default-chain.xml"/>
       
 </ivysettings>
 

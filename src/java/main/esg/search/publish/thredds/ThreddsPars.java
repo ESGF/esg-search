@@ -34,6 +34,12 @@ public class ThreddsPars {
 	public final static String SIZE = "size";
 	public final static String EXPERIMENT = "experiment";
 	
+	public final static String SERVICE_TYPE_HTTP = "HTTPServer";
+	public final static String SERVICE_TYPE_OPENDAP = "OPENDAP";
+	public final static String SERVICE_TYPE_LAS = "LAS";
+	public final static String SERVICE_TYPE_GRIDFTP = "GridFTP";
+	public final static String SERVICE_TYPE_FTP = "FTP";
+	
 	private ThreddsPars() {};
 	
 }

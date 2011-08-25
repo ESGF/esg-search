@@ -30,7 +30,7 @@ public class RecordHelper {
 	 */
 	public static String[] decodeServiceField(final String serviceField) throws Exception {
 		
-		final String[] parts = serviceField.split(CHAR);
+		final String[] parts = serviceField.split("\\|");
 		if (parts.length!=3) throw new Exception("Invalid Record service value: "+serviceField);
 		return parts;
 		

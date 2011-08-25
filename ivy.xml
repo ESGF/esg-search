@@ -77,6 +77,7 @@ Note: Check Maven for propery dependency parameter values @
     <dependency org="org.springframework" name="spring-asm" rev="3.0.5.RELEASE" transitive="false" />
     <dependency org="org.springframework" name="spring-aop" rev="3.0.5.RELEASE" transitive="false" />
     <dependency org="org.springframework" name="spring-expression" rev="3.0.5.RELEASE" transitive="false" />
+    <dependency org="org.springframework" name="org.springframework.web.servlet" rev="3.0.5.RELEASE" transitive="false" />
     
     <dependency org="org.jdom" name="jdom" rev="1.1"/>
     
@@ -97,6 +98,8 @@ Note: Check Maven for propery dependency parameter values @
     <dependency org="com.caucho" name="hessian" rev="3.0.20" />    
     --><!-- <dependency org="com.caucho" name="com.springsource.com.caucho" rev="3.2.1" /> -->
     <dependency org="aopalliance" name="aopalliance" rev="1.0"/>
+    
+    <dependency org="rome" name="rome" rev="1.0"/>
 
   </dependencies>
    

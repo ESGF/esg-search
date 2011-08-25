@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import esg.search.query.impl.solr.SolrXmlPars;
-
 
 /**
  * Standard bean implementation of the {@link Record} interface.
@@ -90,10 +88,17 @@ public class RecordImpl implements Record, Serializable {
 	/**
      * {@inheritDoc}
      */
-	public String getField(String name) {
+	public String getFieldValue(String name) {
 	    if (fields.containsKey(name)) return fields.get(name).get(0);
 	    else return null;
 	}
+	
+	/**
+     * {@inheritDoc}
+     */
+    public List<String> getFieldValues(final String name) {
+        return ( fields.get(name) != null ? fields.get(name) : new ArrayList<String>() );
+    }
 	
     /**
      * {@inheritDoc}
@@ -138,15 +143,6 @@ public class RecordImpl implements Record, Serializable {
 		}
 		return sb.toString();
 		
-	}
-	
-	/**
-	 * Method to return the first value of a name field, or null if the field is not set.
-	 * @param name
-	 * @return
-	 */
-	public String getFieldValue(final String name) {
-		return ( fields.get(name) !=null && fields.get(name).size() > 0 ? fields.get(name).get(0) : null );
 	}
 
 }

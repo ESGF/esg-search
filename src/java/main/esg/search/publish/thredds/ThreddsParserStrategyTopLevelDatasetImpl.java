@@ -222,8 +222,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         long size = 0; // 0 file size by default
         this.parseProperties(file, record);
         // set size if found
-        if (StringUtils.hasText( record.getField(SolrXmlPars.FIELD_SIZE)) ) {
-            size = Long.parseLong(record.getField(SolrXmlPars.FIELD_SIZE));
+        if (StringUtils.hasText( record.getFieldValue(SolrXmlPars.FIELD_SIZE)) ) {
+            size = Long.parseLong(record.getFieldValue(SolrXmlPars.FIELD_SIZE));
         }
         
         this.parseVariables(file, record);
@@ -237,7 +237,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             final Map<String, List<String>> datasetFields = records.get(0).getFields();
             for (final String key : datasetFields.keySet()) {            
                 // don't override file-level properties
-                if (record.getField(key)==null) {
+                if (record.getFieldValue(key)==null) {
                     for (final String value : datasetFields.get(key)) {
                         record.addField(key, value);
                     }
@@ -346,7 +346,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             record.addField(SolrXmlPars.FIELD_SERVICE, 
                     RecordHelper.encodeServiceField(access.getService().getServiceType().toString(), 
                                                     access.getService().getDescription(),
-                                                    access.getStandardUrlName()));
+                                                    access.getStandardUri().toString()));
 
         }
 	    

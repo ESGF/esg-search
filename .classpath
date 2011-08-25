@@ -78,5 +78,7 @@
 	<classpathentry kind="lib" path="lib/fetched/mail-1.4.3.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/rome-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
