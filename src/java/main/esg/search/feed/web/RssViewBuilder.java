@@ -28,11 +28,18 @@ import esg.search.query.impl.solr.SolrXmlPars;
  */
 public class RssViewBuilder {
     
-    public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    private static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    private static SimpleDateFormat df;
     
     private final static String FEED_TITLE_PROPERTY_KEY = "esg.feed.datasets.title";
     private final static String FEED_DESC_PROPERTY_KEY = "esg.feed.datasets.desc";
     private final static String FEED_LINK_PROPERTY_KEY = "esg.feed.datasets.link";
+    
+    static {
+        // must set the time zone of the Date Formatter to GMT
+        df = new SimpleDateFormat(DATE_FORMAT);
+        df.setTimeZone(java.util.TimeZone.getTimeZone("Zulu"));
+    }
     
     // time to live in minutes
     public static int TTL = 30;
@@ -109,8 +116,8 @@ public class RssViewBuilder {
     }
     
     // <pubDate>Wed, 24 Aug 2011 16:43:47 GMT</pubDate>
-    public final static void addPubDate(Item feedItem, Record record) throws Exception {
-        feedItem.setPubDate( DATE_FORMAT.parse( record.getFieldValue(SolrXmlPars.FIELD_TIMESTAMP) ));
+    public final static void addPubDate(Item feedItem, Record record) throws Exception {        
+        feedItem.setPubDate( df.parse( record.getFieldValue(SolrXmlPars.FIELD_TIMESTAMP) ));
     }
 
     // <guid isPermaLink="true">http://coastwatch.noaa.gov/thredds/fileServer/chloraAquaMODISDailyCWHDFGL05/MODSCW_P2011189_C4_1720_1725_1900_1905_GL05_closest_chlora.hdf</guid>
