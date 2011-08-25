@@ -10,6 +10,7 @@
     <!-- enable support for annotation-based URL resolution -->
     <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
+    <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
     
    	<!-- URLs configuration -->
 	<bean id="urlMappings" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
@@ -61,7 +62,8 @@
         <property name="serviceInterface">
             <value>esg.search.publish.api.LegacyPublishingService</value>
         </property>
-    </bean> 
+    </bean>
+     
     
     <!-- Search Web Service -->
     <bean name="searchWebService" class="org.springframework.remoting.caucho.HessianServiceExporter">
