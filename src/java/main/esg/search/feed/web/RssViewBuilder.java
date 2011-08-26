@@ -31,9 +31,9 @@ public class RssViewBuilder {
     private static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
     private static SimpleDateFormat df;
     
-    private final static String FEED_TITLE_PROPERTY_KEY = "esg.feed.datasets.title";
-    private final static String FEED_DESC_PROPERTY_KEY = "esg.feed.datasets.desc";
-    private final static String FEED_LINK_PROPERTY_KEY = "esg.feed.datasets.link";
+    private final static String FEED_TITLE_PROPERTY_KEY = "esgf.feed.datasets.title";
+    private final static String FEED_DESC_PROPERTY_KEY = "esgf.feed.datasets.desc";
+    private final static String FEED_LINK_PROPERTY_KEY = "esgf.feed.datasets.link";
     
     static {
         // must set the time zone of the Date Formatter to GMT
