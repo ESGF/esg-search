@@ -743,12 +743,12 @@ remove_solr() {
 }
 
 write_search_rss_properties() {
-    local esg_feed_datasets_title=${esg_feed_datasets_title:-"${node_short_name} Datasets RSS Feed"}
-    local esg_feed_datasets_desc=${esg_feed_datasets_desc:-"Datasets Accessible from node: ${node_short_name}"}
-    local esg_feed_datasets_link=${esg_feed_datasets_link:-"http://${node_host}/thredds/catalog.html"}
-    write_as_property esg_feed_datasets_title
-    write_as_property esg_feed_datasets_desc
-    write_as_property esg_feed_datasets_link
+    local esgf_feed_datasets_title=${esg_feed_datasets_title:-"${node_short_name} Datasets RSS Feed"}
+    local esgf_feed_datasets_desc=${esg_feed_datasets_desc:-"Datasets Accessible from node: ${node_short_name}"}
+    local esgf_feed_datasets_link=${esg_feed_datasets_link:-"http://${esgf_host}/thredds/catalog.html"}
+    write_as_property esgf_feed_datasets_title
+    write_as_property esgf_feed_datasets_desc
+    write_as_property esgf_feed_datasets_link
 }
 
 remove_search_rss_properties() {
