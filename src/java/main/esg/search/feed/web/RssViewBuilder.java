@@ -178,7 +178,7 @@ public class RssViewBuilder {
         if (StringUtils.hasText(properties.getProperty(FEED_TITLE_PROPERTY_KEY))) {
             return properties.getProperty(FEED_TITLE_PROPERTY_KEY);  
         } else {
-            return "ESGF Node RSS Feed";
+            return "ESGF Node RSS";
         }
     }
     
