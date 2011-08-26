@@ -50,7 +50,7 @@ public class FilesRssView extends AbstractRssFeedView {
             Item feedItem = new Item();
             
             // <title>husNobs_AIRS_L3_RetStd-v5_200209-201105.nc</title>
-            feedItem.setTitle(fileRecord.getFieldValue(SolrXmlPars.FIELD_TITLE));  
+            RssViewBuilder.addTitle(feedItem, fileRecord);  
             
             // <link>http://esg-datanode.jpl.nasa.gov/thredds/esgcet/1/obs4MIPs.NASA-JPL.AIRS.mon.v1.html
             //       ?dataset=obs4MIPs.NASA-JPL.AIRS.mon.v1.husNobs_AIRS_L3_RetStd-v5_200209-201105.nc</link>

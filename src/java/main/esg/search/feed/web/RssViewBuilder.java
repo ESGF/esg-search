@@ -66,6 +66,18 @@ public class RssViewBuilder {
     };
     
     /**
+     * Method to build the item title from the record title AND version,
+     * so to flag items as new when their version changes
+     * @param feedItem
+     * @param record
+     */
+    public final static void addTitle(Item feedItem, Record record) {
+        String title = record.getFieldValue(SolrXmlPars.FIELD_TITLE);
+        if (record.getVersion()!=0) title += " (v"+record.getVersion()+")";
+        feedItem.setTitle(title);  
+    }
+    
+    /**
      * <enclosure url="http://esg-datanode.jpl.nasa.gov/thredds/fileServer/esg_dataroot/obs4MIPs/observations/atmos/husNobs/mon/grid/NASA-JPL/AIRS/v20110608/husNobs_AIRS_L3_RetStd-v5_200209-201105.nc" type="application/x-netcdf" />
      * <enclosure url="http://esg-datanode.jpl.nasa.gov/thredds/dodsC/esg_dataroot/obs4MIPs/observations/atmos/husNobs/mon/grid/NASA-JPL/AIRS/v20110608/husNobs_AIRS_L3_RetStd-v5_200209-201105.nc.html" type="text/html" />
      */
@@ -125,7 +137,7 @@ public class RssViewBuilder {
     // <guid isPermaLink="true">http://coastwatch.noaa.gov/thredds/fileServer/chloraAquaMODISDailyCWHDFGL05/MODSCW_P2011189_C4_1720_1725_1900_1905_GL05_closest_chlora.hdf</guid>
     public final static void addGuid(Item feedItem, Record record) {
         Guid guid = new Guid();
-        guid.setValue(record.getId());
+        guid.setValue( record.getId()+".v"+record.getVersion());
         guid.setPermaLink(false); // NOT a URL
         feedItem.setGuid( guid );
     }

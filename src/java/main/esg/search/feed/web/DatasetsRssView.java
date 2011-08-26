@@ -43,7 +43,7 @@ public class DatasetsRssView extends AbstractRssFeedView {
             Item feedItem = new Item();
             
             // <title>obs4MIPs NASA-JPL AIRS L3 Monthly Data</title>
-            feedItem.setTitle(datasetRecord.getFieldValue(SolrXmlPars.FIELD_TITLE));  
+            RssViewBuilder.addTitle(feedItem, datasetRecord);
             
             // <link>http://esg-datanode.jpl.nasa.gov/thredds/esgcet/1/obs4MIPs.NASA-JPL.AIRS.mon.v1.html#obs4MIPs.NASA-JPL.AIRS.mon.v1</link>
             feedItem.setLink( datasetRecord.getFieldValue(SolrXmlPars.FIELD_URL) ); 
