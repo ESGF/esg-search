@@ -658,6 +658,8 @@ configure_solr() {
         chown ${installer_uid}:${installer_gid} realm.properties
 
         popd >& /dev/null
+
+        _add_myself_to_distrib_shards_list ${solr_install_dir}/solr/conf/solrconfig.xml
     fi
 
     popd >& /dev/null
@@ -666,7 +668,9 @@ configure_solr() {
     
 }
 
-#"private function"
+#-----
+#"private functions"
+#-----
 _dedup_solr_realm() {
     local infile=${1:-${envfile}}
     [ ! -e "${infile}" ] && echo "WARNING: dedup_solr_realm() - unable to locate ${infile} does it exist?" && return 1
@@ -674,6 +678,26 @@ _dedup_solr_realm() {
     local tmp=$(tac ${infile} | awk 'BEGIN {FS="[ :]"} !($1 in a) {a[$1];print $0}' | sort -k1,1)
     echo "$tmp" > ${infile}
 }
+
+#A temporary function for this case where we are hard wiring the particpating shards
+_add_myself_to_distrib_shards_list() {
+    local input_file=${1:-snippet}
+    if [ -e "${input_file}" ]; then
+	cp --force -v ${input_file}{,.bak}
+    else 
+	echo "Cannot add host to shard list - file not found! ${input_file}"
+	return 1
+    fi
+
+    local shard_list=$(sed -n 's/[ ]*<str name=\"shards\">\(.*\)<\/str>.*/\1/p' ${input_file})
+    echo ${shard_list} | grep ${esgf_host}
+    [ $? = 0 ] && echo "Already in shards list" && return 0
+    echo "I am not in shards list... adding myself... ${esgf_host}"
+    local entry=${esgf_host}:${solr_server_port}/solr
+    shard_list=${entry},${shard_list}
+    sed -i 's#\([ ]*<str name=\"shards\">\)\(.*\)\(<\/str>.*\)#\1'${shard_list}'\3#g' ${input_file}
+}
+#-----
 
 test_solr() {
     while [ -n "$1" ]; do 
