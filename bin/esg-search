@@ -268,6 +268,11 @@ setup_search_service() {
     local search_service_war_file=$(pwd)/${trimmed_name}.war
     echo "search_service_war_file = "${search_service_war_file}
 
+    if ((force_install)); then
+        echo "Removing Previous Installation of the ESGF Search Services..."
+        [ -d "${search_web_service_dir}" ] && rm -rf "${search_web_service_dir}"
+    fi
+
     mkdir -p ${search_web_service_dir}
     cd ${search_web_service_dir}
     
