@@ -22,13 +22,14 @@ public interface SearchWebService {
 	 * @param constraints : map of facet constraints to filter the query (example: ("variable","tauv"))
 	 * @param offset : offset of returned results
 	 * @param limit : maximum number of returned results
+	 * @param distrib : true to execute a distributed search
 	 * @param getResults : true to return results matching the query
 	 * @param getFacets : true to return facets matching the query
 	 * @param returnType : "XML" or "JSON"
 	 * @return
 	 */
 	String search(final String query, final String type, final Map<String,String[]> constraints,
-			      int offset, int limit, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception;
+			      int offset, int limit, boolean distrib, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception;
 	
 	/**
 	 * Simplified method to search for records that match a given identifier expression (possibly containing wildcards)

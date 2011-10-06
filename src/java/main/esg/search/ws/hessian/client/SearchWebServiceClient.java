@@ -34,13 +34,13 @@ public class SearchWebServiceClient {
 	    // return all documents
 	    String type = null; 
 	    String text = "*"; // note: empty string has same effect
-	    String xml = searchWebService.search(text, type, constraints, offset, limit, getResults, getFacets, returnType);
+	    String xml = searchWebService.search(text, type, constraints, offset, limit, true, getResults, getFacets, returnType);
 	    
 	    // return documents matching a string and some facet constraints
 	    text = "CSIRO";
 	    constraints.put("cf_variable", new String[]{"Maximum Daily Surface Air Temperature"});
 	    constraints.put("time_frequency", new String[]{"day"});
-	    xml = searchWebService.search(text, type, constraints, offset, limit, getResults, getFacets, returnType);
+	    xml = searchWebService.search(text, type, constraints, offset, limit, true, getResults, getFacets, returnType);
 	   
 	    // specific search by id
 	    String id = "pcmdi.ipcc4.CSIRO.csiro_mk3_0.20c3m.day.atm.run1";

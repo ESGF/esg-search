@@ -10,21 +10,38 @@ import java.util.List;
  *
  */
 public class QueryParameters {
-    
+        
     // reserved query keywords
     public final static String OFFSET = "offset";
     public final static String LIMIT = "limit";
     public final static String QUERY = "query";
-    public final static String BACK = "back"; 
-    public final static String TYPE = "type";
-      
+    public final static String FORMAT = "format";
+    public final static String FACETS = "facets";
+    public final static String FIELDS = "fields";
+    public final static String DISTRIB = "distrib";
     
-    // HTTP parameters that are interpreted specially because they enter into special queries
+    // open search geo extension
+    public final static String LAT ="lat";
+    public final static String LON = "lon";
+    public final static String LOCATION = "location";
+    public final static String RADIUS = "radius";
+    public final static String POLYGON = "polygon";
+    
+    // open search time extension
+    public final static String START = "start";
+    public final static String END = "end";
+          
+    // record special fields
     public final static String ID = "id";
+    public final static String TYPE = "type";
     public final static String FROM = "from";
     public final static String TO = "to";
-    
-    public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, BACK, TYPE, ID, FROM, TO } );
+
+
+    public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB,
+                                                                             LAT, LON, LOCATION, RADIUS, POLYGON,
+                                                                             START, END,
+                                                                             ID, TYPE, FROM, TO } );
     
     private QueryParameters() {};
 

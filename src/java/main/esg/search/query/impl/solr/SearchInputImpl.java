@@ -77,6 +77,11 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	 */
 	private int limit = 10;
 	
+	/**
+	 * Flag to execute a distributed query - true by default.
+	 */
+	private boolean distrib = true;
+	
 	private final static String NEWLINE = System.getProperty("line.separator");
 
 	/**
@@ -262,5 +267,19 @@ public class SearchInputImpl implements SearchInput, Serializable {
     public String getTemporalRangeConstraint() {
         return this.temporalRangeConstraint;
     }
+
+
+    @Override
+    public boolean isDistrib() {
+        return distrib;
+    }
+
+
+    @Override
+    public void setDistrib(boolean distrib) {
+        this.distrib = distrib;
+    }
+    
+    
 	
 }

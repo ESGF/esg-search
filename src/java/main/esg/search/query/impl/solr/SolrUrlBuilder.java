@@ -193,7 +193,8 @@ public class SolrUrlBuilder {
         //}
         
         // distributed search
-        //sb.append("&distrib=true");
+        // (must enable a "/distrib" query handler in solrconfig.xml)
+        if (input.isDistrib()) sb.append("&qt=/distrib");
         
 		if (LOG.isInfoEnabled()) LOG.info("Select URL=" + sb.toString());
 		return new URL(sb.toString());

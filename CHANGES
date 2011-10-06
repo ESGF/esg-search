@@ -34,3 +34,6 @@ Inserted facilities for grouping experiments by "experiment_family"
 1.4.0
 Added support for RSS feeds
 Internal changes to URLs resolved by the servlet
+
+1.5.0
+Implementation of new ESGF Search API as agreed upon by search working group

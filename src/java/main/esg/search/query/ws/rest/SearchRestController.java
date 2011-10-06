@@ -53,15 +53,15 @@ public class SearchRestController {
 	 * @param text : search text (example: "?text=...")
 	 * @param facet : name of one of the facets in the application facet profile (example: "experiment=control")
 	 */
-	@RequestMapping(value="/ws/rest/search/", method=RequestMethod.GET)
+	@RequestMapping(value="/ws/rest/search/", method={ RequestMethod.GET, RequestMethod.POST })
 	@SuppressWarnings("unchecked")
 	public void search(final HttpServletRequest request, 
 			           final @ModelAttribute(COMMAND) SearchRestCommand command, 
 			           final HttpServletResponse response) throws Exception {
-	    		
+	    	    		
 		// execute query
 		final String xml = searchWebService.search(command.getQuery(), command.getType(), request.getParameterMap(),
-				                                   command.getOffset(), command.getLimit(), command.isResults(), command.isFacets(), command.getBack());
+				                                   command.getOffset(), command.getLimit(), command.isDistrib(), command.isResults(), command.isFacets(), command.getBack());
 		writeToResponse(xml, response);
 	}
 	

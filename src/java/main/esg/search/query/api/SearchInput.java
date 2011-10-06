@@ -159,5 +159,17 @@ public interface SearchInput {
 	 * @param facets
 	 */
 	public void setFacets(List<String> facets);
+	
+	/**
+	 * Getter method for the distributed query flag.
+	 * @return
+	 */
+	public boolean isDistrib();
+	
+	/**
+     * Setter method to execute a distributed query.
+     * @return
+     */
+	public void setDistrib(boolean distrib);
 
 }
