@@ -82,6 +82,8 @@ public class SearchWebServiceImpl implements SearchWebService {
 		    input.setType(type);
 		}
 		
+		// interpret all non-keyword constraints as facets
+		// check versus the configured facet profile
 		for (final String parName : constraints.keySet()) {
 		    if (!QueryParameters.KEYWORDS.contains( parName.toLowerCase() )) {
     			final String[] parValues = constraints.get(parName);
