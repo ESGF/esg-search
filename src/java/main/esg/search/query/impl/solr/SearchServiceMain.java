@@ -62,7 +62,7 @@ public class SearchServiceMain {
 		//Note: this assumes CDIAC/AmeriFlux site code=AMF_USARM, Site name=ARM SGP Main, Version=V003 
 		//data has been ingested into solr with geospatial data included
 		LOG.info("\nQUERY #1A");
-		input.setText("CDIAC");
+		input.setQuery("CDIAC");
 //		SearchOutput output = searchService.search(input, true, true);
 
 		

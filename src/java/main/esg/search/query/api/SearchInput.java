@@ -31,13 +31,13 @@ public interface SearchInput {
 	 * Setter method for the free text to search for.
 	 * @param text
 	 */
-	public void setText(String text);
+	public void setQuery(String query);
 	
 	/**
 	 * Getter method for the free text to search for.
 	 * @return
 	 */
-	public String getText();
+	public String getQuery();
 	
 	/**
 	 * Getter method for the results type to search for.

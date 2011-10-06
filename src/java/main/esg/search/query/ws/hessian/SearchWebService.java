@@ -17,7 +17,7 @@ public interface SearchWebService {
 	/**
 	 * Base method to execute the most generic query possible.
 	 * 
-	 * @param text : the query string (example: "CMIP5" or "timestamp:[2010-10-19T22:00:00Z TO NOW]")
+	 * @param query : the query string (example: "CMIP5" or "timestamp:[2010-10-19T22:00:00Z TO NOW]")
 	 * @param type: optional type of returned results
 	 * @param constraints : map of facet constraints to filter the query (example: ("variable","tauv"))
 	 * @param offset : offset of returned results
@@ -27,7 +27,7 @@ public interface SearchWebService {
 	 * @param returnType : "XML" or "JSON"
 	 * @return
 	 */
-	String search(final String text, final String type, final Map<String,String[]> constraints,
+	String search(final String query, final String type, final Map<String,String[]> constraints,
 			      int offset, int limit, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception;
 	
 	/**

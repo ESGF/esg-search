@@ -71,7 +71,7 @@ public class SolrUrlBuilderTest {
 		Assert.assertEquals(SOLR_URL+"/select/?indent=true&q=*&fq=type%3A%22Dataset%22&start=0&rows=10", url.toString());
 		
 		// query default field, use query filter for results type, match text
-		input.setText("atmospheric data");
+		input.setQuery("atmospheric data");
 		url = solrUrlBuilder.buildSelectUrl();
 		Assert.assertEquals(SOLR_URL+"/select/?indent=true&q=atmospheric+data&fq=type%3A%22Dataset%22&start=0&rows=10", url.toString());
 

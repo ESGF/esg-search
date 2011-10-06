@@ -37,9 +37,9 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
-	 * The free text used in the query.
+	 * The free query used in the query.
 	 */
-	private String text;
+	private String query;
 	
 	/**
 	 * The map of constraints to be used in the query, composed of (name, values) pairs.
@@ -128,15 +128,15 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getText() {
-		return text;
+	public String getQuery() {
+		return query;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setText(final String text) {
-		this.text = text;
+	public void setQuery(final String query) {
+		this.query = query;
 	}
 
 	/**
@@ -208,9 +208,9 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	@Override
 	public String toString() {
 		
-		// text
+		// query
 		final StringBuilder s = new StringBuilder();
-		s.append("Search Text:"+this.getText()).append(NEWLINE);
+		s.append("Search Text:"+this.getQuery()).append(NEWLINE);
 		// constraints
 		for (final String name : this.constraints.keySet()) {
 			s.append("Search Constraint: ").append(name).append("=");

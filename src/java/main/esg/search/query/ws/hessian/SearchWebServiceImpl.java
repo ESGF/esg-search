@@ -73,12 +73,12 @@ public class SearchWebServiceImpl implements SearchWebService {
 	 * defined in the application facet profile, and by checking the constraint values for invalid characters.
 	 */
 	@Override
-	public String search(final String text, final String type, final Map<String, String[]> constraints,
+	public String search(final String query, final String type, final Map<String, String[]> constraints,
 			             int offset, int limit, boolean getResults, boolean getFacets, final SearchReturnType returnType) throws Exception {
 		
 		// build search input object
 		final SearchInput input = new SearchInputImpl();
-		if (StringUtils.hasLength(text)) input.setText(text);
+		if (StringUtils.hasLength(query)) input.setQuery(query);
 		
 		// parse constraints
 		// for security reasons, loop ONLY over parameter keys found in facet profile, matching against HTTP request parameters,

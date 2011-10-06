@@ -17,6 +17,7 @@ import esg.search.query.ws.hessian.SearchWebService;
  * Web controller that supports RESTful invocations of the metadata search service.
  * This controller delegates all functionality to the underlying {@link SearchWebService}.
  * 
+ * TODO: review parameters list
  * All REST methods accept the following optional HTTP parameters (in addition to the ones specifically listed in each method),
  * which all have sensible default values.
  * 
@@ -59,7 +60,7 @@ public class SearchRestController {
 			           final HttpServletResponse response) throws Exception {
 	    		
 		// execute query
-		final String xml = searchWebService.search(command.getText(), command.getType(), request.getParameterMap(),
+		final String xml = searchWebService.search(command.getQuery(), command.getType(), request.getParameterMap(),
 				                                   command.getOffset(), command.getLimit(), command.isResults(), command.isFacets(), command.getBack());
 		writeToResponse(xml, response);
 	}

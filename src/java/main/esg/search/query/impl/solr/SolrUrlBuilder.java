@@ -116,8 +116,8 @@ public class SolrUrlBuilder {
 	    final StringBuilder ff = new StringBuilder();
 	    
 		// search input text --> q=....
-		if (StringUtils.hasText(input.getText())) {
-			qs.add( URLEncoder.encode(input.getText(), "UTF-8") );
+		if (StringUtils.hasText(input.getQuery())) {
+			qs.add( URLEncoder.encode(input.getQuery(), "UTF-8") );
 		}
 		// wildcard id --> q=id:....
 		if (StringUtils.hasText(input.getConstraint(QueryParameters.ID))) {
