@@ -99,12 +99,28 @@ Builds the project via ant (obviously).
     <arg value="-c"/>
     <arg value="git describe | sed -n 's/v\([a-zA-Z0-9.]*\)[-]*.*/\1/p'"/>
   </exec>
+  <exec executable="bash" dir="${basedir}" outputproperty="branch">
+    <arg value="-c"/>
+    <arg value="git branch | grep '*' | sed -n 's/\*[ ]*//p'"/>
+  </exec>
+  <exec executable="bash" dir="${basedir}" outputproperty="commit">
+    <arg value="-c"/>
+    <arg value="git describe"/>
+  </exec>
+  <exec executable="bash" dir="${basedir}" outputproperty="release_name">
+    <arg value="-c"/>
+    <arg value="git tag | sed -ne 's/\(v[0-9]*\.[0-9]*\.[0-9]*\)-\([a-zA-Z0-9_-]*\)-release.*$/\2/p' | sort -k1,1 | tail -n 1"/>
+  </exec>
 
   <property name="filter" value="false"/>
 
   <!-- **static defines** -->
   <property name="version_num" value="0.0.0"/>
   <filter token="version_num"  value="${version_num}"/>
+  <property name="branch" value="[nobranch]"/>
+  <filter token="branch"  value="${branch}"/>
+  <property name="commit" value="ffffff"/>
+  <filter token="commit"  value="${commit}"/>
   <property name="release_name" value="no_name"/>
   <filter token="release_name" value="${release_name}"/>
   <filter token="module" value="${module}"/>
@@ -335,6 +351,8 @@ Builds the project via ant (obviously).
 		<attribute name="Project"      value="${project_name} ${module}"/>
 		<attribute name="Module"       value="${module}"/>
 		<attribute name="Version"      value="${version_num}"/>
+	        <attribute name="Branch"       value="${branch}"/>
+	        <attribute name="Commit"       value="${commit}"/>
 		<attribute name="Release-Name" value="${release_name}"/>
 	      </manifest>
 	    </war>
@@ -389,6 +407,8 @@ Builds the project via ant (obviously).
 	<attribute name="Project"      value="${project_name}"/>
 	<attribute name="Module"       value="${module}"/>
 	<attribute name="Version"      value="${version_num}"/>
+	<attribute name="Branch"       value="${branch}"/>
+	<attribute name="Commit"       value="${commit}"/>
 	<attribute name="Release-Name" value="${release_name}"/>
 	<attribute name="Main-Class"   value="${main_class}"/>
 	<section name="esg/">
@@ -412,6 +432,8 @@ Builds the project via ant (obviously).
 	<attribute name="Project"      value="${project_name} (Tests)"/>
 	<attribute name="Module"       value="${module}"/>
 	<attribute name="Version"      value="${version_num}"/>
+	<attribute name="Branch"       value="${branch}"/>
+	<attribute name="Commit"       value="${commit}"/>
 	<attribute name="Release-Name" value="${release_name}"/>
 	<section name="esg/">
 	  <attribute name="Sealed" value="false"/>
@@ -435,6 +457,8 @@ Builds the project via ant (obviously).
 	<attribute name="Project"      value="${project_name} ${module} common"/>
 	<attribute name="Module"       value="${module}"/>
 	<attribute name="Version"      value="${version_num}"/>
+	<attribute name="Branch"       value="${branch}"/>
+	<attribute name="Commit"       value="${commit}"/>
 	<attribute name="Release-Name" value="${release_name}"/>
 	<section name="esg/search/common/">
 	  <attribute name="Sealed" value="false"/>
@@ -460,6 +484,8 @@ Builds the project via ant (obviously).
 	<attribute name="Project"      value="${project_name}"/>
 	<attribute name="Module"       value="${module} fe"/>
 	<attribute name="Version"      value="${version_num}"/>
+	<attribute name="Branch"       value="${branch}"/>
+	<attribute name="Commit"       value="${commit}"/>
 	<attribute name="Release-Name" value="${release_name}"/>
 	<attribute name="Main-Class"   value="${main_class}"/>
 	<section name="esg/search/">
@@ -486,6 +512,8 @@ Builds the project via ant (obviously).
 	<attribute name="Project"      value="${project_name} ${module} connector"/>
 	<attribute name="Module"       value="${module}"/>
 	<attribute name="Version"      value="${version_num}"/>
+	<attribute name="Branch"       value="${branch}"/>
+	<attribute name="Commit"       value="${commit}"/>
 	<attribute name="Release-Name" value="${release_name}"/>
 	<section name="esg/node/search/connector/">
 	  <attribute name="Sealed" value="false"/>
