@@ -21,6 +21,8 @@ package esg.search.query.impl.solr;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -57,7 +59,7 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	final SolrXmlParser xmlParser = new SolrXmlParser();
 
-	//private static final Log LOG = LogFactory.getLog(SearchServiceImpl.class);
+	private static final Log LOG = LogFactory.getLog(SearchServiceImpl.class);
 
 	/**
 	 * Constructor with mandatory arguments.
@@ -90,6 +92,8 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	public String query(final SearchInput input, final boolean getResults, final boolean getFacets, final SearchReturnType returnType) throws Exception {
 		
+	    if (LOG.isInfoEnabled()) LOG.info("Query Input="+input.toString());
+	    
 		// formulate HTTP request
 		final SolrUrlBuilder builder = new SolrUrlBuilder(url);
 		builder.setSearchInput(input);

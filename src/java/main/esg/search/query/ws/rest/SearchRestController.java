@@ -1,10 +1,13 @@
 package esg.search.query.ws.rest;
 
+import java.util.regex.Matcher;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -54,15 +57,41 @@ public class SearchRestController {
 	 * @param facet : name of one of the facets in the application facet profile (example: "experiment=control")
 	 */
 	@RequestMapping(value="/ws/rest/search/", method={ RequestMethod.GET, RequestMethod.POST })
-	@SuppressWarnings("unchecked")
+	//@SuppressWarnings("unchecked")
 	public void search(final HttpServletRequest request, 
 			           final @ModelAttribute(COMMAND) SearchRestCommand command, 
 			           final HttpServletResponse response) throws Exception {
+	    
+	    // check all parameters for bad characters
+	    String error = "";
+	    for (final Object obj : request.getParameterMap().keySet()) {
+	        
+	        // check parameter name
+	        String key = obj.toString();
+	        final Matcher keyMatcher = QueryParameters.INVALID_CHARACTERS.matcher(key);
+            if (keyMatcher.matches()) error ="Invalid character(s) detected in parameter name="+key;
+            
+            // check parameter values
+            String[] values = request.getParameterValues(key);
+            for (int i=0; i<values.length; i++) {
+                final Matcher valueMatcher = QueryParameters.INVALID_CHARACTERS.matcher(values[i]);
+                if (valueMatcher.matches()) error ="Invalid character(s) detected in parameter value="+values[i];
+            }
+	        
+	    }
+	    
+	    // bad characters --> 404 HTTP response
+	    if (StringUtils.hasText(error)) {
+	        response.sendError(HttpServletResponse.SC_BAD_REQUEST, error);
+	    
+	    } else {
+	        
+	        // execute query
+	        final String xml = searchWebService.search(command.getQuery(), command.getType(), request.getParameterMap(),
+	                                                   command.getOffset(), command.getLimit(), command.isDistrib(), command.isResults(), command.isFacets(), command.getBack());
+	        writeToResponse(xml, response);
+	    }
 	    	    		
-		// execute query
-		final String xml = searchWebService.search(command.getQuery(), command.getType(), request.getParameterMap(),
-				                                   command.getOffset(), command.getLimit(), command.isDistrib(), command.isResults(), command.isFacets(), command.getBack());
-		writeToResponse(xml, response);
 	}
 	
 	/**

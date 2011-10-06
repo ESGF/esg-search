@@ -2,6 +2,7 @@ package esg.search.query.api;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
  * Class containing query constants.
@@ -42,6 +43,12 @@ public class QueryParameters {
                                                                              LAT, LON, LOCATION, RADIUS, POLYGON,
                                                                              START, END,
                                                                              ID, TYPE, FROM, TO } );
+    
+    /**
+     * List of invalid text characters - anything that is not within square brackets.
+     */
+    public static Pattern INVALID_CHARACTERS = Pattern.compile(".*[^a-zA-Z0-9_\\-\\.\\@\\'\\:\\;\\,\\s/()\\*\\\"].*");
+
     
     private QueryParameters() {};
 

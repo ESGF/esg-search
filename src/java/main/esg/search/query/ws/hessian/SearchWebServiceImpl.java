@@ -1,9 +1,7 @@
 package esg.search.query.ws.hessian;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -49,18 +47,7 @@ public class SearchWebServiceImpl implements SearchWebService {
 	//final private Map<String,String[]> emptyConstraints = Collections.unmodifiableMap( new HashMap<String, String[]>() );
 	
 	private static final Log LOG = LogFactory.getLog(SearchWebServiceImpl.class);
-	
-	/**
-	 * List of invalid text characters - anything that is not within square brackets.
-	 */
-	private static Pattern pattern = Pattern.compile(".*[^a-zA-Z0-9_\\-\\.\\@\\'\\:\\;\\,\\s/()\\*].*");
-	
-	/**
-	 * List of HTTP parameter names that are NOT interpreted as facet constraints.
-	 */
-	private final static List<String> RESERVED_PARAMATER_NAMES = Arrays.asList(new String[] { "offset", "limit", "facets", "results", "text", "back" });
-
-	
+		
 	@Autowired
 	public SearchWebServiceImpl(final SearchServiceImpl searchService, final @Qualifier("wsFacetProfile") FacetProfile facetProfile) {
 		this.searchService = searchService;
@@ -77,6 +64,10 @@ public class SearchWebServiceImpl implements SearchWebService {
 			             int offset, int limit, boolean distrib,
 			             boolean getResults, boolean getFacets, final SearchReturnType returnType) throws Exception {
 		
+	    if (LOG.isInfoEnabled()) {
+	        LOG.info("query="+query);
+	        LOG.info("offset="+offset+" limit="+limit+" distrib="+distrib);
+	    }
 		// build search input object
 		final SearchInput input = new SearchInputImpl();
 		if (StringUtils.hasLength(query)) input.setQuery(query);
@@ -92,12 +83,12 @@ public class SearchWebServiceImpl implements SearchWebService {
 		}
 		
 		for (final String parName : constraints.keySet()) {
-		    if (!RESERVED_PARAMATER_NAMES.contains( parName.toLowerCase() )) {
+		    if (!QueryParameters.KEYWORDS.contains( parName.toLowerCase() )) {
     			final String[] parValues = constraints.get(parName);
     			if (parValues!=null) {
     				for (final String parValue : parValues) {
     					if (StringUtils.hasText(parValue)) {
-    					    final Matcher matcher = pattern.matcher(parValue);
+    					    final Matcher matcher = QueryParameters.INVALID_CHARACTERS.matcher(parValue);
     					    if (matcher.matches()) throw new Exception("Invalid character(s) detected in parameter value="+parValue);
     						input.addConstraint(parName, parValue);
     						if (LOG.isTraceEnabled()) LOG.trace("Set constraint name="+parName+" value="+parValue);
