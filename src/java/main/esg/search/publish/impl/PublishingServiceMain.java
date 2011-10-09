@@ -34,7 +34,7 @@ import esg.search.publish.api.PublishingService;
 public class PublishingServiceMain {
 	
 	
-    private static String[] configLocations = new String[] { "classpath:esg/search/config/application-context.xml" };
+    private static String[] configLocations = new String[] { "classpath:esg/search/config/client-application-context.xml" };
     
     public static String METADATA_URL = "";
     

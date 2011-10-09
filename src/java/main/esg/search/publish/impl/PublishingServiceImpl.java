@@ -2,17 +2,9 @@ package esg.search.publish.impl;
 
 import java.util.List;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.opensaml.saml2.core.Action;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationToken;
 import org.springframework.stereotype.Service;
 
-import esg.orp.app.Authorizer;
 import esg.search.publish.api.MetadataDeletionService;
 import esg.search.publish.api.MetadataRepositoryCrawlerManager;
 import esg.search.publish.api.MetadataRepositoryType;
@@ -46,14 +38,6 @@ public class PublishingServiceImpl implements PublishingService {
      */
     private final MetadataDeletionService recordRemover;
 
-    /**
-     * Optional collaborator used to secure publishing calls. 
-     * If none is configured, no authorization will take place.
-     */
-    private Authorizer authorizer = null;
-    
-    private final Log LOG = LogFactory.getLog(this.getClass());
-
     @Autowired
     public PublishingServiceImpl(
             final PublisherCrawlerManagerImpl publisherCrawler,
@@ -65,24 +49,16 @@ public class PublishingServiceImpl implements PublishingService {
         this.recordRemover = recordRemover;
     }
 
-    @Autowired
-    public void setAuthorizer(Authorizer authorizer) {
-        this.authorizer = authorizer;
-    }
-
     @Override
 	public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws Exception {
                
-        checkAuthorization(uri);
 		publisherCrawler.crawl(uri, recursive, metadataRepositoryType, true); // publish=true
 		
 	}
 
     @Override
-    public void unpublish(String uri, boolean recursive,
-            MetadataRepositoryType metadataRepositoryType) throws Exception {
+    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws Exception {
 
-        checkAuthorization(uri);
         unpublisherCrawler.crawl(uri, recursive, metadataRepositoryType, false); // publish=false
 
     }
@@ -90,43 +66,7 @@ public class PublishingServiceImpl implements PublishingService {
     @Override
     public void unpublish(List<String> ids) throws Exception {
 
-        for (String id : ids) checkAuthorization(id);
         recordRemover.delete(ids);
-
-    }
-    
-    /**
-     * Method to check that the user is authorized to execute a publishing/unpublishing operation.
-     * @param uri
-     * @throws Exception
-     */
-    private void checkAuthorization(String uri) throws Exception {
-        
-        if (authorizer!=null) {
-            
-            boolean authorized = false;
-            String openid = "";
-            final SecurityContext secCtx = SecurityContextHolder.getContext();
-            final Authentication auth = secCtx.getAuthentication();
-            if (LOG.isDebugEnabled()) LOG.debug("URL="+uri+" Security context authentication="+auth);
-
-            if (auth!=null && auth instanceof PreAuthenticatedAuthenticationToken) {
-                
-                openid = auth.getName();
-                if (LOG.isDebugEnabled()) LOG.debug("User is authenticated, openid="+openid);
-
-                authorized = authorizer.authorize(openid, uri, Action.WRITE_ACTION);
-
-            }
-            
-            // throw exception is user is not authorized
-            if (!authorized) {
-                String message = "User: "+openid+" is not authorized to publish/unpublish resource: "+uri;
-                LOG.warn(message);
-                throw new Exception(message);
-            }
-            
-        }
 
     }
 

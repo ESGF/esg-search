@@ -40,7 +40,7 @@
 	<!-- Publishing Web Service -->
     <bean name="publishingWebService" class="org.springframework.remoting.caucho.HessianServiceExporter">
         <property name="service">
-            <ref bean="publishingService"/>
+            <ref bean="securePublishingService"/>
         </property>
         <property name="serviceInterface">
             <value>esg.search.publish.api.PublishingService</value>
