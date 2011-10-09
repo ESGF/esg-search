@@ -33,7 +33,6 @@ import org.springframework.core.io.ClassPathResource;
 
 import esg.search.core.Record;
 import esg.search.publish.xml.MetadataHandler;
-import esg.search.publish.xml.dif.MetadataHandlerDifImpl;
 import esg.search.utils.XmlParser;
 
 /**

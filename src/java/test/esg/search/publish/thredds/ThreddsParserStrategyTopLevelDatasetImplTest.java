@@ -32,8 +32,6 @@ import thredds.catalog.InvCatalog;
 import thredds.catalog.InvCatalogFactory;
 import thredds.catalog.InvDataset;
 import esg.search.core.Record;
-import esg.search.publish.thredds.ThreddsParserStrategy;
-import esg.search.publish.thredds.ThreddsParserStrategyTopLevelDatasetImpl;
 
 /**
  * Test class for {@link ThreddsParserStrategyTopLevelDatasetImpl}.

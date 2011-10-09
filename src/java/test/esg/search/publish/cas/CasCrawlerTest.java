@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
 import esg.search.core.Record;
-import esg.search.publish.cas.CasCrawler;
 import esg.search.publish.impl.InMemoryStore;
 import esg.search.publish.impl.RecordProducerImpl;
 import esg.search.publish.xml.cas.MetadataHandlerCasRdfImpl;

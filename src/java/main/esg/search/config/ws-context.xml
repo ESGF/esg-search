@@ -61,5 +61,12 @@
             <value>esg.search.publish.api.LegacyPublishingService</value>
         </property>
     </bean>
+    
+    <!-- Authorizer used to secure publishing requests -->
+    <bean name="authorizer" class="esg.orp.app.SAMLAuthorizationServiceClient">
+    	<property name="endpoints">
+    		<value>https://esg-datanode.jpl.nasa.gov/esgf-security/saml/soap/secure/authorizationService.htm</value>
+    	</property>
+    </bean>
 
 </beans>

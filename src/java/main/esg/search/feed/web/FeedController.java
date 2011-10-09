@@ -1,7 +1,5 @@
 package esg.search.feed.web;
 
-import java.text.SimpleDateFormat;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;

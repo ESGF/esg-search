@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- Top level Spring Security configuration file for Web MVC applications -->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:security="http://www.springframework.org/schema/security"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	   					   http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-3.0.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!-- The "http" namespace element automatically creates the following filters: 
+	     HttpSessionContextIntegrationFilter, ExceptionTranslationFilter and FilterSecurityInterceptor,
+	     in the proper order. -->
+	<security:http>
+		
+		<!-- Creates an X509PreAuthenticatedProcessingFilter which by default, extracts the principal
+		     using the Spring SubjectDnX509PrincipalExtractor with the default matching regular expression "CN=(.?)" -->
+		<security:x509 user-service-ref="myUserDetailsService"/>		
+		    	
+    	<!-- Disable anonymous authentication -->
+    	<security:anonymous enabled="false" />
+    	
+	</security:http>
+	
+	<!-- collaborators needed for X509 authentication -->		
+	<security:authentication-manager alias="authenticationManager" />
+  	<bean id="myUserDetailsService" class="esg.orp.orp.MyUserDetailsService" />
+
+</beans>

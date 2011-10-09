@@ -52,16 +52,12 @@ package esg.node.search.shell.cmds;
    Search mode's main class.
 **/
 
-import esg.node.search.*;
-
-import esg.common.shell.*;
-import esg.common.shell.cmds.*;
-
-import org.apache.commons.cli.*;
-
+import org.apache.commons.cli.CommandLine;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.commons.logging.impl.*;
+
+import esg.common.shell.ESGFEnv;
+import esg.common.shell.cmds.ESGFCommand;
 
 public class ESGFingest extends ESGFCommand {
     

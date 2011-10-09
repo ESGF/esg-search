@@ -30,7 +30,6 @@ import org.springframework.core.io.ClassPathResource;
 import esg.search.core.Record;
 import esg.search.publish.impl.InMemoryStore;
 import esg.search.publish.impl.RecordProducerImpl;
-import esg.search.publish.oai.OaiCrawler;
 import esg.search.publish.xml.dif.MetadataHandlerDifImpl;
 
 /**

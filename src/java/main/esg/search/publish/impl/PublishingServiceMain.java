@@ -24,9 +24,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.PublishingService;
-
-import java.net.URL;
-import java.net.URLEncoder;
 /**
  * Main class to start the indexing or scrabbing of search records from a remote metadata repository,
  * or deletion of a single record with known identifier.

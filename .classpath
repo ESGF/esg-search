@@ -59,8 +59,6 @@
 	<classpathentry kind="lib" path="lib/fetched/solr-solrj-1.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/stax-api-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/wstx-asl-3.2.7.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/xalan-2.5.D1.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/xercesImpl-2.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xmlParserAPIs-2.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/com.springsource.com.caucho-3.2.1.jar"/>
@@ -80,5 +78,12 @@
 	<classpathentry kind="lib" path="lib/fetched/org.springframework.web.servlet-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.5.6.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/mail-1.4.4.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-security-config-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-security-core-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-security-openid-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/spring-security-web-3.0.5.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esg-orp-1.2.3.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-1.4.1.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/opensaml-2.3.2.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

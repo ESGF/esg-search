@@ -24,8 +24,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.core.io.ClassPathResource;
 
-import esg.search.publish.thredds.ThreddsDatasetUrlBuilderCatalogUrlImpl;
-
 import thredds.catalog.InvCatalog;
 import thredds.catalog.InvCatalogFactory;
 import thredds.catalog.InvDataset;

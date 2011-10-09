@@ -10,5 +10,8 @@
 	
 	<!-- Web Services configuration -->
   	<import resource="classpath:esg/search/config/ws-context.xml" />
+  	
+    <!-- Security configuration -->
+  	<import resource="classpath:esg/search/config/security-context.xml" />
 	
 </beans>

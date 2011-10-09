@@ -10,8 +10,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import esg.search.core.Record;
-import esg.search.publish.impl.InMemoryStore;
-import esg.search.publish.impl.MetadataDeletionServiceImpl;
 
 public class MetadataDeletionServiceImplTest {
 	

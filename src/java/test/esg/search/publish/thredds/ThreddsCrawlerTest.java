@@ -30,8 +30,6 @@ import org.springframework.core.io.ClassPathResource;
 import esg.search.core.Record;
 import esg.search.publish.impl.InMemoryStore;
 import esg.search.publish.impl.RecordProducerImpl;
-import esg.search.publish.thredds.ThreddsCrawler;
-import esg.search.publish.thredds.ThreddsParserStrategyTopLevelDatasetImpl;
 
 /**
  * Test class for {@link ThreddsCrawler}.
