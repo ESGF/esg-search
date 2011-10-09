@@ -90,7 +90,7 @@ public class PublishingServiceImpl implements PublishingService {
     @Override
     public void unpublish(List<String> ids) throws Exception {
 
-        //checkAuthorization(ids);
+        for (String id : ids) checkAuthorization(id);
         recordRemover.delete(ids);
 
     }

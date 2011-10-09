@@ -27,5 +27,13 @@
 	<!-- collaborators needed for X509 authentication -->		
 	<security:authentication-manager alias="authenticationManager" />
   	<bean id="myUserDetailsService" class="esg.orp.orp.MyUserDetailsService" />
+  	
+  	<!-- Authorizer used to secure publishing requests -->
+    <bean name="authorizer" class="esg.orp.app.SAMLAuthorizationServiceClient">
+        <property name="endpoints">
+                <value>${security.authz.service.endpoint}</value>
+        </property>
+    </bean>
+  	
 
 </beans>
