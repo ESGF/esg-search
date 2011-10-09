@@ -556,7 +556,7 @@
         <str name="facet.mincount">1</str>
         <str name="facet.method">enum</str>
         <!-- always perform distributed search -->
-        <str name="shards">esg-datanode.jpl.nasa.gov:8983/solr,esgf-node3.llnl.gov:8983/solr,bones.ccs.ornl.gov:8983/solr</str>
+        <str name="shards">esg-datanode.jpl.nasa.gov:8983/solr,pcmdi9.llnl.gov:8983/solr,bones.ccs.ornl.gov:8983/solr,esg1-gw.pnl.gov:8983/solr</str>
      </lst>
      <int name="shard-socket-timeout">1000</int>
      <int name="shard-connection-timeout">1000</int>
