@@ -120,7 +120,11 @@ public class PublishingServiceImpl implements PublishingService {
             }
             
             // throw exception is user is not authorized
-            if (!authorized) throw new Exception("User: "+openid+" is not authorized to publish/unpublish resource: "+uri);
+            if (!authorized) {
+                String message = "User: "+openid+" is not authorized to publish/unpublish resource: "+uri;
+                LOG.warn(message);
+                throw new Exception(message);
+            }
             
         }
 
