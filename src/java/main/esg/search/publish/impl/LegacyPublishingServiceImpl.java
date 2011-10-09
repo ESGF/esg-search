@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import esg.search.publish.api.LegacyPublishingService;
@@ -35,7 +36,7 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	private final static String RETURN_VALUE = "SUCCESSFUL";
 	
 	@Autowired
-	public LegacyPublishingServiceImpl(final PublishingService publishingService) {
+	public LegacyPublishingServiceImpl(final @Qualifier("securePublishingService") PublishingService publishingService) {
 		this.publishingService = publishingService;
 	}
 
