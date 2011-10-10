@@ -103,12 +103,28 @@ public class SearchRestController {
 	        
 	    }
         
-        // interpret all non-keyword constraints as facets
-        // check versus the configured facet profile to allow no unknown facets
+	    // loop over HTTP parameters
         for (final Object obj : request.getParameterMap().keySet()) {
             final String parName = (String)obj;
+            
+            // &type=...
+            if (parName.equals(QueryParameters.TYPE)) {
+                String parValue = request.getParameter(parName);
+                if (StringUtils.hasText(parValue)) {
+                    command.setType(parValue);
+                }
+                
+            // &id=...
+            } else if (parName.equals(QueryParameters.ID)) {
+                String parValue = request.getParameter(parName);
+                if (StringUtils.hasText(parValue)) {
+                    command.addConstraint(parName, parValue);
+                }
+                
+            // interpret all non-keyword constraints as facets
+            // check versus the configured facet profile to allow no unknown facets
             // &facet1=value1&facet2=value2
-            if (!QueryParameters.KEYWORDS.contains( parName.toLowerCase() )) {
+            } else if (!QueryParameters.KEYWORDS.contains( parName.toLowerCase() )) {
                 if (!facetProfile.getTopLevelFacets().containsKey(parName)) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported facet "+parName);
                 }	             
@@ -120,13 +136,7 @@ public class SearchRestController {
                             if (LOG.isTraceEnabled()) LOG.trace("Set constraint name="+parName+" value="+parValue);
                         }
                     }
-                }
-            // &id=...&type=...
-            } else if (parName.equals(QueryParameters.ID) || parName.equals(QueryParameters.TYPE)) {
-                String parValue = request.getParameter(parName);
-                if (StringUtils.hasText(parValue)) {
-                    command.addConstraint(parName, parValue);
-                }
+                }            
             }
         }
 
