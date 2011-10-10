@@ -78,7 +78,7 @@ public class SearchServiceImpl implements SearchService {
 	public SearchOutput search(final SearchInput input, final boolean getResults, final boolean getFacets) throws Exception {
 		
 		// execute HTTP request, return XML
-		final String response = this.query(input, getResults, getFacets, SearchReturnType.XML);		
+		final String response = this.query(input, getResults, getFacets, SearchReturnType.SOLR_XML);		
 		
 		// parse HTTP XML response into Java object
 		final SearchOutput output = xmlParser.parse(response, input, getResults, getFacets);
@@ -100,10 +100,24 @@ public class SearchServiceImpl implements SearchService {
 		if (getFacets) builder.setFacets(input.getFacets());
 		final URL request = builder.buildSelectUrl();		
 		
-		// execute HTTP request, return response
-		return httpClient.doGet(request);
+		// execute HTTP request, return response as Solr XML
+		String solrxml = httpClient.doGet(request);
 		
+		// transform to requested format
+		final String response = this.transform(solrxml, returnType);
 		
+		return response;
+		
+	}
+	
+	private String transform(final String solrxml, final SearchReturnType returnType) throws Exception {
+	    
+	    if (returnType==SearchReturnType.SOLR_XML) {
+	        return solrxml;
+	    } else {
+	        throw new Exception("Unsupported output format: "+returnType.getMimeType());
+	    }
+	    
 	}
 	
 

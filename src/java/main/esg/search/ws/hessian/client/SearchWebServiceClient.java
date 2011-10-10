@@ -28,7 +28,7 @@ public class SearchWebServiceClient {
 	    final int limit = 10;
 	    final boolean getResults = true;
 	    final boolean getFacets = true;
-	    final SearchReturnType returnType = SearchReturnType.XML;
+	    final SearchReturnType returnType = SearchReturnType.SOLR_XML;
 	    final Map<String,String[]> constraints = new HashMap<String,String[]>();
 	    
 	    // return all documents

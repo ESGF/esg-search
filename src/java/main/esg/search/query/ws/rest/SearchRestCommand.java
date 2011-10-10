@@ -32,10 +32,10 @@ public class SearchRestCommand extends SearchInputImpl implements Serializable {
 	
 	
 	/**
-	 * Return XML by default.
+	 * Return SOLR XML by default.
 	 */
-	private SearchReturnType back = SearchReturnType.XML;
-
+	private String format = SearchReturnType.SOLR_XML.getMimeType();
+	    
 	public boolean isResults() {
 		return results;
 	}
@@ -56,13 +56,13 @@ public class SearchRestCommand extends SearchInputImpl implements Serializable {
 	}
 
 
-	public SearchReturnType getBack() {
-		return back;
+	public String getFormat() {
+		return format;
 	}
 
 
-	public void setBack(SearchReturnType back) {
-		this.back = back;
+	public void setFormat(String format) {
+		this.format = format;
 	}
 
 }

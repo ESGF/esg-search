@@ -47,7 +47,8 @@ public class QueryParameters {
     /**
      * List of invalid text characters - anything that is not within square brackets.
      */
-    public static Pattern INVALID_CHARACTERS = Pattern.compile(".*[^a-zA-Z0-9_\\-\\.\\@\\'\\:\\;\\,\\s/()\\*\\\"].*");
+    public static Pattern INVALID_CHARACTERS = Pattern.compile(".*[^a-zA-Z0-9_+\\-\\.\\@\\'\\:\\;\\,\\s/()\\*\\\"].*");
+
 
     
     private QueryParameters() {};

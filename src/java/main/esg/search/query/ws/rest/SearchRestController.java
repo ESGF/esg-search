@@ -1,5 +1,6 @@
 package esg.search.query.ws.rest;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import esg.search.query.api.FacetProfile;
 import esg.search.query.api.QueryParameters;
+import esg.search.query.api.SearchReturnType;
 import esg.search.query.api.SearchService;
 import esg.search.query.ws.hessian.SearchWebService;
 
@@ -82,44 +84,34 @@ public class SearchRestController {
 	        // check parameter name
 	        String key = obj.toString();
 	        final Matcher keyMatcher = QueryParameters.INVALID_CHARACTERS.matcher(key);
-            if (keyMatcher.matches()) {
-                String message = "Invalid character(s) detected in parameter name="+key;
-                LOG.warn(message);
-                response.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
-            }
-                                                        
+            if (keyMatcher.matches()) sendError(HttpServletResponse.SC_BAD_REQUEST, 
+                                                "Invalid character(s) detected in parameter name="+key,
+                                                response);                                                        
             
             // check parameter values
             String[] values = request.getParameterValues(key);
             for (int i=0; i<values.length; i++) {
                 final Matcher valueMatcher = QueryParameters.INVALID_CHARACTERS.matcher(values[i]);
-                if (valueMatcher.matches()) {
-                    String message = "Invalid character(s) detected in parameter value="+values[i];
-                    LOG.warn(message);
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
-                }
-                                                               
+                if (!StringUtils.hasText(values[i])) sendError(HttpServletResponse.SC_BAD_REQUEST, 
+                                                               "Invalid empty value for parameter="+key,
+                                                               response);
+                if (valueMatcher.matches()) sendError(HttpServletResponse.SC_BAD_REQUEST, 
+                                                      "Invalid character(s) detected in parameter value="+values[i],
+                                                      response); 
+                                                                                  
             }
 	        
 	    }
         
-	    // loop over HTTP parameters
+	    // loop over HTTP parameters, bind to SearchInput fields
+	    // Note: the following parameters are automatically bound by Spring:
+	    // &type=...&offset=...&limit=...
         for (final Object obj : request.getParameterMap().keySet()) {
             final String parName = (String)obj;
-            
-            // &type=...
-            if (parName.equals(QueryParameters.TYPE)) {
-                String parValue = request.getParameter(parName);
-                if (StringUtils.hasText(parValue)) {
-                    command.setType(parValue);
-                }
-                
+                            
             // &id=...
-            } else if (parName.equals(QueryParameters.ID)) {
-                String parValue = request.getParameter(parName);
-                if (StringUtils.hasText(parValue)) {
-                    command.addConstraint(parName, parValue);
-                }
+            if (parName.equals(QueryParameters.ID)) {
+                command.addConstraint(parName, request.getParameter(parName) );
                 
             // interpret all non-keyword constraints as facets
             // check versus the configured facet profile to allow no unknown facets
@@ -129,34 +121,35 @@ public class SearchRestController {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported facet "+parName);
                 }	             
                 final String[] parValues = request.getParameterValues(parName);
-                if (parValues!=null) {
-                    for (final String parValue : parValues) {
-                        if (StringUtils.hasText(parValue)) {
-                            command.addConstraint(parName, parValue);
-                            if (LOG.isTraceEnabled()) LOG.trace("Set constraint name="+parName+" value="+parValue);
-                        }
-                    }
-                }            
+                for (final String parValue : parValues) command.addConstraint(parName, parValue);
             }
         }
-
+        
+        // &format=
+        SearchReturnType format = SearchReturnType.forMimeType(command.getFormat());
+        if (format==null) sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, 
+                                    "Invalid requested format: "+ command.getFormat(), response);
+        
         // configure facet returned by search
         if (command.isFacets()) command.setFacets(new ArrayList<String>(facetProfile.getTopLevelFacets().keySet()));
 
         // execute HTTP search request, return response
         if (!response.isCommitted()) {
-        	                       
-            String output = searchService.query(command, command.isResults(), command.isFacets(), command.getBack());
+        	                 
+            String output = searchService.query(command, command.isResults(), command.isFacets(), format);
             writeToResponse(output, response);
                         
         }
 	    	    		
 	}
 		
-	
 	private void writeToResponse(final String content, final HttpServletResponse response) throws Exception {
 		response.setContentType("text/xml");
 		response.getWriter().write( content );
 	}
 
+	private void sendError(int sc, final String message, final HttpServletResponse response) throws IOException {
+        LOG.warn(message);
+        response.sendError(sc, message);
+	}
 }
