@@ -82,15 +82,23 @@ public class SearchRestController {
 	        // check parameter name
 	        String key = obj.toString();
 	        final Matcher keyMatcher = QueryParameters.INVALID_CHARACTERS.matcher(key);
-            if (keyMatcher.matches()) response.sendError(HttpServletResponse.SC_BAD_REQUEST, 
-                                                         "Invalid character(s) detected in parameter name="+key);
+            if (keyMatcher.matches()) {
+                String message = "Invalid character(s) detected in parameter name="+key;
+                LOG.warn(message);
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
+            }
+                                                        
             
             // check parameter values
             String[] values = request.getParameterValues(key);
             for (int i=0; i<values.length; i++) {
                 final Matcher valueMatcher = QueryParameters.INVALID_CHARACTERS.matcher(values[i]);
-                if (valueMatcher.matches()) response.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                                                               "Invalid character(s) detected in parameter value="+values[i]);
+                if (valueMatcher.matches()) {
+                    String message = "Invalid character(s) detected in parameter value="+values[i];
+                    LOG.warn(message);
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, message);
+                }
+                                                               
             }
 	        
 	    }
@@ -99,6 +107,7 @@ public class SearchRestController {
         // check versus the configured facet profile to allow no unknown facets
         for (final Object obj : request.getParameterMap().keySet()) {
             final String parName = (String)obj;
+            // &facet1=value1&facet2=value2
             if (!QueryParameters.KEYWORDS.contains( parName.toLowerCase() )) {
                 if (!facetProfile.getTopLevelFacets().containsKey(parName)) {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported facet "+parName);
@@ -111,6 +120,12 @@ public class SearchRestController {
                             if (LOG.isTraceEnabled()) LOG.trace("Set constraint name="+parName+" value="+parValue);
                         }
                     }
+                }
+            // &id=...&type=...
+            } else if (parName.equals(QueryParameters.ID) || parName.equals(QueryParameters.TYPE)) {
+                String parValue = request.getParameter(parName);
+                if (StringUtils.hasText(parValue)) {
+                    command.addConstraint(parName, parValue);
                 }
             }
         }

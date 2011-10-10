@@ -92,7 +92,7 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	public String query(final SearchInput input, final boolean getResults, final boolean getFacets, final SearchReturnType returnType) throws Exception {
 		
-	    if (LOG.isInfoEnabled()) LOG.info("Query Input="+input.toString());
+	    if (LOG.isInfoEnabled()) LOG.info("Query Input:\n"+input.toString());
 	    
 		// formulate HTTP request
 		final SolrUrlBuilder builder = new SolrUrlBuilder(url);

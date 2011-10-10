@@ -80,7 +80,8 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	/**
 	 * Flag to execute a distributed query - true by default.
 	 */
-	private boolean distrib = true;
+	// FIXME
+	private boolean distrib = false;
 	
 	private final static String NEWLINE = System.getProperty("line.separator");
 
@@ -225,11 +226,11 @@ public class SearchInputImpl implements SearchInput, Serializable {
 			s.append(NEWLINE);
 		}
 		// geospatialRangeconstraints
-		s.append("Search Constraint: " + this.geospatialRangeConstraint);
+		s.append("Geo-spatial Constraint: " + this.geospatialRangeConstraint);
 		//end add
 		// facets
 		for (final String facet : facets) {
-			s.append("Search Facet: ").append(facet).append("=").append(facet).append(NEWLINE);
+			s.append("Search Facet: ").append(facet).append(NEWLINE);
 		}
 		// offset, limit
 		s.append("Search offset: "+offset+" ").append(" limit: ").append(limit);

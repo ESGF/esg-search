@@ -177,7 +177,7 @@ public class SolrUrlBuilder {
         sb.append("&q=");
         boolean first = true;
         for (final String q : qs) {
-            if (!first) sb.append(" AND ");
+            if (!first) sb.append(URLEncoder.encode(" AND ","UTF-8"));
             sb.append(q);
             first = false;
         }
