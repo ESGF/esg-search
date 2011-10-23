@@ -106,15 +106,19 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		final String name = dataset.getName();
 		Assert.notNull(name, "Dataset name cannot be null");
 		record.addField(SolrXmlPars.FIELD_TITLE, name);
+		
 	    // type
         record.addField(SolrXmlPars.FIELD_TYPE, SolrXmlPars.TYPE_DATASET);
 		
 		// IMPORTANT: add top-level dataset as first record in the list
 		records.add(record);
         
-		// catalog URL
-		record.addField(SolrXmlPars.FIELD_URL, urlBuilder.buildUrl(dataset));
-		
+		// encode dataset catalog as first access URL
+		final String url = dataset.getCatalogUrl();
+		record.addField(SolrXmlPars.FIELD_URL, 
+		                RecordHelper.encodeUrlTuple(url, 
+		                                            ThreddsPars.getMimeType(url, ThreddsPars.SERVICE_TYPE_CATALOG),
+		                                            ThreddsPars.SERVICE_TYPE_CATALOG));
 		// FIXME
 		// metadata format
 		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");		
@@ -168,7 +172,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        } else if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.AGGREGATION_ID) )) {
 	            
 	            // parse aggregation INTO TOP LEVEL DATASET
-	            this.parseAggregation(childDataset, records.get(0) );
+	            //this.parseAggregation(childDataset, records.get(0) );
 	            
 	        }
 	        
@@ -325,7 +329,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	
 	/**
 	 * Method to parse the access information associated with a dataset into the metadata record search.
-	 * FIXME: this method is only called for files - for datasets the access information is encoded differently
+     *
 	 * @param dataset
 	 * @param record
 	 */
@@ -335,18 +339,15 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         for (final InvAccess access : dataset.getAccess()) {
             
             if (LOG.isTraceEnabled()) LOG.trace("Dataset="+dataset.getID()+" Service="+access.getService().getName()+" URL="+access.getStandardUri().toString());
-           
-            // FIXME: remove ?
-            if (dataset.getID().indexOf("aggregation")<0) { // FIXME
-                record.addField(SolrXmlPars.FIELD_URL, access.getStandardUri().toString());
-                record.addField(SolrXmlPars.FIELD_SERVICE_TYPE, access.getService().getServiceType().toString());
-            }
+                       
+            String url = access.getStandardUri().toString();
+            final String type = access.getService().getServiceType().toString();
+            // special processing of opendap endpoints since URL in thredds catalog is unusable without a suffix
+            if (type.equalsIgnoreCase(ThreddsPars.SERVICE_TYPE_OPENDAP)) url += ".html";
             
-            // FIXME: or remove ?
-            record.addField(SolrXmlPars.FIELD_SERVICE, 
-                    RecordHelper.encodeServiceField(access.getService().getServiceType().toString(), 
-                                                    access.getService().getDescription(),
-                                                    access.getStandardUri().toString()));
+            // encode URL tuple
+            record.addField(SolrXmlPars.FIELD_URL, 
+                            RecordHelper.encodeUrlTuple(url, ThreddsPars.getMimeType(url, type), access.getService().getDescription() ));
 
         }
 	    

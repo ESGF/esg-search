@@ -36,13 +36,7 @@ public class FeedController {
     public final static String MODEL_KEY_DATASET = "dataset";
     public final static String MODEL_KEY_FILES= "files";
     public final static String DATASETS_URI = "datasets";
-    
-    public final static String MIME_TYPE_NETCDF = "application/x-netcdf";
-    public final static String MIME_TYPE_DODS = "application/opendap-dods";
-    public final static String MIME_TYPE_HTML = "text/html";
-    public final static String MIME_TYPE_GOOGLE_EARTH = "application/vnd.google-earth.kmz";
-    public final static String MIME_TYPE_HDF = "application/x-hdf";
-            
+                
     /**
      * Method that parses the HTTP request, executes the appropriate search for records, and redirect to the datasets-level
      * of files-level dataset view.

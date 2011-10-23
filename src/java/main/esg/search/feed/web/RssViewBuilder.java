@@ -86,31 +86,16 @@ public class RssViewBuilder {
         final List<Enclosure> enclosures = new ArrayList<Enclosure>();
         
         // loop over record access services
-        for (String service : record.getFieldValues(SolrXmlPars.FIELD_SERVICE)) {
+        for (String urlTuple : record.getFieldValues(SolrXmlPars.FIELD_URL)) {
             
-            // service type, service description, service url
-            final String[] _service = RecordHelper.decodeServiceField(service);
+            // (url, mime type, description)
+            final String[] _parts = RecordHelper.decodeUrlTuple(urlTuple);
             
             Enclosure enc = new Enclosure();
-            enc.setUrl(_service[2]);
-            if ( _service[0].equals(ThreddsPars.SERVICE_TYPE_HTTP)) {
-                if (_service[2].endsWith(".nc") || _service[2].endsWith(".cdf")) {
-                    enc.setType(FeedController.MIME_TYPE_NETCDF);
-                } else if (_service[2].endsWith(".hdf")) {
-                    enc.setType(FeedController.MIME_TYPE_HDF);
-                } else {
-                    enc.setType(FeedController.MIME_TYPE_HTML);
-                }
-            } else if (_service[0].equals(ThreddsPars.SERVICE_TYPE_OPENDAP)) {
-                enc.setUrl( _service[2]+".dods" ); // filename.nc.dods
-                enc.setType(FeedController.MIME_TYPE_DODS);
-            //} else if (_service[0].equals(ThreddsPars.SERVICE_TYPE_OPENDAP)) {
-            //    enc.setUrl( _service[2]+".html" ); // filename.nc.html
-            //    enc.setType(FeedController.MIME_TYPE_HTML);
-            } else {
-                enc.setType(FeedController.MIME_TYPE_HTML);
-            }
+            enc.setUrl(_parts[0]);
+            enc.setType(_parts[1]);
             enclosures.add(enc);
+            
         }
         feedItem.setEnclosures(enclosures);
 
