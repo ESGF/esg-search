@@ -24,13 +24,7 @@ public class SearchRestCommand extends SearchInputImpl implements Serializable {
 	 * Return results by default.
 	 */
 	private boolean results = true;
-	
-	/**
-	 * Return facets by default.
-	 */
-	private boolean facets = true;
-	
-	
+			
 	/**
 	 * Return SOLR XML by default.
 	 */
@@ -44,18 +38,7 @@ public class SearchRestCommand extends SearchInputImpl implements Serializable {
 	public void setResults(boolean results) {
 		this.results = results;
 	}
-
-
-	public boolean isFacets() {
-		return facets;
-	}
-
-
-	public void setFacets(boolean facets) {
-		this.facets = facets;
-	}
-
-
+	
 	public String getFormat() {
 		return format;
 	}

@@ -2,6 +2,8 @@ package esg.search.query.ws.rest;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Set;
 import java.util.regex.Matcher;
 
 import javax.servlet.http.HttpServletRequest;
@@ -130,13 +132,32 @@ public class SearchRestController {
         if (format==null) sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, 
                                     "Invalid requested format: "+ command.getFormat(), response);
         
-        // configure facet returned by search
-        if (command.isFacets()) command.setFacets(new ArrayList<String>(facetProfile.getTopLevelFacets().keySet()));
+        // configure facets returned by search
+        // must process comma-separated list from HTTP request into list of string values
+        if (!command.getFacets().isEmpty()) {
+            String facets = command.getFacets().get(0);
+            final Set<String> allowedFacets = facetProfile.getTopLevelFacets().keySet();
+            // special value: include all configured facets
+            if (facets.equals("*")) {
+                command.setFacets(new ArrayList<String>(allowedFacets));
+            } else {
+                command.setFacets( Arrays.asList( facets.split(",") ));
+                // check facet keys are contained in controlled vocabulary
+                for (String facet : command.getFacets()) {
+                    if (!allowedFacets.contains(facet)) {
+                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported facet "+facet);
+                    }
+                }
+            }
+            
+        }
+        System.out.println("FACET PAR="+command.getFacets());
+        //if (command.isFacets()) 
 
         // execute HTTP search request, return response
         if (!response.isCommitted()) {
         	                 
-            String output = searchService.query(command, command.isResults(), command.isFacets(), format);
+            String output = searchService.query(command, command.isResults(), true, format); // isfacets=true FIXME
             writeToResponse(output, response);
                         
         }
