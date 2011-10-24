@@ -1,5 +1,7 @@
 package esg.search.query.api;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -62,7 +64,11 @@ public class QueryParameters {
      */
     public static Pattern INVALID_CHARACTERS = Pattern.compile(".*[^a-zA-Z0-9_+\\-\\.\\@\\'\\:\\;\\,\\s/()\\*\\\"].*");
 
-
+    /**
+     * Format for temporal queries.
+     */
+    private static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
+    public static final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     
     private QueryParameters() {};
 

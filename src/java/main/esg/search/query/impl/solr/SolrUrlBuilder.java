@@ -126,7 +126,10 @@ public class SolrUrlBuilder {
 		    qs.add(QueryParameters.FIELD_ID+":"+URLEncoder.encode(input.getConstraint(QueryParameters.ID), "UTF-8") );
 		}
 		// from,to --> q="timestamp:[2010-10-19T22:00:00Z TO NOW]"
-		if (StringUtils.hasText(input.getConstraint(QueryParameters.FROM)) && StringUtils.hasText(input.getConstraint(QueryParameters.TO))) {
+		if (StringUtils.hasText(input.getConstraint(QueryParameters.FROM)) || StringUtils.hasText(input.getConstraint(QueryParameters.TO))) {
+		    // set both defaults to "*"
+		    if (!StringUtils.hasText(input.getConstraint(QueryParameters.FROM))) input.addConstraint(QueryParameters.FROM, "*");
+		    if (!StringUtils.hasText(input.getConstraint(QueryParameters.TO))) input.addConstraint(QueryParameters.TO, "*");
 		    qs.add( QueryParameters.FIELD_TIMESTAMP+":["+
 		            URLEncoder.encode(input.getConstraint(QueryParameters.FROM)+" TO "+input.getConstraint(QueryParameters.TO)+"]", "UTF-8") );
 		}		
