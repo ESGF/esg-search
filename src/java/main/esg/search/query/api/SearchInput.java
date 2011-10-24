@@ -20,6 +20,7 @@ package esg.search.query.api;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Interface representing the input criteria for a mixed facet/text query,
@@ -159,6 +160,22 @@ public interface SearchInput {
 	 * @param facets
 	 */
 	public void setFacets(List<String> facets);
+	
+	/**
+	 * Setter method for the list of optional fields to be returned for each result
+	 * (in addition to the standard fields which are always returned).
+	 * 
+	 * @param facets
+	 * @return
+	 */
+	public void setFields(Set<String> facets);
+	
+	/**
+	 * Getter method for the list of standard and optional fields to be returned for each result.
+	 * 
+	 * @return
+	 */
+	public Set<String> getFields();
 	
 	/**
 	 * Getter method for the distributed query flag.

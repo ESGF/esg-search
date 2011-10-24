@@ -3,6 +3,7 @@ package esg.search.query.ws.rest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 
@@ -80,6 +81,9 @@ public class SearchRestController {
 			           final @ModelAttribute(COMMAND) SearchRestCommand command, 
 			           final HttpServletResponse response) throws Exception {
 	    
+	    // set of allowed facets (and fields)
+        final Set<String> allowedFacets = facetProfile.getTopLevelFacets().keySet();
+	    
 	    // check all HTTP parameters for bad characters
 	    for (final Object obj : request.getParameterMap().keySet()) {
 	        
@@ -132,27 +136,50 @@ public class SearchRestController {
         if (format==null) sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, 
                                     "Invalid requested format: "+ command.getFormat(), response);
         
-        // configure facets returned by search
+        // &facets=facet1,facet2,...
         // must process comma-separated list from HTTP request into list of string values
         if (!command.getFacets().isEmpty()) {
-            String facets = command.getFacets().get(0);
-            final Set<String> allowedFacets = facetProfile.getTopLevelFacets().keySet();
-            // special value: include all configured facets
-            if (facets.equals("*")) {
-                command.setFacets(new ArrayList<String>(allowedFacets));
-            } else {
-                command.setFacets( Arrays.asList( facets.split("\\s*,\\s*") ));
-                // check facet keys are contained in controlled vocabulary
-                for (String facet : command.getFacets()) {
-                    if (!allowedFacets.contains(facet)) {
-                        response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported facet "+facet);
+            for (String facets : command.getFacets()) {
+                // special value: include all configured facets
+                if (facets.equals("*")) {
+                    command.setFacets(new ArrayList<String>(allowedFacets));
+                } else {
+                    command.setFacets( Arrays.asList( facets.split("\\s*,\\s*") ));
+                    // check facet keys are contained in controlled vocabulary
+                    for (String facet : command.getFacets()) {
+                        if (!allowedFacets.contains(facet)) {
+                            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported facet "+facet);
+                        }
+                    }
+                }
+            }            
+        }
+        
+        // &fields=field1,field2,...
+        // must process comma-separated list from HTTP request into list of string values
+        if (!command.getFields().isEmpty()) {
+            // initialize set of returned fields to standard metadata fields
+            Set<String> fields = new HashSet<String>(QueryParameters.STANDARD_FIELDS);
+            for (String values : command.getFields()) {
+                // special value: include all fields
+                if (values.equals("*")) {
+                    fields = (new HashSet<String>( Arrays.asList(new String[]{"*"})));
+                    break;
+                } else {
+                    String[] _values = values.split("\\s*,\\s*");
+                    for (String value : _values) {
+                        if (!fields.contains(value)) {
+                            if (allowedFacets.contains(value)) {
+                                fields.add(value);
+                            } else {
+                                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported field "+value);
+                            }
+                        }
                     }
                 }
             }
-            
+            command.setFields(fields);
         }
-        System.out.println("FACET PAR="+command.getFacets());
-        //if (command.isFacets()) 
 
         // execute HTTP search request, return response
         if (!response.isCommitted()) {

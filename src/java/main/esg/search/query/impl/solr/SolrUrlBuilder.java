@@ -111,11 +111,13 @@ public class SolrUrlBuilder {
 	    // q=... AND .... AND
 	    final List<String> qs = new ArrayList<String>();
 	    // fq=name1:value1&fq=name2:value2
-	    final StringBuilder fq = new StringBuilder();
+	    final StringBuilder fq = new StringBuilder("");
 	    // facet=true&facet.field=...&facet.field=...
-	    final StringBuilder ff = new StringBuilder();
+	    final StringBuilder ff = new StringBuilder("");
+        // &fl=...&fl=...
+	    final StringBuilder fl = new StringBuilder("");
 	    
-		// search input text --> q=....
+		// search input query --> q=....
 		if (StringUtils.hasText(input.getQuery())) {
 			qs.add( URLEncoder.encode(input.getQuery(), "UTF-8") );
 		}
@@ -171,6 +173,17 @@ public class SolrUrlBuilder {
             }
         }
         
+        // &fl=...&fl=...
+        if (!input.getFields().isEmpty()) {
+            fl.append("&fl=");
+            for (String field : input.getFields()) {
+                fl.append(field+",");
+            }
+            // always return score
+            fl.append("score");
+            System.out.println("FIELDS="+fl.toString());
+        }
+        
         // compose final URL
         final StringBuilder sb = new StringBuilder(url.toString()).append("/select/?indent=true");
         // q=...
@@ -181,8 +194,8 @@ public class SolrUrlBuilder {
             sb.append(q);
             first = false;
         }
-        // fq, ff
-        sb.append(fq).append(ff);
+        // fq, ff, fl
+        sb.append(fq).append(ff).append(fl);
         // &start=...@rows=...
         sb.append("&start=").append(input.getOffset())
           .append("&rows=").append(input.getLimit());

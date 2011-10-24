@@ -21,9 +21,11 @@ package esg.search.query.impl.solr;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.util.StringUtils;
 
@@ -61,6 +63,11 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	 * The ordered list of facets to be returned in the search output.
 	 */
 	private List<String> facets = new ArrayList<String>();
+	
+	/**
+	 * Set of optional and standard fields to be returned for each result.
+	 */
+	private Set<String> fields = new HashSet<String>();
 	
 	/**
 	 * The results type,if not null it must match a specific filter query handler.
@@ -104,8 +111,6 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	public void removeConstraint(String name) {
 		constraints.remove(name);
 	}
-
-
 
 	/**
 	 * {@inheritDoc}
@@ -280,7 +285,15 @@ public class SearchInputImpl implements SearchInput, Serializable {
     public void setDistrib(boolean distrib) {
         this.distrib = distrib;
     }
-    
-    
+
+    @Override
+    public Set<String> getFields() {
+        return fields;
+    }
+
+    @Override
+    public void setFields(Set<String> fields) {
+        this.fields = fields;
+    }
 	
 }
