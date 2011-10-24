@@ -52,19 +52,19 @@ public class SolrXmlPars {
     // <field name="frequency">Monthly</field>
 	// <field name="version">0</field>
     // .........
-	final public static String FIELD_ID = "id";
-	final public static String FIELD_PARENT_ID = "parent_id"; // note: generic notation to allow parent-child relations beyond just datasets
-	final public static String FIELD_VERSION = "version";
-	final public static String FIELD_TITLE = "title";
-	final public static String FIELD_NAME = "name";
-	final public static String FIELD_DESCRIPTION = "description";
-	final public static String FIELD_TYPE = "type";
-	final public static String FIELD_URL = "url";
+	//final public static String FIELD_ID = "id";
+	//final public static String FIELD_PARENT_ID = "parent_id"; // note: generic notation to allow parent-child relations beyond just datasets
+	//final public static String FIELD_VERSION = "version";
+	//final public static String FIELD_TITLE = "title";
+	//final public static String FIELD_NAME = "name";
+	//final public static String FIELD_DESCRIPTION = "description";
+	//final public static String FIELD_TYPE = "type";
+	//final public static String FIELD_URL = "url";
 	//final public static String FIELD_SERVICE = "service";
 	//final public static String FIELD_SERVICE_TYPE = "service_type";
 	final public static String FIELD_XLINK = "xlink";
 	final public static String FIELD_XREF = "xref";
-	final public static String FIELD_TIMESTAMP = "timestamp";
+	//final public static String FIELD_TIMESTAMP = "timestamp";
 	
 	// field names: metadata file information
 	final public static String FIELD_METADATA_FORMAT = "metadata_format";

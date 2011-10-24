@@ -8,6 +8,7 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 import esg.search.core.Record;
+import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
@@ -40,7 +41,7 @@ public class SolrXmlBuilder {
 			
 			// <query>parent_id:...</query>
 			final Element queryEl = new Element(SolrXmlPars.ELEMENT_QUERY);
-			queryEl.setText(SolrXmlPars.FIELD_PARENT_ID+":"+id);
+			queryEl.setText(QueryParameters.FIELD_DATASET_ID+":"+id);
 			deleteEl.addContent(queryEl);
 			
 		}
@@ -76,14 +77,14 @@ public class SolrXmlBuilder {
 		
 		// <field name="id">...</field>
 		final Element idEl = new Element(SolrXmlPars.ELEMENT_FIELD);
-		idEl.setAttribute(SolrXmlPars.ATTRIBUTE_NAME, SolrXmlPars.FIELD_ID);
+		idEl.setAttribute(SolrXmlPars.ATTRIBUTE_NAME, QueryParameters.FIELD_ID);
 		idEl.setText(record.getId());
 		docEl.addContent(idEl);
 		
 		// <field name="version">...</field>
 		if (record.getVersion()!=0) {
 		    final Element vEl = new Element(SolrXmlPars.ELEMENT_FIELD);
-		    vEl.setAttribute(SolrXmlPars.ATTRIBUTE_NAME, SolrXmlPars.FIELD_VERSION);
+		    vEl.setAttribute(SolrXmlPars.ATTRIBUTE_NAME, QueryParameters.FIELD_VERSION);
 		    vEl.setText(Long.toString(record.getVersion()));
 		    docEl.addContent(vEl);
 		}

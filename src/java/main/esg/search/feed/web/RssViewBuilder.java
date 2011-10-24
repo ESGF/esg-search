@@ -18,8 +18,7 @@ import com.sun.syndication.feed.rss.Source;
 
 import esg.search.core.Record;
 import esg.search.publish.impl.RecordHelper;
-import esg.search.publish.thredds.ThreddsPars;
-import esg.search.query.impl.solr.SolrXmlPars;
+import esg.search.query.api.QueryParameters;
 
 /**
  * Utility class for bulding RSS feeds.
@@ -72,7 +71,7 @@ public class RssViewBuilder {
      * @param record
      */
     public final static void addTitle(Item feedItem, Record record) {
-        String title = record.getFieldValue(SolrXmlPars.FIELD_TITLE);
+        String title = record.getFieldValue(QueryParameters.FIELD_TITLE);
         if (record.getVersion()!=0) title += " (v"+record.getVersion()+")";
         feedItem.setTitle(title);  
     }
@@ -86,7 +85,7 @@ public class RssViewBuilder {
         final List<Enclosure> enclosures = new ArrayList<Enclosure>();
         
         // loop over record access services
-        for (String urlTuple : record.getFieldValues(SolrXmlPars.FIELD_URL)) {
+        for (String urlTuple : record.getFieldValues(QueryParameters.FIELD_URL)) {
             
             // (url, mime type, description)
             final String[] _parts = RecordHelper.decodeUrlTuple(urlTuple);
@@ -103,7 +102,7 @@ public class RssViewBuilder {
     
     // <description>MODSCW_P2011192_C4_1750_1755_1930_1935_GL05_closest_chlora.hdf</description>
     public final static void addDescription(Item feedItem, Record record) throws Exception {
-        String description = record.getFieldValue(SolrXmlPars.FIELD_DESCRIPTION);
+        String description = record.getFieldValue(QueryParameters.FIELD_DESCRIPTION);
         // use record ID if description is not found
         if (!StringUtils.hasText(description)) description = record.getId();
         Description desc = new Description();  
@@ -115,7 +114,7 @@ public class RssViewBuilder {
     // <pubDate>Wed, 24 Aug 2011 16:43:47 GMT</pubDate>
     public final static void addPubDate(Item feedItem, Record record) throws Exception {      
         // replace Zulu time with GMT time zone
-        String date = record.getFieldValue(SolrXmlPars.FIELD_TIMESTAMP).replace("Z", "+0000");
+        String date = record.getFieldValue(QueryParameters.FIELD_TIMESTAMP).replace("Z", "+0000");
         feedItem.setPubDate( df.parse( date )); // result is on locale time
     }
 

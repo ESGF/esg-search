@@ -123,11 +123,11 @@ public class SolrUrlBuilder {
 		}
 		// wildcard id --> q=id:....
 		if (StringUtils.hasText(input.getConstraint(QueryParameters.ID))) {
-		    qs.add(SolrXmlPars.FIELD_ID+":"+URLEncoder.encode(input.getConstraint(QueryParameters.ID), "UTF-8") );
+		    qs.add(QueryParameters.FIELD_ID+":"+URLEncoder.encode(input.getConstraint(QueryParameters.ID), "UTF-8") );
 		}
 		// from,to --> q="timestamp:[2010-10-19T22:00:00Z TO NOW]"
 		if (StringUtils.hasText(input.getConstraint(QueryParameters.FROM)) && StringUtils.hasText(input.getConstraint(QueryParameters.TO))) {
-		    qs.add( SolrXmlPars.FIELD_TIMESTAMP+":["+
+		    qs.add( QueryParameters.FIELD_TIMESTAMP+":["+
 		            URLEncoder.encode(input.getConstraint(QueryParameters.FROM)+" TO "+input.getConstraint(QueryParameters.TO)+"]", "UTF-8") );
 		}		
 		// no text constraint
@@ -135,7 +135,7 @@ public class SolrUrlBuilder {
 		
 		// search input type --> fq=type:Dataset
 		if (StringUtils.hasText(input.getType())) {
-			fq.append("&fq="+URLEncoder.encode( SolrXmlPars.FIELD_TYPE+":"+"\""+input.getType()+"\"","UTF-8" ));
+			fq.append("&fq="+URLEncoder.encode( QueryParameters.FIELD_TYPE+":"+"\""+input.getType()+"\"","UTF-8" ));
 		}
 		
 		// search input constraints --> fq=facet_name:"facet_value"

@@ -34,6 +34,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import esg.search.core.Record;
 import esg.search.query.api.Facet;
+import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchOutput;
 import esg.search.utils.XmlParser;
@@ -191,9 +192,9 @@ public class SolrXmlParserTest {
 		Assert.assertTrue(record.getId().equals("test id"));
 		Assert.assertTrue(new Long(record.getVersion()).toString().equals("1"));
 		final Map<String, List<String>> fields = record.getFields();
-		Assert.assertTrue(fields.get(SolrXmlPars.FIELD_TITLE).contains("test title"));
-		Assert.assertTrue(fields.get(SolrXmlPars.FIELD_DESCRIPTION).contains("test description"));
-		Assert.assertTrue(fields.get(SolrXmlPars.FIELD_TYPE).contains("Dataset"));
+		Assert.assertTrue(fields.get(QueryParameters.FIELD_TITLE).contains("test title"));
+		Assert.assertTrue(fields.get(QueryParameters.FIELD_DESCRIPTION).contains("test description"));
+		Assert.assertTrue(fields.get(QueryParameters.FIELD_TYPE).contains("Dataset"));
 		Assert.assertTrue(fields.get("property").contains("value A"));
 		Assert.assertTrue(fields.get("property").contains("value B"));
 		Assert.assertTrue(fields.get("url").contains("http://test.com/"));

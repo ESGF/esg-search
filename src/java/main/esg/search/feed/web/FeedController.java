@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchOutput;
 import esg.search.query.api.SearchService;
@@ -66,14 +67,14 @@ public class FeedController {
             // search for single record of type dataset
             final SearchInput input1 = new SearchInputImpl();
             input1.setType(SolrXmlPars.TYPE_DATASET);
-            input1.addConstraint(SolrXmlPars.FIELD_ID, datasetId); 
+            input1.addConstraint(QueryParameters.FIELD_ID, datasetId); 
             SearchOutput output1 = searchService.search(input1); 
             model.addAttribute(MODEL_KEY_DATASET, output1);  
             
             // search for all records of type file, with given parent
             final SearchInput input2 = new SearchInputImpl();
             input2.setType(SolrXmlPars.TYPE_FILE); 
-            input2.addConstraint(SolrXmlPars.FIELD_PARENT_ID, datasetId);
+            input2.addConstraint(QueryParameters.FIELD_DATASET_ID, datasetId);
             
             SearchOutput output2 = searchService.search(input2); 
             model.addAttribute(MODEL_KEY_FILES, output2);  

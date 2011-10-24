@@ -16,8 +16,8 @@ import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Item;
 
 import esg.search.core.Record;
+import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchOutput;
-import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
  * View responsible for building the RSS XML document for a list of datasets.
@@ -46,7 +46,7 @@ public class DatasetsRssView extends AbstractRssFeedView {
             RssViewBuilder.addTitle(feedItem, datasetRecord);
             
             // <link>http://esg-datanode.jpl.nasa.gov/thredds/esgcet/1/obs4MIPs.NASA-JPL.AIRS.mon.v1.html#obs4MIPs.NASA-JPL.AIRS.mon.v1</link>
-            feedItem.setLink( datasetRecord.getFieldValue(SolrXmlPars.FIELD_URL) ); 
+            feedItem.setLink( datasetRecord.getFieldValue(QueryParameters.FIELD_URL) ); 
             
             // <description>obs4MIPs.NASA-JPL.AIRS.mon</description>
             RssViewBuilder.addDescription(feedItem, datasetRecord);             
@@ -60,7 +60,7 @@ public class DatasetsRssView extends AbstractRssFeedView {
 
             // <source url="http://localhost:8080/esg-search/feed/obs4MIPs.NASA-JPL.AIRS.mon.rss">obs4MIPs NASA-JPL AIRS L3 Monthly Data</source>
             RssViewBuilder.addSource(feedItem, 
-                                     datasetRecord.getFieldValue(SolrXmlPars.FIELD_TITLE),
+                                     datasetRecord.getFieldValue(QueryParameters.FIELD_TITLE),
                                      RssViewBuilder.getRssBaseUri(request)+datasetRecord.getId()+".rss");
                         
             // <guid isPermaLink="false">obs4MIPs.NASA-JPL.AIRS.mon</guid>

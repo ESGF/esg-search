@@ -34,6 +34,7 @@ import org.jdom.JDOMException;
 import org.springframework.core.io.ClassPathResource;
 
 import esg.search.core.Record;
+import esg.search.query.api.QueryParameters;
 import esg.search.utils.XmlParser;
 
 /**
@@ -101,7 +102,7 @@ public class SolrTest extends AbstractSolrTestCase {
 	 private List<String> toList(final Record record) {
 		 
 		 final List<String> fields = new ArrayList<String>();
-		 fields.add(SolrXmlPars.FIELD_ID);
+		 fields.add(QueryParameters.FIELD_ID);
 		 fields.add(record.getId());
 		 final Map<String, List<String>> map = record.getFields();
 		 for (final String key : map.keySet()) {

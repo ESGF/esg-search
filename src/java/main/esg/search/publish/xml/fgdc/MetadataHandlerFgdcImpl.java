@@ -31,6 +31,7 @@ import esg.search.core.Record;
 import esg.search.core.RecordImpl;
 import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.xml.MetadataHandler;
+import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
@@ -61,7 +62,7 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 		
 		
 		//add the required field type
-		record.addField(SolrXmlPars.FIELD_TYPE, "dataset");
+		record.addField(QueryParameters.FIELD_TYPE, "dataset");
 		
 		
 		//<citation>
@@ -100,7 +101,7 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 		final Element titleEl = citeinfoEl.getChild("title");
 		//LOG.debug("adding title: " + titleEl.getText());
 		final String title = titleEl.getTextNormalize();
-		record.addField(SolrXmlPars.FIELD_TITLE, title);
+		record.addField(QueryParameters.FIELD_TITLE, title);
 		
 		
 		//	    <pubdate>20090812</pubdate>
@@ -115,7 +116,7 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 			//<onlink>http://iop.archive.arm.gov/arm-iop/0showcase-data/cmbe/</onlink>
 			if(count == 0)
 			{
-				record.addField(SolrXmlPars.FIELD_URL, onlinkStr);
+				record.addField(QueryParameters.FIELD_URL, onlinkStr);
 			}
 			//<onlink>http://www.arm.gov/data/pi/36</onlink>
 			else if(count == 1)
@@ -157,7 +158,7 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 		//   <abstract>
 		final Element abstractEl = descriptEl.getChild("abstract");
 		//LOG.debug("adding description: " + abstractEl.getText());
-		record.addField(SolrXmlPars.FIELD_DESCRIPTION, abstractEl.getTextNormalize());
+		record.addField(QueryParameters.FIELD_DESCRIPTION, abstractEl.getTextNormalize());
 		
 		//   <supplinf>
 		final Element supplinfEl = descriptEl.getChild("supplinf");

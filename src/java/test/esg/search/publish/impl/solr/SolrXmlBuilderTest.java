@@ -15,7 +15,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
-import esg.search.query.impl.solr.SolrXmlPars;
+import esg.search.query.api.QueryParameters;
 import esg.search.utils.StringUtils;
 
 public class SolrXmlBuilderTest {
@@ -42,11 +42,11 @@ public class SolrXmlBuilderTest {
 	public void setup() {
 		
 		record.setId(ID);
-		record.addField(SolrXmlPars.FIELD_TITLE, TITLE);
-		record.addField(SolrXmlPars.FIELD_TYPE, TYPE);
-		record.addField(SolrXmlPars.FIELD_DESCRIPTION, DESCRIPTION);
-		record.addField(SolrXmlPars.FIELD_URL, URL);
-		record.addField(SolrXmlPars.FIELD_VERSION, VERSION);
+		record.addField(QueryParameters.FIELD_TITLE, TITLE);
+		record.addField(QueryParameters.FIELD_TYPE, TYPE);
+		record.addField(QueryParameters.FIELD_DESCRIPTION, DESCRIPTION);
+		record.addField(QueryParameters.FIELD_URL, URL);
+		record.addField(QueryParameters.FIELD_VERSION, VERSION);
 		record.addField("property", PROPERTY_A);
 		record.addField("property", PROPERTY_B);
 		

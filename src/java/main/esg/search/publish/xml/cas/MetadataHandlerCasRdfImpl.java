@@ -29,6 +29,7 @@ import esg.search.core.RecordImpl;
 import esg.search.publish.cas.CasPars;
 import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.xml.MetadataHandler;
+import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
@@ -81,16 +82,15 @@ public class MetadataHandlerCasRdfImpl implements MetadataHandler {
 		
 		
 		// type
-		record.addField(SolrXmlPars.FIELD_TYPE, "Dataset");
+		record.addField(QueryParameters.FIELD_TYPE, "Dataset");
 		
 		// <cas:Filename>MLS-Aura_L2GP-CO_v02-23-c01_2008d107.he5</cas:Filename>
 		final String filename = element.getChildText("Filename", CasPars.CAS_NS).replaceAll("\"", "");
-		record.addField(SolrXmlPars.FIELD_TITLE, filename);
-		record.addField(SolrXmlPars.FIELD_NAME, filename);
+		record.addField(QueryParameters.FIELD_TITLE, filename);
 		
 		// <esg:he5 rdf:about="http://jpl-esg.jpl.nasa.gov:8080/esgprod/data?productID=b8be9bab-5c2c-11df-aa0f-251c5cfb68e2">
 		final String about = element.getAttributeValue("about", CasPars.RDF_NS);
-		record.addField(SolrXmlPars.FIELD_URL, about);
+		record.addField(QueryParameters.FIELD_URL, about);
 		
 		// FIXME: hardwire project
 		record.addField(SolrXmlPars.FIELD_PROJECT, "MLS");		

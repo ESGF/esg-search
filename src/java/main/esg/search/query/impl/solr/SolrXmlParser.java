@@ -27,6 +27,7 @@ import org.jdom.JDOMException;
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
 import esg.search.query.api.Facet;
+import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchOutput;
 import esg.search.utils.XmlParser;
@@ -218,9 +219,9 @@ public class SolrXmlParser {
 	private void parseElement(final String fieldName, final Element element, final Record record) {
 		
 		final String value = element.getTextNormalize();
-		if (fieldName.equals(SolrXmlPars.FIELD_ID)) {
+		if (fieldName.equals(QueryParameters.FIELD_ID)) {
 			record.setId(value);
-		} else if (fieldName.equals(SolrXmlPars.FIELD_VERSION)) {
+		} else if (fieldName.equals(QueryParameters.FIELD_VERSION)) {
 		    try {
 		        record.setVersion(Long.parseLong(value));
 		    } catch(NumberFormatException e) {}

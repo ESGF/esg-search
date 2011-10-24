@@ -29,6 +29,7 @@ import esg.search.core.Record;
 import esg.search.core.RecordImpl;
 import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.xml.MetadataHandler;
+import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
@@ -61,16 +62,16 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 		
 		
 		// type
-		record.addField(SolrXmlPars.FIELD_TYPE, "Dataset");
+		record.addField(QueryParameters.FIELD_TYPE, "Dataset");
 		
 		// <Entry_Title>TEMPERATURE PROFILES: RADIOSONDE (FIFE)</Entry_Title>
 		final Element entryTitleEl = root.getChild("Entry_Title", ns);
 		final String entryTitle = entryTitleEl.getTextNormalize();
-		record.addField(SolrXmlPars.FIELD_TITLE, entryTitle);
+		record.addField(QueryParameters.FIELD_TITLE, entryTitle);
 		
 		// <Summary>ABSTRACT: The gravimetrical soil moisture data were collected....
 		final Element summaryEl = root.getChild("Summary", ns);
-		record.addField(SolrXmlPars.FIELD_DESCRIPTION, summaryEl.getTextNormalize());
+		record.addField(QueryParameters.FIELD_DESCRIPTION, summaryEl.getTextNormalize());
 		
 		// </Parameters>
 		for (final Object parametersEl : root.getChildren("Parameters", ns)) {
@@ -116,7 +117,7 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 			final Element typeEl = contentTypeEl.getChild("Type", ns);
 			final String type = typeEl.getTextNormalize();
 			if (type.equals("GET DATA")) {
-				record.addField(SolrXmlPars.FIELD_URL, urlEl.getTextNormalize());
+				record.addField(QueryParameters.FIELD_URL, urlEl.getTextNormalize());
 			}
 		}
 		

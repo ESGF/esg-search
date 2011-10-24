@@ -44,6 +44,7 @@ import esg.search.core.RecordImpl;
 import esg.search.publish.api.MetadataEnhancer;
 import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.impl.RecordHelper;
+import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
@@ -105,17 +106,17 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		final Record record = new RecordImpl(id);
 		final String name = dataset.getName();
 		Assert.notNull(name, "Dataset name cannot be null");
-		record.addField(SolrXmlPars.FIELD_TITLE, name);
+		record.addField(QueryParameters.FIELD_TITLE, name);
 		
 	    // type
-        record.addField(SolrXmlPars.FIELD_TYPE, SolrXmlPars.TYPE_DATASET);
+        record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_DATASET);
 		
 		// IMPORTANT: add top-level dataset as first record in the list
 		records.add(record);
         
 		// encode dataset catalog as first access URL
 		final String url = dataset.getCatalogUrl();
-		record.addField(SolrXmlPars.FIELD_URL, 
+		record.addField(QueryParameters.FIELD_URL, 
 		                RecordHelper.encodeUrlTuple(url, 
 		                                            ThreddsPars.getMimeType(url, ThreddsPars.SERVICE_TYPE_CATALOG),
 		                                            ThreddsPars.SERVICE_TYPE_CATALOG));
@@ -217,11 +218,11 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         // name -> title
         final String name = file.getName();
         Assert.notNull(name, "File name cannot be null");
-        record.addField(SolrXmlPars.FIELD_TITLE, name);
+        record.addField(QueryParameters.FIELD_TITLE, name);
         // type
-        record.addField(SolrXmlPars.FIELD_TYPE, SolrXmlPars.TYPE_FILE);       
+        record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_FILE);       
         // parent dataset
-        record.addField(SolrXmlPars.FIELD_PARENT_ID, records.get(0).getId());
+        record.addField(QueryParameters.FIELD_DATASET_ID, records.get(0).getId());
 
         long size = 0; // 0 file size by default
         this.parseProperties(file, record);
@@ -272,9 +273,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
                 // <dataset name="TES Level 3 Monthly Data (NetCDF)" ID="nasa.jpl.tes.monthly.v1" restrictAccess="esg-user">
                 // <property name="dataset_id" value="nasa.jpl.tes.monthly" />
                 record.setId(property.getValue());
-            } else if (property.getName().equals(SolrXmlPars.FIELD_TITLE)) {
+            } else if (property.getName().equals(QueryParameters.FIELD_TITLE)) {
                 // note: record title already set from dataset name
-                record.addField(SolrXmlPars.FIELD_DESCRIPTION, property.getValue());
+                record.addField(QueryParameters.FIELD_DESCRIPTION, property.getValue());
             } else if (property.getName().equals(ThreddsPars.DATASET_VERSION) || property.getName().equals(ThreddsPars.FILE_VERSION)) {
                 // note: map "dataset_version", "file_version" to "version"
                 try {
@@ -346,7 +347,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             if (type.equalsIgnoreCase(ThreddsPars.SERVICE_TYPE_OPENDAP)) url += ".html";
             
             // encode URL tuple
-            record.addField(SolrXmlPars.FIELD_URL, 
+            record.addField(QueryParameters.FIELD_URL, 
                             RecordHelper.encodeUrlTuple(url, ThreddsPars.getMimeType(url, type), access.getService().getDescription() ));
 
         }
@@ -377,7 +378,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         for (final InvDocumentation documentation : dataset.getDocumentation()) {
             final String content = documentation.getInlineContent();
             if (StringUtils.hasText(content)) {
-                record.addField(SolrXmlPars.FIELD_DESCRIPTION, content);
+                record.addField(QueryParameters.FIELD_DESCRIPTION, content);
             }
         }
         
