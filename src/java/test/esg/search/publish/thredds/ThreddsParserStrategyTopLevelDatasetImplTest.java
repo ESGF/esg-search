@@ -68,14 +68,14 @@ public class ThreddsParserStrategyTopLevelDatasetImplTest {
 		Assert.assertTrue(fields.get("type").contains("Dataset"));
 		Assert.assertTrue(fields.get("title").contains("IPCC Fourth Assessment Report"));
 		Assert.assertTrue(fields.get("description").contains("Met Office  model output prepared for IPCC Fourth Assessment AMIP experiment"));
-		Assert.assertTrue(fields.get("url").get(0).matches("file:(.+)esg/search/publish/thredds/catalog.xml#pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1$"));
+		Assert.assertTrue(fields.get("url").get(0).matches("file:(.+)esg/search/publish/thredds/catalog.xml#pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1\\|application\\/xml\\+thredds\\|Catalog$"));
+        Assert.assertTrue(fields.get("url").get(1).matches("file:(.+)esg/search/publish/thredds/las/\\?dsid=pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1\\|application\\/las\\|Live Access Server$"));		
 		Assert.assertTrue(fields.get("experiment").contains("amip"));
 		Assert.assertTrue(fields.get("format").contains("netCDF, CF-1.0"));
 		Assert.assertTrue(fields.get("institute").contains("UKMO"));
 		Assert.assertTrue(fields.get("model").contains("ukmo_hadgem1"));
 		Assert.assertTrue(fields.get("project").contains("ipcc4"));
 		Assert.assertTrue(fields.get("realm").contains("land"));
-		Assert.assertTrue(fields.get("service").get(0).matches("LAS\\|Live Access Server\\|file:(.+)esg/search/publish/thredds/las/\\?dsid=pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1"));
 		Assert.assertTrue(fields.get("run_name").contains("run1"));
 		Assert.assertTrue(fields.get("time_frequency").contains("mon"));
 		Assert.assertTrue(fields.get("cf_variable").contains("Soil Frozen Water Content"));

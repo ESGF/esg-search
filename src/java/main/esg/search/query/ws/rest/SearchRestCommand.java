@@ -29,16 +29,7 @@ public class SearchRestCommand extends SearchInputImpl implements Serializable {
 	 * Return SOLR XML by default.
 	 */
 	private String format = SearchReturnType.SOLR_XML.getMimeType();
-	    
-	public boolean isResults() {
-		return results;
-	}
-
-
-	public void setResults(boolean results) {
-		this.results = results;
-	}
-	
+	    	
 	public String getFormat() {
 		return format;
 	}

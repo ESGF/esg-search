@@ -64,7 +64,7 @@ public class SolrXmlParserTest {
 		if (LOG.isDebugEnabled()) LOG.debug(xml);
 		
 		// parse XML into objects
-		final SearchOutput output = solrXmlParser.parse(xml, null, true, false);
+		final SearchOutput output = solrXmlParser.parse(xml, new SearchInputImpl());
 		if (LOG.isDebugEnabled()) LOG.debug(output.toString());
 		
 		// <result name="response" numFound="186" start="11">
@@ -122,7 +122,7 @@ public class SolrXmlParserTest {
 		input.addConstraint("project", "project A");
 		
 		// parse XML into objects
-		final Map<String, Facet> facets = solrXmlParser.parse(xml, input, false, true).getFacets();
+		final Map<String, Facet> facets = solrXmlParser.parse(xml, input).getFacets();
 		if (LOG.isDebugEnabled()) {
 			for (final Facet facet : facets.values()) {
 				LOG.debug(facet.toString());

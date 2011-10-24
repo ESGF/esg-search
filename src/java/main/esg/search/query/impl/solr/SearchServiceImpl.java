@@ -75,13 +75,13 @@ public class SearchServiceImpl implements SearchService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public SearchOutput search(final SearchInput input, final boolean getResults, final boolean getFacets) throws Exception {
+	public SearchOutput search(final SearchInput input) throws Exception {
 		
 		// execute HTTP request, return XML
-		final String response = this.query(input, getResults, getFacets, SearchReturnType.SOLR_XML);		
+		final String response = this.query(input, SearchReturnType.SOLR_XML);		
 		
 		// parse HTTP XML response into Java object
-		final SearchOutput output = xmlParser.parse(response, input, getResults, getFacets);
+		final SearchOutput output = xmlParser.parse(response, input);
 		
 		return output;
 		
@@ -90,14 +90,14 @@ public class SearchServiceImpl implements SearchService {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String query(final SearchInput input, final boolean getResults, final boolean getFacets, final SearchReturnType returnType) throws Exception {
+	public String query(final SearchInput input, final SearchReturnType returnType) throws Exception {
 		
 	    if (LOG.isInfoEnabled()) LOG.info("Query Input:\n"+input.toString());
 	    
 		// formulate HTTP request
 		final SolrUrlBuilder builder = new SolrUrlBuilder(url);
 		builder.setSearchInput(input);
-		if (getFacets) builder.setFacets(input.getFacets());
+		builder.setFacets(input.getFacets());
 		final URL request = builder.buildSelectUrl();		
 		
 		// execute HTTP request, return response as Solr XML

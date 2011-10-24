@@ -55,7 +55,7 @@ public class FeedController {
             final SearchInput input = new SearchInputImpl();
             input.setType(SolrXmlPars.TYPE_DATASET); 
             
-            SearchOutput output = searchService.search(input, true, false); 
+            SearchOutput output = searchService.search(input); 
             model.addAttribute(MODEL_KEY_DATASETS, output);  
             
             // redirect to RSS top-level view
@@ -67,7 +67,7 @@ public class FeedController {
             final SearchInput input1 = new SearchInputImpl();
             input1.setType(SolrXmlPars.TYPE_DATASET);
             input1.addConstraint(SolrXmlPars.FIELD_ID, datasetId); 
-            SearchOutput output1 = searchService.search(input1, true, false); 
+            SearchOutput output1 = searchService.search(input1); 
             model.addAttribute(MODEL_KEY_DATASET, output1);  
             
             // search for all records of type file, with given parent
@@ -75,7 +75,7 @@ public class FeedController {
             input2.setType(SolrXmlPars.TYPE_FILE); 
             input2.addConstraint(SolrXmlPars.FIELD_PARENT_ID, datasetId);
             
-            SearchOutput output2 = searchService.search(input2, true, false); 
+            SearchOutput output2 = searchService.search(input2); 
             model.addAttribute(MODEL_KEY_FILES, output2);  
             
             // redirect to RSS view for single dataset

@@ -61,7 +61,7 @@ public class SearchWebServiceImpl implements SearchWebService {
 	@Override
 	public String search(final String query, final String type, final Map<String, String[]> constraints,
 			             int offset, int limit, boolean distrib,
-			             boolean getResults, boolean getFacets, final SearchReturnType returnType) throws Exception {
+			             final SearchReturnType returnType) throws Exception {
 		
 	    if (LOG.isInfoEnabled()) {
 	        LOG.info("query="+query);
@@ -102,10 +102,10 @@ public class SearchWebServiceImpl implements SearchWebService {
 		input.setOffset(offset);
 		input.setLimit(limit);
 		input.setDistrib(distrib);
-		if (getFacets) input.setFacets(new ArrayList<String>(facetProfile.getTopLevelFacets().keySet()));
+		input.setFacets(new ArrayList<String>(facetProfile.getTopLevelFacets().keySet()));
 		
 		// execute HTTP search request, return response
-		return searchService.query(input, getResults, getFacets, returnType);
+		return searchService.query(input, returnType);
 
 	}
 
@@ -114,7 +114,7 @@ public class SearchWebServiceImpl implements SearchWebService {
 	 */
 	@Override
 	public String searchByTimeStamp(final String fromTimeStamp, final String toTimeStamp, final String type,
-			                        int offset, int limit, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception {
+			                        int offset, int limit, final SearchReturnType returnType) throws Exception {
 		
 	    final Map<String,String[]> constraints = new HashMap<String,String[]>();
 	    
@@ -132,7 +132,7 @@ public class SearchWebServiceImpl implements SearchWebService {
 	    //}
 		
 		// execute call
-		return this.search(null, type, constraints, offset, limit, true, getResults, getFacets, returnType);
+		return this.search(null, type, constraints, offset, limit, true, returnType);
 		
 	}
 
@@ -141,7 +141,7 @@ public class SearchWebServiceImpl implements SearchWebService {
 	 */
 	@Override
 	public String searchById(String idMatch, final String type,
-			                 int offset, int limit, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception {
+			                 int offset, int limit, final SearchReturnType returnType) throws Exception {
 		
 	    final Map<String,String[]> constraints = new HashMap<String,String[]>();
 	    
@@ -149,7 +149,7 @@ public class SearchWebServiceImpl implements SearchWebService {
 	    constraints.put(QueryParameters.ID, new String[]{ idMatch } );
 				
 		// execute call
-		return this.search(null, type, constraints, offset, limit, true, getResults, getFacets, returnType);
+		return this.search(null, type, constraints, offset, limit, true, returnType);
 		
 	}
 	

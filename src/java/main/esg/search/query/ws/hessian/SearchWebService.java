@@ -23,13 +23,11 @@ public interface SearchWebService {
 	 * @param offset : offset of returned results
 	 * @param limit : maximum number of returned results
 	 * @param distrib : true to execute a distributed search
-	 * @param getResults : true to return results matching the query
-	 * @param getFacets : true to return facets matching the query
 	 * @param returnType : "XML" or "JSON"
 	 * @return
 	 */
 	String search(final String query, final String type, final Map<String,String[]> constraints,
-			      int offset, int limit, boolean distrib, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception;
+			      int offset, int limit, boolean distrib, final SearchReturnType returnType) throws Exception;
 	
 	/**
 	 * Simplified method to search for records that match a given identifier expression (possibly containing wildcards)
@@ -37,14 +35,12 @@ public interface SearchWebService {
 	 * @param type: optional type to sub-select the results, if a wildcard expression is used
 	 * @param offset : offset of returned results
 	 * @param limit : maximum number of returned results
-	 * @param getResults : true to return results matching the query
-	 * @param getFacets : true to return facets matching the query
 	 * @param returnType : "XML" or "JSON"	
 	 * @return
 	 * @throws Exception
 	 */
 	String searchById(final String idMatch, final String type,
-			          int offset, int limit, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception;
+			          int offset, int limit, final SearchReturnType returnType) throws Exception;
 
 	/**
 	 * Simplified method to search for records that were last updated within a given time range.
@@ -55,13 +51,11 @@ public interface SearchWebService {
 	 * @param toTimeStamp : the upper limit for the record update timestamp (example: "NOW")
 	 * @param offset : offset of returned results
 	 * @param limit : maximum number of returned results
-	 * @param getResults : true to return results matching the query
-	 * @param getFacets : true to return facets matching the query
 	 * @param returnType : "XML" or "JSON"
 	 * @return
 	 * @throws Exception
 	 */
 	String searchByTimeStamp(final String fromTimeStamp, final String toTimeStamp, final String type,
-			                 int offset, int limit, boolean getResults, boolean getFacets, SearchReturnType returnType) throws Exception;
+			                 int offset, int limit, final SearchReturnType returnType) throws Exception;
 
 }

@@ -52,7 +52,7 @@ public class SearchServiceMain {
 		
 		input.setFacets(new ArrayList<String>(facetProfile.getTopLevelFacets().keySet()));
 		
-		Map<String, Facet> facets = searchService.search(input, true, true).getFacets();
+		Map<String, Facet> facets = searchService.search(input).getFacets();
 		for (final Facet facet : facets.values()) {
 			LOG.info(facet.toString());
 		}
@@ -72,7 +72,7 @@ public class SearchServiceMain {
 		LOG.info("\nQUERY #1B");
         input.addGeospatialRangeConstraint("datetime_start:[NOW/DAY-1YEAR TO NOW]");
         
-        SearchOutput output = searchService.search(input, true, true);
+        SearchOutput output = searchService.search(input);
         
 		LOG.info(output.toString());
 

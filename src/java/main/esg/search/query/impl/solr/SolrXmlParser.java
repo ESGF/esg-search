@@ -59,21 +59,17 @@ public class SolrXmlParser {
 	 * @param parseFacets
 	 * @return
 	 */
-	public SearchOutput parse(final String xml, final SearchInput input, final boolean parseResults, final boolean parseFacets) throws IOException, JDOMException {
+	public SearchOutput parse(final String xml, final SearchInput input) throws IOException, JDOMException {
 		
 		final SearchOutput output = new SearchOutputImpl();
 		final Document doc = xmlParser.parseString(xml);
 		final Element root = doc.getRootElement();
 
 		// parse results
-		if (parseResults) {
-			parseResults(root, output);
-		}
+		parseResults(root, output);
 		
 		// parse facets
-		if (parseFacets) {
-			parseFacets(root, input, output);
-		}
+		parseFacets(root, input, output);
 		
 		return output;
 		

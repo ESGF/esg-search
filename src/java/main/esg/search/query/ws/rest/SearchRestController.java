@@ -141,7 +141,7 @@ public class SearchRestController {
             if (facets.equals("*")) {
                 command.setFacets(new ArrayList<String>(allowedFacets));
             } else {
-                command.setFacets( Arrays.asList( facets.split(",") ));
+                command.setFacets( Arrays.asList( facets.split("\\s*,\\s*") ));
                 // check facet keys are contained in controlled vocabulary
                 for (String facet : command.getFacets()) {
                     if (!allowedFacets.contains(facet)) {
@@ -157,7 +157,7 @@ public class SearchRestController {
         // execute HTTP search request, return response
         if (!response.isCommitted()) {
         	                 
-            String output = searchService.query(command, command.isResults(), true, format); // isfacets=true FIXME
+            String output = searchService.query(command, format); // isfacets=true FIXME
             writeToResponse(output, response);
                         
         }
