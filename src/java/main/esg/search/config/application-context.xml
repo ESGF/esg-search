@@ -31,7 +31,7 @@
 	<bean name="wsFacetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
 		<constructor-arg index="0">
 			 <map>
-			 
+			 			 
 			    <!--  common facets -->
 			 	<entry key="type"><value>Type</value></entry>
 			 
@@ -45,6 +45,8 @@
 	          	<entry key="institute"><value>Institute</value></entry>
 	          	<entry key="variable"><value>Variable</value></entry>
 	          	<entry key="product"><value>Product</value></entry>
+	          	<entry key="ensemble"><value>Ensemble</value></entry>
+	          	<entry key="MIP_table"><value>MIP table</value></entry>
 	          	
 	          	<!-- 
 	          	<entry key="cmor_table"><value>CMOR Table</value></entry>
@@ -52,11 +54,9 @@
 	          	-->
 	          	
 	          	<!-- obs facets -->
-	          	<entry key="instrument"><value>Instrument</value></entry>
-	          	<entry key="obs_project"><value>Observation Project</value></entry>
-	          	<entry key="obs_structure"><value>Observation Structure</value></entry>
-	          	<entry key="obs_type"><value>Observation Type</value></entry>
-	          	<!-- <entry key="processing_level"><value>Processing Level</value></entry> -->
+	          	<entry key="source_id"><value>Instrument</value></entry>
+	          	<entry key="processing_level"><value>Processing Level</value></entry>
+	          	<entry key="data_structure"><value>Data Structure</value></entry>
 	          	<!-- <entry key="processing_version"><value>Processing Version</value></entry> -->
 	          			      
 		      </map>
