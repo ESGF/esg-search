@@ -130,9 +130,41 @@ public class SolrUrlBuilder {
 		    // set both defaults to "*"
 		    if (!StringUtils.hasText(input.getConstraint(QueryParameters.FROM))) input.addConstraint(QueryParameters.FROM, "*");
 		    if (!StringUtils.hasText(input.getConstraint(QueryParameters.TO))) input.addConstraint(QueryParameters.TO, "*");
-		    qs.add( QueryParameters.FIELD_TIMESTAMP+":["+
-		            URLEncoder.encode(input.getConstraint(QueryParameters.FROM)+" TO "+input.getConstraint(QueryParameters.TO)+"]", "UTF-8") );
-		}		
+		    qs.add( QueryParameters.FIELD_TIMESTAMP+
+		            URLEncoder.encode(":["+input.getConstraint(QueryParameters.FROM)+" TO "+input.getConstraint(QueryParameters.TO)+"]", "UTF-8") );
+		}
+		
+		// start --> start <= datetime_stop --> datetime_stop:[start to *]
+		if (StringUtils.hasText(input.getConstraint(QueryParameters.START))) {
+		    qs.add( SolrXmlPars.FIELD_DATETIME_STOP+URLEncoder.encode(":["+input.getConstraint(QueryParameters.START)+" TO *]", "UTF-8") );
+		}
+		// stop --> datetime_start <= stop --> datetime_start:[* TO stop]
+		if (StringUtils.hasText(input.getConstraint(QueryParameters.END))) {
+		    qs.add(SolrXmlPars.FIELD_DATETIME_START+URLEncoder.encode(":[* TO "+input.getConstraint(QueryParameters.END)+"]", "UTF-8") );
+		}
+		
+		// // [west, south, east, north]
+		if (StringUtils.hasText(input.getConstraint(QueryParameters.BBOX))) {
+		    // parse coordinate limits
+		    String bbox = input.getConstraint(QueryParameters.BBOX);
+		    bbox = bbox.substring(1,bbox.length()-1);
+		    String[] coords = bbox.split("\\s*,\\s*");
+		    
+		    // west -> west <= east_degrees -> east_degrees:[west TO *]
+		    qs.add(SolrXmlPars.FIELD_EAST+URLEncoder.encode(":["+coords[0]+" TO *]", "UTF-8") );
+		    
+		    // south -> south <= north_degrees -> north_degrees:[south TO *]
+		    qs.add(SolrXmlPars.FIELD_NORTH+URLEncoder.encode(":["+coords[1]+" TO *]", "UTF-8") );
+		    
+		    // east -> west_degrees <= east -> west_degrees:[* TO east]
+		    qs.add(SolrXmlPars.FIELD_WEST+URLEncoder.encode(":[* TO "+coords[2]+"]", "UTF-8") );
+		    
+		    // north -> south_degrees <= north --> south_degrees:[* TO north]
+		    qs.add(SolrXmlPars.FIELD_SOUTH+URLEncoder.encode(":[* TO "+coords[3]+"]", "UTF-8") );
+		    
+		}
+		
+		
 		// no text constraint
 		if (qs.isEmpty()) qs.add(URLEncoder.encode("*", "UTF-8"));		
 		

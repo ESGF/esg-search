@@ -119,11 +119,14 @@ public class SearchRestController {
             if (parName.equals(QueryParameters.ID)) {
                 command.addConstraint(parName, request.getParameter(parName) );
              
-            // &from=...&to=...
-            } else if (parName.equals(QueryParameters.FROM) || parName.equals(QueryParameters.TO)) {    
-                // example: 2010-10-19T22:00:00Z TO NOW
+            // other keywords
+            // &from=...&to=... &start=... &end=... &bbox=
+            // these constraints are interpreted specially by the SearchService implementation
+            } else if (   parName.equals(QueryParameters.FROM) || parName.equals(QueryParameters.TO)
+                       || parName.equals(QueryParameters.START) || parName.equals(QueryParameters.END)
+                       || parName.equals(QueryParameters.BBOX) ) {
                 command.addConstraint(parName, request.getParameter(parName));
-                         
+                                         
             // interpret all non-keyword constraints as facets
             // check versus the configured facet profile to allow no unknown facets
             // &facet1=value1&facet2=value2

@@ -24,6 +24,7 @@ public class QueryParameters {
     public final static String DISTRIB = "distrib";
     
     // open search geo extension
+    public final static String BBOX ="bbox";  // west, south, east, north
     public final static String LAT ="lat";
     public final static String LON = "lon";
     public final static String LOCATION = "location";
@@ -55,14 +56,14 @@ public class QueryParameters {
                                                                                     FIELD_DATASET_ID, FIELD_VERSION });
     
     public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB,
-                                                                             LAT, LON, LOCATION, RADIUS, POLYGON,
+                                                                             LAT, LON, LOCATION, RADIUS, POLYGON, BBOX,
                                                                              START, END,
                                                                              ID, TYPE, FROM, TO } );
     
     /**
      * List of invalid text characters - anything that is not within square brackets.
      */
-    public static Pattern INVALID_CHARACTERS = Pattern.compile(".*[^a-zA-Z0-9_+\\-\\.\\@\\'\\:\\;\\,\\s/()\\*\\\"].*");
+    public static Pattern INVALID_CHARACTERS = Pattern.compile(".*[^a-zA-Z0-9_+\\-\\.\\@\\'\\:\\;\\,\\s/()\\*\\\"\\[\\]].*");
 
     /**
      * Format for temporal queries.

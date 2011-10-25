@@ -82,6 +82,7 @@ public interface SearchInput {
      * Note: The string was used so that AND and OR can be included in query.  This may be substituted with another data structure in the near future.
      * @param temporalRangeConstraint
      */
+	// FIXME: remove this method and treat start/stop as ordinary constraints
     //public void addGeospatialRangeConstraint(String name, String value);
     public void addTemporalRangeConstraint(String temporalRangeConstraint);
     
