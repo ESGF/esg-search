@@ -24,29 +24,17 @@ import esg.search.query.api.FacetProfile;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchReturnType;
 import esg.search.query.api.SearchService;
-import esg.search.query.ws.hessian.SearchWebService;
 
 /**
  * Web controller that supports RESTful invocations of the metadata search service.
- * This controller delegates all functionality to the underlying {@link SearchWebService}.
- * 
- * TODO: review parameters list
- * All REST methods accept the following optional HTTP parameters (in addition to the ones specifically listed in each method),
- * which all have sensible default values.
- * 
- * <ul>
- * 	<li>@param offset : number of skipped results before current list (default: 0)
- * 	<li>@param limit : maximum number of returned results (default: 10)
- * 	<li>@param results : true to include document results in the HTTP response (default: true)
- * 	<li>@param facets : true to include facet results in the HTTP response (default: true)
- * 	<li>@param back : the type of the returned HTTP response (default: XML)
- * </ul>
+ * This controller delegates all functionality to the underlying {@link SearchService}.
+ * The HTTP request parameters are specified by the ESGF Search API.
  * 
  * @author luca.cinquini
  *
  */
-@Controller("searchRestController")
-public class SearchRestController {
+@Controller("searchController")
+public class SearchController {
 	
     /**
      * The underlying search service to which all calls are delegated.
@@ -64,22 +52,43 @@ public class SearchRestController {
 	private final Log LOG = LogFactory.getLog(this.getClass());
 		
 	@Autowired
-	public SearchRestController(final SearchService searchService, final @Qualifier("wsFacetProfile") FacetProfile facetProfile) {
+	public SearchController(final SearchService searchService, final @Qualifier("wsFacetProfile") FacetProfile facetProfile) {
 	      this.searchService = searchService;
 	      this.facetProfile = facetProfile;
 	}
 	
 	/**
-	 * REST method to execute the most generic possible query.
-	 * Allowed HTTP parameters (besides the common parameters listed above):
-	 * @param text : search text (example: "?text=...")
-	 * @param facet : name of one of the facets in the application facet profile (example: "experiment=control")
+	 * Method that processes all HTTP requests to this controller.
 	 */
-	@RequestMapping(value="/ws/rest/search/", method={ RequestMethod.GET, RequestMethod.POST })
-	//@SuppressWarnings("unchecked")
+	@RequestMapping(value="/search", method={ RequestMethod.GET, RequestMethod.POST })
 	public void search(final HttpServletRequest request, 
-			           final @ModelAttribute(COMMAND) SearchRestCommand command, 
+			           final @ModelAttribute(COMMAND) SearchCommand command, 
 			           final HttpServletResponse response) throws Exception {
+	    
+	    // process request, obtain Solr/XML output
+        String output = this.process(request, command, response);
+        
+        // write Solr/XML to response
+        if (!response.isCommitted()) writeToResponse(output, "text/xml", response); 
+	    
+	}
+	
+	/**
+	 * Method that processes the incoming HTTP request, invokes the back-end search service,
+	 * and returns the output document in Solr/XML format.
+	 * This method can be invoked by other controllers wishing to post-process the output document.
+	 * 
+	 * @param request
+	 * @param command
+	 * @param response
+	 * @return
+	 * @throws Exception
+	 */
+	String process(final HttpServletRequest request, 
+            final @ModelAttribute(COMMAND) SearchCommand command, 
+            final HttpServletResponse response) throws Exception {
+	    
+	    String output = "";
 	    
 	    // set of allowed facets (and fields)
         final Set<String> allowedFacets = facetProfile.getTopLevelFacets().keySet();
@@ -189,18 +198,16 @@ public class SearchRestController {
             command.setFields(fields);
         }
 
-        // execute HTTP search request, return response
-        if (!response.isCommitted()) {
-        	                 
-            String output = searchService.query(command, format); // isfacets=true FIXME
-            writeToResponse(output, response);
-                        
-        }
+        // invoke back-end search service (HTTP request to Solr)
+        if (!response.isCommitted()) output = searchService.query(command, format);
+        
+        // return Solr/XML document
+        return output;
 	    	    		
 	}
 		
-	private void writeToResponse(final String content, final HttpServletResponse response) throws Exception {
-		response.setContentType("text/xml");
+	private void writeToResponse(final String content, final String contentType, final HttpServletResponse response) throws Exception {
+		response.setContentType(contentType);
 		response.getWriter().write( content );
 	}
 
