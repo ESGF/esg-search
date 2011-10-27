@@ -12,6 +12,7 @@ import org.jdom.Element;
 import org.jdom.xpath.XPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -80,18 +81,33 @@ public class WgetController {
             }
         }       
         
-        // write Solr/XML to response
         if (!response.isCommitted()) {
             
-            // generate wget script
-            final String wgetScript = WgetScriptGenerator.createWgetScript(urls);
+            // display message as plain text
+            if (urls.size()==0) {
+                
+                response.setContentType("text/plain");
+                response.getWriter().print("No files were found that matched the query");
+                
+              
+            // generate the wget script
+            } else {
             
-            // write out the script to the HTTP response
-            response.setContentType("text/x-sh");
-            response.addHeader("Content-Disposition", "attachment; filename=" + SCRIPT_NAME );
-            response.setContentLength((int) wgetScript.length());
-            PrintWriter out = response.getWriter();
-            out.print(wgetScript);
+                // record the full request URL
+                final StringBuffer requestUrl = request.getRequestURL();
+                if (StringUtils.hasText(request.getQueryString())) requestUrl.append("?").append(request.getQueryString());
+                
+                // generate wget script
+                final String wgetScript = WgetScriptGenerator.createWgetScript(requestUrl.toString(), urls);
+                
+                // write out the script to the HTTP response
+                response.setContentType("text/x-sh");
+                response.addHeader("Content-Disposition", "attachment; filename=" + SCRIPT_NAME );
+                response.setContentLength((int) wgetScript.length());
+                PrintWriter out = response.getWriter();
+                out.print(wgetScript);
+            
+            }
 
         }
         
