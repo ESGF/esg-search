@@ -51,9 +51,13 @@ public class QueryParameters {
     final public static String FIELD_SIZE = "size";
     final public static String FIELD_DATASET_ID = "dataset_id"; // note: generic notation to allow parent-child relations beyond just datasets    
     final public static String FIELD_VERSION = "version";
+    final public static String FIELD_CHECKSUM = "checksum";
+    final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
+    
     public final static List<String> STANDARD_FIELDS = Arrays.asList( new String[]{ FIELD_ID, FIELD_TITLE, FIELD_DESCRIPTION, 
                                                                                     FIELD_TYPE, FIELD_TIMESTAMP, FIELD_URL, FIELD_SIZE,
-                                                                                    FIELD_DATASET_ID, FIELD_VERSION });
+                                                                                    FIELD_DATASET_ID, FIELD_VERSION, 
+                                                                                    FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE});
     
     public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB,
                                                                              LAT, LON, LOCATION, RADIUS, POLYGON, BBOX,
