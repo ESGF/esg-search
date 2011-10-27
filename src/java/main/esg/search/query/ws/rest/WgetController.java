@@ -67,18 +67,42 @@ public class WgetController {
         // build list of HTTPServer urls
         final XmlParser xmlParser = new XmlParser(false);
         final Document doc = xmlParser.parseString(xml);
-        XPath xpath = XPath.newInstance("/response/result/doc/arr[@name='url']/str");
+        //XPath xpath = XPath.newInstance("/response/result/doc/arr[@name='url']/str");
+        XPath xpath = XPath.newInstance("/response/result/doc");
         
         final List<String> urls = new ArrayList<String>();
+        // loop over records
         for (Object obj : xpath.selectNodes(doc)) {
-            Element element = (Element)obj;
-            // gsiftp://esg.anl.gov:2811//Hiram/atmos/av/annual_5year/atmos.1980-1984.ann.nc|application/gridftp|GridFTP
-            // http://esg.anl.gov/thredds/fileServer/Hiram/atmos/av/monthly_5yr/atmos.1980-1984.01.nc|application/netcdf|HTTPServer
-            String url = element.getTextNormalize();
-            String[] parts = RecordHelper.decodeUrlTuple(url);
-            if (parts[2].equalsIgnoreCase(ThreddsPars.SERVICE_TYPE_HTTP)) {
-                urls.add(parts[0]);
+            Element docEl = (Element)obj;
+                        
+            String url = ""; // Note: only extract one URL for each record
+            String checksum = "";
+            String checksumType = "";
+
+            for (final Object childObj : docEl.getChildren("arr")) {
+                
+                Element childEl = (Element)childObj;
+                
+                if (childEl.getAttributeValue("name").equals(QueryParameters.FIELD_CHECKSUM)) {
+                    checksum = childEl.getChild("str").getTextNormalize();
+                }
+                if (childEl.getAttributeValue("name").equals(QueryParameters.FIELD_CHECKSUM_TYPE)) {
+                    checksumType = childEl.getChild("str").getTextNormalize();
+                }
+                if (childEl.getAttributeValue("name").equals(QueryParameters.FIELD_URL)) {
+                    String tuple = childEl.getChild("str").getTextNormalize();
+                    String[] parts = RecordHelper.decodeUrlTuple(tuple);
+                    if (parts[2].equalsIgnoreCase(ThreddsPars.SERVICE_TYPE_HTTP)) {
+                        url = parts[0];
+                    }
+                }
+             }
+            // export (URL checkum) for this record
+            if (StringUtils.hasText(url)) {
+                urls.add( url );
+                //urls.add( url + (StringUtils.hasText(checksum) ? " "+checksum : ""));
             }
+            
         }       
         
         if (!response.isCommitted()) {
