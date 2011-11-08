@@ -139,7 +139,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		
         // "master_host", "replica_host" > id, master_id, "replica"
 		// note: do this AFTER dataset ID has been overridden to get rid of version
-		this.setReplicaFields(record, record.getFieldValue(ThreddsPars.REPLICA_HOST) );
+		this.setReplicaFields(record, record.getFieldValue(ThreddsPars.REPLICA_NODE) );
 		
 		// recursion
 		// NOTE: currently only files generate new records
@@ -245,7 +245,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         // "master_host", "replica_host" > id, master_id, "replica"
         // note: do this BEFORE copying fields from Dataset!
         // note: base logic on <replica_host> property from top-level dataset
-        this.setReplicaFields(record, records.get(0).getFieldValue(ThreddsPars.REPLICA_HOST) );
+        this.setReplicaFields(record, records.get(0).getFieldValue(ThreddsPars.REPLICA_NODE) );
         
         // copy all fields from parent dataset to file
         if (inherit) {

@@ -38,8 +38,8 @@ public class ThreddsPars {
 	public final static String EXPERIMENT = "experiment";
 	
 	// replica properties
-	public final static String MASTER_HOST = "master_host";
-	public final static String REPLICA_HOST = "replica_host";
+	public final static String MASTER_NODE = "master_node";
+	public final static String REPLICA_NODE = "replica_node";
 	
 	
 	// THREDDS service types
