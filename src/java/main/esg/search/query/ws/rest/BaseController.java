@@ -111,7 +111,9 @@ public class BaseController {
                 command.addConstraint(parName, request.getParameter(parName) );
                 
             // &replica=true|false (or True|False or T|F)
-            } else if (parName.equalsIgnoreCase(QueryParameters.REPLICA)) {
+            // &master_id=...
+            } else if (   parName.equalsIgnoreCase(QueryParameters.REPLICA)
+                       || parName.equalsIgnoreCase(QueryParameters.MASTER_ID)) {
                 command.addConstraint(parName, request.getParameter(parName));
              
             // other keywords

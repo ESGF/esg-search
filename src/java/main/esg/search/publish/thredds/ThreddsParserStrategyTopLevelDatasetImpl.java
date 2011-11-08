@@ -105,8 +105,6 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		final String id = dataset.getID();
 		Assert.notNull(id,"Dataset ID cannot be null");
 		final Record record = new RecordImpl(id);
-        // id > master_id
-        this.setMasterId(record);
 		final String name = dataset.getName();
 		Assert.notNull(name, "Dataset name cannot be null");
 		record.addField(QueryParameters.FIELD_TITLE, name);
@@ -138,6 +136,10 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		this.parseProperties(dataset, record);
 
 		this.parseMetadataGroup(dataset,record);
+		
+        // id > master_id
+		// note: do this after dataset id has been overwritten to get rid of version
+        this.setReplicaFields(record);
 		
 		// recursion
 		// NOTE: currently only files generate new records
@@ -218,8 +220,6 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    Assert.notNull(id,"File ID cannot be null");
 	    if (LOG.isTraceEnabled()) LOG.trace("Parsing file id="+id);
         final Record record = new RecordImpl(id);
-        // id > master_id
-        this.setMasterId(record);
         // name -> title
         final String name = file.getName();
         Assert.notNull(name, "File name cannot be null");
@@ -242,10 +242,14 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         
         this.parseDocumentation(file, record);
         
+        // id > master_id
+        // note: BEFORE copying fields from Dataset!
+        this.setReplicaFields(record);
+        
         // copy all fields from parent dataset to file
         if (inherit) {
             final Map<String, List<String>> datasetFields = records.get(0).getFields();
-            for (final String key : datasetFields.keySet()) {            
+            for (final String key : datasetFields.keySet()) {  
                 // don't override file-level properties
                 if (record.getFieldValue(key)==null) {
                     for (final String value : datasetFields.get(key)) {
@@ -254,7 +258,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
                 }            
             }
         }
-	    
+        	    
         // add this record to the list
         records.add(record);
 	    return size;
@@ -452,12 +456,16 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * Method to set the master_id of a replica record, if the record id matches the expected replica pattern.
 	 * @param record
 	 */
-	private void setMasterId(final Record record) {
+	private void setReplicaFields(final Record record) {
 	    
 	    final String id = record.getId();
 	    final Matcher matcher = QueryParameters.REPLICA_PATTERN.matcher(id);
 	    if (matcher.matches()) {
+	        record.addField(QueryParameters.FIELD_REPLICA, "true");
 	        record.addField(QueryParameters.FIELD_MASTER_ID, matcher.group(1));
+	    } else {
+            record.addField(QueryParameters.FIELD_REPLICA, "false");
+            record.addField(QueryParameters.FIELD_MASTER_ID, id);	        
 	    }
 	    
 	}

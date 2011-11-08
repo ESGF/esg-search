@@ -38,6 +38,7 @@ public class QueryParameters {
           
     // record special fields
     public final static String ID = "id";
+    public final static String MASTER_ID = "master_id";
     public final static String TYPE = "type";
     public final static String FROM = "from";
     public final static String TO = "to";
@@ -45,6 +46,7 @@ public class QueryParameters {
     // standard metadata fields, always included for each result (if available)
     final public static String FIELD_ID = "id";
     final public static String FIELD_MASTER_ID = "master_id";
+    final public static String FIELD_REPLICA = "replica";
     final public static String FIELD_TITLE = "title";
     final public static String FIELD_DESCRIPTION = "description";
     final public static String FIELD_TYPE = "type";
@@ -61,7 +63,8 @@ public class QueryParameters {
                                                                                     FIELD_DATASET_ID, FIELD_VERSION, 
                                                                                     FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE});
     
-    public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB, REPLICA,
+    public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB, 
+                                                                             REPLICA, MASTER_ID,
                                                                              LAT, LON, LOCATION, RADIUS, POLYGON, BBOX,
                                                                              START, END,
                                                                              ID, TYPE, FROM, TO } );

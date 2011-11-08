@@ -453,6 +453,8 @@
    <!-- The parent record if (optional) -->
    <field name="dataset_id" type="string" indexed="true" stored="true" required="false" multiValued="false" />
 
+   <!-- Replica flag -->
+   <field name="replica" type="boolean" indexed="true" stored="true" required="true" multiValued="false" default="false" />
    <!-- Pointer to master record (for replicas only) -->
    <field name="master_id" type="string" indexed="true" stored="true" required="false" multiValued="false" />
    

@@ -127,15 +127,21 @@ public class SolrUrlBuilder {
 		}
 		// replica=true|false
 		if (StringUtils.hasText(input.getConstraint(QueryParameters.REPLICA))) {
-		    boolean replica = Boolean.parseBoolean(input.getConstraint(QueryParameters.REPLICA));
-		    if (replica) {
+		    fq.append("&fq="+URLEncoder.encode( QueryParameters.FIELD_REPLICA+":"+input.getConstraint(QueryParameters.REPLICA), "UTF-8" ));
+		    //boolean replica = Boolean.parseBoolean(input.getConstraint(QueryParameters.REPLICA));
+		    //if (replica) {
 		        // select replicas only
-		        fq.append("&fq="+URLEncoder.encode( QueryParameters.FIELD_MASTER_ID+":"+"[* TO *]", "UTF-8" ));
-		    } else {
+		    //    fq.append("&fq="+URLEncoder.encode( QueryParameters.FIELD_MASTER_ID+":"+"[* TO *]", "UTF-8" ));
+		    //} else {
 		        // select masters only
-		        fq.append("&fq="+URLEncoder.encode( "-" + QueryParameters.FIELD_MASTER_ID+":"+"[* TO *]", "UTF-8" ));
-		    }		    
+		    //    fq.append("&fq="+URLEncoder.encode( "-" + QueryParameters.FIELD_MASTER_ID+":"+"[* TO *]", "UTF-8" ));
+		    //}		    
 		}
+	    // master_id=...
+        if (StringUtils.hasText(input.getConstraint(QueryParameters.MASTER_ID))) {
+            fq.append("&fq="+URLEncoder.encode( QueryParameters.FIELD_MASTER_ID+":"+input.getConstraint(QueryParameters.MASTER_ID), "UTF-8" ));
+        }
+
 		// from,to --> q="timestamp:[2010-10-19T22:00:00Z TO NOW]"
 		if (StringUtils.hasText(input.getConstraint(QueryParameters.FROM)) || StringUtils.hasText(input.getConstraint(QueryParameters.TO))) {
 		    // set both defaults to "*"
