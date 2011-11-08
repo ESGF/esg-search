@@ -37,6 +37,11 @@ public class ThreddsPars {
 	public final static String SIZE = "size";
 	public final static String EXPERIMENT = "experiment";
 	
+	// replica properties
+	public final static String MASTER_HOST = "master_host";
+	public final static String REPLICA_HOST = "replica_host";
+	
+	
 	// THREDDS service types
 	/**
 	  <!-- ServiceTypeEnum -->

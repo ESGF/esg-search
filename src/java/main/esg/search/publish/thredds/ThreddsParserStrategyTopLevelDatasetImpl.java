@@ -137,9 +137,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 
 		this.parseMetadataGroup(dataset,record);
 		
-        // id > master_id
-		// note: do this after dataset id has been overwritten to get rid of version
-        this.setReplicaFields(record);
+        // "master_host", "replica_host" > id, master_id, "replica"
+		// note: do this AFTER dataset ID has been overridden to get rid of version
+		this.setReplicaFields(record, record.getFieldValue(ThreddsPars.REPLICA_HOST) );
 		
 		// recursion
 		// NOTE: currently only files generate new records
@@ -242,9 +242,10 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         
         this.parseDocumentation(file, record);
         
-        // id > master_id
-        // note: BEFORE copying fields from Dataset!
-        this.setReplicaFields(record);
+        // "master_host", "replica_host" > id, master_id, "replica"
+        // note: do this BEFORE copying fields from Dataset!
+        // note: base logic on <replica_host> property from top-level dataset
+        this.setReplicaFields(record, records.get(0).getFieldValue(ThreddsPars.REPLICA_HOST) );
         
         // copy all fields from parent dataset to file
         if (inherit) {
@@ -453,9 +454,20 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	}
 	
 	/**
+	 * Method to build the univerally unique id of a replica record
+	 * @param id
+	 * @param replicaHostName
+	 * @return
+	 */
+	private String buildReplicaId(final String id, final String replicaHostName) {
+	    return id + ":" + replicaHostName;
+	}
+	
+	/**
 	 * Method to set the master_id of a replica record, if the record id matches the expected replica pattern.
 	 * @param record
 	 */
+	/*
 	private void setReplicaFields(final Record record) {
 	    
 	    final String id = record.getId();
@@ -468,6 +480,23 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             record.addField(QueryParameters.FIELD_MASTER_ID, id);	        
 	    }
 	    
+	}*/
+	
+	/**
+	 * Method to encode master/replica information.
+	 */
+	private void setReplicaFields(final Record record, final String replicaHostName) {
+	    
+        if (StringUtils.hasText(replicaHostName)) {
+            record.addField(QueryParameters.FIELD_REPLICA, "true");
+            record.addField(QueryParameters.FIELD_MASTER_ID, record.getId());
+            record.setId(this.buildReplicaId(record.getId(), replicaHostName));
+        } else {
+            record.addField(QueryParameters.FIELD_REPLICA, "false");
+            record.addField(QueryParameters.FIELD_MASTER_ID, record.getId());
+        }
+
 	}
+	
 	
 }
