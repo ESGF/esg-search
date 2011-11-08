@@ -125,6 +125,17 @@ public class SolrUrlBuilder {
 		if (StringUtils.hasText(input.getConstraint(QueryParameters.ID))) {
 		    qs.add(QueryParameters.FIELD_ID+":"+URLEncoder.encode(input.getConstraint(QueryParameters.ID), "UTF-8") );
 		}
+		// replica=true|false
+		if (StringUtils.hasText(input.getConstraint(QueryParameters.REPLICA))) {
+		    boolean replica = Boolean.parseBoolean(input.getConstraint(QueryParameters.REPLICA));
+		    if (replica) {
+		        // select replicas only
+		        fq.append("&fq="+URLEncoder.encode( QueryParameters.FIELD_MASTER_ID+":"+"[* TO *]", "UTF-8" ));
+		    } else {
+		        // select masters only
+		        fq.append("&fq="+URLEncoder.encode( "-" + QueryParameters.FIELD_MASTER_ID+":"+"[* TO *]", "UTF-8" ));
+		    }		    
+		}
 		// from,to --> q="timestamp:[2010-10-19T22:00:00Z TO NOW]"
 		if (StringUtils.hasText(input.getConstraint(QueryParameters.FROM)) || StringUtils.hasText(input.getConstraint(QueryParameters.TO))) {
 		    // set both defaults to "*"
@@ -132,8 +143,7 @@ public class SolrUrlBuilder {
 		    if (!StringUtils.hasText(input.getConstraint(QueryParameters.TO))) input.addConstraint(QueryParameters.TO, "*");
 		    qs.add( QueryParameters.FIELD_TIMESTAMP+
 		            URLEncoder.encode(":["+input.getConstraint(QueryParameters.FROM)+" TO "+input.getConstraint(QueryParameters.TO)+"]", "UTF-8") );
-		}
-		
+		}		
 		// start --> start <= datetime_stop --> datetime_stop:[start to *]
 		if (StringUtils.hasText(input.getConstraint(QueryParameters.START))) {
 		    qs.add( SolrXmlPars.FIELD_DATETIME_STOP+URLEncoder.encode(":["+input.getConstraint(QueryParameters.START)+" TO *]", "UTF-8") );
@@ -163,8 +173,7 @@ public class SolrUrlBuilder {
 		    qs.add(SolrXmlPars.FIELD_SOUTH+URLEncoder.encode(":[* TO "+coords[3]+"]", "UTF-8") );
 		    
 		}
-		
-		
+				
 		// no text constraint
 		if (qs.isEmpty()) qs.add(URLEncoder.encode("*", "UTF-8"));		
 		
@@ -185,20 +194,22 @@ public class SolrUrlBuilder {
 			    }
 			}
 		}
-									
+
+		/*
 		String geospatialRangeConstraints = input.getGeospatialRangeConstraint();
 		// search input geospatial range constraints --> fq=(west_degrees:[* TO 45] AND east_degrees:[40 TO *]...)
 		if(geospatialRangeConstraints!=null) {
 			String value = geospatialRangeConstraints;
 			fq.append("&fq="+URLEncoder.encode("(" + value + ")","UTF-8" ));
-		}
+		} */
 		
+		/*
 		String temporalRangeConstraints = input.getTemporalRangeConstraint();
         // search input geospatial range constraints --> fq=(datetime_start:[NOW/DAY-YEAR TO NOW] AND datetime_stop:[NOW/DAY-3MONTH TO NOW]...)
         if(temporalRangeConstraints!=null) {
             String value = temporalRangeConstraints;
             fq.append("&fq="+URLEncoder.encode("(" + value + ")","UTF-8" ));
-        }
+        }*/
         
         // &facet.field=...&facet.field=...
         if (this.facets!=null) {

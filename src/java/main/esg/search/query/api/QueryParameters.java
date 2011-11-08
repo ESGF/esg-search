@@ -22,6 +22,7 @@ public class QueryParameters {
     public final static String FACETS = "facets";
     public final static String FIELDS = "fields";
     public final static String DISTRIB = "distrib";
+    public final static String REPLICA = "replica";
     
     // open search geo extension
     public final static String BBOX ="bbox";  // west, south, east, north
@@ -43,6 +44,7 @@ public class QueryParameters {
     
     // standard metadata fields, always included for each result (if available)
     final public static String FIELD_ID = "id";
+    final public static String FIELD_MASTER_ID = "master_id";
     final public static String FIELD_TITLE = "title";
     final public static String FIELD_DESCRIPTION = "description";
     final public static String FIELD_TYPE = "type";
@@ -59,7 +61,7 @@ public class QueryParameters {
                                                                                     FIELD_DATASET_ID, FIELD_VERSION, 
                                                                                     FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE});
     
-    public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB,
+    public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB, REPLICA,
                                                                              LAT, LON, LOCATION, RADIUS, POLYGON, BBOX,
                                                                              START, END,
                                                                              ID, TYPE, FROM, TO } );
@@ -68,6 +70,11 @@ public class QueryParameters {
      * List of invalid text characters - anything that is not within square brackets.
      */
     public static Pattern INVALID_CHARACTERS = Pattern.compile(".*[^a-zA-Z0-9_+\\-\\.\\@\\'\\:\\;\\,\\s/()\\*\\\"\\[\\]].*");
+    
+    /**
+     * Patter for replicas ids: <id:origin:publisher>
+     */
+    public static Pattern REPLICA_PATTERN = Pattern.compile("([^:]+):([^:]+):([^:]+)");
 
     /**
      * Format for temporal queries.

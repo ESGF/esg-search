@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -104,6 +105,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		final String id = dataset.getID();
 		Assert.notNull(id,"Dataset ID cannot be null");
 		final Record record = new RecordImpl(id);
+        // id > master_id
+        this.setMasterId(record);
 		final String name = dataset.getName();
 		Assert.notNull(name, "Dataset name cannot be null");
 		record.addField(QueryParameters.FIELD_TITLE, name);
@@ -215,6 +218,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    Assert.notNull(id,"File ID cannot be null");
 	    if (LOG.isTraceEnabled()) LOG.trace("Parsing file id="+id);
         final Record record = new RecordImpl(id);
+        // id > master_id
+        this.setMasterId(record);
         // name -> title
         final String name = file.getName();
         Assert.notNull(name, "File name cannot be null");
@@ -441,6 +446,20 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 			record.addField(SolrXmlPars.FIELD_DATETIME_STOP, daterange.getEnd().toDateTimeStringISO());
 		}
 		
+	}
+	
+	/**
+	 * Method to set the master_id of a replica record, if the record id matches the expected replica pattern.
+	 * @param record
+	 */
+	private void setMasterId(final Record record) {
+	    
+	    final String id = record.getId();
+	    final Matcher matcher = QueryParameters.REPLICA_PATTERN.matcher(id);
+	    if (matcher.matches()) {
+	        record.addField(QueryParameters.FIELD_MASTER_ID, matcher.group(1));
+	    }
+	    
 	}
 	
 }

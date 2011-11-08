@@ -109,6 +109,10 @@ public class BaseController {
             // &id=...
             if (parName.equals(QueryParameters.ID)) {
                 command.addConstraint(parName, request.getParameter(parName) );
+                
+            // &replica=true|false (or True|False or T|F)
+            } else if (parName.equalsIgnoreCase(QueryParameters.REPLICA)) {
+                command.addConstraint(parName, request.getParameter(parName));
              
             // other keywords
             // &from=...&to=... &start=... &end=... &bbox=
