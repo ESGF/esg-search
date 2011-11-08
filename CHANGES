@@ -38,3 +38,4 @@ Internal changes to URLs resolved by the servlet
 1.5.0
 - Implementation of new ESGF Search API as agreed upon by search working group
 - Stop parsing aggregation endpoints into top-level dataset metadata - all access endpoints must be explicitely defined for the top level dataset
+- Inserted support for replica publishing and searching
