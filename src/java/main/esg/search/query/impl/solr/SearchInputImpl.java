@@ -87,8 +87,7 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	/**
 	 * Flag to execute a distributed query - true by default.
 	 */
-	// FIXME
-	private boolean distrib = false;
+	private boolean distrib = true;
 	
 	private final static String NEWLINE = System.getProperty("line.separator");
 

@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 
 import org.apache.commons.logging.Log;
@@ -102,7 +103,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		final List<Record> records = new ArrayList<Record>();
 		
 		// <dataset name="...." ID="..." restrictAccess="...">
-		final String id = dataset.getID();
+		String id = dataset.getID();
+		// assign random UUID if dataset id was not found
+		if (id==null) id = UUID.randomUUID().toString();
 		Assert.notNull(id,"Dataset ID cannot be null");
 		final Record record = new RecordImpl(id);
 		final String name = dataset.getName();
