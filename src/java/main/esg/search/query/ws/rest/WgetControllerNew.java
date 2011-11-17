@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -45,8 +46,6 @@ public class WgetControllerNew {
     @Autowired
     public WgetControllerNew(final BaseController baseController) {
           this.baseController = baseController;
-          LOG.debug("Debugging New");
-          WgetScriptGeneratorNew.init();
     }
     
     /**
@@ -57,7 +56,9 @@ public class WgetControllerNew {
     public void wget(final HttpServletRequest request, 
                        final SearchCommand command, 
                        final HttpServletResponse response) throws Exception {
-        
+    	
+        WgetScriptGeneratorNew.init(request.getSession().getServletContext());
+
         // check type=... is not specified
         if (request.getParameter(QueryParameters.TYPE)!=null) {
             baseController.sendError(HttpServletResponse.SC_BAD_REQUEST, "HTTP parameter type is fixed to value: File", response);

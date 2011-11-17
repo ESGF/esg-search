@@ -42,7 +42,7 @@ while getopts ':c:pdvqo:w:i' OPT; do
         c) ESG_CREDENTIALS="$OPTARG";;  #<cert> : use this certificate for authentication.
         p) clean_work=0;;               #       : preserve data that failed checksum
         o) openId="$OPTARG";;           #<openid>   : Set the open id
-        w) output="$OPTARG";;           #<file> : Write output for DML in the given file
+        w) output="$OPTARG";;           #<file> : Write output for DML in the given file (simple list of endpoints)
         i) insecure=1;;                 #       : set insecure mode, i.e. don't check server certificate
         d) verbose=1;debug=1;;          #       : display debug information
         v) verbose=1;;                  #       : be more verbose
@@ -53,6 +53,7 @@ while getopts ':c:pdvqo:w:i' OPT; do
     esac
 done
 shift $(($OPTIND - 1))
+
 
 if [[ "$output" ]]; then
     #check and prepare the DML file
@@ -67,7 +68,7 @@ fi
 # get certificates from rainbow
 get_certificates() {
     # don't if this was already done today
-    [[ "$(find $ESG_CERT_DIR -type d -mtime -1)" ]] && return 0
+    [[ "$(find $ESG_CERT_DIR -type d -mtime -1 2>/dev/null)" ]] && return 0
     echo "Retrieving Federation Certificates..." >&2
     
     #certificates tarred into esg_trusted_certificates. (if it breaks, let the user know why
@@ -82,7 +83,14 @@ get_certificates() {
 
 # Retrieve ESG credentials
 get_credentials() {
-    [[ ! -f $MYPROXY_CERT ]] && echo "TODO: Download myproxylogon for console"
+    #get all certificates
+    get_certificates
+
+    if [[ -z "$(find $MYPROXY_CERT -type d -mtime -1 2>/dev/null)" ]]; then
+        echo "Downloading $MYPROXY_CERT"
+        mkdir -p $(dirname $MYPROXY_CERT)
+        wget -q https://rainbow.llnl.gov/dist/devel/esgf-getcert/getcert.jar -O $MYPROXY_CERT
+    fi
 
     #if the user already defined one don't bother    
     if ! grep -q OpenID $HOME/.MyProxyLogon 2>/dev/null; then
@@ -96,12 +104,13 @@ get_credentials() {
     #get password
     local pass
     read -sp "MyProxy Password? " pass
-    echo $'\nRetrieving Credentials...' >&2
+    echo -n $'\nRetrieving Credentials...' >&2
     if ! java -jar $MYPROXY_CERT $args -P $pass --output $ESG_CREDENTIALS ; then
         echo "Certificate could not be retrieved"
         exit 1
     fi
     unset pass
+    echo "done!"
 }
 
 # check the certificate validity
@@ -125,8 +134,6 @@ check_cert() {
 # Detect ESG credentials
 #
 find_credentials() {
-    #get all certificates
-    get_certificates
 
     #is X509_USER_PROXY or $HOME/.esg/credential.pem
     if [[ -f "$ESG_CREDENTIALS" ]]; then
