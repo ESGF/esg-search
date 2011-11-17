@@ -46,7 +46,7 @@ public class DatasetsRssView extends AbstractRssFeedView {
             RssViewBuilder.addTitle(feedItem, datasetRecord);
             
             // <link>http://esg-datanode.jpl.nasa.gov/thredds/esgcet/1/obs4MIPs.NASA-JPL.AIRS.mon.v1.html#obs4MIPs.NASA-JPL.AIRS.mon.v1</link>
-            feedItem.setLink( datasetRecord.getFieldValue(QueryParameters.FIELD_URL) ); 
+            feedItem.setLink( RssViewBuilder.getThreddsCatalogUrl(datasetRecord) ); 
             
             // <description>obs4MIPs.NASA-JPL.AIRS.mon</description>
             RssViewBuilder.addDescription(feedItem, datasetRecord);             

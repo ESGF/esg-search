@@ -54,7 +54,7 @@ public class FilesRssView extends AbstractRssFeedView {
             
             // <link>http://esg-datanode.jpl.nasa.gov/thredds/esgcet/1/obs4MIPs.NASA-JPL.AIRS.mon.v1.html
             //       ?dataset=obs4MIPs.NASA-JPL.AIRS.mon.v1.husNobs_AIRS_L3_RetStd-v5_200209-201105.nc</link>
-            String datasetUrl = datasetRecord.getFieldValue(QueryParameters.FIELD_URL);
+            String datasetUrl = RssViewBuilder.getThreddsCatalogUrl(datasetRecord);
             feedItem.setLink( datasetUrl.replaceAll("\\#.*", "") + "?dataset=" + fileRecord.getId() );
             
             // <datacasting:acquisitionStartDate>Mon, 11 Jul 2011 00:00:00 GMT</datacasting:acquisitionStartDate>
@@ -103,7 +103,7 @@ public class FilesRssView extends AbstractRssFeedView {
         feed.setTitle(datasetRecord.getFieldValue(QueryParameters.FIELD_TITLE));  
         
         // <link>http://esg-datanode.jpl.nasa.gov/thredds/esgcet/1/obs4MIPs.NASA-JPL.AIRS.mon.v1.html#obs4MIPs.NASA-JPL.AIRS.mon.v1</link>
-        feed.setLink(datasetRecord.getFieldValue(QueryParameters.FIELD_URL));  
+        feed.setLink(RssViewBuilder.getThreddsCatalogUrl(datasetRecord));  
         
         // <description>obs4MIPs.NASA-JPL.AIRS.mon</description>
         if (StringUtils.hasText(datasetRecord.getFieldValue(QueryParameters.FIELD_DESCRIPTION))) {

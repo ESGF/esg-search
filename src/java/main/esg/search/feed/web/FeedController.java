@@ -56,6 +56,9 @@ public class FeedController {
             final SearchInput input = new SearchInputImpl();
             input.setType(SolrXmlPars.TYPE_DATASET); 
             
+            // FIXME
+            input.setDistrib(false);
+            
             SearchOutput output = searchService.search(input); 
             model.addAttribute(MODEL_KEY_DATASETS, output);  
             
@@ -68,6 +71,9 @@ public class FeedController {
             final SearchInput input1 = new SearchInputImpl();
             input1.setType(SolrXmlPars.TYPE_DATASET);
             input1.addConstraint(QueryParameters.FIELD_ID, datasetId); 
+            // FIXME
+            input1.setDistrib(false);
+            
             SearchOutput output1 = searchService.search(input1); 
             model.addAttribute(MODEL_KEY_DATASET, output1);  
             
@@ -75,6 +81,8 @@ public class FeedController {
             final SearchInput input2 = new SearchInputImpl();
             input2.setType(SolrXmlPars.TYPE_FILE); 
             input2.addConstraint(QueryParameters.FIELD_DATASET_ID, datasetId);
+            // FIXME
+            input2.setDistrib(false);
             
             SearchOutput output2 = searchService.search(input2); 
             model.addAttribute(MODEL_KEY_FILES, output2);  

@@ -7,6 +7,8 @@ import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
 
 import com.sun.syndication.feed.rss.Category;
@@ -18,6 +20,7 @@ import com.sun.syndication.feed.rss.Source;
 
 import esg.search.core.Record;
 import esg.search.publish.impl.RecordHelper;
+import esg.search.publish.thredds.ThreddsPars;
 import esg.search.query.api.QueryParameters;
 
 /**
@@ -33,6 +36,8 @@ public class RssViewBuilder {
     private final static String FEED_TITLE_PROPERTY_KEY = "esgf.feed.datasets.title";
     private final static String FEED_DESC_PROPERTY_KEY = "esgf.feed.datasets.desc";
     private final static String FEED_LINK_PROPERTY_KEY = "esgf.feed.datasets.link";
+    
+    private static Log LOG = LogFactory.getLog(RssViewBuilder.class);
     
     static {
         // must set the time zone of the Date Formatter to GMT
@@ -84,12 +89,12 @@ public class RssViewBuilder {
         
         final List<Enclosure> enclosures = new ArrayList<Enclosure>();
         
-        // loop over record access services
+        // loop over record access URLs
         for (String urlTuple : record.getFieldValues(QueryParameters.FIELD_URL)) {
             
             // (url, mime type, description)
             final String[] _parts = RecordHelper.decodeUrlTuple(urlTuple);
-            
+                    
             Enclosure enc = new Enclosure();
             enc.setUrl(_parts[0]);
             enc.setType(_parts[1]);
@@ -180,6 +185,34 @@ public class RssViewBuilder {
         } else {
             return "http://"+request.getServerName()+"/thredds/catalog.html";
         }
-
+    }
+    
+    /**
+     * Utility method to extract the THREDDS catalog URL (in HTML form) from the list of record URLs
+     * @param record
+     * @return
+     */
+    public final static String getThreddsCatalogUrl(Record record) {
+        
+        // loop over all record access URLs
+        for (String urlTuple : record.getFieldValues(QueryParameters.FIELD_URL)) {
+            
+            // (url, mime type, description)
+            try {
+                final String[] _parts = RecordHelper.decodeUrlTuple(urlTuple);
+                
+                // THREDDS catalog xml/html page
+                if (_parts[1].equalsIgnoreCase(ThreddsPars.MIME_TYPE_THREDDS)) {
+                    // replace THREDDS catalog XML link with HTML page
+                    return _parts[0].replace(".xml", ".html");   
+                }
+            } catch(Exception e) {
+                LOG.warn(e.getMessage());
+            }
+            
+        }
+        
+        return ""; // catalog URL not found
+        
     }
 }
