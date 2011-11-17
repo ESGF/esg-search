@@ -18,8 +18,9 @@ ESG_HOME=${ESG_HOME:-$HOME/.esg}
 
 ESG_CREDENTIALS=${X509_USER_PROXY:-$ESG_HOME/credentials.pem}
 ESG_CERT_DIR=${X509_CERT_DIR:-$ESG_HOME/certificates}
+TRUSTSTORE=$ESG_HOME/esg-truststore.ts
 COOKIE_JAR=$ESG_HOME/cookies
-MYPROXY_CERT=$ESG_HOME/getcert.jar
+MYPROXY_GETCERT=$ESG_HOME/getcert.jar
 CERT_EXPIRATION_WARNING=$((60 * 60 * 12))   #One hour (in seconds)
 
 # Configure checking of server SSL certificates.
@@ -74,7 +75,9 @@ get_certificates() {
     #certificates tarred into esg_trusted_certificates. (if it breaks, let the user know why
     wget https://rainbow.llnl.gov/dist/certs/esg_trusted_certificates.tar -O - -q | tar x -C $ESG_HOME\
         || wget https://rainbow.llnl.gov/dist/certs/esg_trusted_certificates.tar || { echo "Could't update certs" >&2; return 1; }
-
+    wget -q https://rainbow.llnl.gov/dist/certs/esg-truststore.ts -O $TRUSTSTORE
+    
+    
     #if here everythng went fine. Replace old cert with this ones    
     [[ -d $ESG_CERT_DIR ]] && rm -r $ESG_CERT_DIR
     mv $ESG_HOME/esg_trusted_certificates $ESG_CERT_DIR
@@ -86,10 +89,10 @@ get_credentials() {
     #get all certificates
     get_certificates
 
-    if [[ -z "$(find $MYPROXY_CERT -type d -mtime -1 2>/dev/null)" ]]; then
-        echo "Downloading $MYPROXY_CERT"
-        mkdir -p $(dirname $MYPROXY_CERT)
-        wget -q https://rainbow.llnl.gov/dist/devel/esgf-getcert/getcert.jar -O $MYPROXY_CERT
+    if [[ -z "$(find $MYPROXY_GETCERT -type f -mtime -1 2>/dev/null)" ]]; then
+        echo "Downloading $MYPROXY_GETCERT"
+        mkdir -p $(dirname $MYPROXY_GETCERT)
+        wget -q https://rainbow.llnl.gov/dist/devel/esgf-getcert/getcert.jar -O $MYPROXY_GETCERT
     fi
 
     #if the user already defined one don't bother    
@@ -105,7 +108,7 @@ get_credentials() {
     local pass
     read -sp "MyProxy Password? " pass
     echo -n $'\nRetrieving Credentials...' >&2
-    if ! java -jar $MYPROXY_CERT $args -P $pass --output $ESG_CREDENTIALS ; then
+    if ! java -Djavax.net.ssl.trustStore=$TRUSTSTORE -Djavax.net.ssl.trustStorePassword=changeit -jar $MYPROXY_GETCERT $args -P $pass --output $ESG_CREDENTIALS ; then
         echo "Certificate could not be retrieved"
         exit 1
     fi
