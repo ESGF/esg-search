@@ -18,8 +18,9 @@ ESG_HOME=${ESG_HOME:-$HOME/.esg}
 
 ESG_CREDENTIALS=${X509_USER_PROXY:-$ESG_HOME/credentials.pem}
 ESG_CERT_DIR=${X509_CERT_DIR:-$ESG_HOME/certificates}
+TRUSTSTORE=$ESG_HOME/esg-truststore.ts
 COOKIE_JAR=$ESG_HOME/cookies
-MYPROXY_CERT=$ESG_HOME/getcert.jar
+MYPROXY_GETCERT=$ESG_HOME/getcert.jar
 CERT_EXPIRATION_WARNING=$((60 * 60 * 12))   #One hour (in seconds)
 
 # Configure checking of server SSL certificates.
@@ -42,7 +43,7 @@ while getopts ':c:pdvqo:w:i' OPT; do
         c) ESG_CREDENTIALS="$OPTARG";;  #<cert> : use this certificate for authentication.
         p) clean_work=0;;               #       : preserve data that failed checksum
         o) openId="$OPTARG";;           #<openid>   : Set the open id
-        w) output="$OPTARG";;           #<file> : Write output for DML in the given file
+        w) output="$OPTARG";;           #<file> : Write output for DML in the given file (simple list of endpoints)
         i) insecure=1;;                 #       : set insecure mode, i.e. don't check server certificate
         d) verbose=1;debug=1;;          #       : display debug information
         v) verbose=1;;                  #       : be more verbose
@@ -53,6 +54,7 @@ while getopts ':c:pdvqo:w:i' OPT; do
     esac
 done
 shift $(($OPTIND - 1))
+
 
 if [[ "$output" ]]; then
     #check and prepare the DML file
@@ -67,13 +69,15 @@ fi
 # get certificates from rainbow
 get_certificates() {
     # don't if this was already done today
-    [[ "$(find $ESG_CERT_DIR -type d -mtime -1)" ]] && return 0
+    [[ "$(find $ESG_CERT_DIR -type d -mtime -1 2>/dev/null)" ]] && return 0
     echo "Retrieving Federation Certificates..." >&2
     
     #certificates tarred into esg_trusted_certificates. (if it breaks, let the user know why
     wget https://rainbow.llnl.gov/dist/certs/esg_trusted_certificates.tar -O - -q | tar x -C $ESG_HOME\
         || wget https://rainbow.llnl.gov/dist/certs/esg_trusted_certificates.tar || { echo "Could't update certs" >&2; return 1; }
-
+    wget -q https://rainbow.llnl.gov/dist/certs/esg-truststore.ts -O $TRUSTSTORE
+    
+    
     #if here everythng went fine. Replace old cert with this ones    
     [[ -d $ESG_CERT_DIR ]] && rm -r $ESG_CERT_DIR
     mv $ESG_HOME/esg_trusted_certificates $ESG_CERT_DIR
@@ -82,7 +86,14 @@ get_certificates() {
 
 # Retrieve ESG credentials
 get_credentials() {
-    [[ ! -f $MYPROXY_CERT ]] && echo "TODO: Download myproxylogon for console"
+    #get all certificates
+    get_certificates
+
+    if [[ -z "$(find $MYPROXY_GETCERT -type f -mtime -1 2>/dev/null)" ]]; then
+        echo "Downloading $MYPROXY_GETCERT"
+        mkdir -p $(dirname $MYPROXY_GETCERT)
+        wget -q https://rainbow.llnl.gov/dist/devel/esgf-getcert/getcert.jar -O $MYPROXY_GETCERT
+    fi
 
     #if the user already defined one don't bother    
     if ! grep -q OpenID $HOME/.MyProxyLogon 2>/dev/null; then
@@ -96,12 +107,13 @@ get_credentials() {
     #get password
     local pass
     read -sp "MyProxy Password? " pass
-    echo $'\nRetrieving Credentials...' >&2
-    if ! java -jar $MYPROXY_CERT $args -P $pass --output $ESG_CREDENTIALS ; then
+    echo -n $'\nRetrieving Credentials...' >&2
+    if ! java -Djavax.net.ssl.trustStore=$TRUSTSTORE -Djavax.net.ssl.trustStorePassword=changeit -jar $MYPROXY_GETCERT $args -P $pass --output $ESG_CREDENTIALS ; then
         echo "Certificate could not be retrieved"
         exit 1
     fi
     unset pass
+    echo "done!"
 }
 
 # check the certificate validity
@@ -125,8 +137,6 @@ check_cert() {
 # Detect ESG credentials
 #
 find_credentials() {
-    #get all certificates
-    get_certificates
 
     #is X509_USER_PROXY or $HOME/.esg/credential.pem
     if [[ -f "$ESG_CREDENTIALS" ]]; then

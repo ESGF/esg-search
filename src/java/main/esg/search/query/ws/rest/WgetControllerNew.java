@@ -4,9 +4,12 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.xpath.XPath;
@@ -31,6 +34,7 @@ import esg.search.utils.XmlParser;
  */
 @Controller("wgetControllerNew")
 public class WgetControllerNew {
+	private static final Log LOG = LogFactory.getLog(WgetControllerNew.class);
     
     private static final String SCRIPT_NAME = "wget.sh";
     
@@ -52,7 +56,9 @@ public class WgetControllerNew {
     public void wget(final HttpServletRequest request, 
                        final SearchCommand command, 
                        final HttpServletResponse response) throws Exception {
-        
+    	
+        WgetScriptGeneratorNew.init(request.getSession().getServletContext());
+
         // check type=... is not specified
         if (request.getParameter(QueryParameters.TYPE)!=null) {
             baseController.sendError(HttpServletResponse.SC_BAD_REQUEST, "HTTP parameter type is fixed to value: File", response);
