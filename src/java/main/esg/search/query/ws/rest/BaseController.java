@@ -74,6 +74,13 @@ public class BaseController {
 	    
 	    // set of allowed facets (and fields)
         final Set<String> allowedFacets = facetProfile.getTopLevelFacets().keySet();
+        
+        // impose maximum count on returned results
+        if (command.getLimit()>QueryParameters.MAX_LIMIT) {
+            sendError(HttpServletResponse.SC_BAD_REQUEST, 
+                    "Too many records requested, maximum allowed value is limit="+QueryParameters.MAX_LIMIT,
+                    response);  
+        }
 	    
 	    // check all HTTP parameters for bad characters
 	    for (final Object obj : request.getParameterMap().keySet()) {
