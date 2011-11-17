@@ -85,6 +85,11 @@ public class QueryParameters {
     private static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
     public static final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     
+    /**
+     * Maximum limit on returned results
+     */
+    public final static int MAX_LIMIT = 1000;
+    
     private QueryParameters() {};
 
 }

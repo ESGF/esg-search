@@ -506,7 +506,7 @@ stop_zookeeper() {
 
 #status
 check_zookeeper_process() {
-    local pid=`/usr/sbin/lsof -i:${zookeeper_client_port} | grep -i java | awk '{print $2}'`
+    local pid=`lsof -i:${zookeeper_client_port} | grep -i java | awk '{print $2}'`
     [ -n "$pid" ] && echo " Zookeeper process running on port [${zookeeper_client_port}]... " && return 0
 }
 
@@ -752,7 +752,7 @@ stop_solr() {
     while [ -n "$1" ]; do 
         solr_init ${1}
         echo "Stopping Solr on port ${solr_server_port} [${1}]"
-        local pid=`/usr/sbin/lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
+        local pid=`lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
         [ -n "${pid}" ] && kill -9 $pid
         check_solr_process
         [ $? != 0 ] && echo " [OK]" || echo " [FAIL]"
@@ -762,7 +762,7 @@ stop_solr() {
 
 #status
 check_solr_process() {
-    local pid=`/usr/sbin/lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
+    local pid=`lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
     [ -n "$pid" ] && echo " Solr process running on port [${solr_server_port}] - (${solr_config_type}) ... " && return 0
 }
 
