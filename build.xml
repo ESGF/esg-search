@@ -162,7 +162,8 @@ Builds the project via ant (obviously).
     <property name="test_build_dir"       value="${basedir}/build/test"/>
     <property name="test_build_dir_inst"  value="${basedir}/build/test-instrumented" />
     <property name="etc_dir"   	          value="${basedir}/etc"/>
-    <property name="conf_dir"   	  value="${etc_dir}/conf"/>
+    <property name="conf_dir"   	       value="${etc_dir}/conf"/>
+  	<property name="rc_dir"           value="${basedir}/resources"/>
     <property name="web_dir"   	          value="${basedir}/web"/>
     <property name="doc_dir"   	          value="${basedir}/docs"/>
     <property name="depcache_dir"     	  value="${java.io.tmpdir}/${module}/depcache"/>
@@ -337,9 +338,10 @@ Builds the project via ant (obviously).
 	    </copy>
 	  	<echo message="${conf_dir}"/>
 	    <delete file="${dist_dir}/${module}.war"/>
+  	    <echo message="resources: ${rc_dir}"/>
 	    <war destfile="${dist_dir}/${module}.war" webxml="${conf_dir}/${module}-web.xml">
 	      <!-- <fileset dir="${web_dir}" excludes="WEB-INF/**/web.xml/**,**semantic.cache**"/> -->
-	      <webinf dir="${conf_dir}" includes="**/*.xml" excludes="${module}-web.xml,**/solr/**,**/jetty/**"/>
+	      <webinf dir="${conf_dir}" includes="**/*.xml,wget-template" excludes="${module}-web.xml,**/solr/**,**/jetty/**"/>
 	      <lib dir="${dist_dir}/tmplib">
 	        <include name="**/*.jar"/>
 	        <exclude name="**/*-test*.jar,**/*-common*.jar"/>

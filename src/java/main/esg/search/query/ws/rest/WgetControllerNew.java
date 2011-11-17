@@ -7,6 +7,8 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.xpath.XPath;
@@ -31,6 +33,7 @@ import esg.search.utils.XmlParser;
  */
 @Controller("wgetControllerNew")
 public class WgetControllerNew {
+	private static final Log LOG = LogFactory.getLog(WgetControllerNew.class);
     
     private static final String SCRIPT_NAME = "wget.sh";
     
@@ -42,6 +45,8 @@ public class WgetControllerNew {
     @Autowired
     public WgetControllerNew(final BaseController baseController) {
           this.baseController = baseController;
+          LOG.debug("Debugging New");
+          WgetScriptGeneratorNew.init();
     }
     
     /**

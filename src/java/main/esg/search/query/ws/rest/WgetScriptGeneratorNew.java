@@ -13,6 +13,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 /**
  * Creates a Wget script for downloading the given files and handling
  * certificate renewal. The main conpet is to have some kind of template where
@@ -22,6 +25,7 @@ import java.util.Map.Entry;
  * @author egonzalez
  */
 public class WgetScriptGeneratorNew {
+	private static final Log LOG = LogFactory.getLog(WgetScriptGeneratorNew.class);
 
 	/**
 	 * Description required for generating the script
@@ -132,7 +136,7 @@ public class WgetScriptGeneratorNew {
 	}
 
 	//point to the resource holding the template (where?)
-	static private final String TEMPLATE_LOC = "file:/export/egonzalez/git/esg-search/resources/wget-template";
+	static private final String TEMPLATE_LOC = "file://wget-template";
 	static private String TEMPLATE;
 	
 	static private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
@@ -162,6 +166,12 @@ public class WgetScriptGeneratorNew {
 			}
 		}
 		return TEMPLATE;
+	}
+	
+	static public void init() {
+		//for checking it is found, if not the just fail when starting
+		getTemplate();
+		LOG.debug(getTemplate());
 	}
 
 	/**
