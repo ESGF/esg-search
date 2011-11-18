@@ -37,7 +37,10 @@ public class FeedController {
     public final static String MODEL_KEY_DATASET = "dataset";
     public final static String MODEL_KEY_FILES= "files";
     public final static String DATASETS_URI = "datasets";
-                
+    
+    // last update time span for returned records
+    private final static String TIME_SPAN = "NOW-10DAY";
+                    
     /**
      * Method that parses the HTTP request, executes the appropriate search for records, and redirect to the datasets-level
      * of files-level dataset view.
@@ -53,11 +56,10 @@ public class FeedController {
         if (datasetId.equals(DATASETS_URI)) {  
             
             // search for all records of type dataset
-            final SearchInput input = new SearchInputImpl();
-            input.setType(SolrXmlPars.TYPE_DATASET); 
+            final SearchInput input = newSearchInput(SolrXmlPars.TYPE_DATASET);
             
-            // FIXME
-            input.setDistrib(false);
+            // only return most recent datasets
+            input.addConstraint(QueryParameters.FROM, TIME_SPAN);
             
             SearchOutput output = searchService.search(input); 
             model.addAttribute(MODEL_KEY_DATASETS, output);  
@@ -68,21 +70,15 @@ public class FeedController {
         } else {
             
             // search for single record of type dataset
-            final SearchInput input1 = new SearchInputImpl();
-            input1.setType(SolrXmlPars.TYPE_DATASET);
+            final SearchInput input1 = newSearchInput(SolrXmlPars.TYPE_DATASET);
             input1.addConstraint(QueryParameters.FIELD_ID, datasetId); 
-            // FIXME
-            input1.setDistrib(false);
             
             SearchOutput output1 = searchService.search(input1); 
             model.addAttribute(MODEL_KEY_DATASET, output1);  
             
             // search for all records of type file, with given parent
-            final SearchInput input2 = new SearchInputImpl();
-            input2.setType(SolrXmlPars.TYPE_FILE); 
+            final SearchInput input2 = newSearchInput(SolrXmlPars.TYPE_FILE);
             input2.addConstraint(QueryParameters.FIELD_DATASET_ID, datasetId);
-            // FIXME
-            input2.setDistrib(false);
             
             SearchOutput output2 = searchService.search(input2); 
             model.addAttribute(MODEL_KEY_FILES, output2);  
@@ -90,6 +86,21 @@ public class FeedController {
             // redirect to RSS view for single dataset
             return FILES_RSS_VIEW_NAME;
         }
+        
+    }
+    
+    /**
+     * Utility method to instantiate a query configured with default parameters for RSS feeds
+     * @param type
+     */
+    private SearchInput newSearchInput(String type) {
+        
+        final SearchInput searchInput = new SearchInputImpl();
+        searchInput.setType(type);
+        searchInput.setLimit(QueryParameters.MAX_LIMIT);
+        // FIXME
+        searchInput.setDistrib(false);
+        return searchInput;
         
     }
 

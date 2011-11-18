@@ -105,6 +105,19 @@ public class RssViewBuilder {
 
     }
     
+    // <enclosure url="http://localhost:8080/esg-search/feed/obs4MIPs.NASA-JPL.AIRS.mon.rss" type="application/rss+xml" />
+    public final static void addDatasetEnclosure(Item feedItem, Record record, HttpServletRequest request) throws Exception {
+        
+        final List<Enclosure> enclosures = new ArrayList<Enclosure>();
+        Enclosure enc = new Enclosure();
+        enc.setUrl( RssViewBuilder.getRssBaseUri(request)+record.getId()+".rss" );
+        enc.setType( ThreddsPars.MIME_TYPE_RSS );
+        enclosures.add(enc);
+        feedItem.setEnclosures(enclosures);
+        
+        
+    }
+    
     // <description>MODSCW_P2011192_C4_1750_1755_1930_1935_GL05_closest_chlora.hdf</description>
     public final static void addDescription(Item feedItem, Record record) throws Exception {
         String description = record.getFieldValue(QueryParameters.FIELD_DESCRIPTION);
@@ -188,7 +201,7 @@ public class RssViewBuilder {
     }
     
     /**
-     * Utility method to extract the THREDDS catalog URL (in HTML form) from the list of record URLs
+     * Utility method to extract the XML THREDDS catalog URL from the list of record URLs.
      * @param record
      * @return
      */
@@ -199,12 +212,10 @@ public class RssViewBuilder {
             
             // (url, mime type, description)
             try {
-                final String[] _parts = RecordHelper.decodeUrlTuple(urlTuple);
-                
+                final String[] _parts = RecordHelper.decodeUrlTuple(urlTuple);                
                 // THREDDS catalog xml/html page
                 if (_parts[1].equalsIgnoreCase(ThreddsPars.MIME_TYPE_THREDDS)) {
-                    // replace THREDDS catalog XML link with HTML page
-                    return _parts[0].replace(".xml", ".html");   
+                    return _parts[0];   
                 }
             } catch(Exception e) {
                 LOG.warn(e.getMessage());

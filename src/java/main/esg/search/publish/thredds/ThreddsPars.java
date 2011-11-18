@@ -106,6 +106,7 @@ public class ThreddsPars {
     public final static String MIME_TYPE_OPENDAP_DAS = "application/opendap-das";
     public final static String MIME_TYPE_OPENDAP_DDS = "application/opendap-dds";
     public final static String MIME_TYPE_OPENDAP_HTML = "application/opendap-html";
+    public final static String MIME_TYPE_RSS = "application/rss+xml";
 	
 	private final static Map<String,String> mimeTypes = new HashMap<String,String>();
 	

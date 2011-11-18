@@ -54,8 +54,9 @@ public class FilesRssView extends AbstractRssFeedView {
             
             // <link>http://esg-datanode.jpl.nasa.gov/thredds/esgcet/1/obs4MIPs.NASA-JPL.AIRS.mon.v1.html
             //       ?dataset=obs4MIPs.NASA-JPL.AIRS.mon.v1.husNobs_AIRS_L3_RetStd-v5_200209-201105.nc</link>
-            String datasetUrl = RssViewBuilder.getThreddsCatalogUrl(datasetRecord);
-            feedItem.setLink( datasetUrl.replaceAll("\\#.*", "") + "?dataset=" + fileRecord.getId() );
+            String datasetCatalogUrl = RssViewBuilder.getThreddsCatalogUrl(datasetRecord);
+            String fileCatalogUrl = datasetCatalogUrl.replaceAll("\\#.*", "") + "?dataset=" + fileRecord.getId();
+            feedItem.setLink( fileCatalogUrl.replace(".xml", ".html") );
             
             // <datacasting:acquisitionStartDate>Mon, 11 Jul 2011 00:00:00 GMT</datacasting:acquisitionStartDate>
             // <datacasting:acquisitionEndDate>Tue, 12 Jul 2011 00:00:00 GMT</datacasting:acquisitionEndDate>
@@ -80,11 +81,8 @@ public class FilesRssView extends AbstractRssFeedView {
             // <category domain="http://www.esgf.org/cv/0.1/experiment">obs</category>
             RssViewBuilder.addCategories(feedItem, fileRecord); 
             
-            // <source url="http://localhost:8080/esg-search/feed/datasets.rss">obs4MIPs NASA-JPL AIRS L3 Monthly Data</source>
-            RssViewBuilder.addSource(feedItem, 
-                                     RssViewBuilder.getFeedTitle(properties), 
-                                     RssViewBuilder.getRssBaseUri(req)+FeedController.DATASETS_URI+".rss");
-
+            // <source url="http://esg-datanode.jpl.nasa.gov/thredds/esgcet/1/obs4MIPs.NASA-JPL.AIRS.mon.v1.xml?dataset=obs4MIPs.NASA-JPL.AIRS.mon.v1.husNobs_AIRS_L3_RetStd-v5_200209-201105.nc">ESGF-JPL RSS</source>
+            RssViewBuilder.addSource(feedItem, fileRecord.getId(), fileCatalogUrl);
             
             feedItems.add(feedItem);  
             
@@ -103,7 +101,7 @@ public class FilesRssView extends AbstractRssFeedView {
         feed.setTitle(datasetRecord.getFieldValue(QueryParameters.FIELD_TITLE));  
         
         // <link>http://esg-datanode.jpl.nasa.gov/thredds/esgcet/1/obs4MIPs.NASA-JPL.AIRS.mon.v1.html#obs4MIPs.NASA-JPL.AIRS.mon.v1</link>
-        feed.setLink(RssViewBuilder.getThreddsCatalogUrl(datasetRecord));  
+        feed.setLink(RssViewBuilder.getThreddsCatalogUrl(datasetRecord).replace(".xml", ".html"));  
         
         // <description>obs4MIPs.NASA-JPL.AIRS.mon</description>
         if (StringUtils.hasText(datasetRecord.getFieldValue(QueryParameters.FIELD_DESCRIPTION))) {

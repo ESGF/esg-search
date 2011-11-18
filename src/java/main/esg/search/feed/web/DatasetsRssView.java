@@ -46,7 +46,8 @@ public class DatasetsRssView extends AbstractRssFeedView {
             RssViewBuilder.addTitle(feedItem, datasetRecord);
             
             // <link>http://esg-datanode.jpl.nasa.gov/thredds/esgcet/1/obs4MIPs.NASA-JPL.AIRS.mon.v1.html#obs4MIPs.NASA-JPL.AIRS.mon.v1</link>
-            feedItem.setLink( RssViewBuilder.getThreddsCatalogUrl(datasetRecord) ); 
+            // replace THREDDS catalog XML link with HTML page
+            feedItem.setLink( RssViewBuilder.getThreddsCatalogUrl(datasetRecord).replace(".xml", ".html") ); 
             
             // <description>obs4MIPs.NASA-JPL.AIRS.mon</description>
             RssViewBuilder.addDescription(feedItem, datasetRecord);             
@@ -56,12 +57,13 @@ public class DatasetsRssView extends AbstractRssFeedView {
             
             // <enclosure url="http://esg-datanode.jpl.nasa.gov/las/getUI.do?catid=893EB2D5C79AD40EE2436A3F118649CE_ns_obs4MIPs.NASA-JPL.AIRS.mon.husNobs.1.aggregation" type="text/html" />
             // <enclosure url="http://esg-datanode.jpl.nasa.gov/thredds/dodsC/obs4MIPs.NASA-JPL.AIRS.mon.husNobs.1.aggregation.1.dods" type="application/opendap-dods" />
-            RssViewBuilder.addEnclosures(feedItem, datasetRecord);
+            //RssViewBuilder.addEnclosures(feedItem, datasetRecord);
+            
+            // <enclosure url="http://localhost:8080/esg-search/feed/obs4MIPs.NASA-JPL.AIRS.mon.rss" type="application/rss+xml" />
+            RssViewBuilder.addDatasetEnclosure(feedItem, datasetRecord, request);
 
-            // <source url="http://localhost:8080/esg-search/feed/obs4MIPs.NASA-JPL.AIRS.mon.rss">obs4MIPs NASA-JPL AIRS L3 Monthly Data</source>
-            RssViewBuilder.addSource(feedItem, 
-                                     datasetRecord.getFieldValue(QueryParameters.FIELD_TITLE),
-                                     RssViewBuilder.getRssBaseUri(request)+datasetRecord.getId()+".rss");
+            // <source url="http://esg-datanode.jpl.nasa.gov/thredds/esgcet/1/obs4MIPs.NASA-JPL.AIRS.mon.v1.xml#obs4MIPs.NASA-JPL.AIRS.mon.v1">obs4MIPs NASA-JPL AIRS L3 Monthly Data</source>
+            RssViewBuilder.addSource(feedItem, datasetRecord.getId(),RssViewBuilder.getThreddsCatalogUrl(datasetRecord));
                         
             // <guid isPermaLink="false">obs4MIPs.NASA-JPL.AIRS.mon</guid>
             RssViewBuilder.addGuid(feedItem, datasetRecord);
