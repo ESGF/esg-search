@@ -13,6 +13,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.servlet.ServletContext;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.web.context.support.ServletContextResource;
+
 /**
  * Creates a Wget script for downloading the given files and handling
  * certificate renewal. The main conpet is to have some kind of template where
@@ -22,6 +29,7 @@ import java.util.Map.Entry;
  * @author egonzalez
  */
 public class WgetScriptGeneratorNew {
+	private static final Log LOG = LogFactory.getLog(WgetScriptGeneratorNew.class);
 
 	/**
 	 * Description required for generating the script
@@ -92,7 +100,7 @@ public class WgetScriptGeneratorNew {
 	 * @return the string conatining the whole script
 	 */
 	static public String getWgetScript(WgetDescriptor desc) {
-		String template = getTemplate();
+		String template = getTemplate(null);
 
 		Map<String, String> tags = new HashMap<String, String>();
 		// extract using reflections all string from the description
@@ -132,20 +140,20 @@ public class WgetScriptGeneratorNew {
 	}
 
 	//point to the resource holding the template (where?)
-	static private final String TEMPLATE_LOC = "file:/export/egonzalez/git/esg-search/resources/wget-template";
+	static private final String TEMPLATE_LOC = "WEB-INF/wget-template";
 	static private String TEMPLATE;
 	
 	static private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
 			"yyyy/MM/dd HH:mm:ss");
 
-	static private String getTemplate() {
-		if (TEMPLATE == null) {
+	static private String getTemplate(ServletContext servletContext) {
+		if (TEMPLATE == null && servletContext != null) {
 			
 			try {
-				URL url = new URL(TEMPLATE_LOC);
-				URLConnection c = url.openConnection();
-				InputStreamReader reader = new InputStreamReader(
-						c.getInputStream(), "UTF-8");
+				ServletContextResource resource = new ServletContextResource(servletContext, TEMPLATE_LOC);
+				
+				LOG.debug(resource.getFile().getAbsolutePath());
+				InputStreamReader reader = new InputStreamReader(resource.getInputStream(), "UTF-8");
 				StringBuilder sb = new StringBuilder();
 				char[] buff = new char[1024];
 				int read;
@@ -163,26 +171,11 @@ public class WgetScriptGeneratorNew {
 		}
 		return TEMPLATE;
 	}
-
-	/**
-	 * @param args
-	 *            nothing
-	 */
-	public static void main(String[] args) {
-		System.out.println(WgetScriptGeneratorNew
-				.getWgetScript(createTestDescriptor()));
-	}
-
-	public static WgetDescriptor createTestDescriptor() {
-		WgetDescriptor desc = new WgetDescriptor("TESThostName",
-				null, "TESTsearchUrl");
-		desc.addFile(
-				"http://bcccsm.cma.gov.cn/thredds/fileServer/cmip5_data/output/BCC/bcc-csm1-1/abrupt4xCO2/3hr/land/mrsos/r9i1p1/mrsos_3hr_bcc-csm1-1_abrupt4xCO2_r9i1p1_016009010000-016512312100.nc",
-				"TESTid", "777", "TESTchksumType", "TESTchksum");
-		desc.addFile(
-				"http://bcccsm.cma.gov.cn/thredds/fileServer/cmip5_data/output/BCC/bcc-csm1-1/abrupt4xCO2/3hr/land/tslsi/r9i1p1/tslsi_3hr_bcc-csm1-1_abrupt4xCO2_r9i1p1_016009010000-016512312100.nc",
-				"TESTid2", "7772", "TESTchksumType2", "TESTchksum2");
-		return desc;
+	
+	static public void init(ServletContext servletContext) {
+		
+		getTemplate(servletContext);
+		LOG.debug(getTemplate(null));
 	}
 
 }
