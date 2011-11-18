@@ -51,7 +51,7 @@ public class RssViewBuilder {
     // ESGF namespace
     public final static String ESGF_NS = "http://www.esgf.org/cv/0.1/";
     
-    // ESGF facets
+    // ESGF facets included in RSS feeds
     public final static String[] FACETS = new String[] { 
             "cf_variable", 
             "data_structure",
@@ -66,7 +66,9 @@ public class RssViewBuilder {
             "source_id",
             "time_frequency",
             "tracking_id",
-            "variable"
+            "variable",
+            "replica",
+            "master_id"
     };
     
     /**
@@ -161,10 +163,12 @@ public class RssViewBuilder {
         // loop over predefined facets
         for (String key : FACETS) {
             for (String value : record.getFieldValues(key)) {
-                Category category = new Category();
-                category.setDomain(ESGF_NS+key);
-                category.setValue(value);
-                categories.add(category);
+                if (StringUtils.hasText(value)) {
+                    Category category = new Category();
+                    category.setDomain(ESGF_NS+key);
+                    category.setValue(value);
+                    categories.add(category);
+                }
             }
         }
         feedItem.setCategories(categories);
