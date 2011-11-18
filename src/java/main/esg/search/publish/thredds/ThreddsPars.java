@@ -21,6 +21,8 @@ package esg.search.publish.thredds;
 import java.util.HashMap;
 import java.util.Map;
 
+import esg.search.query.api.QueryParameters;
+
 /**
  * Class containing THREDDS constants.
  */
@@ -91,35 +93,19 @@ public class ThreddsPars {
 	public final static String SERVICE_TYPE_LAS = "LAS";
 	public final static String SERVICE_TYPE_GRIDFTP = "GridFTP";
 	public final static String SERVICE_TYPE_FTP = "FTP";
-	
-	// HTTP mime types
-	public final static String MIME_TYPE_THREDDS = "application/xml+thredds";	
-	public final static String MIME_TYPE_NETCDF = "application/netcdf";
-	public final static String MIME_TYPE_GRIDFTP = "application/gridftp";
-	public final static String MIME_TYPE_FTP = "application/ftp";
-	public final static String MIME_TYPE_LAS = "application/las";	
-    public final static String MIME_TYPE_HTML = "text/html";
-    public final static String MIME_TYPE_GOOGLE_EARTH = "application/vnd.google-earth.kmz";
-    public final static String MIME_TYPE_HDF = "application/x-hdf";
-    public final static String MIME_TYPE_OPENDAP = "application/opendap";
-    public final static String MIME_TYPE_OPENDAP_DODS = "application/opendap-dods";
-    public final static String MIME_TYPE_OPENDAP_DAS = "application/opendap-das";
-    public final static String MIME_TYPE_OPENDAP_DDS = "application/opendap-dds";
-    public final static String MIME_TYPE_OPENDAP_HTML = "application/opendap-html";
-    public final static String MIME_TYPE_RSS = "application/rss+xml";
-	
+		
 	private final static Map<String,String> mimeTypes = new HashMap<String,String>();
 	
 	// static initializer populates the mime types map
 	static {
 	    
 	    // make keys case-insensitive
-	    mimeTypes.put(SERVICE_TYPE_CATALOG.toLowerCase(), MIME_TYPE_THREDDS);
-	    mimeTypes.put(SERVICE_TYPE_OPENDAP.toLowerCase(), MIME_TYPE_OPENDAP);
-	    mimeTypes.put(SERVICE_TYPE_LAS.toLowerCase(), MIME_TYPE_LAS);
-	    mimeTypes.put(SERVICE_TYPE_GRIDFTP.toLowerCase(), MIME_TYPE_GRIDFTP);
-	    mimeTypes.put(SERVICE_TYPE_FTP.toLowerCase(), MIME_TYPE_FTP);
-	    mimeTypes.put(SERVICE_TYPE_HTTP.toLowerCase(), MIME_TYPE_HTML);
+	    mimeTypes.put(SERVICE_TYPE_CATALOG.toLowerCase(), QueryParameters.MIME_TYPE_THREDDS);
+	    mimeTypes.put(SERVICE_TYPE_OPENDAP.toLowerCase(), QueryParameters.MIME_TYPE_OPENDAP);
+	    mimeTypes.put(SERVICE_TYPE_LAS.toLowerCase(), QueryParameters.MIME_TYPE_LAS);
+	    mimeTypes.put(SERVICE_TYPE_GRIDFTP.toLowerCase(), QueryParameters.MIME_TYPE_GRIDFTP);
+	    mimeTypes.put(SERVICE_TYPE_FTP.toLowerCase(), QueryParameters.MIME_TYPE_FTP);
+	    mimeTypes.put(SERVICE_TYPE_HTTP.toLowerCase(), QueryParameters.MIME_TYPE_HTML);
 	    
 	}
 	
@@ -139,25 +125,25 @@ public class ThreddsPars {
 	    // special mapping of HTTP URLs
 	    if (_serviceType.equalsIgnoreCase(ThreddsPars.SERVICE_TYPE_HTTP)) {
 	        if (_url.endsWith(".nc") || _url.endsWith(".cdf")) {
-	            return MIME_TYPE_NETCDF;
+	            return QueryParameters.MIME_TYPE_NETCDF;
 	        } else if (_url.endsWith(".hdf") || _url.endsWith(".h5")) {
-	            return MIME_TYPE_HDF;
+	            return QueryParameters.MIME_TYPE_HDF;
 	        } else {
-	            return MIME_TYPE_HTML;
+	            return QueryParameters.MIME_TYPE_HTML;
 	        }
 	        
 	    // special mapping of OpenDAP URLs
 	    } else if (_serviceType.equalsIgnoreCase(ThreddsPars.SERVICE_TYPE_OPENDAP)) {
 	        if (_url.endsWith(".html")) {
-	            return MIME_TYPE_OPENDAP_HTML;
+	            return QueryParameters.MIME_TYPE_OPENDAP_HTML;
 	        } else if (_url.endsWith(".dods")) {
-	            return MIME_TYPE_OPENDAP_DODS;
+	            return QueryParameters.MIME_TYPE_OPENDAP_DODS;
 	        } else if (_url.endsWith(".das")) {
-                return MIME_TYPE_OPENDAP_DAS;
+                return QueryParameters.MIME_TYPE_OPENDAP_DAS;
             } else if (_url.endsWith(".dds")) {
-                return MIME_TYPE_OPENDAP_DDS;
+                return QueryParameters.MIME_TYPE_OPENDAP_DDS;
             } else {
-                return MIME_TYPE_OPENDAP;
+                return QueryParameters.MIME_TYPE_OPENDAP;
             }
 	        
 	    } else {	    

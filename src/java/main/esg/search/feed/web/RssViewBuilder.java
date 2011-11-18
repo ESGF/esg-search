@@ -111,7 +111,7 @@ public class RssViewBuilder {
         final List<Enclosure> enclosures = new ArrayList<Enclosure>();
         Enclosure enc = new Enclosure();
         enc.setUrl( RssViewBuilder.getRssBaseUri(request)+record.getId()+".rss" );
-        enc.setType( ThreddsPars.MIME_TYPE_RSS );
+        enc.setType( QueryParameters.MIME_TYPE_RSS );
         enclosures.add(enc);
         feedItem.setEnclosures(enclosures);
         
@@ -214,7 +214,7 @@ public class RssViewBuilder {
             try {
                 final String[] _parts = RecordHelper.decodeUrlTuple(urlTuple);                
                 // THREDDS catalog xml/html page
-                if (_parts[1].equalsIgnoreCase(ThreddsPars.MIME_TYPE_THREDDS)) {
+                if (_parts[1].equalsIgnoreCase(QueryParameters.MIME_TYPE_THREDDS)) {
                     return _parts[0];   
                 }
             } catch(Exception e) {

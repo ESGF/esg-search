@@ -58,6 +58,23 @@ public class QueryParameters {
     final public static String FIELD_CHECKSUM = "checksum";
     final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
     
+    // HTTP mime types
+    public final static String MIME_TYPE_THREDDS = "application/xml+thredds";   
+    public final static String MIME_TYPE_NETCDF = "application/netcdf";
+    public final static String MIME_TYPE_GRIDFTP = "application/gridftp";
+    public final static String MIME_TYPE_FTP = "application/ftp";
+    public final static String MIME_TYPE_LAS = "application/las";   
+    public final static String MIME_TYPE_HTML = "text/html";
+    public final static String MIME_TYPE_GOOGLE_EARTH = "application/vnd.google-earth.kmz";
+    public final static String MIME_TYPE_HDF = "application/x-hdf";
+    public final static String MIME_TYPE_OPENDAP = "application/opendap";
+    public final static String MIME_TYPE_OPENDAP_DODS = "application/opendap-dods";
+    public final static String MIME_TYPE_OPENDAP_DAS = "application/opendap-das";
+    public final static String MIME_TYPE_OPENDAP_DDS = "application/opendap-dds";
+    public final static String MIME_TYPE_OPENDAP_HTML = "application/opendap-html";
+    public final static String MIME_TYPE_RSS = "application/rss+xml";
+
+    
     public final static List<String> STANDARD_FIELDS = Arrays.asList( new String[]{ FIELD_ID, FIELD_TITLE, FIELD_DESCRIPTION, 
                                                                                     FIELD_TYPE, FIELD_TIMESTAMP, FIELD_URL, FIELD_SIZE,
                                                                                     FIELD_DATASET_ID, FIELD_VERSION, 
