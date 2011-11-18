@@ -20,7 +20,6 @@ import com.sun.syndication.feed.rss.Source;
 
 import esg.search.core.Record;
 import esg.search.publish.impl.RecordHelper;
-import esg.search.publish.thredds.ThreddsPars;
 import esg.search.query.api.QueryParameters;
 
 /**
@@ -58,7 +57,6 @@ public class RssViewBuilder {
             "dataset_id",
             "replica",
             "master_id",
-            "version",
             "cf_variable", 
             "data_structure",
             "experiment",
@@ -168,15 +166,23 @@ public class RssViewBuilder {
         for (String key : FACETS) {
             for (String value : record.getFieldValues(key)) {
                 if (StringUtils.hasText(value)) {
-                    Category category = new Category();
-                    category.setDomain(ESGF_NS+key);
-                    category.setValue(value);
-                    categories.add(category);
+                     categories.add( newCategory(key, value));
                 }
             }
         }
+        
+        // add record version
+        categories.add(newCategory("version", Long.toString(record.getVersion())));
+        
         feedItem.setCategories(categories);
         
+    }
+    
+    private static Category newCategory(String key, String value) {
+        Category category = new Category();
+        category.setDomain(ESGF_NS+key);
+        category.setValue(value);
+        return category;
     }
     
     /**
