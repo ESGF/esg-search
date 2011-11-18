@@ -46,7 +46,7 @@ public class RssViewBuilder {
     }
     
     // time to live in minutes
-    public static int TTL = 5;
+    public static int TTL = 60;
     
     // ESGF namespace
     public final static String ESGF_NS = "http://www.esgf.org/cv/0.1/";
