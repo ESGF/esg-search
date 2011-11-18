@@ -52,7 +52,13 @@ public class RssViewBuilder {
     public final static String ESGF_NS = "http://www.esgf.org/cv/0.1/";
     
     // ESGF facets included in RSS feeds
-    public final static String[] FACETS = new String[] { 
+    public final static String[] FACETS = new String[] {
+            "id",
+            "type",
+            "dataset_id",
+            "replica",
+            "master_id",
+            "version",
             "cf_variable", 
             "data_structure",
             "experiment",
@@ -66,9 +72,7 @@ public class RssViewBuilder {
             "source_id",
             "time_frequency",
             "tracking_id",
-            "variable",
-            "replica",
-            "master_id"
+            "variable"
     };
     
     /**
@@ -141,7 +145,7 @@ public class RssViewBuilder {
     // <guid isPermaLink="true">http://coastwatch.noaa.gov/thredds/fileServer/chloraAquaMODISDailyCWHDFGL05/MODSCW_P2011189_C4_1720_1725_1900_1905_GL05_closest_chlora.hdf</guid>
     public final static void addGuid(Item feedItem, Record record) {
         Guid guid = new Guid();
-        guid.setValue( record.getId()+".v"+record.getVersion());
+        guid.setValue( record.getId() );
         guid.setPermaLink(false); // NOT a URL
         feedItem.setGuid( guid );
     }
