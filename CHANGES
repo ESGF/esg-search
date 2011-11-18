@@ -43,3 +43,6 @@ Internal changes to URLs resolved by the servlet
 1.5.1
 - Fixes to RSS feed after changes in Solr schema
 - Execute distributed search by default
+
+1.6.0
+- Expansion of RSS functionality to include federation wide and facet-specific feeds.

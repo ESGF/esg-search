@@ -110,7 +110,7 @@ public class RssViewBuilder {
         
         final List<Enclosure> enclosures = new ArrayList<Enclosure>();
         Enclosure enc = new Enclosure();
-        enc.setUrl( RssViewBuilder.getRssBaseUri(request)+record.getId()+".rss" );
+        enc.setUrl( RssViewBuilder.getRssBaseUri(request)+"dataset/"+record.getId()+".rss" );
         enc.setType( QueryParameters.MIME_TYPE_RSS );
         enclosures.add(enc);
         feedItem.setEnclosures(enclosures);
@@ -171,9 +171,14 @@ public class RssViewBuilder {
         
     }
     
+    /**
+     * Method to return the base URL of the RSS feed, without the REST-like parameters.
+     * @param request
+     * @return
+     */
     public final static String getRssBaseUri(HttpServletRequest request) {
         String url = request.getRequestURL().toString();
-        return url.substring(0, url.lastIndexOf("/")+1);
+        return url.substring(0, url.lastIndexOf("feed/")+5);
     }
     
     public final static String getFeedTitle(Properties properties) {

@@ -1,5 +1,8 @@
 package esg.search.feed.web;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,72 +39,131 @@ public class FeedController {
     public final static String MODEL_KEY_DATASETS = "datasets";
     public final static String MODEL_KEY_DATASET = "dataset";
     public final static String MODEL_KEY_FILES= "files";
-    public final static String DATASETS_URI = "datasets";
     
     // last update time span for returned records
     private final static String TIME_SPAN = "NOW-10DAY";
+    
+    /**
+     * Method that handles RSS feeds for records of type Dataset, across all nodes.
+     * @param response
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value="/nodes.rss", method=RequestMethod.GET)  
+    public String nodesFeed(final HttpServletResponse response, final Model model) throws Exception {  
+        
+        // build distributed dataset feed with no other constraints
+        return this.datasetFeed(model, true, null);
+
+    }
+    
+    /**
+     * Method that handles RSS feeds for records of type Dataset, for only one node.
+     * @param response
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value="/node.rss", method=RequestMethod.GET)  
+    public String nodeFeed(final HttpServletResponse response, final Model model) throws Exception {  
+        
+        // build non-distributed dataset feed with no other constraints
+        return this.datasetFeed(model, false, null);
+
+    }
+    
+    /**
+     * Method that handles RSS feeds for records of type Dataset, for a specific facet name and value.
+     * @param response
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value="/{facetName}/{facetValue}.rss", method=RequestMethod.GET)  
+    public String facetFeed(@PathVariable("facetName") String facetName, @PathVariable("facetValue") String facetValue, 
+                            final HttpServletResponse response, final Model model) throws Exception {  
+        
+        // build distributed dataset feed with given project constraint
+        final Map<String, String> constraints = new HashMap<String, String>();
+        constraints.put(facetName, facetValue);
+        return this.datasetFeed(model, false, constraints);
+
+    }
                     
     /**
-     * Method that parses the HTTP request, executes the appropriate search for records, and redirect to the datasets-level
-     * of files-level dataset view.
+     * Method that handles RSS feeds for records of type File, for a specified dataset.
      * 
      * @param res
      * @param model
      * @return
      * @throws Exception
      */
-    @RequestMapping(value="/{datasetId}.rss", method=RequestMethod.GET)  
-    public String rss(@PathVariable("datasetId") String datasetId, final HttpServletResponse res, final Model model) throws Exception {  
-               
-        if (datasetId.equals(DATASETS_URI)) {  
-            
-            // search for all records of type dataset
-            final SearchInput input = newSearchInput(SolrXmlPars.TYPE_DATASET);
-            
-            // only return most recent datasets
-            input.addConstraint(QueryParameters.FROM, TIME_SPAN);
-            
-            SearchOutput output = searchService.search(input); 
-            model.addAttribute(MODEL_KEY_DATASETS, output);  
-            
-            // redirect to RSS top-level view
-            return DATASETS_RSS_VIEW_NAME;
-            
-        } else {
-            
-            // search for single record of type dataset
-            final SearchInput input1 = newSearchInput(SolrXmlPars.TYPE_DATASET);
-            input1.addConstraint(QueryParameters.FIELD_ID, datasetId); 
-            
-            SearchOutput output1 = searchService.search(input1); 
-            model.addAttribute(MODEL_KEY_DATASET, output1);  
-            
-            // search for all records of type file, with given parent
-            final SearchInput input2 = newSearchInput(SolrXmlPars.TYPE_FILE);
-            input2.addConstraint(QueryParameters.FIELD_DATASET_ID, datasetId);
-            
-            SearchOutput output2 = searchService.search(input2); 
-            model.addAttribute(MODEL_KEY_FILES, output2);  
-            
-            // redirect to RSS view for single dataset
-            return FILES_RSS_VIEW_NAME;
-        }
+    @RequestMapping(value="/dataset/{datasetId}.rss", method=RequestMethod.GET)  
+    public String datasetFeed(@PathVariable("datasetId") String datasetId, final HttpServletResponse res, final Model model) throws Exception {  
+                           
+        // search for single record of type dataset, across all nodes
+        final SearchInput input1 = newSearchInput(SolrXmlPars.TYPE_DATASET, true);
+        input1.addConstraint(QueryParameters.FIELD_ID, datasetId); 
+        
+        SearchOutput output1 = searchService.search(input1); 
+        model.addAttribute(MODEL_KEY_DATASET, output1);  
+        
+        // search for all records of type file, with given parent
+        final SearchInput input2 = newSearchInput(SolrXmlPars.TYPE_FILE, true);
+        input2.addConstraint(QueryParameters.FIELD_DATASET_ID, datasetId);
+        
+        SearchOutput output2 = searchService.search(input2); 
+        model.addAttribute(MODEL_KEY_FILES, output2);  
+        
+        // redirect to RSS view for single dataset
+        return FILES_RSS_VIEW_NAME;
         
     }
     
     /**
-     * Utility method to instantiate a query configured with default parameters for RSS feeds
+     * Utility method to instantiate a query configured with specified parameters for RSS feeds
      * @param type
+     * @param distrib
      */
-    private SearchInput newSearchInput(String type) {
+    private SearchInput newSearchInput(String type, boolean distrib) {
         
         final SearchInput searchInput = new SearchInputImpl();
         searchInput.setType(type);
+        searchInput.setDistrib(distrib);
         searchInput.setLimit(QueryParameters.MAX_LIMIT);
-        // FIXME
-        searchInput.setDistrib(false);
         return searchInput;
         
+    }
+    
+    /**
+     * Base method to build an RSS feed for record of type dataset.
+     * @param response
+     * @param model
+     * @return
+     * @throws Exception
+     */
+    private String datasetFeed(final Model model, boolean distrib, Map<String,String> constraints) throws Exception {  
+        
+        // search for all records of type dataset (across one node, or all nodes)
+        final SearchInput input = newSearchInput(SolrXmlPars.TYPE_DATASET, distrib);
+        
+        // add additional constraints
+        if (constraints!=null) {
+            for (final String key : constraints.keySet()) {
+                input.addConstraint(key, constraints.get(key));
+            }
+        }
+        
+        // only return most recent datasets
+        input.addConstraint(QueryParameters.FROM, TIME_SPAN);
+        
+        SearchOutput output = searchService.search(input); 
+        model.addAttribute(MODEL_KEY_DATASETS, output);  
+        
+        // redirect to RSS top-level view
+        return DATASETS_RSS_VIEW_NAME;
+
     }
 
     @Autowired
