@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
@@ -27,11 +25,6 @@ import esg.search.query.api.SearchOutput;
  *
  */
 public class FilesRssView extends AbstractRssFeedView {
-    
-    /**
-     * Configuration properties:
-     */
-    private Properties properties;
 
     @Override
     protected List<Item> buildFeedItems(final Map<String, Object> model, final HttpServletRequest req, final HttpServletResponse resp) throws Exception {
@@ -121,11 +114,6 @@ public class FilesRssView extends AbstractRssFeedView {
         
         super.buildFeedMetadata(model, feed, request);
         
-    }
-    
-    @Required
-    public void setProperties(Properties properties) {
-        this.properties = properties;
     }
 
 }

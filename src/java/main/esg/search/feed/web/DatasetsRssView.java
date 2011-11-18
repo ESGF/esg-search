@@ -10,13 +10,13 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Required;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
 import com.sun.syndication.feed.rss.Channel;
 import com.sun.syndication.feed.rss.Item;
 
 import esg.search.core.Record;
-import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchOutput;
 
 /**
@@ -82,7 +82,12 @@ public class DatasetsRssView extends AbstractRssFeedView {
     protected void buildFeedMetadata(Map<String, Object> model, Channel feed, HttpServletRequest request) {
         
         // <title>ESGF-JPL Datasets RSS feed</title>
-        feed.setTitle( RssViewBuilder.getFeedTitle(properties) );
+        if (StringUtils.hasText( (String)model.get(FeedController.MODEL_KEY_FEED_TITLE)) ) {
+            feed.setTitle( (String)model.get(FeedController.MODEL_KEY_FEED_TITLE) );
+        } else {
+            // use default feed title for this node
+            feed.setTitle( RssViewBuilder.getFeedTitle(properties) );
+        }
         
         // <description>Datasets accessible from the ESGF-JPL Node</description>
         feed.setDescription(RssViewBuilder.getFeedDesc(properties));

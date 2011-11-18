@@ -39,9 +39,12 @@ public class FeedController {
     public final static String MODEL_KEY_DATASETS = "datasets";
     public final static String MODEL_KEY_DATASET = "dataset";
     public final static String MODEL_KEY_FILES= "files";
+    public final static String MODEL_KEY_FEED_TITLE = "feed_title";
     
     // last update time span for returned records
     private final static String TIME_SPAN = "NOW-10DAY";
+    
+    private final static String NODES_FEED_TITLE = "ESGF RSS Feed";
     
     /**
      * Method that handles RSS feeds for records of type Dataset, across all nodes.
@@ -52,6 +55,9 @@ public class FeedController {
      */
     @RequestMapping(value="/nodes.rss", method=RequestMethod.GET)  
     public String nodesFeed(final HttpServletResponse response, final Model model) throws Exception {  
+        
+        // set feed title
+        model.addAttribute(MODEL_KEY_FEED_TITLE, NODES_FEED_TITLE);
         
         // build distributed dataset feed with no other constraints
         return this.datasetFeed(model, true, null);
@@ -69,6 +75,7 @@ public class FeedController {
     public String nodeFeed(final HttpServletResponse response, final Model model) throws Exception {  
         
         // build non-distributed dataset feed with no other constraints
+        // use default feed title for this node
         return this.datasetFeed(model, false, null);
 
     }
@@ -84,9 +91,13 @@ public class FeedController {
     public String facetFeed(@PathVariable("facetName") String facetName, @PathVariable("facetValue") String facetValue, 
                             final HttpServletResponse response, final Model model) throws Exception {  
         
+        // set feed title
+        model.addAttribute(MODEL_KEY_FEED_TITLE, "ESGF RSS Feed for "+facetName+"="+facetValue);
+        
         // build distributed dataset feed with given project constraint
         final Map<String, String> constraints = new HashMap<String, String>();
         constraints.put(facetName, facetValue);
+        
         return this.datasetFeed(model, false, constraints);
 
     }

@@ -43,7 +43,7 @@
     
     <!-- RSS Views -->
     <bean id="datasetsRssView" class="esg.search.feed.web.DatasetsRssView" p:properties-ref="esgfProperties"/>
-    <bean id="filesRssView" class="esg.search.feed.web.FilesRssView" p:properties-ref="esgfProperties"/>
+    <bean id="filesRssView" class="esg.search.feed.web.FilesRssView" />
     <bean id="esgfProperties" class="esg.common.util.ESGFProperties" />
           
     <!-- Legacy Publishing Web Service -->
