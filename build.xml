@@ -338,7 +338,6 @@ Builds the project via ant (obviously).
 	    </copy>
 	  	<echo message="${conf_dir}"/>
 	    <delete file="${dist_dir}/${module}.war"/>
-  	    <echo message="resources: ${rc_dir}"/>
 	    <war destfile="${dist_dir}/${module}.war" webxml="${conf_dir}/${module}-web.xml">
 	      <!-- <fileset dir="${web_dir}" excludes="WEB-INF/**/web.xml/**,**semantic.cache**"/> -->
 	      <webinf dir="${conf_dir}" includes="**/*.xml,wget-template" excludes="${module}-web.xml,**/solr/**,**/jetty/**"/>
