@@ -4,12 +4,9 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.xpath.XPath;
@@ -34,7 +31,6 @@ import esg.search.utils.XmlParser;
  */
 @Controller("wgetControllerNew")
 public class WgetControllerNew {
-	private static final Log LOG = LogFactory.getLog(WgetControllerNew.class);
     
     private static final String SCRIPT_NAME = "wget.sh";
     
@@ -76,7 +72,10 @@ public class WgetControllerNew {
         //XPath xpath = XPath.newInstance("/response/result/doc/arr[@name='url']/str");
         XPath xpath = XPath.newInstance("/response/result/doc");
         
-        final String urlQuery = request.getRequestURL().append("?").append(request.getQueryString()).toString();
+        
+        String urlQuery = request.getQueryString() == null ? 
+        		request.getRequestURL().toString() : 
+        		request.getRequestURL().append("?").append(request.getQueryString()).toString();
         WgetScriptGeneratorNew.WgetDescriptor desc = new WgetScriptGeneratorNew.WgetDescriptor(request.getServerName(), null, urlQuery);
         
         final List<String> urls = new ArrayList<String>();
