@@ -14,7 +14,7 @@ if [ $BASH ] && [ `basename $BASH` != bash ]; then
     echo "Change the execution bit 'chmod u+x $0' or start with 'bash $0' instead of sh."
     echo "Reverting to bash and continuing process..."
     sleep 1
-    /bin/bash $0
+    /bin/bash $0 $@
     exit $?
 fi
 
@@ -82,7 +82,7 @@ fi
 # get certificates from rainbow
 get_certificates() {
     # don't if this was already done today
-    [[ -z $force && -z "$(find $ESG_CERT_DIR -type d -mtime -1 2>/dev/null)" ]] && return 0
+    [[ -z $force && "$(find $ESG_CERT_DIR -type d -mtime -1 2>/dev/null)" ]] && return 0
     echo -n "Retrieving Federation Certificates..." >&2
     
     if ! wget https://rainbow.llnl.gov/dist/certs/esg_trusted_certificates.tar -O - -q | tar x -C $ESG_HOME; then
