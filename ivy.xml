@@ -62,7 +62,7 @@ Note: Check Maven for propery dependency parameter values @
   <info organisation="org.esgf" module="esg-search"/>
   <dependencies>
       
-    <dependency org="org.esgf" name="esgf-node-manager" rev="0.5.6"/>
+    <dependency org="org.esgf" name="esgf-node-manager" rev="0.5.7"/>
 
     <dependency org="org.apache.solr" name="solr-core" rev="1.4.0"/>
     <dependency org="org.apache.solr" name="solr-solrj" rev="1.4.0"/>
