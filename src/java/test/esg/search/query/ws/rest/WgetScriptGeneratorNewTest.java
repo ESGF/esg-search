@@ -1,8 +1,8 @@
 package esg.search.query.ws.rest;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
-import java.io.File;
 import java.io.FileReader;
 import java.lang.reflect.Field;
 
@@ -41,6 +41,11 @@ public class WgetScriptGeneratorNewTest {
 	}
 
 	@Test
+	public void testInit() {
+		WgetScriptGeneratorNew.init(null);
+	}
+	
+	@Test
 	public void testTemplate() throws Exception{
 		Field tmpField = WgetScriptGeneratorNew.class.getDeclaredField("TEMPLATE");
 		tmpField.setAccessible(true);
@@ -50,6 +55,7 @@ public class WgetScriptGeneratorNewTest {
 		assertTrue(((String)tmp).length() > 100);
 		if (VERBOSE) System.out.println(tmp);
 	}
+	
 	@Test
 	public void testGetWgetScript() {
 		String tmp = WgetScriptGeneratorNew.getWgetScript(createTestDescriptor());
@@ -59,10 +65,7 @@ public class WgetScriptGeneratorNewTest {
 		if (VERBOSE) System.out.println(tmp);
 	}
 
-	@Test
-	public void testInit() {
-		WgetScriptGeneratorNew.init(null);
-	}
+
 
 
 }
