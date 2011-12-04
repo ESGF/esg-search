@@ -30,6 +30,7 @@ import java.util.Set;
 import org.springframework.util.StringUtils;
 
 import esg.search.query.api.SearchInput;
+import esg.search.query.api.SearchReturnType;
 
 /**
  * Standard bean implementation of {@link SearchInput}.
@@ -88,6 +89,11 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	 * Flag to execute a distributed query - true by default.
 	 */
 	private boolean distrib = true;
+	
+	/**
+	 * Requested format for query results, defaults to Solr/XML.
+	 */
+	private String format = SearchReturnType.SOLR_XML.getMimeType();
 	
 	private final static String NEWLINE = System.getProperty("line.separator");
 
@@ -293,6 +299,18 @@ public class SearchInputImpl implements SearchInput, Serializable {
     @Override
     public void setFields(Set<String> fields) {
         this.fields = fields;
+    }
+
+
+    @Override
+    public void setFormat(final String format) {
+       this.format = format;
+    }
+
+
+    @Override
+    public String getFormat() {
+        return format;
     }
 	
 }

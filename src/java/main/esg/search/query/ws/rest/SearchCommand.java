@@ -2,7 +2,6 @@ package esg.search.query.ws.rest;
 
 import java.io.Serializable;
 
-import esg.search.query.api.SearchReturnType;
 import esg.search.query.impl.solr.SearchInputImpl;
 
 /**
@@ -24,19 +23,6 @@ public class SearchCommand extends SearchInputImpl implements Serializable {
 	 * Return results by default.
 	 */
 	private boolean results = true;
-			
-	/**
-	 * Return SOLR XML by default.
-	 */
-	private String format = SearchReturnType.SOLR_XML.getMimeType();
-	    	
-	public String getFormat() {
-		return format;
-	}
-
-
-	public void setFormat(String format) {
-		this.format = format;
-	}
+				    	
 
 }

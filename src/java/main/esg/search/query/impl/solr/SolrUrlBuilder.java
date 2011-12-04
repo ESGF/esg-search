@@ -34,6 +34,7 @@ import org.springframework.util.StringUtils;
 
 import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
+import esg.search.query.api.SearchReturnType;
 
 /**
  * Utility class to generate URL according to the Solr REST API.
@@ -284,6 +285,10 @@ public class SolrUrlBuilder {
             }
         }
         
+        // return type
+        if (input.getFormat().equals(SearchReturnType.SOLR_JSON.getMimeType())) {
+            sb.append("&wt=json");
+        }        
         
 		if (LOG.isInfoEnabled()) LOG.info("Select URL=" + sb.toString());
 		return new URL(sb.toString());

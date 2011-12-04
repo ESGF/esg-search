@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import esg.search.query.api.SearchReturnType;
 import esg.search.query.api.SearchService;
 
 /**
@@ -44,7 +45,13 @@ public class SearchController {
         String output = baseController.process(request, command, response);
         
         // write Solr/XML to response
-        if (!response.isCommitted()) baseController.writeToResponse(output, "text/xml", response); 
+        if (!response.isCommitted()) {
+            if (command.getFormat().equals(SearchReturnType.SOLR_JSON.getMimeType())) {
+                baseController.writeToResponse(output, "text/json", response); 
+            } else {
+                baseController.writeToResponse(output, "text/xml", response); 
+            }
+        }
 	    
 	}
 	
