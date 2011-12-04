@@ -210,8 +210,11 @@ public class SolrUrlBuilder {
 		if (!constraints.isEmpty()) {
 			for (final String facet : constraints.keySet()) {
 			    if (!QueryParameters.KEYWORDS.contains(facet)) { // skip keywords
-    				for (final String value : constraints.get(facet)) {					
-    					fq.append("&fq="+URLEncoder.encode( facet+":"+"\""+value+"\"","UTF-8" ));
+			        fq.append("&fq=");
+    				for (final String value : constraints.get(facet)) {		
+    				    // combine multiple values for the same facet in logical "OR"
+    				    if (fq.charAt(fq.length()-1) != '=') fq.append(URLEncoder.encode(" || ", "UTF-8"));
+    					fq.append( URLEncoder.encode( facet+":"+"\""+value+"\"","UTF-8" ) );
     				}
 			    }
 			}
