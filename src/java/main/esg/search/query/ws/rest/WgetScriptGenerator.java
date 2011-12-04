@@ -28,8 +28,8 @@ import org.springframework.web.context.support.ServletContextResource;
  * 
  * @author egonzalez
  */
-public class WgetScriptGeneratorNew {
-	private static final Log LOG = LogFactory.getLog(WgetScriptGeneratorNew.class);
+public class WgetScriptGenerator {
+	private static final Log LOG = LogFactory.getLog(WgetScriptGenerator.class);
 
 	/**
 	 * Description required for generating the script

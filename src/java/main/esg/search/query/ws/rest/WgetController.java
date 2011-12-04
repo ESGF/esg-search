@@ -30,7 +30,7 @@ import esg.search.utils.XmlParser;
  *
  */
 @Controller("wgetController")
-public class WgetControllerNew {
+public class WgetController {
     
     private static final String SCRIPT_NAME = "wget.sh";
     
@@ -40,7 +40,7 @@ public class WgetControllerNew {
     final private BaseController baseController;
     
     @Autowired
-    public WgetControllerNew(final BaseController baseController) {
+    public WgetController(final BaseController baseController) {
           this.baseController = baseController;
     }
     
@@ -53,7 +53,7 @@ public class WgetControllerNew {
                        final SearchCommand command, 
                        final HttpServletResponse response) throws Exception {
     	
-        WgetScriptGeneratorNew.init(request.getSession().getServletContext());
+        WgetScriptGenerator.init(request.getSession().getServletContext());
 
         // check type=... is not specified
         if (request.getParameter(QueryParameters.TYPE)!=null) {
@@ -76,7 +76,7 @@ public class WgetControllerNew {
         String urlQuery = request.getQueryString() == null ? 
         		request.getRequestURL().toString() : 
         		request.getRequestURL().append("?").append(request.getQueryString()).toString();
-        WgetScriptGeneratorNew.WgetDescriptor desc = new WgetScriptGeneratorNew.WgetDescriptor(request.getServerName(), null, urlQuery);
+        WgetScriptGenerator.WgetDescriptor desc = new WgetScriptGenerator.WgetDescriptor(request.getServerName(), null, urlQuery);
         
         final List<String> urls = new ArrayList<String>();
         
@@ -127,7 +127,7 @@ public class WgetControllerNew {
             // generate the wget script
             } else {
                 // generate wget script
-                final String wgetScript = WgetScriptGeneratorNew.getWgetScript(desc);
+                final String wgetScript = WgetScriptGenerator.getWgetScript(desc);
                 
                 // write out the script to the HTTP response
                 response.setContentType("text/x-sh");

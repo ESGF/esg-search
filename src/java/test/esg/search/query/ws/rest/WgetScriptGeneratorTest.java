@@ -9,9 +9,9 @@ import java.lang.reflect.Field;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import esg.search.query.ws.rest.WgetScriptGeneratorNew.WgetDescriptor;
+import esg.search.query.ws.rest.WgetScriptGenerator.WgetDescriptor;
 
-public class WgetScriptGeneratorNewTest {
+public class WgetScriptGeneratorTest {
 	private static final boolean VERBOSE = true;
 	
 	private static WgetDescriptor createTestDescriptor() {
@@ -35,19 +35,19 @@ public class WgetScriptGeneratorNewTest {
 			sb.append(buff);
 		}
 		sb.append(buff, 0, read);
-		Field tmpField = WgetScriptGeneratorNew.class.getDeclaredField("TEMPLATE");
+		Field tmpField = WgetScriptGenerator.class.getDeclaredField("TEMPLATE");
 		tmpField.setAccessible(true);
 		tmpField.set(null, sb.toString());
 	}
 
 	@Test
 	public void testInit() {
-		WgetScriptGeneratorNew.init(null);
+		WgetScriptGenerator.init(null);
 	}
 	
 	@Test
 	public void testTemplate() throws Exception{
-		Field tmpField = WgetScriptGeneratorNew.class.getDeclaredField("TEMPLATE");
+		Field tmpField = WgetScriptGenerator.class.getDeclaredField("TEMPLATE");
 		tmpField.setAccessible(true);
 		Object tmp = tmpField.get(null);
 		assertNotNull(tmp);
@@ -58,7 +58,7 @@ public class WgetScriptGeneratorNewTest {
 	
 	@Test
 	public void testGetWgetScript() {
-		String tmp = WgetScriptGeneratorNew.getWgetScript(createTestDescriptor());
+		String tmp = WgetScriptGenerator.getWgetScript(createTestDescriptor());
 		assertNotNull(tmp);
 		assertTrue(tmp instanceof String);
 		assertTrue(((String)tmp).length() > 100);
