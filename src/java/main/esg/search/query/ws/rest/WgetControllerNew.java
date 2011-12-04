@@ -29,7 +29,7 @@ import esg.search.utils.XmlParser;
  * @author Luca Cinquini
  *
  */
-@Controller("wgetControllerNew")
+@Controller("wgetController")
 public class WgetControllerNew {
     
     private static final String SCRIPT_NAME = "wget.sh";
@@ -48,7 +48,7 @@ public class WgetControllerNew {
      * Method to process a search for files matching the given criteria,
      * and return a wget script.
      */
-    @RequestMapping(value="/wgetNew", method={ RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value="/wget", method={ RequestMethod.GET, RequestMethod.POST })
     public void wget(final HttpServletRequest request, 
                        final SearchCommand command, 
                        final HttpServletResponse response) throws Exception {

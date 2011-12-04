@@ -29,8 +29,8 @@ import esg.search.utils.XmlParser;
  * @author Luca Cinquini
  *
  */
-@Controller("wgetController")
-public class WgetController {
+@Controller("wgetControllerOld")
+public class WgetControllerOld {
     
     private static final String SCRIPT_NAME = "wget.sh";
     
@@ -40,7 +40,7 @@ public class WgetController {
     final private BaseController baseController;
     
     @Autowired
-    public WgetController(final BaseController baseController) {
+    public WgetControllerOld(final BaseController baseController) {
           this.baseController = baseController;
     }
     
@@ -48,7 +48,7 @@ public class WgetController {
      * Method to process a search for files matching the given criteria,
      * and return a wget script.
      */
-    @RequestMapping(value="/wget", method={ RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value="/wgetOld", method={ RequestMethod.GET, RequestMethod.POST })
     public void wget(final HttpServletRequest request, 
                        final SearchCommand command, 
                        final HttpServletResponse response) throws Exception {
@@ -122,7 +122,7 @@ public class WgetController {
                 if (StringUtils.hasText(request.getQueryString())) requestUrl.append("?").append(request.getQueryString());
                 
                 // generate wget script
-                final String wgetScript = WgetScriptGenerator.createWgetScript(requestUrl.toString(), urls);
+                final String wgetScript = WgetScriptGeneratorOld.createWgetScript(requestUrl.toString(), urls);
                 
                 // write out the script to the HTTP response
                 response.setContentType("text/x-sh");

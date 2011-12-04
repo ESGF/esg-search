@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Utility class to generate a wget script for a list of HTTP URLs.
  */
-public class WgetScriptGenerator {
+public class WgetScriptGeneratorOld {
     
     private final static String VERSION = "0.2";
     
