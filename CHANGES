@@ -53,4 +53,4 @@ Internal changes to URLs resolved by the servlet
 - Support for requesting the logical 'OR' of two values of the same facet.
 - Supporting attempts at recovering from error in distributed search, by executing a non-distributed search
 - Changed THREDDS harvesting process to keep harvesting when errors are encountered from single catalogs
-- Detecting replica catalogs from embedded property replica=true/false.
+- Detecting replica catalogs from embedded property is_replica=true/false.
