@@ -51,3 +51,6 @@ Internal changes to URLs resolved by the servlet
 - Configuration of distributed search from external registry file containing up to date available shards.
 - Support for returning results as Solr/JOSN.
 - Support for requesting the logical 'OR' of two values of the same facet.
+- Supporting attempts at recovering from error in distributed search, by executing a non-distributed search
+- Changed THREDDS harvesting process to keep harvesting when errors are encountered from single catalogs
+- Detecting replica catalogs from embedded property replica=true/false.
