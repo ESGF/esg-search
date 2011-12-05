@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 
 import esg.search.query.api.FacetProfile;
 import esg.search.query.api.QueryParameters;
+import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchReturnType;
 import esg.search.query.api.SearchService;
 
@@ -29,6 +30,9 @@ import esg.search.query.api.SearchService;
  * These methods are invoked by the controllers that expose the actual RESTful search endpoints.
  * 
  * The HTTP request parameters are specified by the ESGF Search API.
+ * 
+ * In case of error reported by the underlying {@link SearchService}, the controller attempts to recover by modifying the query
+ * endpoints of the distributed search, and attempts the query again an additional numberOfTries times. 
  * 
  * @author luca.cinquini
  *
@@ -46,6 +50,11 @@ public class BaseController {
      * i.e. the set of facets that can be returned to decorate the search results.
      */
     final private FacetProfile facetProfile;
+    
+    /**
+     * Number of additional query attempts in case of error.
+     */
+    private int numberOfTries = 2;
 		
 	private final Log LOG = LogFactory.getLog(this.getClass());
 		
@@ -69,9 +78,7 @@ public class BaseController {
 	String process(final HttpServletRequest request, 
             final SearchCommand command, 
             final HttpServletResponse response) throws Exception {
-	    
-	    String output = "";
-	    
+	    	    
 	    // set of allowed facets (and fields)
         final Set<String> allowedFacets = facetProfile.getTopLevelFacets().keySet();
         
@@ -193,11 +200,31 @@ public class BaseController {
             command.setFields(fields);
         }
 
-        // invoke back-end search service (HTTP request to Solr)
-        if (!response.isCommitted()) output = searchService.query(command, format);
         
-        // return Solr/XML document
-        return output;
+        if (!response.isCommitted()) {
+        
+            // attempt query numberOfTries times
+            for (int n=0; n<numberOfTries; n++) {    
+                try {
+                    // invoke back-end search service (HTTP request to Solr), return response document
+                    return searchService.query(command, format);
+                } catch(IOException e) {
+                    LOG.warn(e.getMessage());
+                    if (n<numberOfTries-1) {
+                        if (LOG.isDebugEnabled()) LOG.debug("Query failed "+n+" times, attempting to recover from search error");
+                        // attempt to recover from error
+                        recover(command);
+                    } else {
+                        // send error to client
+                        throw e;
+                    }
+                }
+            }
+            
+        }
+        
+        // workflow should never get here, in any case send error to client
+        throw new Exception("The query request failed  "+numberOfTries+" times.");
 	    	    		
 	}
 	
@@ -225,5 +252,26 @@ public class BaseController {
         LOG.warn(message);
         response.sendError(sc, message);
 	}
+	
+	/**
+	 * Method to modify the query parameters after a search error, 
+	 * in to attempt a new search.
+	 * 
+	 * @param input
+	 */
+	void recover(final SearchInput input) {
+	   
+	    // execute non-distributed query
+	    input.setDistrib(false);
+	    
+	}
+
+	/**
+	 * Setter method for number of additional query attempts.
+	 * @param numberOfTries
+	 */
+    public void setNumberOfTries(int numberOfTries) {
+        this.numberOfTries = numberOfTries;
+    }
 	
 }
