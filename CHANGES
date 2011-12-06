@@ -54,3 +54,6 @@ Internal changes to URLs resolved by the servlet
 - Supporting attempts at recovering from error in distributed search, by executing a non-distributed search
 - Changed THREDDS harvesting process to keep harvesting when errors are encountered from single catalogs
 - Detecting replica catalogs from embedded property is_replica=true/false.
+
+1.7.1
+- Fixed bug with querying by dataset_id
