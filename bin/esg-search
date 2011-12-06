@@ -129,7 +129,7 @@ setup_search() {
 
     setup_search_service ${upgrade} && write_search_service_install_log
     [ $? != 0 ] && echo " ERROR: Could not fully install search service" && checked_done 1
-    write_as_property index_endpoint "http://${esgf_host:-$(hostname --fqdn)}/esg-search/ws/rest/search"
+    write_as_property index_endpoint "http://${esgf_host:-$(hostname --fqdn)}/esg-search/search"
     write_as_property index_app_home ${search_web_service_dir}
     
     write_as_property publishing_service_endpoint "https://${esgf_host:-$(hostname --fqdn)}/esg-search/remote/secure/client-cert/hessian/publishingService"
