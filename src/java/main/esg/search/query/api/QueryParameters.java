@@ -42,7 +42,6 @@ public class QueryParameters {
     public final static String TYPE = "type";
     public final static String FROM = "from";
     public final static String TO = "to";
-    public final static String DATASET_ID = "dataset_id";
     
     // standard metadata fields, always included for each result (if available)
     final public static String FIELD_ID = "id";
@@ -85,7 +84,7 @@ public class QueryParameters {
                                                                              REPLICA, MASTER_ID,
                                                                              LAT, LON, LOCATION, RADIUS, POLYGON, BBOX,
                                                                              START, END,
-                                                                             ID, TYPE, FROM, TO, DATASET_ID } );
+                                                                             ID, TYPE, FROM, TO, FIELD_DATASET_ID } );
     
     /**
      * List of invalid text characters - anything that is not within square brackets.

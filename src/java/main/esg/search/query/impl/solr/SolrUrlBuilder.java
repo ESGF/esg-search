@@ -141,6 +141,11 @@ public class SolrUrlBuilder {
 		if (StringUtils.hasText(input.getConstraint(QueryParameters.ID))) {
 		    qs.add(QueryParameters.FIELD_ID+":"+URLEncoder.encode(input.getConstraint(QueryParameters.ID), "UTF-8") );
 		}
+		// dataset_id
+        if (StringUtils.hasText(input.getConstraint(QueryParameters.FIELD_DATASET_ID))) {
+            fq.append("&fq="+URLEncoder.encode( QueryParameters.FIELD_DATASET_ID+":"+input.getConstraint(QueryParameters.FIELD_DATASET_ID), "UTF-8" ));
+        }
+
 		// replica=true|false
 		if (StringUtils.hasText(input.getConstraint(QueryParameters.REPLICA))) {
 		    fq.append("&fq="+URLEncoder.encode( QueryParameters.FIELD_REPLICA+":"+input.getConstraint(QueryParameters.REPLICA), "UTF-8" ));

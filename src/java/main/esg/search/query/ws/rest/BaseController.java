@@ -129,7 +129,7 @@ public class BaseController {
             // &dataset_id=...
             } else if (   parName.equalsIgnoreCase(QueryParameters.REPLICA)
                        || parName.equalsIgnoreCase(QueryParameters.MASTER_ID)
-                       || parName.equalsIgnoreCase(QueryParameters.DATASET_ID)) {
+                       || parName.equalsIgnoreCase(QueryParameters.FIELD_DATASET_ID)) {
                 command.addConstraint(parName, request.getParameter(parName));
              
             // other keywords
