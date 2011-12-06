@@ -126,8 +126,10 @@ public class BaseController {
                 
             // &replica=true|false (or True|False or T|F)
             // &master_id=...
+            // &dataset_id=...
             } else if (   parName.equalsIgnoreCase(QueryParameters.REPLICA)
-                       || parName.equalsIgnoreCase(QueryParameters.MASTER_ID)) {
+                       || parName.equalsIgnoreCase(QueryParameters.MASTER_ID)
+                       || parName.equalsIgnoreCase(QueryParameters.DATASET_ID)) {
                 command.addConstraint(parName, request.getParameter(parName));
              
             // other keywords
