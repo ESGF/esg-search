@@ -23,8 +23,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -32,6 +34,7 @@ import org.springframework.util.StringUtils;
 
 import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
+import esg.search.query.api.SearchReturnType;
 
 /**
  * Utility class to generate URL according to the Solr REST API.
@@ -52,6 +55,11 @@ public class SolrUrlBuilder {
 	 * The facets to be retrieved as part of the search.
 	 */
 	private List<String> facets;
+	
+	/**
+	 * The set of Solr shards to query for distributed search.
+	 */
+	private Set<String> shards = new HashSet<String>();
 	
 	/**
 	 * Flag for pretty-formatting of output.
@@ -88,6 +96,14 @@ public class SolrUrlBuilder {
 	}
 	
 	/**
+	 * Method to set the shards for distributed search.
+	 * @param shards
+	 */
+	public void setShards(Set<String> shards) {
+        this.shards = shards;
+    }
+
+    /**
 	 * Method to generate the "update" URL.
 	 * This method is independent of the specific state of the object.
 	 * @return
@@ -194,8 +210,11 @@ public class SolrUrlBuilder {
 		if (!constraints.isEmpty()) {
 			for (final String facet : constraints.keySet()) {
 			    if (!QueryParameters.KEYWORDS.contains(facet)) { // skip keywords
-    				for (final String value : constraints.get(facet)) {					
-    					fq.append("&fq="+URLEncoder.encode( facet+":"+"\""+value+"\"","UTF-8" ));
+			        fq.append("&fq=");
+    				for (final String value : constraints.get(facet)) {		
+    				    // combine multiple values for the same facet in logical "OR"
+    				    if (fq.charAt(fq.length()-1) != '=') fq.append(URLEncoder.encode(" || ", "UTF-8"));
+    					fq.append( URLEncoder.encode( facet+":"+"\""+value+"\"","UTF-8" ) );
     				}
 			    }
 			}
@@ -258,8 +277,21 @@ public class SolrUrlBuilder {
         //}
         
         // distributed search
+        // only attach shards if available, otherwise default to local search
         // (must enable a "/distrib" query handler in solrconfig.xml)
-        if (input.isDistrib()) sb.append("&qt=/distrib");
+        //if (input.isDistrib()) sb.append("&qt=/distrib");
+        if (input.isDistrib() && shards.size()>0) {
+            sb.append("&shards=");
+            for (String shard : shards) {
+                if (sb.charAt(sb.length()-1) != '=') sb.append(",");
+                sb.append(shard);
+            }
+        }
+        
+        // return type
+        if (input.getFormat().equals(SearchReturnType.SOLR_JSON.getMimeType())) {
+            sb.append("&wt=json");
+        }        
         
 		if (LOG.isInfoEnabled()) LOG.info("Select URL=" + sb.toString());
 		return new URL(sb.toString());

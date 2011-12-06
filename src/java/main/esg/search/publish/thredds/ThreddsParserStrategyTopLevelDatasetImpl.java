@@ -18,12 +18,13 @@
  ******************************************************************************/
 package esg.search.publish.thredds;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -99,7 +100,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	public List<Record> parseDataset(final InvDataset dataset) {
 		
 	    if (LOG.isDebugEnabled()) LOG.debug("Parsing dataset: "+dataset.getID());
-	    
+	    	    
 		final List<Record> records = new ArrayList<Record>();
 		
 		// <dataset name="...." ID="..." restrictAccess="...">
@@ -140,13 +141,15 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 
 		this.parseMetadataGroup(dataset,record);
 		
-        // "master_host", "replica_host" > id, master_id, "replica"
+        // "is_replica" > id, master_id, "replica"
 		// note: do this AFTER dataset ID has been overridden to get rid of version
-		this.setReplicaFields(record, record.getFieldValue(ThreddsPars.REPLICA_NODE) );
+        boolean isReplica = Boolean.valueOf(record.getFieldValue(ThreddsPars.IS_REPLICA));
+        String hostName = getHostName(dataset);
+		this.setReplicaFields(record, isReplica, hostName);
 		
 		// recursion
 		// NOTE: currently only files generate new records
-		long size = parseSubDatasets(dataset, records);
+		long size = parseSubDatasets(dataset, records, isReplica, hostName);
 		record.addField(SolrXmlPars.FIELD_SIZE, Long.toString(size));
 		
 		// debug
@@ -165,7 +168,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @param records
 	 * @return
 	 */
-	private long parseSubDatasets(final InvDataset dataset, final List<Record> records) {
+	private long parseSubDatasets(final InvDataset dataset, final List<Record> records, boolean isReplica, String hostName) {
 	    
 	    if (LOG.isTraceEnabled()) LOG.trace("Crawling dataset: "+dataset.getID()+" for files");
 	    
@@ -176,7 +179,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	            
 	            // parse files into separate records, inherit top dataset metadata
 	            boolean inherit = true;
-	            dataset_size += this.parseFile(childDataset, records, inherit);
+	            dataset_size += this.parseFile(childDataset, records, inherit, isReplica, hostName);
 
 	        } else if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.AGGREGATION_ID) )) {
 	            
@@ -186,7 +189,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        }
 	        
 	        // recursion
-	        dataset_size += parseSubDatasets(childDataset, records);
+	        dataset_size += parseSubDatasets(childDataset, records, isReplica, hostName);
 	        
 	    }
 	    
@@ -212,7 +215,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @param inherit : set to true to copy dataset fields as file record fields (without overriding existing fields)
 	 * @return
 	 */
-	private long parseFile(final InvDataset file, final List<Record> records, boolean inherit) {
+	private long parseFile(final InvDataset file, final List<Record> records, boolean inherit,
+	                       boolean isReplica, final String hostName) {
 	    
 	    // <dataset name="hus_AQUA_AIRS_L3_RetStd-v5_200209-201006.nc" 
         //          ID="obs4cmip5.NASA-JPL.AQUA.AIRS.mon.v1.hus_AQUA_AIRS_L3_RetStd-v5_200209-201006.nc" 
@@ -245,10 +249,10 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         
         this.parseDocumentation(file, record);
         
-        // "master_host", "replica_host" > id, master_id, "replica"
+        // "is_replica" > id, master_id, "replica"
         // note: do this BEFORE copying fields from Dataset!
         // note: base logic on <replica_host> property from top-level dataset
-        this.setReplicaFields(record, records.get(0).getFieldValue(ThreddsPars.REPLICA_NODE) );
+        this.setReplicaFields(record, isReplica, hostName);
         
         // copy all fields from parent dataset to file
         if (inherit) {
@@ -457,49 +461,46 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	}
 	
 	/**
-	 * Method to build the univerally unique id of a replica record
+	 * Method to extract the host name from the THREDDS catalog.
+	 * @param dataset
+	 */
+	private String getHostName(final InvDataset dataset) {
+
+	    String hostName = "";
+	    try {
+	         hostName = (new URL(dataset.getCatalogUrl())).getHost();	        
+	    } catch(MalformedURLException e) {}
+	    if (!StringUtils.hasText(hostName)) hostName = "localhost";
+        return hostName;
+	}
+	
+	/**
+	 * Method to build the universally unique id of a replica record
+	 * by using the hostname of the THREDDS catalog.
+	 * 
 	 * @param id
 	 * @param replicaHostName
 	 * @return
 	 */
-	private String buildReplicaId(final String id, final String replicaHostName) {
-	    return id + ":" + replicaHostName;
+	private String buildReplicaId(final String id, final String hostName) {
+	    return id + ":" + hostName;
 	}
-	
-	/**
-	 * Method to set the master_id of a replica record, if the record id matches the expected replica pattern.
-	 * @param record
-	 */
-	/*
-	private void setReplicaFields(final Record record) {
-	    
-	    final String id = record.getId();
-	    final Matcher matcher = QueryParameters.REPLICA_PATTERN.matcher(id);
-	    if (matcher.matches()) {
-	        record.addField(QueryParameters.FIELD_REPLICA, "true");
-	        record.addField(QueryParameters.FIELD_MASTER_ID, matcher.group(1));
-	    } else {
-            record.addField(QueryParameters.FIELD_REPLICA, "false");
-            record.addField(QueryParameters.FIELD_MASTER_ID, id);	        
-	    }
-	    
-	}*/
 	
 	/**
 	 * Method to encode master/replica information.
 	 */
-	private void setReplicaFields(final Record record, final String replicaHostName) {
+	private void setReplicaFields(final Record record, final boolean isReplica, final String hostName) {
 	    
-        if (StringUtils.hasText(replicaHostName)) {
+        if (isReplica) {
             record.addField(QueryParameters.FIELD_REPLICA, "true");
             record.addField(QueryParameters.FIELD_MASTER_ID, record.getId());
-            record.setId(this.buildReplicaId(record.getId(), replicaHostName));
+            record.setId(this.buildReplicaId(record.getId(), hostName));
         } else {
             record.addField(QueryParameters.FIELD_REPLICA, "false");
             record.addField(QueryParameters.FIELD_MASTER_ID, record.getId());
         }
 
 	}
-	
+		
 	
 }

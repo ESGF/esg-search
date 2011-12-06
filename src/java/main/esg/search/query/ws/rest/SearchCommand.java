@@ -2,12 +2,11 @@ package esg.search.query.ws.rest;
 
 import java.io.Serializable;
 
-import esg.search.query.api.SearchReturnType;
 import esg.search.query.impl.solr.SearchInputImpl;
 
 /**
  * Command bean to execute the automatic binding of HTTP request parameters used by the {@link SearchController}.
- * This bean (including its superclass) contains default values for all of the optional HTTP request parameters.
+ * Note: currently this bean does not contain any properties that are not in its superclass, and may be removed in the future.
  * 
  * @author luca.cinquini
  *
@@ -18,25 +17,6 @@ public class SearchCommand extends SearchInputImpl implements Serializable {
 	
 	public SearchCommand() {
 		super();
-	}
-	
-	/**
-	 * Return results by default.
-	 */
-	private boolean results = true;
-			
-	/**
-	 * Return SOLR XML by default.
-	 */
-	private String format = SearchReturnType.SOLR_XML.getMimeType();
-	    	
-	public String getFormat() {
-		return format;
-	}
-
-
-	public void setFormat(String format) {
-		this.format = format;
 	}
 
 }

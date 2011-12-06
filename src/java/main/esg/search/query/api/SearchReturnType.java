@@ -8,9 +8,9 @@ package esg.search.query.api;
  */
 public enum SearchReturnType {
 	
-    SOLR_XML("application/solr+xml");
-	//ATOM_XML("application/atom+xml"),
-	//ESGF_JSON("application/esgf+json");
+    SOLR_XML("application/solr+xml"),	
+	SOLR_JSON("application/solr+json");
+    //ATOM_XML("application/atom+xml");
 	
 	private final String mimeType;
 	

@@ -32,6 +32,7 @@ import esg.search.query.api.SearchOutput;
 import esg.search.query.api.SearchReturnType;
 import esg.search.query.api.SearchService;
 import esg.search.utils.HttpClient;
+import esg.security.registry.service.api.RegistryService;
 
 /**
  * Implementation of {@link SearchService} based on an Apache-Solr back-end.
@@ -40,6 +41,9 @@ import esg.search.utils.HttpClient;
  * The URL for the HTTP/GET request is built by the collaborator bean {@link SolrUrlBuilder} based on the content
  * of the {@link SearchInput} instance, while the content of the HTTP response is parsed by the collaborator bean
  * {@link SolrXmlPars}. 
+ * 
+ * An optional {@link RegistryService} can be used to provide a list of query endpoints for distributed searches.
+ * 
  */
 @Service("searchService")
 public class SearchServiceImpl implements SearchService {
@@ -58,6 +62,11 @@ public class SearchServiceImpl implements SearchService {
 	 * The parser used to parse the XML output from the server.
 	 */
 	final SolrXmlParser xmlParser = new SolrXmlParser();
+	
+	/**
+	 * Optional registry service providing list of query endpoints for distributed search.
+	 */
+	private RegistryService registryService = null;
 
 	private static final Log LOG = LogFactory.getLog(SearchServiceImpl.class);
 
@@ -98,27 +107,33 @@ public class SearchServiceImpl implements SearchService {
 		final SolrUrlBuilder builder = new SolrUrlBuilder(url);
 		builder.setSearchInput(input);
 		builder.setFacets(input.getFacets());
+		if (registryService!=null) builder.setShards( registryService.getShards() );
 		final URL request = builder.buildSelectUrl();		
 		
-		// execute HTTP request, return response as Solr XML
-		String solrxml = httpClient.doGet(request);
+		// execute HTTP request, return response as Solr/XML or Solr/JSON
+		String output = httpClient.doGet(request);
 		
 		// transform to requested format
-		final String response = this.transform(solrxml, returnType);
+		final String response = this.transform(output, returnType);
 		
 		return response;
 		
 	}
 	
-	private String transform(final String solrxml, final SearchReturnType returnType) throws Exception {
+	private String transform(final String output, final SearchReturnType returnType) throws Exception {
 	    
-	    if (returnType==SearchReturnType.SOLR_XML) {
-	        return solrxml;
+	    if (returnType==SearchReturnType.SOLR_XML || returnType==SearchReturnType.SOLR_JSON) {
+	        return output;
 	    } else {
 	        throw new Exception("Unsupported output format: "+returnType.getMimeType());
 	    }
 	    
 	}
+
+	@Autowired
+    public void setRegistryService(RegistryService registryService) {
+        this.registryService = registryService;
+    }
 	
 
 }

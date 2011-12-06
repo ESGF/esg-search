@@ -1,138 +1,181 @@
 package esg.search.query.ws.rest;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Field;
+import java.net.URL;
+import java.net.URLConnection;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
+import javax.servlet.ServletContext;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.web.context.support.ServletContextResource;
 
 /**
- * Utility class to generate a wget script for a list of HTTP URLs.
+ * Creates a Wget script for downloading the given files and handling
+ * certificate renewal. The main conpet is to have some kind of template where
+ * the information will get filled. In order to do so, some specific structures
+ * must be filled.
+ * 
+ * @author egonzalez
  */
 public class WgetScriptGenerator {
-    
-    private final static String VERSION = "0.2";
-    
-    /**
-     * Method to generate a wget script for download of selected files.
-     * 
-     * @param query : the query URL that was used to generate the list, inserted as a comment line in the script header
-     * @param urls : the list of file URLs to download
-     * @return
-     */
-    public static String createWgetScript(String query, final List<String> urls) {
-        
-        final StringBuilder wgetText = new StringBuilder();
-        
-        wgetText.append("#!/bin/bash\n\n");
-        
-        // add the header
-        wgetText.append(headerString(query, VERSION));
-        
-        // add the environment variables
-        wgetText.append(envVariablesString());
-        
-        // add the download function
-        wgetText.append(downloadFunctionString(urls));
+	private static final Log LOG = LogFactory.getLog(WgetScriptGenerator.class);
 
-        wgetText.append("#\n# MAIN \n#\n");
-        
-        // add the main function
-        wgetText.append(mainFunctionString());
+	/**
+	 * Description required for generating the script
+	 * @author egonzalez
+	 *
+	 */
+	static public class WgetDescriptor {
+		/**
+		 * File representation
+		 * @author egonzalez
+		 *
+		 */
+		private class File {
+			String url;
+			String id;		//future use, to allow the user to define a directory structure
+			String size;	//unused
+			String chksumType;
+			String chksum;
+		}
 
-        wgetText.append("exit 0\n");       
-        
-        return wgetText.toString();
-        
-    }
-    
-    private static String headerString(final String query, final String templateVersion) {
-        String headerStr = "";
-        
-        headerStr += "##############################################################################\n";
-        headerStr += "# ESG Federation download script\n";
-        headerStr += "#\n";
-        headerStr += "# Template version: " + templateVersion + "\n";
-        headerStr += "# Query URL: "+query+"\n";
-        headerStr += "#";
-        headerStr += "##############################################################################\n\n\n";
-        
-        return headerStr;
-    }
-    
-    private static String envVariablesString() {
-        String envVariablesStr = "";
-        
-        envVariablesStr += "esgf_download_script_version=\"0.0.1\"\n";
-        envVariablesStr += "esgf_cert=${esgf_cert:-\"${HOME}/.esg/credentials.pem\"}\n";
-        envVariablesStr += "esgf_private=${esgf_private:-\"${HOME}/.esg/credentials.pem\"}\n\n";
-       
-        
-        return envVariablesStr;
-    }
-    
-    private static String downloadFunctionString(List<String> files) {
-        String downloadFunctionStr = "";
-        
-        downloadFunctionStr += "esgf_download() {\n";
-        
-        for (String file : files) {
-          downloadFunctionStr += "\t((debug || dry_run)) && " +
-                                 "echo \"wget $@ --certificate ${esgf_cert} --private-key ${esgf_private} '" + file + "'\"\n";
-          downloadFunctionStr += "\t((!dry_run)) && " +
-                                 "wget \"$@\" --certificate ${esgf_cert} --private-key ${esgf_private} '" + file + "'\n";
-          
-        }
-        
-        downloadFunctionStr += "}\n";
-             
-        return downloadFunctionStr;
-    }
-    
-    
-    private static String mainFunctionString() {
-        String mainFunctionStr = "";
-        
-        mainFunctionStr += "#Handle download script options\n";
-        mainFunctionStr += "#Pass the rest directly to download command\n";
-        mainFunctionStr += "main() {\n";
-        
-        mainFunctionStr += "\tlocal command_args=()\n";
-        mainFunctionStr += "\twhile [ -n \"${1}\" ]; do\n";
-        mainFunctionStr += "\t\tlocal unshift=0\n";
-        mainFunctionStr += "\t\tcase ${1} in\n";
-        mainFunctionStr += "\t\t\t--debug)\n \t\t\t\tdebug=1\n\t\t\t\t;;\n";
-        mainFunctionStr += "\t\t\t--dry-run)\n \t\t\t\tdry_run=1\n\t\t\t\t;;\n";
-        mainFunctionStr += "\t\t\t--certificate)\n \t\t\t\tshift\n\t\t\t\tesgf_cert=${1}\n\t\t\t\t;;\n";
-        mainFunctionStr += "\t\t\t--private-key)\n \t\t\t\tshift\n\t\t\t\tesgf_private=${1}\n\t\t\t\t;;\n";
-        mainFunctionStr += "\t\t\t--output-file)\n " + 
-                           "\t\t\t\t#Because args passed are applied to each individual\n" + 
-                           "\t\t\t\t#download we don't want to support this option in\n" + 
-                           "\t\t\t\t#which case the output would be written over and over\n" + 
-                           "\t\t\t\t#to the single file specified.  So this option is, in\n" + 
-                           "\t\t\t\t#the context of this script, deamed unsupported.\n" + 
-                           "\t\t\t\techo \"Unsupported option: --output-file\"\n" + 
-                           "\t\t\t\texit 1\n\t\t\t\t;;\n"; 
-        mainFunctionStr += "\t\t\t--help)\n " + 
-                           "\t\t\t\techo \"ESGF dataset download script\"\n" + 
-                           "\t\t\t\techo \"Version ${esgf_download_script_version}\"\n" + 
-                           "\t\t\t\techo \n" + 
-                           "\t\t\t\techo \" usage: $0 [--debug] [--dry-run] [--certificate <certfile>] [--private-key <private file>]\"\n" + 
-                           "\t\t\t\techo \" (all other args are passed through args to wget command) \"\n" + 
-                           "\t\t\t\techo \" (use --help --full to additionally see wget's help) \"\n" + 
-                           "\t\t\t\techo \n" + 
-                           "\t\t\t\tshift && [ \"$1\" = \"--full\" ] && echo \"$(wget --help)\"\n" + 
-                           "\t\t\t\texit 0\n" + 
-                           "\t\t\t\t;;\n";
-        mainFunctionStr += "\t\t\t*)\n " + 
-                           "\t\t\t\tcommand_args=(\"{command_args[@]} ${1}\") \n" + 
-                           "\t\t\t\t;;\n";
-        mainFunctionStr += "\t\tesac\n";
-        mainFunctionStr += "\t\tshift\n";
-        mainFunctionStr += "\tdone\n";
-        mainFunctionStr += "\tesgf_download ${command_args[@]}\n";
-        mainFunctionStr += "}\n\n";
-        mainFunctionStr += "main $@\n";
-                
-        mainFunctionStr += "\n";
-               
-        return mainFunctionStr;
-    }
+		String userOpenId;	//
+		String hostName;
+		String searchUrl;
+		List<File> files = new LinkedList<File>();
+
+		public WgetDescriptor(String hostName, String userOpenId,
+				String searchUrl) {
+			this.hostName = hostName;
+			this.userOpenId = userOpenId;
+			this.searchUrl = searchUrl;
+		}
+
+		public void addFile(String url, String id, String size,
+				String chksumType, String chksum) {
+			File fd = new File();
+			fd.url = url;
+			fd.id = id;
+			fd.size = size;
+			fd.chksum = chksum;
+			fd.chksumType = chksumType;
+			files.add(fd);
+		}
+	}
+
+	/**
+	 * This is almost a dummy method, although it works as desired. The
+	 * replacement should be in O(N), this method uses O(N*M) where M >=
+	 * #replacing tags
+	 * 
+	 * @param temp
+	 *            the template to use
+	 * @param tags
+	 * 		a map<tag, value> that will be used for replacing all "{{tag}}" with "value"
+	 * @return the resulting script as a string
+	 */
+	static private String replace(String temp, Map<String, String> tags) {
+		// incredibly slow but working
+		// expected speed up Nx, where N > tags.size()
+		for (Entry<String, String> e : tags.entrySet()) {
+			temp = temp.replaceAll("\\{\\{" + e.getKey() + "\\}\\}",
+					e.getValue());
+		}
+		return temp;
+	}
+
+	/**
+	 * @param desc descriptor to fill into the script
+	 * @return the string conatining the whole script
+	 */
+	static public String getWgetScript(WgetDescriptor desc) {
+		String template = getTemplate(null);
+
+		Map<String, String> tags = new HashMap<String, String>();
+		// extract using reflections all string from the description
+		try {
+			for (Field f : desc.getClass().getDeclaredFields()) {
+				Object val = f.get(desc);
+				//null is "" for bash
+				if (val instanceof String)
+					tags.put(f.getName(), (String) val);
+				else if (val==null)
+					tags.put(f.getName(), "");
+			}
+		} catch (Exception e) {
+			// not expected unless bug in source code
+			e.printStackTrace();
+		}
+
+		// add files
+		StringBuilder sb = new StringBuilder();
+		final String sep = "' '";
+		for (WgetDescriptor.File fd : desc.files) {
+			sb.append('\'').append(
+					fd.url.substring(fd.url.lastIndexOf('/') + 1));
+			sb.append(sep).append(fd.url);
+			sb.append(sep).append(fd.chksumType);
+			sb.append(sep).append(fd.chksum).append("'\n");
+		}
+		// correct last line break
+		sb.setLength(sb.length() - 1);
+
+		// add missing general fields
+		tags.put("files", sb.toString());
+		tags.put("date", DATE_FORMAT.format(new Date()));
+
+		template = replace(template, tags);
+		return template;
+	}
+
+	//point to the resource holding the template (where?)
+	static private final String TEMPLATE_LOC = "WEB-INF/wget-template";
+	static private String TEMPLATE;
+	
+	static private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
+			"yyyy/MM/dd HH:mm:ss");
+
+	static private String getTemplate(ServletContext servletContext) {
+		if (TEMPLATE == null && servletContext != null) {
+			
+			try {
+				ServletContextResource resource = new ServletContextResource(servletContext, TEMPLATE_LOC);
+				
+				LOG.debug(resource.getFile().getAbsolutePath());
+				InputStreamReader reader = new InputStreamReader(resource.getInputStream(), "UTF-8");
+				StringBuilder sb = new StringBuilder();
+				char[] buff = new char[1024];
+				int read;
+				while ((read = reader.read(buff)) == buff.length) {
+					sb.append(buff);
+				}
+				sb.append(buff, 0, read);
+
+				TEMPLATE = sb.toString();
+
+			} catch (IOException e) {
+				System.out.println("Can't get template at " + TEMPLATE_LOC);
+				e.printStackTrace();
+			}
+		}
+		return TEMPLATE;
+	}
+	
+	static public void init(ServletContext servletContext) {
+		
+		getTemplate(servletContext);
+		LOG.debug(getTemplate(null));
+	}
 
 }

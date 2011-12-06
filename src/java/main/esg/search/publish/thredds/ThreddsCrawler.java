@@ -82,14 +82,19 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 		// valid catalog
 		if (catalog.check(buff)) {
 			
-			if (LOG.isInfoEnabled()) LOG.info("Parsing catalog:"+catalogURI.toString());
+			if (LOG.isInfoEnabled()) LOG.info("Parsing catalog: "+catalogURI.toString());
 			for (final InvDataset dataset : catalog.getDatasets()) {
 				
 				if (dataset instanceof InvCatalogRef) {
 					if (recursive) {
 						// crawl catalogs recursively
 						final URI catalogRef = getCatalogRef(dataset);
-						crawl(catalogRef, recursive, callback, publish);
+						try {
+						    crawl(catalogRef, recursive, callback, publish);
+						} catch(Exception e) {
+						    LOG.warn("Error parsing catalog: "+catalogRef.toString());
+						    LOG.warn(e.getMessage());
+						}
 					}
 				} else {
 				    

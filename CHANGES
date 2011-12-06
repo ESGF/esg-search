@@ -46,3 +46,11 @@ Internal changes to URLs resolved by the servlet
 
 1.6.0
 - Expansion of RSS functionality to include federation wide and facet-specific feeds.
+
+1.7.0
+- Configuration of distributed search from external registry file containing up to date available shards.
+- Support for returning results as Solr/JOSN.
+- Support for requesting the logical 'OR' of two values of the same facet.
+- Supporting attempts at recovering from error in distributed search, by executing a non-distributed search
+- Changed THREDDS harvesting process to keep harvesting when errors are encountered from single catalogs
+- Detecting replica catalogs from embedded property is_replica=true/false.

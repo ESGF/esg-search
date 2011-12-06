@@ -29,8 +29,8 @@ import esg.search.utils.XmlParser;
  * @author Luca Cinquini
  *
  */
-@Controller("wgetControllerNew")
-public class WgetControllerNew {
+@Controller("wgetControllerOld")
+public class WgetControllerOld {
     
     private static final String SCRIPT_NAME = "wget.sh";
     
@@ -40,7 +40,7 @@ public class WgetControllerNew {
     final private BaseController baseController;
     
     @Autowired
-    public WgetControllerNew(final BaseController baseController) {
+    public WgetControllerOld(final BaseController baseController) {
           this.baseController = baseController;
     }
     
@@ -48,13 +48,11 @@ public class WgetControllerNew {
      * Method to process a search for files matching the given criteria,
      * and return a wget script.
      */
-    @RequestMapping(value="/wgetNew", method={ RequestMethod.GET, RequestMethod.POST })
+    @RequestMapping(value="/wgetOld", method={ RequestMethod.GET, RequestMethod.POST })
     public void wget(final HttpServletRequest request, 
                        final SearchCommand command, 
                        final HttpServletResponse response) throws Exception {
-    	
-        WgetScriptGeneratorNew.init(request.getSession().getServletContext());
-
+        
         // check type=... is not specified
         if (request.getParameter(QueryParameters.TYPE)!=null) {
             baseController.sendError(HttpServletResponse.SC_BAD_REQUEST, "HTTP parameter type is fixed to value: File", response);
@@ -72,14 +70,7 @@ public class WgetControllerNew {
         //XPath xpath = XPath.newInstance("/response/result/doc/arr[@name='url']/str");
         XPath xpath = XPath.newInstance("/response/result/doc");
         
-        
-        String urlQuery = request.getQueryString() == null ? 
-        		request.getRequestURL().toString() : 
-        		request.getRequestURL().append("?").append(request.getQueryString()).toString();
-        WgetScriptGeneratorNew.WgetDescriptor desc = new WgetScriptGeneratorNew.WgetDescriptor(request.getServerName(), null, urlQuery);
-        
         final List<String> urls = new ArrayList<String>();
-        
         // loop over records
         for (Object obj : xpath.selectNodes(doc)) {
             Element docEl = (Element)obj;
@@ -106,7 +97,6 @@ public class WgetControllerNew {
                     }
                 }
              }
-            desc.addFile(url, null, null, checksumType, checksum);
             // export (URL checkum) for this record
             if (StringUtils.hasText(url)) {
                 urls.add( url );
@@ -126,8 +116,13 @@ public class WgetControllerNew {
               
             // generate the wget script
             } else {
+            
+                // record the full request URL
+                final StringBuffer requestUrl = request.getRequestURL();
+                if (StringUtils.hasText(request.getQueryString())) requestUrl.append("?").append(request.getQueryString());
+                
                 // generate wget script
-                final String wgetScript = WgetScriptGeneratorNew.getWgetScript(desc);
+                final String wgetScript = WgetScriptGeneratorOld.createWgetScript(requestUrl.toString(), urls);
                 
                 // write out the script to the HTTP response
                 response.setContentType("text/x-sh");

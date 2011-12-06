@@ -189,5 +189,17 @@ public interface SearchInput {
      * @return
      */
 	public void setDistrib(boolean distrib);
+	
+	/**
+	 * Setter method for formatting the query results.
+	 * @param format
+	 */
+	public void setFormat(final String format);
+	
+	/**
+	 * Getter method for the requested output format.
+	 * @return
+	 */
+	public String getFormat();
 
 }

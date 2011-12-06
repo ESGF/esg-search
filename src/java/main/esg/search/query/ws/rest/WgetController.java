@@ -52,7 +52,9 @@ public class WgetController {
     public void wget(final HttpServletRequest request, 
                        final SearchCommand command, 
                        final HttpServletResponse response) throws Exception {
-        
+    	
+        WgetScriptGenerator.init(request.getSession().getServletContext());
+
         // check type=... is not specified
         if (request.getParameter(QueryParameters.TYPE)!=null) {
             baseController.sendError(HttpServletResponse.SC_BAD_REQUEST, "HTTP parameter type is fixed to value: File", response);
@@ -70,7 +72,14 @@ public class WgetController {
         //XPath xpath = XPath.newInstance("/response/result/doc/arr[@name='url']/str");
         XPath xpath = XPath.newInstance("/response/result/doc");
         
+        
+        String urlQuery = request.getQueryString() == null ? 
+        		request.getRequestURL().toString() : 
+        		request.getRequestURL().append("?").append(request.getQueryString()).toString();
+        WgetScriptGenerator.WgetDescriptor desc = new WgetScriptGenerator.WgetDescriptor(request.getServerName(), null, urlQuery);
+        
         final List<String> urls = new ArrayList<String>();
+        
         // loop over records
         for (Object obj : xpath.selectNodes(doc)) {
             Element docEl = (Element)obj;
@@ -97,6 +106,7 @@ public class WgetController {
                     }
                 }
              }
+            desc.addFile(url, null, null, checksumType, checksum);
             // export (URL checkum) for this record
             if (StringUtils.hasText(url)) {
                 urls.add( url );
@@ -116,13 +126,8 @@ public class WgetController {
               
             // generate the wget script
             } else {
-            
-                // record the full request URL
-                final StringBuffer requestUrl = request.getRequestURL();
-                if (StringUtils.hasText(request.getQueryString())) requestUrl.append("?").append(request.getQueryString());
-                
                 // generate wget script
-                final String wgetScript = WgetScriptGenerator.createWgetScript(requestUrl.toString(), urls);
+                final String wgetScript = WgetScriptGenerator.getWgetScript(desc);
                 
                 // write out the script to the HTTP response
                 response.setContentType("text/x-sh");
