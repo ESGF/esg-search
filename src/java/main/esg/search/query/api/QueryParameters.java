@@ -77,6 +77,7 @@ public class QueryParameters {
     
     public final static List<String> STANDARD_FIELDS = Arrays.asList( new String[]{ FIELD_ID, FIELD_TITLE, FIELD_DESCRIPTION, 
                                                                                     FIELD_TYPE, FIELD_TIMESTAMP, FIELD_URL, FIELD_SIZE,
+                                                                                    FIELD_MASTER_ID, FIELD_REPLICA,
                                                                                     FIELD_DATASET_ID, FIELD_VERSION, 
                                                                                     FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE});
     

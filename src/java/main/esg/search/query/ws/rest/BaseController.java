@@ -206,11 +206,12 @@ public class BaseController {
         if (!response.isCommitted()) {
         
             // attempt query numberOfTries times
+            System.out.println("attempting query");
             for (int n=0; n<numberOfTries; n++) {    
                 try {
                     // invoke back-end search service (HTTP request to Solr), return response document
                     return searchService.query(command, format);
-                } catch(IOException e) {
+                } catch(Exception e) {
                     LOG.warn(e.getMessage());
                     if (n<numberOfTries-1) {
                         if (LOG.isDebugEnabled()) LOG.debug("Query failed "+n+" times, attempting to recover from search error");
@@ -225,8 +226,8 @@ public class BaseController {
             
         }
         
-        // workflow should never get here, in any case send error to client
-        throw new Exception("The query request failed  "+numberOfTries+" times.");
+        // response error, return empty body content
+        return "";
 	    	    		
 	}
 	

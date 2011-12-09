@@ -39,6 +39,7 @@
 	          	<entry key="project"><value>Project</value></entry>
 	          	<entry key="model"><value>Model</value></entry>
 	          	<entry key="experiment"><value>Experiment</value></entry>
+	          	<entry key="experiment_family"><value>Experiment Family</value></entry>
 	          	<entry key="time_frequency"><value>Frequency</value></entry>
 	          	<entry key="realm"><value>Realm</value></entry>
 	          	<entry key="cf_variable"><value>CF Variable</value></entry>
