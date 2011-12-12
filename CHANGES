@@ -59,4 +59,5 @@ Internal changes to URLs resolved by the servlet
 - Fixed bug with querying by dataset_id
 
 1.7.2
-- Included experiment_family in list of allowed facets
+- Included "experiment_family" in list of allowed facets
+- Included "file_id" as allowed query parameter
