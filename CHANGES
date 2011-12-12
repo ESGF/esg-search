@@ -60,4 +60,6 @@ Internal changes to URLs resolved by the servlet
 
 1.7.2
 - Included "experiment_family" in list of allowed facets
+
+1.7.3
 - Included "file_id" as allowed query parameter
