@@ -32,8 +32,11 @@
 		<constructor-arg index="0">
 			 <map>
 			 			 
-			    <!--  common facets -->
+			    <!--  special facets -->
 			 	<entry key="type"><value>Type</value></entry>
+			 	<entry key="master_id"><value>Master ID</value></entry>
+			 	<entry key="dataset_id"><value>Dataset ID</value></entry>
+			 	<entry key="file_id"><value>File ID</value></entry>
 			 
 			 	<!-- model facets -->
 	          	<entry key="project"><value>Project</value></entry>
@@ -48,12 +51,7 @@
 	          	<entry key="product"><value>Product</value></entry>
 	          	<entry key="ensemble"><value>Ensemble</value></entry>
 	          	<entry key="MIP_table"><value>MIP table</value></entry>
-	          	
-	          	<!-- 
-	          	<entry key="cmor_table"><value>CMOR Table</value></entry>
-	          	<entry key="format"><value>Format</value></entry>
-	          	-->
-	          	
+	          		          	
 	          	<!-- obs facets -->
 	          	<entry key="source_id"><value>Instrument</value></entry>
 	          	<entry key="processing_level"><value>Processing Level</value></entry>

@@ -53,7 +53,8 @@ public class QueryParameters {
     final public static String FIELD_TIMESTAMP = "timestamp";
     final public static String FIELD_URL = "url";
     final public static String FIELD_SIZE = "size";
-    final public static String FIELD_DATASET_ID = "dataset_id"; // note: generic notation to allow parent-child relations beyond just datasets    
+    final public static String FIELD_DATASET_ID = "dataset_id"; // note: generic notation to allow parent-child relations beyond just datasets   
+    final public static String FIELD_FILE_ID = "file_id";
     final public static String FIELD_VERSION = "version";
     final public static String FIELD_CHECKSUM = "checksum";
     final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
@@ -82,10 +83,10 @@ public class QueryParameters {
                                                                                     FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE});
     
     public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB, 
-                                                                             REPLICA, MASTER_ID,
+                                                                             REPLICA,
                                                                              LAT, LON, LOCATION, RADIUS, POLYGON, BBOX,
                                                                              START, END,
-                                                                             ID, TYPE, FROM, TO, FIELD_DATASET_ID } );
+                                                                             ID, TYPE, FROM, TO } );
     
     /**
      * List of invalid text characters - anything that is not within square brackets.

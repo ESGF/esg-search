@@ -39,7 +39,7 @@ public class SolrXmlBuilder {
 			idEl.setText(id);
 			deleteEl.addContent(idEl);
 			
-			// <query>parent_id:...</query>
+			// <query>dataset_id:...</query>
 			final Element queryEl = new Element(SolrXmlPars.ELEMENT_QUERY);
 			queryEl.setText(QueryParameters.FIELD_DATASET_ID+":"+id);
 			deleteEl.addContent(queryEl);

@@ -121,15 +121,13 @@ public class BaseController {
             final String parName = (String)obj;
                             
             // &id=...
+            // NOTE: only one value allowed
             if (parName.equals(QueryParameters.ID)) {
                 command.addConstraint(parName, request.getParameter(parName) );
                 
             // &replica=true|false (or True|False or T|F)
-            // &master_id=...
-            // &dataset_id=...
-            } else if (   parName.equalsIgnoreCase(QueryParameters.REPLICA)
-                       || parName.equalsIgnoreCase(QueryParameters.MASTER_ID)
-                       || parName.equalsIgnoreCase(QueryParameters.FIELD_DATASET_ID)) {
+            // NOTE: only one value allowed
+            } else if (   parName.equalsIgnoreCase(QueryParameters.REPLICA)) {
                 command.addConstraint(parName, request.getParameter(parName));
              
             // other keywords
