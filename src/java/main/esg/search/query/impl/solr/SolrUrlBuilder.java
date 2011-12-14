@@ -203,16 +203,33 @@ public class SolrUrlBuilder {
 		
 		// search input constraints --> fq=facet_name:"facet_value"
 		final Map<String, List<String>> constraints = input.getConstraints();
-		
+		// experiment=1pctCO2 --> fq=experiment:"1pctCO2"
+		// experiment=1pctCO2&variable=huss --> fq=experiment:"1pctCO2"&fq=variable:"huss"
+		// experiment=1pctCO2&variable=huss&variable=clt --> fq=experiment:"1pctCO2"&fq=variable:"huss"+||+variable:"clt"
+		// experiment=1pctCO2&variable=!huss --> fq=experiment:"1pctCO2"&fq=-variable:"huss"
+		// experiment=1pctCO2&variable=!huss&variable=!clt --> fq=experiment:"1pctCO2"&fq=-variable:"huss"&fq=-variable:"clt"
+		// experiment=1pctCO2&variable=!huss&variable=clt --> fq=experiment:"1pctCO2"&fq=variable:"clt"&fq=-variable:"huss"
 		if (!constraints.isEmpty()) {
 			for (final String facet : constraints.keySet()) {
 			    if (!QueryParameters.KEYWORDS.contains(facet)) { // skip keywords
-			        fq.append("&fq=");
+			        //fq.append("&fq=");
+			        StringBuilder yesClause = new StringBuilder("");
+			        StringBuilder noClause = new StringBuilder("");
     				for (final String value : constraints.get(facet)) {	
-    				    // combine multiple values for the same facet in logical "OR"
-    				    if (fq.charAt(fq.length()-1) != '=') fq.append(URLEncoder.encode(" || ", "UTF-8"));
-    					fq.append( URLEncoder.encode( facet+":"+"\""+value+"\"","UTF-8" ) );
+    				    if (value.startsWith("!")) {
+    				        noClause.append("&fq=-").append(URLEncoder.encode( facet+":"+"\""+value.substring(1)+"\"","UTF-8" ));
+    				    } else {
+    				        // combine multiple values for the same facet in logical "OR"
+    				        if (yesClause.length()==0) {
+    				            yesClause.append("&fq=");
+    				        } else {
+    				            yesClause.append(URLEncoder.encode(" || ", "UTF-8"));
+    				        }
+    				        yesClause.append( URLEncoder.encode( facet+":"+"\""+value+"\"","UTF-8" ) );
+    				    }
     				}
+    				if (yesClause.length()>0) fq.append(yesClause);
+    				if (noClause.length()>0) fq.append(noClause);
 			    }
 			}
 		}

@@ -66,3 +66,6 @@ Internal changes to URLs resolved by the servlet
 
 1.7.4
 - Upgraded dependency on esgf-security module to correctly read the shards file
+
+1.7.5
+- Support for negative facet syntax: model=!CCSM
