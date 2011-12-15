@@ -3,6 +3,7 @@ package esg.search.ws.hessian.client;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import esg.search.publish.api.MetadataRepositoryCrawler;
 import esg.search.publish.api.PublishingService;
 import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.utils.CertUtils;
@@ -20,6 +21,7 @@ public class PublishingWebServiceClient extends PublishingServiceMain {
 		
         final ApplicationContext ctxt = new ClassPathXmlApplicationContext("classpath:esg/search/ws/hessian/client/ws-hessian-client-config.xml");
         final PublishingService publishingService = (PublishingService)ctxt.getBean("publishingWebServiceProxy");
+        final MetadataRepositoryCrawler metadataRepositoryCrawler = (MetadataRepositoryCrawler)ctxt.getBean("metadataRepositoryCrawler");        
 	    
  	    // setup client certificate and trustore for mutual authentication
         CertUtils.setKeystore("esg/search/ws/hessian/client/client-cert.ks");
@@ -28,7 +30,7 @@ public class PublishingWebServiceClient extends PublishingServiceMain {
 	    //CertUtils.setTruststore("esg/search/ws/hessian/client/jpl-esg-trustore.ts");
 
 	    final PublishingWebServiceClient self = new PublishingWebServiceClient();
-	    self.run(publishingService, args);
+	    self.run(publishingService, metadataRepositoryCrawler, args);
 		
 	}
 	

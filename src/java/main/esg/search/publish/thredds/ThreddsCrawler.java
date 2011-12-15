@@ -35,8 +35,10 @@ import thredds.catalog.InvDataset;
 import thredds.catalog.InvDatasetImpl;
 import esg.search.core.Record;
 import esg.search.publish.api.MetadataRepositoryCrawler;
+import esg.search.publish.api.MetadataRepositoryCrawlerListener;
 import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.RecordProducer;
+import esg.search.publish.impl.FileLogger;
 
 /**
  * Implementation of {@link MetadataRepositoryCrawler} for processing a hierarchy of THREDDS catalogs.
@@ -44,10 +46,12 @@ import esg.search.publish.api.RecordProducer;
  * while delegating the parsing of catalogs and indexing of records to other configurable components.
  * Additionally, while crawling a hierarchy of catalogs, only the latest version records will be harvested.
  */
-@Service
+@Service("metadataRepositoryCrawler")
 public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	
 	private final ThreddsParserStrategy parser;
+	
+	private MetadataRepositoryCrawlerListener listener = null;
 		
 	private final Log LOG = LogFactory.getLog(this.getClass());
 	
@@ -92,6 +96,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 						try {
 						    crawl(catalogRef, recursive, callback, publish);
 						} catch(Exception e) {
+						    // print error from nested invocation
 						    LOG.warn("Error parsing catalog: "+catalogRef.toString());
 						    LOG.warn(e.getMessage());
 						}
@@ -132,13 +137,20 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 					}
 					
 				}
-			}
-			
+				
+			} // loop over datasets
+		    			
 		// invalid catalog
 		} else {
+            // notify listener of crawling error
+            if (listener!=null) listener.afterCrawlingError(catalogURI.toString());
+            // throw the exception up the stack
 			throw new Exception(buff.toString()); 
 		}
 		
+        // notify listener of successful completion
+        if (listener!=null) listener.afterCrawlingSuccess(catalogURI.toString());
+				
 	}
 	
 	private URI getCatalogRef(final InvDataset dataset) throws Exception {
@@ -152,5 +164,10 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 		return uri;
 		
 	}
+
+    @Override
+    public void setListener(MetadataRepositoryCrawlerListener listener) {
+        this.listener = listener;
+    }
 	
 }

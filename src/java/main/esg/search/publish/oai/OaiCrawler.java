@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 
 import esg.search.core.Record;
 import esg.search.publish.api.MetadataRepositoryCrawler;
+import esg.search.publish.api.MetadataRepositoryCrawlerListener;
 import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.RecordProducer;
 import esg.search.publish.xml.MetadataHandler;
@@ -141,5 +142,9 @@ public class OaiCrawler implements MetadataRepositoryCrawler  {
 				
 	}
 	
+    @Override
+    public void setListener(MetadataRepositoryCrawlerListener listener) {
+        // do nothing      
+    }
 
 }

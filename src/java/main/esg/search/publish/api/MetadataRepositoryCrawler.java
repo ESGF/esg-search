@@ -44,6 +44,12 @@ public interface MetadataRepositoryCrawler {
 	 */
 	public MetadataRepositoryType supports();
 	
+	/**
+	 * Method to set an optional listener to monitor the crawling operation.
+	 * @param listener
+	 */
+	void setListener(MetadataRepositoryCrawlerListener listener);
+	
 	
 
 }
