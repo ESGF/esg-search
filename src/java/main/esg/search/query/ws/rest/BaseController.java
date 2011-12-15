@@ -52,9 +52,12 @@ public class BaseController {
     final private FacetProfile facetProfile;
     
     /**
-     * Number of additional query attempts in case of error.
+     * Number of query attempts:
+     * 1 - with current shards list
+     * 2 - with pruned shards list
+     * 3 - with local shard only
      */
-    private int numberOfTries = 2;
+    private int numberOfTries = 3;
 		
 	private final Log LOG = LogFactory.getLog(this.getClass());
 		
@@ -204,7 +207,6 @@ public class BaseController {
         if (!response.isCommitted()) {
         
             // attempt query numberOfTries times
-            System.out.println("attempting query");
             for (int n=0; n<numberOfTries; n++) {    
                 try {
                     // invoke back-end search service (HTTP request to Solr), return response document
@@ -214,7 +216,7 @@ public class BaseController {
                     if (n<numberOfTries-1) {
                         if (LOG.isDebugEnabled()) LOG.debug("Query failed "+n+" times, attempting to recover from search error");
                         // attempt to recover from error
-                        recover(command);
+                        recover(command, n);
                     } else {
                         // send error to client
                         throw e;
@@ -258,13 +260,26 @@ public class BaseController {
 	 * Method to modify the query parameters after a search error, 
 	 * in to attempt a new search.
 	 * 
-	 * @param input
+	 * @param input : the current search input parameters
+	 * @param n : the current attempt number (0 after the first failure, and so son...)
 	 */
-	void recover(final SearchInput input) {
+	void recover(final SearchInput input, int n) {
 	   
-	    // execute non-distributed query
-	    input.setDistrib(false);
+	    if (n==0) {
+	        // ask the node manager to prune the shards list
+	        if (LOG.isDebugEnabled()) LOG.debug("Pruning the shards list");
+	        prune();
+	        
+	    } else {
+	        // execute non-distributed query
+	        if (LOG.isDebugEnabled()) LOG.debug("Executing a non-distributed query");
+	        input.setDistrib(false);
+	    }
 	    
+	}
+	
+	void prune() {
+	    // stab
 	}
 
 	/**

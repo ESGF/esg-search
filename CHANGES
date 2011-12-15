@@ -70,3 +70,6 @@ Internal changes to URLs resolved by the servlet
 1.7.5
 - Support for negative facet syntax: model=!CCSM
 - Support for logging success/error status during crawling of THREDDS catalogs
+
+1.7.6
+- Inerted call to node manager prune() fuction in case of first failed search attempt
