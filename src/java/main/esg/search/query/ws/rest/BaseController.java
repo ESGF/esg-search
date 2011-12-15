@@ -278,8 +278,9 @@ public class BaseController {
 	    
 	}
 	
-	void prune() {
-	    // stab
+	// stub
+	boolean prune() {
+	    return true;
 	}
 
 	/**
