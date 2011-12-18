@@ -118,10 +118,9 @@
 	<classpathentry kind="lib" path="lib/fetched/xmlsec-1.4.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xmltooling-1.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/XSGroupRole-1.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esg-orp-1.2.5.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-accesslog-client-0.5.7.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.5.7.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-filters-0.5.7.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-1.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esg-orp-1.2.6.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-1.5.2.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

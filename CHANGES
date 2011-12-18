@@ -72,4 +72,4 @@ Internal changes to URLs resolved by the servlet
 - Support for logging success/error status during crawling of THREDDS catalogs
 
 1.7.6
-- Inerted call to node manager prune() fuction in case of first failed search attempt
+- Inserted call to node manager prune() function in case of first failed search attempt

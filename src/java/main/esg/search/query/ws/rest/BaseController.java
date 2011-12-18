@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 
+import esg.node.connection.ESGConnector;
 import esg.search.query.api.FacetProfile;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
@@ -268,7 +269,11 @@ public class BaseController {
 	    if (n==0) {
 	        // ask the node manager to prune the shards list
 	        if (LOG.isDebugEnabled()) LOG.debug("Pruning the shards list");
-	        prune();
+	        if (ESGConnector.getInstance().setEndpoint().prune()) {
+	            if (LOG.isDebugEnabled()) LOG.debug("Pruned dead peer connections from localhost");
+            } else {
+                if (LOG.isDebugEnabled()) LOG.debug("There were no dead peer connections detected on localhost (or host itself is dead)");
+            }
 	        
 	    } else {
 	        // execute non-distributed query
@@ -276,11 +281,6 @@ public class BaseController {
 	        input.setDistrib(false);
 	    }
 	    
-	}
-	
-	// stub
-	boolean prune() {
-	    return true;
 	}
 
 	/**
