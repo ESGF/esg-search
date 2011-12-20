@@ -60,6 +60,7 @@ crawl_site() {
     verbose_print "------------"
     verbose_print "host: ${host}"
     echo "crawling ${site} ...."
+    ((DEBUG)) && curl -s ${site}
     verbose_print "$JAVA_HOME/bin/java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} THREDDS $( ((REMOVE)) && echo "false" || echo "true") /tmp/${host}_publishing.log"
     verbose_print "------------"
 }
