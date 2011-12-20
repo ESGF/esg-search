@@ -559,8 +559,8 @@
         <!-- always perform distributed search -->
         <str name="shards">esg-datanode.jpl.nasa.gov:8983/solr,pcmdi9.llnl.gov:8983/solr,esg-vm-demo02.ccs.ornl.gov:8983/solr</str>
      </lst>
-     <int name="shard-socket-timeout">1000</int>
-     <int name="shard-connection-timeout">1000</int>
+     <int name="shard-socket-timeout">10000</int>
+     <int name="shard-connection-timeout">10000</int>
      <str name="partial-results">true</str>
   </requestHandler>
 
