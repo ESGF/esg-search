@@ -100,6 +100,7 @@ installer_home=${HOME}
 esg_search_version=${esg_search_version:-"1.2.0"}
 search_install_dir=${ESGF_INSTALL_DIR:-"${install_prefix}/esgf_search"}
 seach_data_dir=${ESGF_DATA_DIR:="${esg_root_dir}/search_data"}
+esgf_crawl_launcher=esgf-crawl
 
 
 #---------------------------------------------------------
@@ -136,6 +137,9 @@ setup_search() {
     write_as_property publishing_service_app_home ${search_web_service_dir}
 
     write_search_rss_properties
+
+    #Get utility script for crawling thredds sites
+    fetch_crawl_launcher
 
     echo "done"
     echo
@@ -904,4 +908,13 @@ backup() {
     return 0
 
     
+}
+
+fetch_crawl_launcher() {
+    pushd ${scripts_dir} >& /dev/null
+    checked_get ${esgf_crawl_launcher} ${node_dist_url%/*}/${esgf_crawl_launcher} $((force_install))
+    (( $? > 1 )) && echo " ERROR: Could not download ${node_dist_url%/*}/${esgf_crawl_launcher} :-(" && popd >& /dev/null && return 1
+    chmod 755 ${esgf_crawl_launcher}
+    popd >& /dev/null
+    return 0
 }
