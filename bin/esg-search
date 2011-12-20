@@ -100,7 +100,7 @@ installer_home=${HOME}
 esg_search_version=${esg_search_version:-"1.2.0"}
 search_install_dir=${ESGF_INSTALL_DIR:-"${install_prefix}/esgf_search"}
 seach_data_dir=${ESGF_DATA_DIR:="${esg_root_dir}/search_data"}
-esgf_crawl_launcher=esgf-crawl
+esgf_crawl_launcher="esgf-crawl"
 
 
 #---------------------------------------------------------
@@ -912,8 +912,8 @@ backup() {
 
 fetch_crawl_launcher() {
     pushd ${scripts_dir} >& /dev/null
-    checked_get ${esgf_crawl_launcher} ${node_dist_url%/*}/${esgf_crawl_launcher} $((force_install))
-    (( $? > 1 )) && echo " ERROR: Could not download ${node_dist_url%/*}/${esgf_crawl_launcher} :-(" && popd >& /dev/null && return 1
+    checked_get ${esgf_crawl_launcher} ${esg_dist_url%/*}/${search_web_service_name}/${esgf_crawl_launcher} $((force_install))
+    (( $? > 1 )) && echo " ERROR: Could not download ${esg_dist_url%/*}/${search_web_service_name}/${esgf_crawl_launcher} :-(" && popd >& /dev/null && return 1
     chmod 755 ${esgf_crawl_launcher}
     popd >& /dev/null
     return 0
