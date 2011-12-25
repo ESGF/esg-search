@@ -20,12 +20,16 @@ package esg.search.publish.impl.solr;
 
 import java.net.URL;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import esg.search.core.Record;
+import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
  * Implementation of {@link SolrClient} that sends (fully populated) records to a Solr server for indexing.
@@ -48,7 +52,9 @@ public class SolrIndexer extends SolrClient {
 	public void consume(final Record record) throws Exception {
 		
 		final String xml = messageBuilder.buildAddMessage(record, true);
-		final URL postUrl = solrUrlBuilder.buildUpdateUrl(true); // commit=true
+        final String core = SolrXmlPars.CORES.get(record.getType());
+        if (!StringUtils.hasText(core)) throw new Exception("Unmapped core for record type="+record.getType());
+		final URL postUrl = solrUrlBuilder.buildUpdateUrl(core, true); // commit=true
 		if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
 		httpClient.doPostXml(postUrl, xml);
 		
@@ -60,17 +66,23 @@ public class SolrIndexer extends SolrClient {
     public void consume(final Collection<Record> records) throws Exception {
         
         // index one record at a time, do not commit
+        final Set<String> cores = new HashSet<String>();
         for (final Record record : records) {
             final String xml = messageBuilder.buildAddMessage(record, true);
-            final URL postUrl = solrUrlBuilder.buildUpdateUrl(false); // commit=false
+            final String core = SolrXmlPars.CORES.get(record.getType());
+            if (!StringUtils.hasText(core)) throw new Exception("Unmapped core for record type="+record.getType());
+            cores.add(core);
+            final URL postUrl = solrUrlBuilder.buildUpdateUrl(core, false); // commit=false
             if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
             httpClient.doPostXml(postUrl, xml);
         }
         
-        // commit all records at once
-        final URL getUrl = solrUrlBuilder.buildUpdateUrl(true); // commit=true
-        if (LOG.isDebugEnabled()) LOG.debug("Issuing commit: URL:"+getUrl.toString());
-        httpClient.doGet(getUrl);
+        // commit all records at once, to all cores
+        for (final String core : cores) {
+            final URL getUrl = solrUrlBuilder.buildUpdateUrl(core, true); // commit=true
+            if (LOG.isDebugEnabled()) LOG.debug("Issuing commit: URL:"+getUrl.toString());
+            httpClient.doGet(getUrl);
+        }
         
     }
 

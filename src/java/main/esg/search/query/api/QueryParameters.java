@@ -39,7 +39,7 @@ public class QueryParameters {
     // record special fields
     public final static String ID = "id";
     public final static String MASTER_ID = "master_id";
-    public final static String TYPE = "type";
+    //public final static String TYPE = "type";
     public final static String FROM = "from";
     public final static String TO = "to";
     
@@ -86,7 +86,7 @@ public class QueryParameters {
                                                                              REPLICA,
                                                                              LAT, LON, LOCATION, RADIUS, POLYGON, BBOX,
                                                                              START, END,
-                                                                             ID, TYPE, FROM, TO } );
+                                                                             ID, FIELD_TYPE, FROM, TO } );
     
     /**
      * List of invalid text characters - anything that is not within square brackets.

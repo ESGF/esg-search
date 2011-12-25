@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import esg.search.core.Record;
+import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
  * Implementation of {@link SolrClient} that sends (skeleton) records to a Solr server for removal.
@@ -50,11 +51,14 @@ public class SolrScrabber extends SolrClient {
 	 */
 	public void consume(final Record record) throws Exception {
 		
-		final List<String> ids = Arrays.asList(new String[]{record.getId()} );
-		final String xml = messageBuilder.buildDeleteMessage(ids, true);
-		final URL postUrl = solrUrlBuilder.buildUpdateUrl(true); // commit=true
-		if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
-		httpClient.doPostXml(postUrl, xml);
+	    // FIXME: loop over all cores
+	    for (final String core : SolrXmlPars.CORES.values()) {
+	        final List<String> ids = Arrays.asList(new String[]{record.getId()} );
+	        final String xml = messageBuilder.buildDeleteMessage(ids, true);
+	        final URL postUrl = solrUrlBuilder.buildUpdateUrl(core, true); // commit=true
+	        if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
+	        httpClient.doPostXml(postUrl, xml);
+	    }
 		
 	}
 	

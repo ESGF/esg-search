@@ -114,7 +114,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		record.addField(QueryParameters.FIELD_TITLE, name);
 		
 	    // type
-        record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_DATASET);
+		record.setType(SolrXmlPars.TYPE_DATASET);
+        //record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_DATASET);
 		
 		// IMPORTANT: add top-level dataset as first record in the list
 		records.add(record);
@@ -232,7 +233,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         Assert.notNull(name, "File name cannot be null");
         record.addField(QueryParameters.FIELD_TITLE, name);
         // type
-        record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_FILE);       
+        //record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_FILE);  
+        record.setType(SolrXmlPars.TYPE_FILE);
         // parent dataset
         record.addField(QueryParameters.FIELD_DATASET_ID, records.get(0).getId());
 

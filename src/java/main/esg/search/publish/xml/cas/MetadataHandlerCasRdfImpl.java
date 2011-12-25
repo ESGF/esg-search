@@ -82,7 +82,8 @@ public class MetadataHandlerCasRdfImpl implements MetadataHandler {
 		
 		
 		// type
-		record.addField(QueryParameters.FIELD_TYPE, "Dataset");
+		//record.addField(QueryParameters.FIELD_TYPE, "Dataset");
+		record.setType(SolrXmlPars.TYPE_DATASET);
 		
 		// <cas:Filename>MLS-Aura_L2GP-CO_v02-23-c01_2008d107.he5</cas:Filename>
 		final String filename = element.getChildText("Filename", CasPars.CAS_NS).replaceAll("\"", "");

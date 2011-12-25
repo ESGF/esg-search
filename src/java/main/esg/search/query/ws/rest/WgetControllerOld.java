@@ -54,7 +54,7 @@ public class WgetControllerOld {
                        final HttpServletResponse response) throws Exception {
         
         // check type=... is not specified
-        if (request.getParameter(QueryParameters.TYPE)!=null) {
+        if (request.getParameter(QueryParameters.FIELD_TYPE)!=null) {
             baseController.sendError(HttpServletResponse.SC_BAD_REQUEST, "HTTP parameter type is fixed to value: File", response);
         } else {
             command.setType(SolrXmlPars.TYPE_FILE);

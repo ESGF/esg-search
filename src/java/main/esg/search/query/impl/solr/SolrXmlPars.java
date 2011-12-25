@@ -18,6 +18,9 @@
  ******************************************************************************/
 package esg.search.query.impl.solr;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Class containing parameters for the Solr XML schema.
  */
@@ -100,7 +103,17 @@ public class SolrXmlPars {
 	
 	final public static String TYPE_DATASET = "Dataset";
 	final public static String TYPE_FILE = "File";
+	
+	/**
+	 * Map holding references from record type to Solr core storing those records.
+	 */
+	final public static Map<String, String> CORES = new HashMap<String,String>();
 
+	// static population of Solr cores mapping
+	static {
+	    CORES.put(TYPE_DATASET, "datasets");
+	    CORES.put(TYPE_FILE, "files");
+	}
 	
 	/**
 	 * Private constructor prevents class instantiation.
