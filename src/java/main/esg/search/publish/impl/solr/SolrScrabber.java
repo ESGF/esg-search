@@ -51,7 +51,7 @@ public class SolrScrabber extends SolrClient {
 	 */
 	public void consume(final Record record) throws Exception {
 		
-	    // FIXME: loop over all cores
+	    // loop over all cores, remove datasets and files from all
 	    for (final String core : SolrXmlPars.CORES.values()) {
 	        final List<String> ids = Arrays.asList(new String[]{record.getId()} );
 	        final String xml = messageBuilder.buildDeleteMessage(ids, true);

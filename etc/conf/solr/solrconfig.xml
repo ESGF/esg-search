@@ -69,10 +69,8 @@
        other than the default ./data under the Solr home.
        If replication is in use, this should match the replication configuration.
   <dataDir>${solr.data.dir:./solr/data}</dataDir>
+  <dataDir>${solr.core.dataDir:./solr/data}</dataDir>
   -->
-
-  <dataDir>${solr.data.dir:./solr/data}</dataDir>
-
 
   <!-- WARNING: this <indexDefaults> section only provides defaults for index writers
        in general. See also the <mainIndex> section after that when changing parameters
@@ -517,6 +515,11 @@
         <str name="facet.method">enum</str>
      </lst>
 
+     <!-- distributed search parameters -->
+     <int name="shard-socket-timeout">10000</int>
+     <int name="shard-connection-timeout">10000</int>
+     <str name="partial-results">true</str>
+     
   </requestHandler>
 
 <!-- Please refer to http://wiki.apache.org/solr/SolrReplication for details on configuring replication -->
@@ -524,12 +527,13 @@
 <!-- remove  the <lst name="slave"> section if this is just a master -->
 <requestHandler name="/replication" class="solr.ReplicationHandler" >
     <lst name="${master:master}">
-      <str name="replicateAfter">commit</str>
       <str name="replicateAfter">startup</str>
+      <str name="replicateAfter">commit</str>
+      <str name="replicateAfter">optimize</str>
       <str name="confFiles">schema.xml,stopwords.txt</str>
     </lst>
     <lst name="${slave:slave}">
-      <str name="masterUrl">http://localhost:8984/solr/replication</str>
+      <str name="masterUrl">http://localhost:8984/solr/${solr.core.name}/replication</str>
       <str name="pollInterval">00:00:60</str>
     </lst>
 </requestHandler>

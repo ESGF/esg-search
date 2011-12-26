@@ -28,15 +28,8 @@
   adminPath: RequestHandler path to manage cores.  
     If 'null' (or absent), cores will not be manageable via request handler
   -->
-  <cores adminPath="/admin/cores" defaultCoreName="esgf-data">
-    <core name="esgf-data" instanceDir="." shard="shard@@myid@@"/>
-    <!-- 
-      SolrCloud related attributes on core:
-        collection - The name of the collection this core belongs to. 
-          Defaults to the name of the core.
-        shard - which shard of the collection this core has.  Defaults
-          to a name derived from host:port_webapp_corename.
-        role - TBD
-    -->
+  <cores adminPath="/admin/cores">
+    <core name="datasets" instanceDir="datasets" dataDir="/esg/solr-index-master/datasets" />
+    <core name="files" instanceDir="files" dataDir="/esg/solr-index-master/files" />
   </cores>
 </solr>

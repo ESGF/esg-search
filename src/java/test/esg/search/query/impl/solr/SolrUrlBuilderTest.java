@@ -45,14 +45,16 @@ public class SolrUrlBuilderTest {
 	
 	@Test
 	public void testBuildUpdateUrl() throws Exception {
+	    
+	    String core = "core";
 		
 		// commit=false
-		URL url = solrUrlBuilder.buildUpdateUrl(false);
-		Assert.assertEquals(SOLR_URL+"/update", url.toString());
+		URL url = solrUrlBuilder.buildUpdateUrl(core, false);
+		Assert.assertEquals(SOLR_URL+"/core/update", url.toString());
 		
 		// commit=true
-		url = solrUrlBuilder.buildUpdateUrl(true);
-		Assert.assertEquals(SOLR_URL+"/update?commit=true", url.toString());		
+		url = solrUrlBuilder.buildUpdateUrl(core, true);
+		Assert.assertEquals(SOLR_URL+"/core/update?commit=true", url.toString());		
 		
 	}
 	
