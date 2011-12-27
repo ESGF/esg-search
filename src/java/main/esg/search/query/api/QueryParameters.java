@@ -109,6 +109,11 @@ public class QueryParameters {
      */
     public final static int MAX_LIMIT = 1000;
     
+    /**
+     * The default results type to search for, if none is specified.
+     */
+    public final static String DEFAULT_TYPE = "Dataset";
+    
     private QueryParameters() {};
 
 }

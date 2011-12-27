@@ -538,35 +538,35 @@
     </lst>
 </requestHandler>
 
-<requestHandler name="/distrib" class="solr.SearchHandler">
+<!-- <requestHandler name="/distrib" class="solr.SearchHandler">
      <lst name="defaults">
        <str name="echoParams">all</str>
        <int name="rows">10</int>
        <str name="fl">*,score</str>
        <str name="qf">text</str>
        <float name="tie">0.01</float>
-       <!-- default query to match all documents> -->
+       default query to match all documents>
        <str name="q.alt">*:*</str>
-       <!-- filter out replicas by default 
-       <str name="fq">-master_id:[* TO *]</str> -->
+       filter out replicas by default 
+       <str name="fq">-master_id:[* TO *]</str>
      </lst>
      <lst name="invariants">
-        <!-- always perform faceted search -->
+        always perform faceted search
         <str name="facet">true</str>
-        <!-- sort facet values lexographically (as opposed by count) -->
+        sort facet values lexographically (as opposed by count)
         <str name="facet.sort">lex</str>
-        <!-- return ALL facet values (no limit) -->
+        return ALL facet values (no limit)
         <str name="facet.limit">-1</str>
-        <!-- return only facet values that match one or more documents -->
+        return only facet values that match one or more documents
         <str name="facet.mincount">1</str>
         <str name="facet.method">enum</str>
-        <!-- always perform distributed search -->
+        always perform distributed search
         <str name="shards">esg-datanode.jpl.nasa.gov:8983/solr,pcmdi9.llnl.gov:8983/solr,esg-vm-demo02.ccs.ornl.gov:8983/solr</str>
      </lst>
      <int name="shard-socket-timeout">10000</int>
      <int name="shard-connection-timeout">10000</int>
      <str name="partial-results">true</str>
-  </requestHandler>
+  </requestHandler> -->
 
   <!-- DisMaxRequestHandler allows easy searching across multiple fields
        for simple user-entered phrases.  It's implementation is now

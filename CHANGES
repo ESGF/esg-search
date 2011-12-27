@@ -73,3 +73,6 @@ Internal changes to URLs resolved by the servlet
 
 1.7.6
 - Inserted call to node manager prune() function in case of first failed search attempt
+
+1.8.0
+- Changed publishing and querying service to use Solr multicores.
