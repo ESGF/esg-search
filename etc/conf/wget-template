@@ -216,13 +216,23 @@ check_chksum() {
     local local_chksum
 
     case $chk_type in
-        md5) local_chksum=$(md5sum $file | cut -f1 -d" ");;
+        md5) local_chksum=$(md5sum_ $file | cut -f1 -d" ");;
         *) echo "Can't verify checksum." && return 0;;
     esac
 
     #verify
     ((debug)) && echo "local:$local_chksum vs remote:$chk_value"
     diff -q <(echo $local_chksum) <(echo $chk_value) >/dev/null
+}
+
+#Our own md5sum function call that takes into account machines that don't have md5sum but do have md5 (i.e. mac os x)
+md5sum_() {
+    hash -r
+    if type md5sum >& /dev/null; then
+        echo $(md5sum $@)
+    else
+        echo $(md5 $@ | sed -n 's/MD5[ ]*\(.*\)[^=]*=[ ]*\(.*$\)/\2 \1/p')
+    fi
 }
 
 download() {
