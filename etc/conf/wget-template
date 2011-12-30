@@ -40,6 +40,27 @@ CERT_EXPIRATION_WARNING=$((60 * 60 * 12))   #One hour (in seconds)
 #   servers being out of sync with datanodes.
 CHECK_SERVER_CERT=${CHECK_SERVER_CERT:-Yes}
 
+check_os() {
+    local os_name=$(uname | awk '{print $1}')
+    case ${os_name} in
+        Linux)
+            ((DEBUG)) && echo "Linux operating system detected"
+            LINUX=1
+            MACOSX=0
+            ;;
+        Darwin)
+            ((DEBUG)) && echo "Mac OS X operating system detected"
+            LINUX=0
+            MACOSX=1
+            ;;
+        *)
+            echo "Unrecognized OS [${os_name}]"
+            return 1
+            ;;
+    esac
+    return 0
+}
+
 usage() {
     echo "Usage: $(basename $0) [flags]"
     echo "Flags is one of:"
@@ -216,13 +237,34 @@ check_chksum() {
     local local_chksum
 
     case $chk_type in
-        md5) local_chksum=$(md5sum $file | cut -f1 -d" ");;
+        md5) local_chksum=$(md5sum_ $file | cut -f1 -d" ");;
         *) echo "Can't verify checksum." && return 0;;
     esac
 
     #verify
     ((debug)) && echo "local:$local_chksum vs remote:$chk_value"
     diff -q <(echo $local_chksum) <(echo $chk_value) >/dev/null
+}
+
+#Our own md5sum function call that takes into account machines that don't have md5sum but do have md5 (i.e. mac os x)
+md5sum_() {
+    hash -r
+    if type md5sum >& /dev/null; then
+        echo $(md5sum $@)
+    else
+        echo $(md5 $@ | sed -n 's/MD5[ ]*\(.*\)[^=]*=[ ]*\(.*$\)/\2 \1/p')
+    fi
+}
+
+get_mod_time_() {
+    if ((LINUX)); then
+        #on linux modtime is stat -c %Y <file>
+        echo "$(stat -c %Y $@)"
+    elif ((MACOSX)); then
+        #on a mac modtime is stat -f %m <file>
+        echo "$(stat -f %m $@)"
+    fi
+    return 0;
 }
 
 download() {
@@ -248,7 +290,7 @@ download() {
                 [ -f $file ] && cached="$(grep $file $CACHE_FILE)" || unset cached
 
                 #check it wasn't modified
-                if [[ -n "$cached" && "$(stat -c %Y $file)" == $(echo "$cached" | cut -d ' ' -f2) ]]; then
+                if [[ -n "$cached" && "$(get_mod_time_ $file)" == $(echo "$cached" | cut -d ' ' -f2) ]]; then
                     echo "Already downloaded and verified"
                     break
                 fi
@@ -272,7 +314,7 @@ download() {
                                 fi
                         else
                                 echo "  $chksum_type ok. done!"
-                                echo "$file" $(stat -c %Y "$file") $chksum >> $CACHE_FILE
+                                echo "$file" $(get_mod_time_ "$file") $chksum >> $CACHE_FILE
                         fi
                 fi
                 #done!
@@ -300,6 +342,7 @@ echo "Running $(basename $0) version: $version"
 ((verbose)) && echo "we use other tools in here, don't try to user their proposed 'options' directly"
 echo "Use $(basename $0) -h for help."$'\n'
 
+check_os
 find_credentials
 #do we have old results? Create the file if not
 [ ! -f $CACHE_FILE ] && echo "#filename mtime checksum" > $CACHE_FILE
