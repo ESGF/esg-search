@@ -44,12 +44,12 @@ check_os() {
     local os_name=$(uname | awk '{print $1}')
     case ${os_name} in
         Linux)
-            ((DEBUG)) && echo "Linux operating system detected"
+            ((debug)) && echo "Linux operating system detected"
             LINUX=1
             MACOSX=0
             ;;
         Darwin)
-            ((DEBUG)) && echo "Mac OS X operating system detected"
+            ((debug)) && echo "Mac OS X operating system detected"
             LINUX=0
             MACOSX=1
             ;;
@@ -334,6 +334,13 @@ EOF--dataset.file.url.chksum_type.chksum
 
 }
 
+dedup_cache_() {
+    local file=${1:-${CACHE_FILE}}
+    ((debug)) && echo "dedup'ing cache ${file} ..."
+    local tmp=$(LC_ALL='C' sort  -r -k1,2 $file | awk '!($1 in a) {a[$1];print $0}' | sort -k2,2)
+    ((debug)) && echo "$tmp"
+    echo "$tmp" > $file
+}
 
 #
 # MAIN
@@ -349,5 +356,5 @@ find_credentials
 
 download
 
-#remove duplicates (if any)
-{ rm $CACHE_FILE && tac | awk '!x[$1]++' | tac > $CACHE_FILE; } < $CACHE_FILE
+dedup_cache_
+echo "done"
