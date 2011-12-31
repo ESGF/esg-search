@@ -42,6 +42,7 @@ import thredds.catalog.ThreddsMetadata.GeospatialCoverage;
 import thredds.catalog.ThreddsMetadata.Variable;
 import thredds.catalog.ThreddsMetadata.Variables;
 import ucar.nc2.units.DateRange;
+import esg.common.util.ESGFProperties;
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
 import esg.search.publish.api.MetadataEnhancer;
@@ -72,6 +73,11 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	public ThreddsParserStrategyTopLevelDatasetImpl() {
 	    
 	    metadataEnhancers.put(ThreddsPars.EXPERIMENT, new ExperimentMetadataEnhancer());
+	    try {
+	        metadataEnhancers.put(ThreddsPars.ID, new PropertiesMetadataEnhancer(new ESGFProperties()));
+	    } catch(Exception e) {
+	        LOG.warn(e.getMessage());
+	    }
 	    
 	}
 	
@@ -126,6 +132,18 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		                RecordHelper.encodeUrlTuple(url, 
 		                                            ThreddsPars.getMimeType(url, ThreddsPars.SERVICE_TYPE_CATALOG),
 		                                            ThreddsPars.SERVICE_TYPE_CATALOG));
+		
+		// add indexing host name
+		final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.ID);
+        final Map<String, List<String>> imeta = me.enhance("esgf.index.peer", null);
+        for (final String ikey : imeta.keySet()) {
+             for (final String ivalue : imeta.get(ikey)) {
+                 // FIXME
+                 System.out.println("ADDING METADATA "+ivalue);
+                 record.addField(ikey, ivalue);
+             }
+         }
+		
 		// FIXME
 		// metadata format
 		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");		
