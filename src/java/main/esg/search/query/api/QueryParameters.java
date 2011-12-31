@@ -58,6 +58,7 @@ public class QueryParameters {
     final public static String FIELD_VERSION = "version";
     final public static String FIELD_CHECKSUM = "checksum";
     final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
+    final public static String FIELD_INDEX_PEER = "esgf.index.peer";
     
     // HTTP mime types
     public final static String MIME_TYPE_THREDDS = "application/xml+thredds";   
@@ -80,7 +81,8 @@ public class QueryParameters {
                                                                                     FIELD_TYPE, FIELD_TIMESTAMP, FIELD_URL, FIELD_SIZE,
                                                                                     FIELD_MASTER_ID, FIELD_REPLICA,
                                                                                     FIELD_DATASET_ID, FIELD_VERSION, 
-                                                                                    FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE});
+                                                                                    FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE,
+                                                                                    FIELD_INDEX_PEER });
     
     public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB, 
                                                                              REPLICA,

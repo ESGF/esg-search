@@ -135,7 +135,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		
 		// add indexing host name
 		final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.ID);
-		me.enhance("esgf.index.peer", null, record);
+		if (me!=null) me.enhance(QueryParameters.FIELD_INDEX_PEER, null, record);
 				
 		// FIXME
 		// metadata format
@@ -323,7 +323,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
                 
                 // add "experiment_family"
                 final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.EXPERIMENT);
-                me.enhance(property.getName(), property.getValue(), record);
+                if (me!=null) me.enhance(property.getName(), property.getValue(), record);
                 
             } else {
                 // index all other properties verbatim
