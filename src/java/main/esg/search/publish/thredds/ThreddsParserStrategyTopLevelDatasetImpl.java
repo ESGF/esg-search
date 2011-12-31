@@ -135,15 +135,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		
 		// add indexing host name
 		final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.ID);
-        final Map<String, List<String>> imeta = me.enhance("esgf.index.peer", null);
-        for (final String ikey : imeta.keySet()) {
-             for (final String ivalue : imeta.get(ikey)) {
-                 // FIXME
-                 System.out.println("ADDING METADATA "+ivalue);
-                 record.addField(ikey, ivalue);
-             }
-         }
-		
+		me.enhance("esgf.index.peer", null, record);
+				
 		// FIXME
 		// metadata format
 		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");		
@@ -330,12 +323,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
                 
                 // add "experiment_family"
                 final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.EXPERIMENT);
-                final Map<String, List<String>> emeta = me.enhance(property.getName(), property.getValue());
-                for (final String ekey : emeta.keySet()) {
-                    for (final String evalue : emeta.get(ekey)) {
-                        record.addField(ekey, evalue);
-                    }
-                }
+                me.enhance(property.getName(), property.getValue(), record);
                 
             } else {
                 // index all other properties verbatim

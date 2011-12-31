@@ -1,11 +1,10 @@
 package esg.search.publish.api;
 
-import java.util.List;
-import java.util.Map;
+import esg.search.core.Record;
+
 
 /**
- * Interface for augmenting the metadata parsed from a repository,
- * on a field by field basis
+ * Interface for augmenting a record metadata, on a field by field basis.
  * 
  * @author Luca Cinquini
  *
@@ -13,11 +12,11 @@ import java.util.Map;
 public interface MetadataEnhancer {
     
     /**
-     * Method to add a map of (name, values) metadata pairs whenever a (name, value) metadata pair is found.
+     * Method to enhance a record metadata whenever a (name, value) pair is found.
      * @param name
      * @param values
      * @return
      */
-    Map<String, List<String>> enhance(String name, String value);
+    void enhance(String name, String value, Record record);
 
 }

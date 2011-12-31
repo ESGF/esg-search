@@ -1,12 +1,11 @@
 package esg.search.publish.thredds;
 
-import java.util.List;
-import java.util.Map;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.Assert;
 
+import esg.search.core.Record;
+import esg.search.core.RecordImpl;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
@@ -80,9 +79,10 @@ public class ExperimentMetadataEnhancerTest {
     }
     
     private void check(String experiment, String experiment_family) {
-        Map<String, List<String>> emeta = eme.enhance(ThreddsPars.EXPERIMENT, experiment);
-        Assert.isTrue(emeta.get(SolrXmlPars.FIELD_EXPERIMENT_FAMILY).contains(experiment_family));
-        Assert.isTrue(emeta.get(SolrXmlPars.FIELD_EXPERIMENT_FAMILY).contains(ExperimentMetadataEnhancer.FAMILY_ALL));
+        final Record record = new RecordImpl();
+        eme.enhance(ThreddsPars.EXPERIMENT, experiment, record);
+        Assert.isTrue(record.getFieldValues(SolrXmlPars.FIELD_EXPERIMENT_FAMILY).contains(experiment_family));
+        Assert.isTrue(record.getFieldValues(SolrXmlPars.FIELD_EXPERIMENT_FAMILY).contains(ExperimentMetadataEnhancer.FAMILY_ALL));
     }
 
 }

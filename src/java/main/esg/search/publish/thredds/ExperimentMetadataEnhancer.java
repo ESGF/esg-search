@@ -1,12 +1,11 @@
 package esg.search.publish.thredds;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import esg.search.core.Record;
 import esg.search.publish.api.MetadataEnhancer;
 import esg.search.query.impl.solr.SolrXmlPars;
 
@@ -84,25 +83,20 @@ public class ExperimentMetadataEnhancer implements MetadataEnhancer {
         ATMOS-ONLY = amip, amip4K, amip4xCO2, amipFuture, aqua4K, aqua4xCO2, aquaControl, sst2030, sstClim, sstClim4xCO2, sstClimSulfate, sstClimAerosol (12 items)
      */
     @Override
-    public Map<String, List<String>> enhance(String name, String value) {
-        
-        Map<String, List<String>> metadata = new HashMap<String, List<String>>();
-        
+    public void enhance(String name, String value, Record record) {
+                
         // only process "experiment"
         if (name.equals(KEYIN)) {
-            metadata.put(KEYOUT, new ArrayList<String>());
-            metadata.get(KEYOUT).add(FAMILY_ALL);
+            record.addField(KEYOUT, FAMILY_ALL);
             
             for (final Pattern pattern : patterns.keySet()) {
                 final Matcher matcher = pattern.matcher(value.toLowerCase()); 
                 if (matcher.matches()) {
-                    metadata.get(KEYOUT).add(patterns.get(pattern));
+                    record.addField(KEYOUT, patterns.get(pattern));
                 }
             }      
         }
-        
-        return metadata;
-        
+                
     }
 
 }
