@@ -527,7 +527,7 @@ remove_zookeeper() {
 #---------------------------------------------------------
 
 solr_init() {
-    solr_version=3.1.0
+    solr_version=3.5.0
     solr_dist_url=${esg_dist_url_root}/thirdparty/apache-solr-${solr_version}.tgz
     #solr_dist_url=http://mirror.metrocast.net/apache//lucene/solr/${solr_version}/apache-solr-${solr_version}.tgz
     solr_workdir=${workdir}/solr-${solr_version}
@@ -537,8 +537,9 @@ solr_init() {
     solr_config_type=${1:-${solr_config_type:-"master"}} 
 
     solr_install_dir=${install_prefix}/esgf-solr-${solr_version}-${solr_config_type}
-    solr_data_dir=${esg_root_dir}/data-index-${solr_config_type}
+    solr_data_dir=${esg_root_dir}/solr-index-${solr_config_type}
     solr_server_port=$([ "${solr_config_type}" = "master" ] && echo "8984" || echo "8983")
+    solr_cores=(datasets files)
 }
 
 setup_solr() {
@@ -605,6 +606,10 @@ setup_solr() {
 
     [ -d ${solr_install_dir} ] && (echo "Backing up previous install... " && (backup ${solr_install_dir} || (mv ${solr_install_dir}{,.bak} || echo "Could not move aside prev install")))
     cp -R ${solr_dist_dir}/example ${solr_install_dir}
+    for ((i=0;i<${#solr_cores[@]};i++)) ; do
+        mv -v ${solr_install_dir}/multicore/{core${i},${solr_cores[${i}]}}
+    done
+    #rm -rf ${solr_install_dir}/multicore/exampledocs
     echo "${solr_version}" > ${solr_install_dir}/VERSION
 
 
@@ -628,23 +633,35 @@ configure_solr() {
     echo -n "Configuring solr... ${solr_config_type}"
     pushd ${solr_install_dir}/solr/conf >& /dev/null
     [ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
- 
-    #cp -v /usr/local/tomcat/webapps/esg-search/WEB-INF/solr/solrconfig.xml .
-    verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml > ${solr_install_dir}/solr/conf/solrconfig.xml"
-    curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml > ${solr_install_dir}/solr/conf/solrconfig.xml
-    [ $? != 0 ] && echo && echo "Problem configuring solr (2)" && return 3
-    chmod 755 ${solr_install_dir}/solr/conf/solrconfig.xml
-    mkdir -p ${solr_data_dir}
-    chown    ${installer_uid}:${installer_gid} ${solr_data_dir}
+
+    #------------------------
+    #Setting up solrconfig.xml file for all cores
+    #------------------------
+    for ((i=0;i<${#solr_cores[@];i++)); do
+        verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml"
+        curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
+        [ $? != 0 ] && echo && echo "Problem configuring (config) solr for ${solr_cores[${i}]} (2)" && return 3
+        chmod 755 ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
+    done
+
+    #------------------------
+    #Setting up schema.xml file for all cores
+    #------------------------
+    for ((i=0;i<${#solr_cores[@];i++)); do
+        verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/schema.xml > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/schema.xml"
+        curl -s -L --insecure ${esg_dist_url}/esg-search/schema.xml > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/schema.xml
+        [ $? != 0 ] && echo && echo "Problem configuring solr for ${solr_cores[${i}]} (3)" && return 3
+        chmod 755 ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/schema.xml
+    done
+
+    #------------------------
+    #Create the data (index) directories
+    #------------------------
+    eval mkdir -p $(echo ${solr_data_dir}/{${solr_cores[@]}} | sed 's/ /,/')
     chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_data_dir})
 
-    #cp -v /usr/local/tomcat/webapps/esg-search/WEB-INF/solr/schema.xml .
-    verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/schema.xml > ${solr_install_dir}/solr/conf/schema.xml"
-    curl -s -L --insecure ${esg_dist_url}/esg-search/schema.xml > ${solr_install_dir}/solr/conf/schema.xml
-    [ $? != 0 ] && echo && echo "Problem configuring solr (3)" && return 3
-    chmod 755 ${solr_install_dir}/solr/conf/schema.xml
-    
-    #o FOR THE SLAVE ONLY, override the Jetty files with new ones that support authentication:
+    #------------------------
+    # FOR THE SLAVE ONLY, override the Jetty files with new ones that support authentication:
     #	- cp esg-search/etc/conf/jetty/jetty.xml-auth --> /usr/local/esgf-solr-3.1.0-slave/etc/jetty.xml
     #	- cp esg-search/etc/conf/jetty/realm.properties /usr/local/esgf-solr-3.1.0-slave/etc/.
     #	- cp esg-search/etc/conf/jetty/webdefault.xml-auth /usr/local/esgf-solr-3.1.0-slave/etc/webdefault.xml
@@ -671,6 +688,11 @@ configure_solr() {
 
         _add_myself_to_distrib_shards_list ${solr_install_dir}/solr/conf/solrconfig.xml
     fi
+
+    verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solr.xml-${solr_config_type} > ${solr_install_dir}/multicore/solr.xml"
+    curl -s -L --insecure ${esg_dist_url}/esg-search/solr.xml-${solr_config_type} > ${solr_install_dir}/multicore/solr.xml
+    [ $? != 0 ] && echo && echo "Problem configuring (solr.xml) solr for ${solr_config_type} (2)" && return 3
+    chmod 755 ${solr_install_dir}/multicore/solr.xml
 
     popd >& /dev/null
     echo " [OK]"
@@ -740,8 +762,8 @@ start_solr() {
         
         pushd ${solr_install_dir} >& /dev/null
         #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
-        verbose_print "java -Djetty.port=${solr_server_port} -Dsolr.data.dir=${solr_data_dir} -jar start.jar"
-        java -Djetty.port=${solr_server_port} -Dsolr.data.dir=${solr_data_dir} -jar start.jar >& /dev/null &
+        verbose_print "java -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -D${solr_config_type}=disabled -jar start.jar"
+        java -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -D${solr_config_type}=disabled -jar start.jar >& /dev/null &
         popd >& /dev/null
         
         pcheck 10 2 1 -- check_solr_process
