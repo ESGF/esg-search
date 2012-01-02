@@ -637,7 +637,7 @@ configure_solr() {
     #------------------------
     #Setting up solrconfig.xml file for all cores
     #------------------------
-    for ((i=0;i<${#solr_cores[@];i++)); do
+    for ((i=0;i<${#solr_cores[@]};i++)); do
         verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml"
         curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
         [ $? != 0 ] && echo && echo "Problem configuring (config) solr for ${solr_cores[${i}]} (2)" && return 3
@@ -647,7 +647,7 @@ configure_solr() {
     #------------------------
     #Setting up schema.xml file for all cores
     #------------------------
-    for ((i=0;i<${#solr_cores[@];i++)); do
+    for ((i=0;i<${#solr_cores[@]};i++)); do
         verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/schema.xml > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/schema.xml"
         curl -s -L --insecure ${esg_dist_url}/esg-search/schema.xml > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/schema.xml
         [ $? != 0 ] && echo && echo "Problem configuring solr for ${solr_cores[${i}]} (3)" && return 3
