@@ -574,7 +574,7 @@ setup_solr() {
 
     #There is this pesky case of having a zero sized dist file... WTF!?
     if [ -e ${solr_dist_file} ]; then
-        ls -l ${solr_dist_file}
+        ((DEBUG)) && ls -l ${solr_dist_file}
         local size=$(stat -c%s ${solr_dist_file})
         (( size == 0 )) && rm -v ${solr_dist_file}
     fi
@@ -608,6 +608,8 @@ setup_solr() {
     cp -R ${solr_dist_dir}/example ${solr_install_dir}
     for ((i=0;i<${#solr_cores[@]};i++)) ; do
         mv -v ${solr_install_dir}/multicore/{core${i},${solr_cores[${i}]}}
+        #special files needed to complete the configuration...
+        cp ${solr_workdir}/apache-solr-${solr_version}/example/solr/conf/{stopwords.txt,synonyms.txt,protwords.txt,elevate.xml} ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/
     done
     #rm -rf ${solr_install_dir}/multicore/exampledocs
     echo "${solr_version}" > ${solr_install_dir}/VERSION
