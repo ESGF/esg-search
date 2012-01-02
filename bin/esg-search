@@ -686,7 +686,7 @@ configure_solr() {
 
         popd >& /dev/null
 
-        _add_myself_to_distrib_shards_list ${solr_install_dir}/solr/conf/solrconfig.xml
+        #_add_myself_to_distrib_shards_list ${solr_install_dir}/solr/conf/solrconfig.xml
     fi
 
     verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solr.xml-${solr_config_type} > ${solr_install_dir}/multicore/solr.xml"
@@ -934,8 +934,8 @@ backup() {
 
 fetch_crawl_launcher() {
     pushd ${scripts_dir} >& /dev/null
-    checked_get ${esgf_crawl_launcher} ${esg_dist_url%/*}/${search_web_service_name}/${esgf_crawl_launcher} $((force_install))
-    (( $? > 1 )) && echo " ERROR: Could not download ${esg_dist_url%/*}/${search_web_service_name}/${esgf_crawl_launcher} :-(" && popd >& /dev/null && return 1
+    checked_get ${esgf_crawl_launcher} ${esg_dist_url}/${search_web_service_name}/${esgf_crawl_launcher} $((force_install))
+    (( $? > 1 )) && echo " ERROR: Could not download ${esg_dist_url}/${search_web_service_name}/${esgf_crawl_launcher} :-(" && popd >& /dev/null && return 1
     chmod 755 ${esgf_crawl_launcher}
     popd >& /dev/null
     return 0
