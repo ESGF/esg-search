@@ -347,7 +347,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             final String vocabulary = variables.getVocabulary();
             for (final Variable variable : variables.getVariableList()) {
                 record.addField(SolrXmlPars.FIELD_VARIABLE, variable.getName());
-                if (vocabulary.equals(ThreddsPars.CF)) record.addField(SolrXmlPars.FIELD_CF_VARIABLE, variable.getDescription());
+                if (vocabulary.equals(ThreddsPars.CF)) record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, variable.getVocabularyName());
+                if (StringUtils.hasText(variable.getDescription())) record.addField(SolrXmlPars.FIELD_VARIABLE_LONG_NAME, variable.getDescription());
             }
         }
 	    

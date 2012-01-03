@@ -76,3 +76,4 @@ Internal changes to URLs resolved by the servlet
 
 1.8.0
 - Changed publishing and querying service to use Solr multicores.
+- Proper harvesting of variable long names and CF standard names from THREDDS catalogs

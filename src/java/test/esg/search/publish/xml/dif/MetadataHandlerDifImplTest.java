@@ -69,8 +69,8 @@ public class MetadataHandlerDifImplTest {
 		Assert.assertTrue(fields.get("type").contains("Dataset"));
 		Assert.assertTrue(fields.get("title").contains("15 MINUTE STREAM FLOW DATA: USGS (FIFE)"));
 		Assert.assertTrue(fields.get("description").contains("ABSTRACT: The Fifteen Minute Stream Flow Data from the USGS..."));
-		Assert.assertTrue(fields.get("gcmd_variable").contains("HYDROSPHERE > SURFACE WATER > DISCHARGE/FLOW"));
-		Assert.assertTrue(fields.get("gcmd_variable").contains("HYDROSPHERE > SURFACE WATER > STAGE HEIGHT"));
+		Assert.assertTrue(fields.get("gcmd_term").contains("HYDROSPHERE > SURFACE WATER > DISCHARGE/FLOW"));
+		Assert.assertTrue(fields.get("gcmd_term").contains("HYDROSPHERE > SURFACE WATER > STAGE HEIGHT"));
 		Assert.assertTrue(fields.get("project").contains("ESIP"));
 		Assert.assertTrue(fields.get("project").contains("EOSDIS"));
 		Assert.assertTrue(fields.get("instrument").contains("STILLING WELL"));
