@@ -23,9 +23,9 @@
 	<field name="model">model 1</field>
 	<field name="format">netCDF, CF-1.0</field>
 	<field name="type">Dataset</field>
-	<field name="cf_variable">Column Integrated Cloud Ice Content</field>
-	<field name="cf_variable">Total Cloud Fraction</field>
-	<field name="cf_variable">Column Integrated Cloud Water Content</field>
+	<field name="variable_long_name">Column Integrated Cloud Ice Content</field>
+	<field name="variable_long_name">Total Cloud Fraction</field>
+	<field name="variable_long_name">Column Integrated Cloud Water Content</field>
 	<field name="project">IPCC</field>
 	<field name="time_frequency">monthly</field>
 	<field name="title">Record #1</field>

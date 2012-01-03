@@ -57,7 +57,7 @@ public class RssViewBuilder {
             "dataset_id",
             "replica",
             "master_id",
-            "cf_variable", 
+            "cf_standard_name", 
             "data_structure",
             "experiment",
             "experiment_family",
