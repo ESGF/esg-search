@@ -52,16 +52,17 @@
 envfile=/etc/esg.env
 [ -e "${envfile}" ] && source ${envfile} && ((VERBOSE)) && printf "sourcing environment from: ${envfile} \n"
 
-search_app_home=${CATALINA_HOME}/webapps/esg-search
+search_app_home=${CATALINA_HOME:=/usr/local/tomcat}/webapps/esg-search
 
 crawl_site() {
-    local site=$1
+    local site=$(resolve_site ${1})
     local host=$(echo "${site}" | sed -n 's@http[s]*://\([^/]*\)/.*@\1@p')
     verbose_print "------------"
     verbose_print "host: ${host}"
     echo "crawling ${site} ...."
     ((DEBUG)) && curl -s ${site}
     verbose_print "$JAVA_HOME/bin/java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} THREDDS $( ((REMOVE)) && echo "false" || echo "true") /tmp/${host}_publishing.log"
+    $JAVA_HOME/bin/java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} THREDDS $( ((REMOVE)) && echo "false" || echo "true") /tmp/${host}_publishing.log
     verbose_print "------------"
 }
 
@@ -77,6 +78,12 @@ crawl_sites() {
 verbose_print() { ((VERBOSE)) && echo $@; return 0; }
 debug_print() { ((DEBUG)) && echo -e $@ >&2; return 0; }
 
+#This helper function allows us to only put in the hostname of the server and have a best guess
+#of the form http://<candidate>/thredds/catalog.xml, if the candidate is a "plausible" url then we use it directly
+resolve_site() {
+    local candidate=$1
+    [ $(grep -v 'http://' <(echo ${candidate})) ] && [ $(grep -v thredds/catalog.xml <(echo ${candidate})) ] && echo "http://${candidate}/thredds/catalog.xml" || echo "${candidate}"
+}
 
 _usage() {
     echo "usage:"
