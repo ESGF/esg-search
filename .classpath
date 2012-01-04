@@ -8,7 +8,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/ivy-2.1.0.jar"/>
-	<classpathentry kind="lib" path="lib/netcdf-4.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/ant-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/ant-launcher-1.7.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/asm-3.0.jar"/>
@@ -61,7 +60,6 @@
 	<classpathentry kind="lib" path="lib/fetched/wstx-asl-3.2.7.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xmlParserAPIs-2.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/aopalliance-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/com.springsource.com.caucho-3.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-codec-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/spring-web-3.0.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/spring-aop-3.0.5.RELEASE.jar"/>
@@ -122,5 +120,7 @@
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-security-1.5.2.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/com.springsource.com.caucho-3.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/netcdf-4.0.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
