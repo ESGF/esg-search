@@ -45,7 +45,7 @@
 	          	<entry key="experiment_family"><value>Experiment Family</value></entry>
 	          	<entry key="time_frequency"><value>Frequency</value></entry>
 	          	<entry key="realm"><value>Realm</value></entry>
-	          	<entry key="cf_variable"><value>CF Variable</value></entry>
+	          	<entry key="cf_standard_name"><value>CF Standard Name</value></entry>
 	          	<entry key="institute"><value>Institute</value></entry>
 	          	<entry key="variable"><value>Variable</value></entry>
 	          	<entry key="product"><value>Product</value></entry>
@@ -66,5 +66,5 @@
 	<bean id="registryService" class="esg.security.registry.service.impl.RegistryServiceLocalXmlImpl">
   		<constructor-arg index="0"><value>/esg/config/esgf_shards.xml</value></constructor-arg>
   	</bean>
-		
+  			
 </beans>

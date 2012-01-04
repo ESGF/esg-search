@@ -76,7 +76,7 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 		// </Parameters>
 		for (final Object parametersEl : root.getChildren("Parameters", ns)) {
 			final String parameter = parseParameter( (Element)parametersEl );
-			record.addField(SolrXmlPars.FIELD_GCMD_VARIABLE, parameter);
+			record.addField(SolrXmlPars.FIELD_GCMD_TERM, parameter);
 		}
 		
 		// <Project>

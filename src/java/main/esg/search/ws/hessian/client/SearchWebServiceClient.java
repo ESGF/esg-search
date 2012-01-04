@@ -36,7 +36,7 @@ public class SearchWebServiceClient {
 	    
 	    // return documents matching a string and some facet constraints
 	    text = "CSIRO";
-	    constraints.put("cf_variable", new String[]{"Maximum Daily Surface Air Temperature"});
+	    constraints.put("cf_standard_name", new String[]{"Maximum Daily Surface Air Temperature"});
 	    constraints.put("time_frequency", new String[]{"day"});
 	    xml = searchWebService.search(text, type, constraints, offset, limit, true, returnType);
 	   

@@ -69,10 +69,8 @@
        other than the default ./data under the Solr home.
        If replication is in use, this should match the replication configuration.
   <dataDir>${solr.data.dir:./solr/data}</dataDir>
+  <dataDir>${solr.core.dataDir:./solr/data}</dataDir>
   -->
-
-  <dataDir>${solr.data.dir:./solr/data}</dataDir>
-
 
   <!-- WARNING: this <indexDefaults> section only provides defaults for index writers
        in general. See also the <mainIndex> section after that when changing parameters
@@ -517,6 +515,11 @@
         <str name="facet.method">enum</str>
      </lst>
 
+     <!-- distributed search parameters -->
+     <int name="shard-socket-timeout">10000</int>
+     <int name="shard-connection-timeout">10000</int>
+     <str name="partial-results">true</str>
+     
   </requestHandler>
 
 <!-- Please refer to http://wiki.apache.org/solr/SolrReplication for details on configuring replication -->
@@ -524,45 +527,46 @@
 <!-- remove  the <lst name="slave"> section if this is just a master -->
 <requestHandler name="/replication" class="solr.ReplicationHandler" >
     <lst name="${master:master}">
-      <str name="replicateAfter">commit</str>
       <str name="replicateAfter">startup</str>
+      <str name="replicateAfter">commit</str>
+      <str name="replicateAfter">optimize</str>
       <str name="confFiles">schema.xml,stopwords.txt</str>
     </lst>
     <lst name="${slave:slave}">
-      <str name="masterUrl">http://localhost:8984/solr/replication</str>
+      <str name="masterUrl">http://localhost:8984/solr/${solr.core.name}/replication</str>
       <str name="pollInterval">00:00:60</str>
     </lst>
 </requestHandler>
 
-<requestHandler name="/distrib" class="solr.SearchHandler">
+<!-- <requestHandler name="/distrib" class="solr.SearchHandler">
      <lst name="defaults">
        <str name="echoParams">all</str>
        <int name="rows">10</int>
        <str name="fl">*,score</str>
        <str name="qf">text</str>
        <float name="tie">0.01</float>
-       <!-- default query to match all documents> -->
+       default query to match all documents>
        <str name="q.alt">*:*</str>
-       <!-- filter out replicas by default 
-       <str name="fq">-master_id:[* TO *]</str> -->
+       filter out replicas by default 
+       <str name="fq">-master_id:[* TO *]</str>
      </lst>
      <lst name="invariants">
-        <!-- always perform faceted search -->
+        always perform faceted search
         <str name="facet">true</str>
-        <!-- sort facet values lexographically (as opposed by count) -->
+        sort facet values lexographically (as opposed by count)
         <str name="facet.sort">lex</str>
-        <!-- return ALL facet values (no limit) -->
+        return ALL facet values (no limit)
         <str name="facet.limit">-1</str>
-        <!-- return only facet values that match one or more documents -->
+        return only facet values that match one or more documents
         <str name="facet.mincount">1</str>
         <str name="facet.method">enum</str>
-        <!-- always perform distributed search -->
+        always perform distributed search
         <str name="shards">esg-datanode.jpl.nasa.gov:8983/solr,pcmdi9.llnl.gov:8983/solr,esg-vm-demo02.ccs.ornl.gov:8983/solr</str>
      </lst>
      <int name="shard-socket-timeout">10000</int>
      <int name="shard-connection-timeout">10000</int>
      <str name="partial-results">true</str>
-  </requestHandler>
+  </requestHandler> -->
 
   <!-- DisMaxRequestHandler allows easy searching across multiple fields
        for simple user-entered phrases.  It's implementation is now

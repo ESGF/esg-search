@@ -39,6 +39,18 @@ public interface Record {
 	 * Method to assign the record's unique identifier;
 	 */
 	void setId(String id);
+	
+	/**
+	 * Method to return the record discriminating type.
+	 * @return
+	 */
+	String getType();
+	
+	/**
+	 * Method to set the record discriminating type.
+	 * @param type
+	 */
+	void setType(String type);
 
 	/**
 	 * Method to add a field (name, value) pair to the record.

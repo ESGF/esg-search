@@ -39,7 +39,7 @@ public class QueryParameters {
     // record special fields
     public final static String ID = "id";
     public final static String MASTER_ID = "master_id";
-    public final static String TYPE = "type";
+    //public final static String TYPE = "type";
     public final static String FROM = "from";
     public final static String TO = "to";
     
@@ -58,6 +58,7 @@ public class QueryParameters {
     final public static String FIELD_VERSION = "version";
     final public static String FIELD_CHECKSUM = "checksum";
     final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
+    final public static String FIELD_INDEX_PEER = "esgf.index.peer";
     
     // HTTP mime types
     public final static String MIME_TYPE_THREDDS = "application/xml+thredds";   
@@ -80,13 +81,14 @@ public class QueryParameters {
                                                                                     FIELD_TYPE, FIELD_TIMESTAMP, FIELD_URL, FIELD_SIZE,
                                                                                     FIELD_MASTER_ID, FIELD_REPLICA,
                                                                                     FIELD_DATASET_ID, FIELD_VERSION, 
-                                                                                    FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE});
+                                                                                    FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE,
+                                                                                    FIELD_INDEX_PEER });
     
     public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB, 
                                                                              REPLICA,
                                                                              LAT, LON, LOCATION, RADIUS, POLYGON, BBOX,
                                                                              START, END,
-                                                                             ID, TYPE, FROM, TO } );
+                                                                             ID, FIELD_TYPE, FROM, TO } );
     
     /**
      * List of invalid text characters - anything that is not within square brackets.
@@ -108,6 +110,11 @@ public class QueryParameters {
      * Maximum limit on returned results
      */
     public final static int MAX_LIMIT = 1000;
+    
+    /**
+     * The default results type to search for, if none is specified.
+     */
+    public final static String DEFAULT_TYPE = "Dataset";
     
     private QueryParameters() {};
 

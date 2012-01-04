@@ -71,7 +71,7 @@ public class MetadataHandlerCasRdfImplTest {
 		Assert.assertTrue(fields.get("type").contains("Dataset"));
 		Assert.assertTrue(fields.get("title").contains("MLS-Aura_L2GP-CO_v02-23-c01_2008d107.he5"));
 		Assert.assertTrue(fields.get("project").contains("MLS"));		
-		Assert.assertTrue(fields.get("name").contains("MLS-Aura_L2GP-CO_v02-23-c01_2008d107.he5"));
+		//Assert.assertTrue(fields.get("name").contains("MLS-Aura_L2GP-CO_v02-23-c01_2008d107.he5"));
 
 		Assert.assertTrue(fields.get("datetime_start").contains("2008-04-16T00:00:00.000000Z"));
 		Assert.assertTrue(fields.get("datetime_stop").contains("2008-04-16T23:59:59.999999Z"));

@@ -42,6 +42,7 @@ import thredds.catalog.ThreddsMetadata.GeospatialCoverage;
 import thredds.catalog.ThreddsMetadata.Variable;
 import thredds.catalog.ThreddsMetadata.Variables;
 import ucar.nc2.units.DateRange;
+import esg.common.util.ESGFProperties;
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
 import esg.search.publish.api.MetadataEnhancer;
@@ -72,6 +73,11 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	public ThreddsParserStrategyTopLevelDatasetImpl() {
 	    
 	    metadataEnhancers.put(ThreddsPars.EXPERIMENT, new ExperimentMetadataEnhancer());
+	    try {
+	        metadataEnhancers.put(ThreddsPars.ID, new PropertiesMetadataEnhancer(new ESGFProperties()));
+	    } catch(Exception e) {
+	        LOG.warn(e.getMessage());
+	    }
 	    
 	}
 	
@@ -114,7 +120,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		record.addField(QueryParameters.FIELD_TITLE, name);
 		
 	    // type
-        record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_DATASET);
+		record.setType(SolrXmlPars.TYPE_DATASET);
+        //record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_DATASET);
 		
 		// IMPORTANT: add top-level dataset as first record in the list
 		records.add(record);
@@ -125,6 +132,11 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		                RecordHelper.encodeUrlTuple(url, 
 		                                            ThreddsPars.getMimeType(url, ThreddsPars.SERVICE_TYPE_CATALOG),
 		                                            ThreddsPars.SERVICE_TYPE_CATALOG));
+		
+		// add indexing host name
+		final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.ID);
+		if (me!=null) me.enhance(QueryParameters.FIELD_INDEX_PEER, null, record);
+				
 		// FIXME
 		// metadata format
 		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");		
@@ -232,7 +244,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         Assert.notNull(name, "File name cannot be null");
         record.addField(QueryParameters.FIELD_TITLE, name);
         // type
-        record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_FILE);       
+        //record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_FILE);  
+        record.setType(SolrXmlPars.TYPE_FILE);
         // parent dataset
         record.addField(QueryParameters.FIELD_DATASET_ID, records.get(0).getId());
 
@@ -310,12 +323,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
                 
                 // add "experiment_family"
                 final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.EXPERIMENT);
-                final Map<String, List<String>> emeta = me.enhance(property.getName(), property.getValue());
-                for (final String ekey : emeta.keySet()) {
-                    for (final String evalue : emeta.get(ekey)) {
-                        record.addField(ekey, evalue);
-                    }
-                }
+                if (me!=null) me.enhance(property.getName(), property.getValue(), record);
                 
             } else {
                 // index all other properties verbatim
@@ -339,7 +347,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             final String vocabulary = variables.getVocabulary();
             for (final Variable variable : variables.getVariableList()) {
                 record.addField(SolrXmlPars.FIELD_VARIABLE, variable.getName());
-                if (vocabulary.equals(ThreddsPars.CF)) record.addField(SolrXmlPars.FIELD_CF_VARIABLE, variable.getDescription());
+                if (vocabulary.equals(ThreddsPars.CF)) record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, variable.getVocabularyName());
+                if (StringUtils.hasText(variable.getDescription())) record.addField(SolrXmlPars.FIELD_VARIABLE_LONG_NAME, variable.getDescription());
             }
         }
 	    

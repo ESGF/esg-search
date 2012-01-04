@@ -104,15 +104,15 @@ public class SolrUrlBuilder {
     }
 
     /**
-	 * Method to generate the "update" URL.
+	 * Method to generate the "update" URL to a specific core.
 	 * This method is independent of the specific state of the object.
 	 * @return
 	 * @throws MalformedURLException
 	 * @throws UnsupportedEncodingException
 	 */
-	public URL buildUpdateUrl(final boolean commit) throws MalformedURLException, UnsupportedEncodingException {
+	public URL buildUpdateUrl(final String core, final boolean commit) throws MalformedURLException, UnsupportedEncodingException {
 		
-		final StringBuilder sb = new StringBuilder(url.toString()).append("/update");
+		final StringBuilder sb = new StringBuilder(url.toString()).append("/").append(core).append("/update");
 		if (commit) sb.append("?commit=true");
 		return new URL(sb.toString());
 		
@@ -132,6 +132,12 @@ public class SolrUrlBuilder {
 	    final StringBuilder ff = new StringBuilder("");
         // &fl=...&fl=...
 	    final StringBuilder fl = new StringBuilder("");
+	    
+	    // The specific Solr core, as determined by the results type
+	    final String core = SolrXmlPars.CORES.get(input.getType());
+	    if (!StringUtils.hasText(core)) {
+	        throw new MalformedURLException("Unsupported results type: "+input.getType()+" is not mapped to any Solr core");
+	    }
 	    
 		// search input query --> q=....
 		if (StringUtils.hasText(input.getQuery())) {
@@ -270,7 +276,8 @@ public class SolrUrlBuilder {
         }
         
         // compose final URL
-        final StringBuilder sb = new StringBuilder(url.toString()).append("/select/?indent=true");
+        final StringBuilder sb = new StringBuilder(url.toString()).append("/").append(core)
+                                                                  .append("/select/?indent=true");
         // q=...
         sb.append("&q=");
         boolean first = true;
@@ -292,13 +299,14 @@ public class SolrUrlBuilder {
         
         // distributed search
         // only attach shards if available, otherwise default to local search
-        // (must enable a "/distrib" query handler in solrconfig.xml)
+        // &shards=localhost:8983/solr/datasets
         //if (input.isDistrib()) sb.append("&qt=/distrib");
+        if (LOG.isInfoEnabled()) LOG.info("Search distrib="+input.isDistrib()+" shards size="+shards.size());
         if (input.isDistrib() && shards.size()>0) {
             sb.append("&shards=");
             for (String shard : shards) {
                 if (sb.charAt(sb.length()-1) != '=') sb.append(",");
-                sb.append(shard);
+                sb.append(shard).append("/").append(core);
             }
         }
         

@@ -22,10 +22,10 @@
 	<field name="model">model 2</field>
 	<field name="format">netCDF, CF-1.0</field>
 	<field name="type">Dataset</field>
-	<field name="cf_variable">Surface Sensible Heat Flux</field>
-	<field name="cf_variable">Relative Humidity</field>
-	<field name="cf_variable">Specific Humidity</field>
-	<field name="cf_variable">Moisture in Upper 0.1 m of Soil Column</field>
+	<field name="variable_long_name">Surface Sensible Heat Flux</field>
+	<field name="variable_long_name">Relative Humidity</field>
+	<field name="variable_long_name">Specific Humidity</field>
+	<field name="variable_long_name">Moisture in Upper 0.1 m of Soil Column</field>
 	<field name="project">IPCC</field>
 	<field name="time_frequency">monthly</field>
 	<field name="title">Record #2</field>

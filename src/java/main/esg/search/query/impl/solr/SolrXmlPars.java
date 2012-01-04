@@ -18,6 +18,9 @@
  ******************************************************************************/
 package esg.search.query.impl.solr;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Class containing parameters for the Solr XML schema.
  */
@@ -83,8 +86,9 @@ public class SolrXmlPars {
 	final public static String FIELD_PROJECT = "project";
 	final public static String FIELD_INSTRUMENT = "instrument";
 	final public static String FIELD_VARIABLE = "variable";
-	final public static String FIELD_CF_VARIABLE = "cf_variable";
-	final public static String FIELD_GCMD_VARIABLE = "gcmd_variable";
+	final public static String FIELD_CF_STANDARD_NAME = "cf_standard_name";
+	final public static String FIELD_VARIABLE_LONG_NAME = "variable_long_name";
+	final public static String FIELD_GCMD_TERM = "gcmd_term";
 	final public static String FIELD_EXPERIMENT_FAMILY = "experiment_family";
 	
 	final public static String FIELD_DATETIME_START = "datetime_start";
@@ -100,7 +104,17 @@ public class SolrXmlPars {
 	
 	final public static String TYPE_DATASET = "Dataset";
 	final public static String TYPE_FILE = "File";
+	
+	/**
+	 * Map holding references from record type to Solr core storing those records.
+	 */
+	final public static Map<String, String> CORES = new HashMap<String,String>();
 
+	// static population of Solr cores mapping
+	static {
+	    CORES.put(TYPE_DATASET, "datasets");
+	    CORES.put(TYPE_FILE, "files");
+	}
 	
 	/**
 	 * Private constructor prevents class instantiation.

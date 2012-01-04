@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.springframework.util.StringUtils;
 
+import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchReturnType;
 
@@ -71,9 +72,9 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	private Set<String> fields = new HashSet<String>();
 	
 	/**
-	 * The results type,if not null it must match a specific filter query handler.
+	 * The results type, mapped to the corresponding Solr core.
 	 */
-	private String type = null;
+	private String type = QueryParameters.DEFAULT_TYPE;
 
 	/**
 	 * The offset into the number of returned results.
@@ -226,6 +227,8 @@ public class SearchInputImpl implements SearchInput, Serializable {
 		
 		// query
 		final StringBuilder s = new StringBuilder();
+		s.append("Results Type:"+this.getType()).append(NEWLINE);
+		s.append("Distributed Search:"+this.isDistrib()).append(NEWLINE);
 		s.append("Search Text:"+this.getQuery()).append(NEWLINE);
 		// constraints
 		for (final String name : this.constraints.keySet()) {

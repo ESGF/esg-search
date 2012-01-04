@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import esg.search.query.api.QueryParameters;
+
 
 /**
  * Standard bean implementation of the {@link Record} interface.
@@ -130,7 +132,21 @@ public class RecordImpl implements Record, Serializable {
 		
 	}
 	
-	private boolean hasText(final String s) {
+    /**
+     * {@inheritDoc}
+     */
+    public String getType() {
+        return this.getFieldValue(QueryParameters.FIELD_TYPE);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setType(String type) {
+        this.addField(QueryParameters.FIELD_TYPE, type);
+    }
+
+    private boolean hasText(final String s) {
 		return s!=null && s.trim().length()>0;
 	}
 	

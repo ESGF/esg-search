@@ -60,7 +60,7 @@
     <property name="format" value="netCDF, CF-1.0" />
     <variables vocabulary="CF-1.0">
       <variable name="mrfso" vocabulary_name="soil_frozen_water_content" units="kg m-2">Soil Frozen Water Content</variable>
-      <variable name="snw" vocabulary_name="Snow Amount" units="kg m-2">Snow Amount</variable>
+      <variable name="snw" vocabulary_name="snow_amount" units="kg m-2">Snow Amount</variable>
       <variable name="mrro" vocabulary_name="runoff_flux" units="kg m-2 s-1">Surface and Subsurface Runoff</variable>
       <variable name="mrros" vocabulary_name="surface_runoff_flux" units="kg m-2 s-1">Surface Runoff</variable>
       <variable name="mrso" vocabulary_name="soil_moisture_content" units="kg m-2">Total Soil Moisture Content</variable>
