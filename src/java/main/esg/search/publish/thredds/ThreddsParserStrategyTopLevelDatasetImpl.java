@@ -25,6 +25,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,6 +61,9 @@ import esg.search.query.impl.solr.SolrXmlPars;
 public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserStrategy {
 	
 	private final Log LOG = LogFactory.getLog(this.getClass());
+	
+	// anti-pattern for CF standard names, which do not contain upper case letters or spaces
+    private final Pattern NON_CF_PATTERN = Pattern.compile(".*[A-Z\\s].*");
 	
 	/**
 	 * Default URL builder
@@ -339,7 +344,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @param record
 	 */
 	private void parseVariables(final InvDataset dataset, final Record record) {
-	    
+	    	    
 	    // <variables vocabulary="CF-1.0">
         //   <variable name="hfss" vocabulary_name="surface_upward_sensible_heat_flux" units="W m-2">Surface Sensible Heat Flux</variable>
         // </variables>
@@ -347,7 +352,11 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             final String vocabulary = variables.getVocabulary();
             for (final Variable variable : variables.getVariableList()) {
                 record.addField(SolrXmlPars.FIELD_VARIABLE, variable.getName());
-                if (vocabulary.equals(ThreddsPars.CF)) record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, variable.getVocabularyName());
+                if (vocabulary.equals(ThreddsPars.CF)) {
+                    // do not include if containing upper case letters or spaces
+                    final Matcher matcher = NON_CF_PATTERN.matcher(variable.getVocabularyName());
+                    if (!matcher.matches()) record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, variable.getVocabularyName());
+                }
                 if (StringUtils.hasText(variable.getDescription())) record.addField(SolrXmlPars.FIELD_VARIABLE_LONG_NAME, variable.getDescription());
             }
         }
