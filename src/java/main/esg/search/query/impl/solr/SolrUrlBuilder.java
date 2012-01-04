@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -313,7 +314,7 @@ public class SolrUrlBuilder {
 		
 	}
 	
-	private void setShards(final LinkedHashSet<String> shards, final String core, final StringBuilder sb) {
+	private void setShards(final Set<String> shards, final String core, final StringBuilder sb) {
         sb.append("&shards=");
         for (String shard : shards) {
             if (sb.charAt(sb.length()-1) != '=') sb.append(",");

@@ -361,12 +361,13 @@ public class SearchInputImpl implements SearchInput, Serializable {
 
 
     @Override
-    public void setShards(final LinkedHashSet<String> shards) {
-        this.shards = shards;
+    public void setShards(final Set<String> shards) {
+        this.shards.clear();
+        this.shards.addAll(shards);
     }
 
     @Override
-    public LinkedHashSet<String> getShards() {
+    public Set<String> getShards() {
         return shards;
     }
 

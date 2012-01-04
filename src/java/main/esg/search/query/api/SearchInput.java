@@ -178,13 +178,13 @@ public interface SearchInput {
 	 * Setter method for list of shards to query.
 	 * @param shards
 	 */
-	public void setShards(LinkedHashSet<String> shards);
+	public void setShards(Set<String> shards);
 	
 	/**
 	 * Getter method for list of shards to query.
 	 * @return
 	 */
-	public LinkedHashSet<String> getShards();
+	public Set<String> getShards();
 	
 	/**
 	 * Getter method for the distributed query flag.
