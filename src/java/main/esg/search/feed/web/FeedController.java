@@ -139,8 +139,7 @@ public class FeedController {
      */
     private SearchInput newSearchInput(String type, boolean distrib) {
         
-        final SearchInput searchInput = new SearchInputImpl();
-        searchInput.setType(type);
+        final SearchInput searchInput = new SearchInputImpl(type);
         searchInput.setDistrib(distrib);
         searchInput.setLimit(QueryParameters.MAX_LIMIT);
         return searchInput;

@@ -27,6 +27,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import esg.search.query.api.Facet;
 import esg.search.query.api.FacetProfile;
+import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchOutput;
 import esg.search.query.api.SearchService;
@@ -47,7 +48,7 @@ public class SearchServiceMain {
 				
 		
 		// test unconstrained facets
-		final SearchInput input = new SearchInputImpl();
+		final SearchInput input = new SearchInputImpl(QueryParameters.DEFAULT_TYPE);
 		
 		
 		input.setFacets(new ArrayList<String>(facetProfile.getTopLevelFacets().keySet()));

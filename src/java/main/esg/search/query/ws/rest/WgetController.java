@@ -58,8 +58,9 @@ public class WgetController {
         // check type=... is not specified
         if (request.getParameter(QueryParameters.FIELD_TYPE)!=null) {
             baseController.sendError(HttpServletResponse.SC_BAD_REQUEST, "HTTP parameter type is fixed to value: File", response);
+            return;
         } else {
-            command.setType(SolrXmlPars.TYPE_FILE);
+            command.setConstraint(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_FILE);
         }
         
         // process request, obtain Solr/XML output
@@ -107,7 +108,7 @@ public class WgetController {
                 }
              }
             desc.addFile(url, null, null, checksumType, checksum);
-            // export (URL checkum) for this record
+            // export (URL checksum) for this record
             if (StringUtils.hasText(url)) {
                 urls.add( url );
                 //urls.add( url + (StringUtils.hasText(checksum) ? " "+checksum : ""));

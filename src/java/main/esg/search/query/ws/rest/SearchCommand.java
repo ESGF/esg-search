@@ -2,6 +2,7 @@ package esg.search.query.ws.rest;
 
 import java.io.Serializable;
 
+import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SearchInputImpl;
 
 /**
@@ -16,7 +17,7 @@ public class SearchCommand extends SearchInputImpl implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	public SearchCommand() {
-		super();
+		super(QueryParameters.DEFAULT_TYPE);
 	}
 
 }

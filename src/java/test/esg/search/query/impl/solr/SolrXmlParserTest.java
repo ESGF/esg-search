@@ -65,7 +65,7 @@ public class SolrXmlParserTest {
 		if (LOG.isDebugEnabled()) LOG.debug(xml);
 		
 		// parse XML into objects
-		final SearchOutput output = solrXmlParser.parse(xml, new SearchInputImpl());
+		final SearchOutput output = solrXmlParser.parse(xml, new SearchInputImpl(QueryParameters.DEFAULT_TYPE));
 		if (LOG.isDebugEnabled()) LOG.debug(output.toString());
 		
 		// <result name="response" numFound="186" start="11">
@@ -119,7 +119,7 @@ public class SolrXmlParserTest {
 		if (LOG.isDebugEnabled()) LOG.debug(xml);
 		
 		// simulate facet constraint in query
-		final SearchInput input = new SearchInputImpl();
+		final SearchInput input = new SearchInputImpl(QueryParameters.DEFAULT_TYPE);
 		input.addConstraint("project", "project A");
 		
 		// parse XML into objects

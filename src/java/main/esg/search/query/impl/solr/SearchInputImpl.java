@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -72,11 +73,6 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	private Set<String> fields = new HashSet<String>();
 	
 	/**
-	 * The results type, mapped to the corresponding Solr core.
-	 */
-	private String type = QueryParameters.DEFAULT_TYPE;
-
-	/**
 	 * The offset into the number of returned results.
 	 */
 	private int offset = 0;
@@ -96,9 +92,41 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	 */
 	private String format = SearchReturnType.SOLR_XML.getMimeType();
 	
-	private final static String NEWLINE = System.getProperty("line.separator");
-
 	/**
+	 * Set of shards to query, if specified.
+	 */
+	private LinkedHashSet<String> shards = new LinkedHashSet<String>();
+	
+	/**
+	 * Lower bound on last update, if specified.
+	 */
+	private String from = "";
+	
+	/**
+     * Upper bound on last update, if specified.
+     */
+	private String to = "";
+	
+	private final static String NEWLINE = System.getProperty("line.separator");
+	
+	/**
+	 * Constructor sets the results type.
+	 * @param type
+	 */
+	public SearchInputImpl(String type) {
+	    this.setConstraint(QueryParameters.FIELD_TYPE, type);
+	}
+
+	
+	@Override
+    public void setConstraint(String name, String value) {
+        if (StringUtils.hasText(name) && StringUtils.hasText(value)) {
+            constraints.put(name, new ArrayList<String>());
+            this.constraints.get(name).add(value);
+        }
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public void addConstraint(final String name, final String value) {
@@ -208,16 +236,16 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String getType() {
-		return type;
-	}
+	//public String getType() {
+	//	return type;
+	//}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setType(final String type) {
-		this.type = type;
-	}
+	//public void setType(final String type) {
+	//	this.type = type;
+	//}
 	
 	/**
 	 * Overridden method to print the instance content.
@@ -225,28 +253,43 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	@Override
 	public String toString() {
 		
-		// query
 		final StringBuilder s = new StringBuilder();
-		s.append("Results Type:"+this.getType()).append(NEWLINE);
+		// distributed search
 		s.append("Distributed Search:"+this.isDistrib()).append(NEWLINE);
-		s.append("Search Text:"+this.getQuery()).append(NEWLINE);
-		// constraints
-		for (final String name : this.constraints.keySet()) {
-			s.append("Search Constraint: ").append(name).append("=");
-			for (final String value : this.constraints.get(name)) {
-				s.append(value).append(" ");
-			}
-			s.append(NEWLINE);
-		}
+		// query
+	    s.append("Search Text:"+this.getQuery()).append(NEWLINE);
+	    // offset, limit
+        s.append("Search offset: "+offset+" ").append(" limit: ").append(limit).append(NEWLINE);
+        // format
+        s.append("Output Format: ").append(this.format).append(NEWLINE);
 		// geospatialRangeconstraints
-		s.append("Geo-spatial Constraint: " + this.geospatialRangeConstraint);
-		//end add
+		if (StringUtils.hasText(this.geospatialRangeConstraint)) s.append("Geo-spatial Constraint: " + this.geospatialRangeConstraint).append(NEWLINE);
+		// temporal constraint
+		if (StringUtils.hasText(this.temporalRangeConstraint)) s.append("Temporal Constraint: " + this.temporalRangeConstraint).append(NEWLINE);
+	    // last update range
+        if (StringUtils.hasText(this.from)) s.append("From Last Update: " + this.from).append(NEWLINE);
+        if (StringUtils.hasText(this.to)) s.append("To Last Update: " + this.to).append(NEWLINE);
 		// facets
 		for (final String facet : facets) {
 			s.append("Search Facet: ").append(facet).append(NEWLINE);
 		}
-		// offset, limit
-		s.append("Search offset: "+offset+" ").append(" limit: ").append(limit);
+	    // fields
+        for (final String field : fields) {
+            s.append("Returned Field: ").append(field).append(NEWLINE);
+        }
+        // shards
+        for (final String shard : shards) {
+            s.append("Queried shard: ").append(shard).append(NEWLINE);
+        }
+        // facet constraints
+        for (final String name : this.constraints.keySet()) {
+            s.append("Search Constraint: ").append(name).append("=");
+            for (final String value : this.constraints.get(name)) {
+                s.append(value).append(" ");
+            }
+            s.append(NEWLINE);
+        }
+
 		return s.toString();
 		
 	}
@@ -300,7 +343,7 @@ public class SearchInputImpl implements SearchInput, Serializable {
     }
 
     @Override
-    public void setFields(Set<String> fields) {
+    public void setFields(final Set<String> fields) {
         this.fields = fields;
     }
 
@@ -315,5 +358,42 @@ public class SearchInputImpl implements SearchInput, Serializable {
     public String getFormat() {
         return format;
     }
+
+
+    @Override
+    public void setShards(final LinkedHashSet<String> shards) {
+        this.shards = shards;
+    }
+
+    @Override
+    public LinkedHashSet<String> getShards() {
+        return shards;
+    }
+
+
+    @Override
+    public String getFrom() {
+        return from;
+    }
+
+
+    @Override
+    public void setFrom(final String from) {
+        this.from = from;
+    }
+
+
+    @Override
+    public String getTo() {
+        return to;
+    }
+
+
+    @Override
+    public void setTo(final String to) {
+        this.to = to;
+    }
+    
+    
 	
 }

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
 
@@ -82,17 +83,7 @@ public class BaseController {
 	String process(final HttpServletRequest request, 
             final SearchCommand command, 
             final HttpServletResponse response) throws Exception {
-	    	    
-	    // set of allowed facets (and fields)
-        final Set<String> allowedFacets = facetProfile.getTopLevelFacets().keySet();
-        
-        // impose maximum count on returned results
-        if (command.getLimit()>QueryParameters.MAX_LIMIT) {
-            sendError(HttpServletResponse.SC_BAD_REQUEST, 
-                    "Too many records requested, maximum allowed value is limit="+QueryParameters.MAX_LIMIT,
-                    response);  
-        }
-	    
+	    	    	    
 	    // check all HTTP parameters for bad characters
 	    for (final Object obj : request.getParameterMap().keySet()) {
 	        
@@ -117,50 +108,24 @@ public class BaseController {
             }
 	        
 	    }
-        
-	    // loop over HTTP parameters, bind to SearchInput fields
-	    // Note: the following parameters are automatically bound by Spring:
-	    // &type=...&offset=...&limit=...
-        for (final Object obj : request.getParameterMap().keySet()) {
-            final String parName = (String)obj;
-                            
-            // &id=...
-            // NOTE: only one value allowed
-            if (parName.equals(QueryParameters.ID)) {
-                command.addConstraint(parName, request.getParameter(parName) );
-                
-            // &replica=true|false (or True|False or T|F)
-            // NOTE: only one value allowed
-            } else if (   parName.equalsIgnoreCase(QueryParameters.REPLICA)) {
-                command.addConstraint(parName, request.getParameter(parName));
-             
-            // other keywords
-            // &from=...&to=... &start=... &end=... &bbox=
-            // these constraints are interpreted specially by the SearchService implementation
-            } else if (   parName.equals(QueryParameters.FROM) || parName.equals(QueryParameters.TO)
-                       || parName.equals(QueryParameters.START) || parName.equals(QueryParameters.END)
-                       || parName.equals(QueryParameters.BBOX) ) {
-                command.addConstraint(parName, request.getParameter(parName));
-                                         
-            // interpret all non-keyword constraints as facets
-            // check versus the configured facet profile to allow no unknown facets
-            // &facet1=value1&facet2=value2
-            } else if (!QueryParameters.KEYWORDS.contains( parName.toLowerCase() )) {
-                if (!facetProfile.getTopLevelFacets().containsKey(parName)) {
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported facet "+parName);
-                }	             
-                final String[] parValues = request.getParameterValues(parName);
-                for (final String parValue : parValues) command.addConstraint(parName, parValue);
-            }
+	            
+        // keyword "limit": impose maximum count on returned results
+        if (command.getLimit()>QueryParameters.MAX_LIMIT) {
+            sendError(HttpServletResponse.SC_BAD_REQUEST, 
+                    "Too many records requested, maximum allowed value is limit="+QueryParameters.MAX_LIMIT,
+                    response);  
         }
         
-        // &format=
+        // keyword "format": check requested output format
         SearchReturnType format = SearchReturnType.forMimeType(command.getFormat());
         if (format==null) sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, 
                                     "Invalid requested format: "+ command.getFormat(), response);
-        
-        // &facets=facet1,facet2,...
-        // must process comma-separated list from HTTP request into list of string values
+
+	    
+        // keyword "facets": &facets=facet1,facet2,...
+        // -) translate "*" into explicit list
+        // -) process comma-separated list from HTTP request into list of string values
+        final Set<String> allowedFacets = facetProfile.getTopLevelFacets().keySet();
         if (!command.getFacets().isEmpty()) {
             for (String facets : command.getFacets()) {
                 // special value: include all configured facets
@@ -168,42 +133,72 @@ public class BaseController {
                     command.setFacets(new ArrayList<String>(allowedFacets));
                 } else {
                     command.setFacets( Arrays.asList( facets.split("\\s*,\\s*") ));
-                    // check facet keys are contained in controlled vocabulary
-                    for (String facet : command.getFacets()) {
-                        if (!allowedFacets.contains(facet)) {
-                            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported facet "+facet);
-                        }
-                    }
                 }
             }            
         }
         
-        // &fields=field1,field2,...
-        // must process comma-separated list from HTTP request into list of string values
+        // keyword "fields": &fields=field1,field2,...
+        // -) translate "*" into explicit list of standard fields
+        // -) process comma-separated list from HTTP request into list of string values
         if (!command.getFields().isEmpty()) {
             // initialize set of returned fields to standard metadata fields
-            Set<String> fields = new HashSet<String>(QueryParameters.STANDARD_FIELDS);
-            for (String values : command.getFields()) {
+            //Set<String> fields = new HashSet<String>(QueryParameters.STANDARD_FIELDS);
+            for (String fields : command.getFields()) {
                 // special value: include all fields
-                if (values.equals("*")) {
-                    fields = (new HashSet<String>( Arrays.asList(new String[]{"*"})));
-                    break;
+                if (fields.equals("*")) {
+                    command.setFields(new HashSet<String>( Arrays.asList(new String[]{"*"})));
                 } else {
-                    String[] _values = values.split("\\s*,\\s*");
-                    for (String value : _values) {
-                        if (!fields.contains(value)) {
-                            if (allowedFacets.contains(value)) {
-                                fields.add(value);
-                            } else {
-                                sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported field "+value, response);
-                            }
-                        }
-                    }
+                    command.setFields( new HashSet<String>( Arrays.asList( fields.split("\\s*,\\s*") ) ) );
                 }
             }
-            command.setFields(fields);
         }
-
+        
+        // keyword "shards": &shards=shard1, shard2, ...
+        // -) process comma-separated list from HTTP request into list of requested shards
+        if (!command.getShards().isEmpty()) {
+            for (String shards : command.getShards() ) {
+                command.setShards( new LinkedHashSet<String>( Arrays.asList( shards.split("\\s*,\\s*") ) ) );
+            }
+        }
+        
+	    // loop over HTTP parameters, bind to SearchInput fields
+	    // note that keywords are automatically bound by Spring to the SearchInput fields
+	    // &query=... &offset=... &limit=... &format=... &facets=... &fields=... &distrib=... &shards=... &from=... &to=...
+        for (final Object obj : request.getParameterMap().keySet()) {
+            final String parName = (String)obj;
+            if (!QueryParameters.KEYWORDS.contains( parName.toLowerCase() )) {
+             
+                // Unsupported fields
+                if (   parName.equals(QueryParameters.FIELD_LAT) 
+                    || parName.equals(QueryParameters.FIELD_LON)
+                    || parName.equals(QueryParameters.FIELD_LOCATION) 
+                    || parName.equals(QueryParameters.FIELD_RADIUS)
+                    || parName.equals(QueryParameters.FIELD_POLYGON) ) {
+                    
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported parameter: "+parName);
+                          
+                // SINGLE-VALUED CONSTRAINTS (only parse first HTTP parameter value)
+                // &id=... &type=...
+                // &replica=true|false (or True|False or T|F)
+                // NOTE: only one value allowed
+                } else if (   parName.equals(QueryParameters.FIELD_ID) 
+                           || parName.equals(QueryParameters.FIELD_TYPE)
+                           || parName.equals(QueryParameters.FIELD_REPLICA)
+                           || parName.equals(QueryParameters.FIELD_START)
+                           || parName.equals(QueryParameters.FIELD_END)
+                           || parName.equals(QueryParameters.FIELD_BBOX)) {
+                    command.setConstraint(parName, request.getParameter(parName) );
+              
+              
+                // MULTI-VALUED CONSTRAINTS (parse all HTTP parameter values)
+                // &facet1=value1&facet1=value2
+                } else {
+                    final String[] parValues = request.getParameterValues(parName);
+                    for (final String parValue : parValues) command.addConstraint(parName, parValue);
+                }
+                
+            }
+        }
         
         if (!response.isCommitted()) {
         

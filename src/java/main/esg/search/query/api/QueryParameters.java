@@ -22,34 +22,19 @@ public class QueryParameters {
     public final static String FACETS = "facets";
     public final static String FIELDS = "fields";
     public final static String DISTRIB = "distrib";
-    public final static String REPLICA = "replica";
-    
-    // open search geo extension
-    public final static String BBOX ="bbox";  // west, south, east, north
-    public final static String LAT ="lat";
-    public final static String LON = "lon";
-    public final static String LOCATION = "location";
-    public final static String RADIUS = "radius";
-    public final static String POLYGON = "polygon";
-    
-    // open search time extension
-    public final static String START = "start";
-    public final static String END = "end";
-          
-    // record special fields
-    public final static String ID = "id";
-    public final static String MASTER_ID = "master_id";
-    //public final static String TYPE = "type";
+    public final static String SHARDS = "shards";
     public final static String FROM = "from";
     public final static String TO = "to";
-    
+        
+    public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB, SHARDS, FROM, TO } );
+             
     // standard metadata fields, always included for each result (if available)
     final public static String FIELD_ID = "id";
-    final public static String FIELD_MASTER_ID = "master_id";
+    final public static String FIELD_TYPE = "type";
     final public static String FIELD_REPLICA = "replica";
+    final public static String FIELD_MASTER_ID = "master_id";
     final public static String FIELD_TITLE = "title";
     final public static String FIELD_DESCRIPTION = "description";
-    final public static String FIELD_TYPE = "type";
     final public static String FIELD_TIMESTAMP = "timestamp";
     final public static String FIELD_URL = "url";
     final public static String FIELD_SIZE = "size";
@@ -59,6 +44,23 @@ public class QueryParameters {
     final public static String FIELD_CHECKSUM = "checksum";
     final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
     final public static String FIELD_INDEX_PEER = "esgf.index.peer";
+    
+    public final static List<String> STANDARD_FIELDS = Arrays.asList( new String[]{ 
+            FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_MASTER_ID, FIELD_TITLE, 
+            FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_SIZE, FIELD_DATASET_ID,
+            FIELD_FILE_ID, FIELD_VERSION, FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE, FIELD_INDEX_PEER });
+    
+    // special query fields for open search geo extension
+    public final static String FIELD_BBOX ="bbox";  // west, south, east, north
+    public final static String FIELD_LAT ="lat";
+    public final static String FIELD_LON = "lon";
+    public final static String FIELD_LOCATION = "location";
+    public final static String FIELD_RADIUS = "radius";
+    public final static String FIELD_POLYGON = "polygon";
+    
+    // special query fields for open search time extension
+    public final static String FIELD_START = "start";
+    public final static String FIELD_END = "end";
     
     // HTTP mime types
     public final static String MIME_TYPE_THREDDS = "application/xml+thredds";   
@@ -75,21 +77,7 @@ public class QueryParameters {
     public final static String MIME_TYPE_OPENDAP_DDS = "application/opendap-dds";
     public final static String MIME_TYPE_OPENDAP_HTML = "application/opendap-html";
     public final static String MIME_TYPE_RSS = "application/rss+xml";
-
-    
-    public final static List<String> STANDARD_FIELDS = Arrays.asList( new String[]{ FIELD_ID, FIELD_TITLE, FIELD_DESCRIPTION, 
-                                                                                    FIELD_TYPE, FIELD_TIMESTAMP, FIELD_URL, FIELD_SIZE,
-                                                                                    FIELD_MASTER_ID, FIELD_REPLICA,
-                                                                                    FIELD_DATASET_ID, FIELD_VERSION, 
-                                                                                    FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE,
-                                                                                    FIELD_INDEX_PEER });
-    
-    public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB, 
-                                                                             REPLICA,
-                                                                             LAT, LON, LOCATION, RADIUS, POLYGON, BBOX,
-                                                                             START, END,
-                                                                             ID, FIELD_TYPE, FROM, TO } );
-    
+        
     /**
      * List of invalid text characters - anything that is not within square brackets.
      */

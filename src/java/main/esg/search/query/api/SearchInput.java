@@ -18,6 +18,7 @@
  ******************************************************************************/
 package esg.search.query.api;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,17 +42,12 @@ public interface SearchInput {
 	public String getQuery();
 	
 	/**
-	 * Getter method for the results type to search for.
-	 * @return
-	 */
-	public String getType();
-
-
-	/**
-	 * Setter method for the results type to search for.
-	 * @param type
-	 */
-	public void setType(String type);
+     * Method to set a search constraint as a (name,value) pair,
+     * overriding all previous values for that named constraint.
+     * @param name
+     * @param values
+     */
+	public void setConstraint(String name, String value);
 	
 	/**
 	 * Method to add a search constraint as a (name,value) pair
@@ -179,6 +175,18 @@ public interface SearchInput {
 	public Set<String> getFields();
 	
 	/**
+	 * Setter method for list of shards to query.
+	 * @param shards
+	 */
+	public void setShards(LinkedHashSet<String> shards);
+	
+	/**
+	 * Getter method for list of shards to query.
+	 * @return
+	 */
+	public LinkedHashSet<String> getShards();
+	
+	/**
 	 * Getter method for the distributed query flag.
 	 * @return
 	 */
@@ -194,12 +202,36 @@ public interface SearchInput {
 	 * Setter method for formatting the query results.
 	 * @param format
 	 */
-	public void setFormat(final String format);
+	public void setFormat(String format);
 	
 	/**
 	 * Getter method for the requested output format.
 	 * @return
 	 */
 	public String getFormat();
-
+	
+	/**
+	 * Getter method for the requested last update lower bound.
+	 * @return
+	 */
+	public String getFrom();
+	
+	/**
+	 * Setter method for the requested last update lower bound.
+	 * @param from
+	 */
+	public void setFrom(String from);
+	
+	/**
+	 * Getter method for the requested last update upper bound.
+	 * @return
+	 */
+	public String getTo();
+	
+   /**
+     * Setter method for the requested last update upper bound.
+     * @return
+     */
+    public void setTo(String to);
+    
 }
