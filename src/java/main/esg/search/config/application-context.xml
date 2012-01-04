@@ -51,6 +51,7 @@
 	          	<entry key="product"><value>Product</value></entry>
 	          	<entry key="ensemble"><value>Ensemble</value></entry>
 	          	<entry key="MIP_table"><value>MIP table</value></entry>
+	          	<entry key="variable_long_name"><value>Variable Long Name</value></entry>
 	          		          	
 	          	<!-- obs facets -->
 	          	<entry key="source_id"><value>Instrument</value></entry>
