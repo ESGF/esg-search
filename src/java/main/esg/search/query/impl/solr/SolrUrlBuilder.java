@@ -227,15 +227,17 @@ public class SolrUrlBuilder {
 			        StringBuilder noClause = new StringBuilder("");
     				for (final String value : constraints.get(name)) {	
     				    if (value.startsWith("!")) {
-    				        noClause.append("&fq=-").append(URLEncoder.encode( name+":"+"\""+value.substring(1)+"\"","UTF-8" ));
+    				        String val = quote(value.substring(1));
+    				        noClause.append("&fq=-").append(URLEncoder.encode( name+":"+val,"UTF-8" ));
     				    } else {
+    				        String val = quote(value);
     				        // combine multiple values for the same facet in logical "OR"
     				        if (yesClause.length()==0) {
     				            yesClause.append("&fq=");
     				        } else {
     				            yesClause.append(URLEncoder.encode(" || ", "UTF-8"));
     				        }
-    				        yesClause.append( URLEncoder.encode( name+":"+"\""+value+"\"","UTF-8" ) );
+    				        yesClause.append( URLEncoder.encode( name+":"+val,"UTF-8" ) );
     				    }
     				}
     				if (yesClause.length()>0) fq.append(yesClause);
@@ -309,9 +311,16 @@ public class SolrUrlBuilder {
             sb.append("&wt=json");
         }        
         
-		if (LOG.isInfoEnabled()) LOG.info("Select URL=" + sb.toString());
-		return new URL(sb.toString());
+        final String url = sb.toString();
+		if (LOG.isInfoEnabled()) LOG.info(url);
+		return new URL(url);
 		
+	}
+	
+	private String quote(String s) {
+	    if (!s.startsWith("\"")) s = "\"" +s;
+	    if (!s.endsWith("\"")) s = s + "\"";
+	    return s;
 	}
 	
 	private void setShards(final Set<String> shards, final String core, final StringBuilder sb) {
