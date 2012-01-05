@@ -187,12 +187,12 @@ main() {
     done
     
     [ -z "${sites}" ] && echo "No sites specified to crawl" && esgf_crawl_usage
+    mkdir -p ${out_dir} >& /dev/null
     crawl_sites ${sites[@]}
     echo "done"
 }
 
 [ ! -d "${search_app_home}" ] && echo "Sorry could not locate search app directory [${search_app_home}]" && esgf_crawl_usage
-mkdir -p ${out_dir} >& /dev/null
 pushd ${search_app_home}/WEB-INF/classes || exit 1
 main $@
 popd >& /dev/null
