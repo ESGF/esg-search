@@ -65,28 +65,28 @@ public class SolrUrlBuilderTest {
 		// query default field, match all documents
 		final SearchInput input = new SearchInputImpl(QueryParameters.DEFAULT_TYPE);
 		solrUrlBuilder.setSearchInput(input);
-		URL url = solrUrlBuilder.buildSelectUrl();
+		URL url = new URL(solrUrlBuilder.buildSelectUrl() + "?" + solrUrlBuilder.buildSelectQueryString());       
 		Assert.assertEquals(SOLR_URL+"/datasets/select/?indent=true&q=*&fq=type%3ADataset&start=0&rows=10", url.toString());
 		
 		// query default field, specify results type as query filter
 		input.setConstraint(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_FILE);
-		url = solrUrlBuilder.buildSelectUrl();
+		url = new URL(solrUrlBuilder.buildSelectUrl() + "?" + solrUrlBuilder.buildSelectQueryString());
 		Assert.assertEquals(SOLR_URL+"/files/select/?indent=true&q=*&fq=type%3AFile&start=0&rows=10", url.toString());
 		
 		// query default field, use query filter for results type, match text
 		input.setQuery("atmospheric data");
-		url = solrUrlBuilder.buildSelectUrl();
+		url = new URL(solrUrlBuilder.buildSelectUrl() + "?" + solrUrlBuilder.buildSelectQueryString());
 		Assert.assertEquals(SOLR_URL+"/files/select/?indent=true&q=atmospheric+data&fq=type%3AFile&start=0&rows=10", url.toString());
 
 		// query default field, use query filter for results type, match text, retrieve all facets
 		final List<String> facets = Arrays.asList( new String[]{ "facet1", "facet2" } );
 		solrUrlBuilder.setFacets(facets);
-		url = solrUrlBuilder.buildSelectUrl();
+		url = new URL(solrUrlBuilder.buildSelectUrl() + "?" + solrUrlBuilder.buildSelectQueryString());
 		Assert.assertEquals(SOLR_URL+"/files/select/?indent=true&q=atmospheric+data&fq=type%3AFile&facet=true&facet.field=facet1&facet.field=facet2&start=0&rows=10", url.toString());
 		
 		// query default field, use query filter for results type, match text, use facet constraint, retrieve all facets
 		input.addConstraint("facet1", "value1");
-		url = solrUrlBuilder.buildSelectUrl();
+		url = new URL(solrUrlBuilder.buildSelectUrl() + "?" + solrUrlBuilder.buildSelectQueryString());
 		Assert.assertEquals(SOLR_URL+"/files/select/?indent=true&q=atmospheric+data&fq=type%3AFile&fq=facet1%3A%22value1%22&facet=true&facet.field=facet1&facet.field=facet2&start=0&rows=10", url.toString());
 		
 	}

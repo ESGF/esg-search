@@ -50,18 +50,19 @@ public class HttpClient {
 	
 	/**
 	 * Method to send an XML document as a POST request.
-	 * @param url
-	 * @param xml
+	 * @param url : the URL to post the request to - without any additional HTTP parameters
+	 * @param data : the data to be posted - possibly an XML document
+	 * @param xml : true to post an XML document - sets the request content-type accordingly
 	 * @return
 	 * @throws IOException
 	 */
-	public String doPostXml(final URL url, final String xml) throws IOException {
+	public String doPost(final URL url, final String data, boolean xml) throws IOException {
 		
 		// prepare HTTP request
 	    final URLConnection connection = url.openConnection();
 	    connection.setUseCaches(false);
 	    connection.setDoOutput(true); // POST method
-	    connection.setRequestProperty("Content-Type", "text/xml");
+	    if (xml) connection.setRequestProperty("Content-Type", "text/xml");
 	    connection.setRequestProperty("Charset", "utf-8");
 	    
 	    // preemptive authentication
@@ -71,7 +72,7 @@ public class HttpClient {
 	    //connection.setRequestProperty("Authorization", "Basic "+ authStringEnc );   
 	    	    
 	    final OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-	    wr.write(xml);
+	    wr.write(data);
 	    wr.flush();
 	    wr.close();
 

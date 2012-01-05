@@ -57,7 +57,7 @@ public class SolrScrabber extends SolrClient {
 	        final String xml = messageBuilder.buildDeleteMessage(ids, true);
 	        final URL postUrl = solrUrlBuilder.buildUpdateUrl(core, true); // commit=true
 	        if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
-	        httpClient.doPostXml(postUrl, xml);
+	        httpClient.doPost(postUrl, xml, true);
 	    }
 		
 	}

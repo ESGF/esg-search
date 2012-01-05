@@ -120,10 +120,25 @@ public class SolrUrlBuilder {
 	}
 	
 	/**
-	 * Method to generate the final "select" URL according to the instance's state.
+	 * Method to generate the "select" URL to a specific Solr core (depending on the requested results type)
 	 * @return
 	 */
-	public URL buildSelectUrl() throws MalformedURLException, UnsupportedEncodingException {
+	public String buildSelectUrl() throws MalformedURLException {
+	    	    
+        // the core-specific select URL
+        final StringBuilder sb = new StringBuilder(url.toString()).append("/").append(this.getCore()).append("/select/");
+        
+        final String url = sb.toString();
+        if (LOG.isInfoEnabled()) LOG.info("Select URL: "+url);
+        return url;
+
+	}
+	
+	/**
+	 * Method to generate the "select" query string according to the instance's state.
+	 * @return
+	 */
+	public String buildSelectQueryString() throws MalformedURLException, UnsupportedEncodingException {
 			
 	    // q=... AND .... AND
 	    final List<String> qs = new ArrayList<String>();
@@ -138,13 +153,6 @@ public class SolrUrlBuilder {
 		if (StringUtils.hasText(input.getQuery())) {
 			qs.add( URLEncoder.encode(input.getQuery(), "UTF-8") );
 		}
-		
-	    // The specific Solr core, as determined by the results type
-        final String type = input.getConstraint(QueryParameters.FIELD_TYPE);
-        final String core = SolrXmlPars.CORES.get(type);
-        if (!StringUtils.hasText(core)) {
-            throw new MalformedURLException("Unsupported results type: "+type+" is not mapped to any Solr core");
-        }
 		
 		// from,to --> q="timestamp:[2010-10-19T22:00:00Z TO NOW]"
         // note: these special fields must be processed together
@@ -270,9 +278,9 @@ public class SolrUrlBuilder {
             fl.append("score");
         }
         
-        // compose final URL
-        final StringBuilder sb = new StringBuilder(url.toString()).append("/").append(core)
-                                                                  .append("/select/?indent=true");
+        // compose query string
+        final StringBuilder sb = new StringBuilder("indent=true");
+        
         // q=...
         sb.append("&q=");
         boolean first = true;
@@ -297,11 +305,11 @@ public class SolrUrlBuilder {
             
             // use provided shards
             if (input.getShards().size()>0) {
-                setShards(input.getShards(), core, sb);
+                setShards(input.getShards(), this.getCore(), sb);
                 
             // or use all shards
             } else if (this.defaultShards.size()>0) {
-                setShards(this.defaultShards, core, sb);
+                setShards(this.defaultShards, this.getCore(), sb);
                 
             }
         }
@@ -311,9 +319,9 @@ public class SolrUrlBuilder {
             sb.append("&wt=json");
         }        
         
-        final String url = sb.toString();
-		if (LOG.isInfoEnabled()) LOG.info(url);
-		return new URL(url);
+        final String queryString = sb.toString();
+		if (LOG.isInfoEnabled()) LOG.info("Select Query String: "+queryString);
+		return queryString;
 		
 	}
 	
@@ -329,6 +337,23 @@ public class SolrUrlBuilder {
             if (sb.charAt(sb.length()-1) != '=') sb.append(",");
             sb.append(shard).append("/").append(core);
         }
+	}
+	
+	/**
+	 * Method to determine the Solr core depending on the requested results type.
+	 * @return
+	 * @throws MalformedURLException
+	 */
+	private String getCore() throws MalformedURLException {
+	        
+        // The specific Solr core, as determined by the results type
+        final String type = input.getConstraint(QueryParameters.FIELD_TYPE);
+        final String core = SolrXmlPars.CORES.get(type);
+        if (!StringUtils.hasText(core)) {
+            throw new MalformedURLException("Unsupported results type: "+type+" is not mapped to any Solr core");
+        }
+        
+        return core;
 	}
 	
 }

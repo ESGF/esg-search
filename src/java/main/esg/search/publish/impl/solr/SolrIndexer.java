@@ -56,7 +56,7 @@ public class SolrIndexer extends SolrClient {
         if (!StringUtils.hasText(core)) throw new Exception("Unmapped core for record type="+record.getType());
 		final URL postUrl = solrUrlBuilder.buildUpdateUrl(core, true); // commit=true
 		if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
-		httpClient.doPostXml(postUrl, xml);
+		httpClient.doPost(postUrl, xml, true);
 		
 	}
 	
@@ -74,7 +74,7 @@ public class SolrIndexer extends SolrClient {
             cores.add(core);
             final URL postUrl = solrUrlBuilder.buildUpdateUrl(core, false); // commit=false
             if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
-            httpClient.doPostXml(postUrl, xml);
+            httpClient.doPost(postUrl, xml, true);
         }
         
         // commit all records at once, to all cores

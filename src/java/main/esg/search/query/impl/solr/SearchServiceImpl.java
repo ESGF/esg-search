@@ -21,7 +21,6 @@ package esg.search.query.impl.solr;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-import org.apache.bcel.generic.GETSTATIC;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -109,9 +108,9 @@ public class SearchServiceImpl implements SearchService {
 		builder.setSearchInput(input);
 		builder.setFacets(input.getFacets());
 		if (registryService!=null) builder.setDefaultShards( registryService.getShards() );
-		final URL request = builder.buildSelectUrl();		
 		
-		// execute HTTP request, return response as Solr/XML or Solr/JSON
+		// execute HTTP/GET request, return response as Solr/XML or Solr/JSON
+		final URL request = new URL(builder.buildSelectUrl() + "?" + builder.buildSelectQueryString());		
 		String output = httpClient.doGet(request);
 		
 		// transform to requested format
