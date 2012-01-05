@@ -58,6 +58,9 @@ search_app_home=$(sed -n 's@^[ ]*index.app.home[ ]*=[ ]*\(.*\)$@\1@p' $ESGF_HOME
 
 DEBUG=${DEBUG:-0}
 VERBOSE=${VERBOSE:-0}
+version=0.0.1
+
+out_dir="/tmp"
 
 crawl_site() {
     local site=$(resolve_site ${1})
@@ -66,8 +69,8 @@ crawl_site() {
     verbose_print "host: ${host}"
     echo "crawling ${site} ...."
     ((DEBUG)) && curl -s ${site}
-    verbose_print "$JAVA_HOME/bin/java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} THREDDS $( ((REMOVE)) && echo "false" || echo "true") /tmp/${host}_publishing.log"
-    $JAVA_HOME/bin/java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} THREDDS $( ((REMOVE)) && echo "false" || echo "true") /tmp/${host}_publishing.log
+    verbose_print "$JAVA_HOME/bin/java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} THREDDS $( ((REMOVE)) && echo "false" || echo "true") ${out_dir}/${host}_publishing.log"
+    $JAVA_HOME/bin/java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} THREDDS $( ((REMOVE)) && echo "false" || echo "true") ${out_dir}/${host}_publishing.log
     verbose_print "------------"
 }
 
@@ -90,14 +93,41 @@ resolve_site() {
     [ $(grep -v 'http://' <(echo ${candidate})) ] && [ $(grep -v thredds/catalog.xml <(echo ${candidate})) ] && echo "http://${candidate}/thredds/catalog.xml" || echo "${candidate}"
 }
 
-_usage() {
-    echo "usage:"
-    echo "  %> $0 [ --file <crawlfile> ] [ -- catalog url(s) ]"
-    echo
-    echo "  Ex: ${0##*/} --file catalogs.txt -- http://norstore-trd-bio1.hpc.ntnu.no/thredds/catlog.xml"
-    echo
-    exit 1
+esgf_crawl_usage() {
+    printf "
+   Usage:
+
+      -----------------------------------------------------
+      > ${0##*/} [--help|-h] [--verbose] [--debug] [--file|-f <crawl targets> and/or -- <list of crawl targets>] [--outdir <output log dir>] [--remove|-rm]
+      -----------------------------------------------------
+
+      (required args - one or both)
+      --file    - followed by file containing newline delim list of fqdn or explicit catalog.xml urls to crawl
+      --        - followed by a space delim list of fqdn or catalo.xml urls to crawl
+
+      (optional args)
+      --outdir  - directory where crawl logs are to be written (default is /tmp)
+      --remote | -rm - will remove the catalog from the local index
+      --debug   - provide debug output
+      --verbose - provide more output
+      --help    - this usage output
+      --version - version information
+
+      Ex:
+      > ${0##*/} --file catalog.txt -- http://norstore-trd-bio1.hpc.ntnu.no/thredds/catlog.xml pcmdi3.llnl.gov
+
+      (this command will crawl all the entries listed in the file
+       catalog.txt as well as crawl the two sites listed.  Note: as a
+       convenience you may use just a fqdn as the crawl target. in
+       this case the default catalog.xml url location is used, namely
+       - http://<fqdn>/thredds/catalog.xml, if it is known that the
+       catalog.xml is not in this location then the canonical url to
+       the toplevel catalog.xml file must be used)
+
+"
+    exit 0
 }
+
 
 ############################################
 # Main
@@ -107,7 +137,7 @@ main() {
     while [ -n "$1" ]; do 
         case $1 in 
 	    -v | --version)
-                echo ""
+                echo "Version ${version}"
 	        echo "Earth Systems Grid Federation (http://esgf.org)"
 	        echo "ESGF P2P Catalog Crawling Utility"
 	        echo ""
@@ -120,10 +150,14 @@ main() {
                 DEBUG=1;
                 ;;
             --help | -h)
-                _usage
+                esgf_crawl_usage
                 ;;
             --remove | -rm)
                 REMOVE=1
+                ;;
+            --outdir)
+                shift
+                out_dir=${1}
                 ;;
             --file | -f)
                 shift
@@ -146,19 +180,19 @@ main() {
                 unset tmpargs
                 ;;
             *)
-                _usage
+                esgf_crawl_usage
                 ;;
         esac
         shift
     done
     
-    [ -z "${sites}" ] && echo "No sites specified to crawl" && _usage
+    [ -z "${sites}" ] && echo "No sites specified to crawl" && esgf_crawl_usage
     crawl_sites ${sites[@]}
     echo "done"
 }
 
-[ ! -d "${search_app_home}" ] && echo "Sorry could not locate search app directory [${search_app_home}]" && _usage 
-
+[ ! -d "${search_app_home}" ] && echo "Sorry could not locate search app directory [${search_app_home}]" && esgf_crawl_usage
+mkdir -p ${out_dir} >& /dev/null
 pushd ${search_app_home}/WEB-INF/classes || exit 1
 main $@
 popd >& /dev/null
