@@ -110,8 +110,10 @@ public class SearchServiceImpl implements SearchService {
 		if (registryService!=null) builder.setDefaultShards( registryService.getShards() );
 		
 		// execute HTTP/GET request, return response as Solr/XML or Solr/JSON
-		final URL request = new URL(builder.buildSelectUrl() + "?" + builder.buildSelectQueryString());		
-		String output = httpClient.doGet(request);
+		//String output = httpClient.doGet( new URL(builder.buildSelectUrl() + "?" + builder.buildSelectQueryString()) );
+		
+	    // execute HTTP/POST request, return response as Solr/XML or Solr/JSON    
+        String output = httpClient.doPost(new URL(builder.buildSelectUrl()), builder.buildSelectQueryString(), false);
 		
 		// transform to requested format
 		final String response = this.transform(output, returnType);
