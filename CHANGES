@@ -81,3 +81,8 @@ Internal changes to URLs resolved by the servlet
 1.8.1
 - No more checking of facet request parameters versus the configured "allowed" facets
 - Changed Solr select request from GET to POST
+
+1.8.2
+- Fixed bugs in wget script generation:
+	- use MAX_LIMIT=1000 for max number of files
+	- output all POST parameters in wget script
