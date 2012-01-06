@@ -2,6 +2,7 @@ package esg.search.query.ws.rest;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,6 +64,9 @@ public class WgetController {
             command.setConstraint(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_FILE);
         }
         
+        // set limit=MAX_LIMIT to enable massive retrieval through wget scripting
+        command.setLimit(QueryParameters.MAX_LIMIT);
+        
         // process request, obtain Solr/XML output
         String xml = baseController.process(request, command, response);
         
@@ -73,11 +77,19 @@ public class WgetController {
         //XPath xpath = XPath.newInstance("/response/result/doc/arr[@name='url']/str");
         XPath xpath = XPath.newInstance("/response/result/doc");
         
-        
-        String urlQuery = request.getQueryString() == null ? 
-        		request.getRequestURL().toString() : 
-        		request.getRequestURL().append("?").append(request.getQueryString()).toString();
+        // write out the URL + GET/POST parameters to the wget script
+        String urlQuery = request.getRequestURL().toString();
+        final Enumeration<String> e = request.getParameterNames();
+        boolean first = true;
+        while (e.hasMoreElements()) {
+            String name = e.nextElement();
+            for (String value : request.getParameterValues(name)) {
+                urlQuery += (first ? "?" : "&") + name + "=" +value;
+                if (first) first = false;
+            }
+        }
         WgetScriptGenerator.WgetDescriptor desc = new WgetScriptGenerator.WgetDescriptor(request.getServerName(), null, urlQuery);
+        
         
         final List<String> urls = new ArrayList<String>();
         
