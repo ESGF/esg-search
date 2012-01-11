@@ -21,11 +21,10 @@ package esg.search.publish.thredds;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
@@ -71,9 +70,10 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	private ThreddsDataseUrlBuilder urlBuilder = new ThreddsDatasetUrlBuilderCatalogUrlImpl();
 	
 	/**
-	 * Optional map of metadata enhancers
+	 * Optional map of metadata enhancers.
+	 * For performance, each metadata enhancer is triggered by a single field, the map key.
 	 */
-	private Map<String, MetadataEnhancer> metadataEnhancers = new HashMap<String, MetadataEnhancer>();
+	private Map<String, MetadataEnhancer> metadataEnhancers = new LinkedHashMap<String, MetadataEnhancer>();
 		
 	public ThreddsParserStrategyTopLevelDatasetImpl() {
 	    
@@ -110,62 +110,21 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 */
 	public List<Record> parseDataset(final InvDataset dataset) {
 		
-	    if (LOG.isDebugEnabled()) LOG.debug("Parsing dataset: "+dataset.getID());
-	    	    
-		final List<Record> records = new ArrayList<Record>();
-		
-		// <dataset name="...." ID="..." restrictAccess="...">
-		String id = dataset.getID();
-		// assign random UUID if dataset id was not found
-		if (id==null) id = UUID.randomUUID().toString();
-		Assert.notNull(id,"Dataset ID cannot be null");
-		final Record record = new RecordImpl(id);
-		final String name = dataset.getName();
-		Assert.notNull(name, "Dataset name cannot be null");
-		record.addField(QueryParameters.FIELD_TITLE, name);
-		
-	    // type
-		record.setType(SolrXmlPars.TYPE_DATASET);
-        //record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_DATASET);
-		
-		// IMPORTANT: add top-level dataset as first record in the list
-		records.add(record);
+	    // instantiate overall list of records from this catalogs
+        final List<Record> records = new ArrayList<Record>();
         
-		// encode dataset catalog as first access URL
-		final String url = dataset.getCatalogUrl();
-		record.addField(QueryParameters.FIELD_URL, 
-		                RecordHelper.encodeUrlTuple(url, 
-		                                            ThreddsPars.getMimeType(url, ThreddsPars.SERVICE_TYPE_CATALOG),
-		                                            ThreddsPars.SERVICE_TYPE_CATALOG));
-		
-		// add indexing host name
-		final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.ID);
-		if (me!=null) me.enhance(QueryParameters.FIELD_INDEX_PEER, null, record);
-				
-		// FIXME
-		// metadata format
-		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");		
-		// metadata file name
-		record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
-		
-		this.parseDocumentation(dataset, record);
-		
-		this.parseVariables(dataset, record);
-		
-		this.parseAccess(dataset, record);
-		
-		this.parseProperties(dataset, record);
+        // catalog-scope variables
+        final String hostName = getHostName(dataset);
 
-		this.parseMetadataGroup(dataset,record);
-		
-        // "is_replica" > id, master_id, "replica"
-		// note: do this AFTER dataset ID has been overridden to get rid of version
-        boolean isReplica = Boolean.valueOf(record.getFieldValue(ThreddsPars.IS_REPLICA));
-        String hostName = getHostName(dataset);
-		this.setReplicaFields(record, isReplica, hostName);
+        // parse top-level dataset
+        final Record record = this.parseCollection(dataset, hostName);
+                
+        // IMPORTANT: add top-level dataset as first record
+        records.add(record);
 		
 		// recursion
 		// NOTE: currently only files generate new records
+        boolean isReplica = Boolean.valueOf(record.getFieldValue(QueryParameters.FIELD_REPLICA));
 		long size = parseSubDatasets(dataset, records, isReplica, hostName);
 		record.addField(SolrXmlPars.FIELD_SIZE, Long.toString(size));
 		
@@ -181,6 +140,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	/**
 	 * Method to parse the children of a given dataset and store metadata information in the shared list of records.
 	 * The very first record in the list corresponds to the root of the dataset hierarchy.
+	 * 
 	 * @param dataset
 	 * @param records
 	 * @return
@@ -225,12 +185,70 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    
 	}
 	
+	private Record parseCollection(final InvDataset dataset, final String hostName) {
+	    
+	    if (LOG.isDebugEnabled()) LOG.debug("Parsing dataset: "+dataset.getID());
+	        
+	    // <dataset name="...." ID="..." restrictAccess="...">
+	    String id = dataset.getID();
+	    // assign random UUID if dataset id was not found
+	    if (id==null) id = UUID.randomUUID().toString();
+	    Assert.notNull(id,"Dataset ID cannot be null");
+	    // create new record with given identifier
+	    final Record record = new RecordImpl(id);
+	    final String name = dataset.getName();
+	    Assert.notNull(name, "Dataset name cannot be null");
+	    record.addField(QueryParameters.FIELD_TITLE, name);
+	        
+	    // type
+	    record.setType(SolrXmlPars.TYPE_DATASET);
+	    //record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_DATASET);
+	        	        
+	    // encode dataset catalog as first access URL
+	    final String url = dataset.getCatalogUrl();
+	    record.addField(QueryParameters.FIELD_URL, 
+	                    RecordHelper.encodeUrlTuple(url, 
+	                                                ThreddsPars.getMimeType(url, ThreddsPars.SERVICE_TYPE_CATALOG),
+	                                                ThreddsPars.SERVICE_TYPE_CATALOG));
+	        
+        // add indexing host name
+        final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.ID);
+        if (me!=null) me.enhance(QueryParameters.FIELD_INDEX_PEER, null, record);
+                
+        // FIXME
+        // metadata format
+        record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");      
+        // metadata file name
+        record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
+        
+        this.parseDocumentation(dataset, record);
+        
+        this.parseVariables(dataset, record);
+        
+        this.parseAccess(dataset, record);
+        
+        this.parseProperties(dataset, record);
+
+        this.parseMetadataGroup(dataset,record);
+        
+        // "is_replica" > id, master_id, "replica"
+        // note: do this AFTER dataset ID has been overridden to get rid of version
+        // and after properties have been parsed
+        boolean isReplica = Boolean.valueOf(record.getFieldValue(ThreddsPars.IS_REPLICA));
+        this.setReplicaFields(record, isReplica, hostName);
+                
+        return record;
+	        
+	}
+	
 	/**
-	 * Specific method to parse file information (into a new separate record)
+	 * Specific method to parse file-level information into a newly separate record, 
+	 * which is added to the list of already existing records.
+	 * 
 	 * @param dataset
 	 * @param records
 	 * @param inherit : set to true to copy dataset fields as file record fields (without overriding existing fields)
-	 * @return
+	 * @return : the file size for computational purposes, or 0 if un-available.
 	 */
 	private long parseFile(final InvDataset file, final List<Record> records, boolean inherit,
 	                       boolean isReplica, final String hostName) {
