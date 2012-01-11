@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import esg.search.core.Record;
-import esg.search.publish.api.MetadataEnhancer;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
@@ -17,7 +16,7 @@ import esg.search.query.impl.solr.SolrXmlPars;
  * @author Luca Cinquini
  *
  */
-public class ExperimentMetadataEnhancer implements MetadataEnhancer {
+public class ExperimentMetadataEnhancer extends BaseMetadataEnhancerImpl {
     
     final static String KEYIN = ThreddsPars.EXPERIMENT;
     final static String KEYOUT = SolrXmlPars.FIELD_EXPERIMENT_FAMILY;
@@ -89,8 +88,6 @@ public class ExperimentMetadataEnhancer implements MetadataEnhancer {
         // only process "experiment"
         if (name.equals(KEYIN)) {
             record.addField(KEYOUT, FAMILY_ALL);
-            
-            System.out.println("setting the exp family");
             
             // loop over all possible experiment values
             for (final String value : values) {

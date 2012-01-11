@@ -1,6 +1,7 @@
 package esg.search.publish.api;
 
 import java.util.List;
+import java.util.Set;
 
 import esg.search.core.Record;
 
@@ -20,5 +21,11 @@ public interface MetadataEnhancer {
      * @return
      */
     void enhance(String name, List<String> values, Record record);
+    
+    /**
+     * Method to determine if these metadata enhancements should be applied to the given record type.
+     * @return
+     */
+    boolean appliesToRecordType(String recordType);
 
 }

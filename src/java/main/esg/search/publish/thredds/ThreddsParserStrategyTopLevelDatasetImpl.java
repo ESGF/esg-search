@@ -43,7 +43,6 @@ import thredds.catalog.ThreddsMetadata.GeospatialCoverage;
 import thredds.catalog.ThreddsMetadata.Variable;
 import thredds.catalog.ThreddsMetadata.Variables;
 import ucar.nc2.units.DateRange;
-import esg.common.util.ESGFProperties;
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
 import esg.search.publish.api.MetadataEnhancer;
@@ -75,17 +74,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 */
 	private Map<String, MetadataEnhancer> metadataEnhancers = new LinkedHashMap<String, MetadataEnhancer>();
 		
-	public ThreddsParserStrategyTopLevelDatasetImpl() {
-	    
-	    metadataEnhancers.put(ThreddsPars.EXPERIMENT, new ExperimentMetadataEnhancer());
-	    try {
-	        // NOTE: use a mandatory record field
-	        metadataEnhancers.put(QueryParameters.FIELD_TYPE, new PropertiesMetadataEnhancer(QueryParameters.FIELD_INDEX_PEER, new ESGFProperties()));
-	    } catch(Exception e) {
-	        LOG.warn(e.getMessage());
-	    }
-	    
-	}
+	public ThreddsParserStrategyTopLevelDatasetImpl() {}
 	
 	/**
 	 * Method to set the builder for the URL to be associated with each record
@@ -102,7 +91,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * Method to set a map of {@link MetadataEnhancer}, keyed by the property name.
 	 * @param metadataEnhancers
 	 */
-	public void setMetadataEnhancers(final @Qualifier("metadataEnhancers") Map<String, MetadataEnhancer> metadataEnhancers) {
+	@Autowired
+	public void setMetadataEnhancers(final Map<String, MetadataEnhancer> metadataEnhancers) {
         this.metadataEnhancers = metadataEnhancers;
     }
 
@@ -232,22 +222,14 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 
         this.parseMetadataGroup(dataset,record);
         
+        this.enhanceMetadata(record);
+        
         // "is_replica" > id, master_id, "replica"
         // note: do this AFTER dataset ID has been overridden to get rid of version
         // and after properties have been parsed
         boolean isReplica = Boolean.valueOf(record.getFieldValue(ThreddsPars.IS_REPLICA));
         this.setReplicaFields(record, isReplica, hostName);
-        
-        // apply metadata enhancers - for now, to top-level dataset only
-        // (fields are inherited)
-        final Map<String, List<String>> fields = record.getFields();
-        for (final String field : new ArrayList<String>(fields.keySet())) {
-            System.out.println("enhancing field="+field);
-            if (metadataEnhancers.containsKey(field)) {
-                final MetadataEnhancer me = metadataEnhancers.get(field);
-                me.enhance(field, record.getFieldValues(field), record);
-            }
-        }
+
                 
         return record;
 	        
@@ -296,6 +278,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         this.parseAccess(file, record);
         
         this.parseDocumentation(file, record);
+        
+        this.enhanceMetadata(record);
         
         // "is_replica" > id, master_id, "replica"
         // note: do this BEFORE copying fields from Dataset!
@@ -550,6 +534,26 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             record.addField(QueryParameters.FIELD_MASTER_ID, record.getId());
         }
 
+	}
+	
+	/**
+	 * Utility method to apply the configured metadata enhancers
+	 * @param record
+	 */
+	private void enhanceMetadata(final Record record) {
+        
+        final Map<String, List<String>> fields = record.getFields();
+        for (final String field : new ArrayList<String>(fields.keySet())) {
+            // FIXME ?
+            String key = field + "MetadataEnhancer";
+            if (metadataEnhancers.containsKey(key)) {
+                final MetadataEnhancer me = metadataEnhancers.get(key);
+                if (me.appliesToRecordType(record.getType())) {
+                    me.enhance(field, record.getFieldValues(field), record);
+                }
+            }
+        }
+        
 	}
 		
 	

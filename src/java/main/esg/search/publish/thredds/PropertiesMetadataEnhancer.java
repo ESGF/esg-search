@@ -6,7 +6,6 @@ import java.util.Properties;
 import org.springframework.util.StringUtils;
 
 import esg.search.core.Record;
-import esg.search.publish.api.MetadataEnhancer;
 
 /**
  * Class that enhances the published metadata from a static properties file.
@@ -14,7 +13,7 @@ import esg.search.publish.api.MetadataEnhancer;
  * @author Luca Cinquini
  *
  */
-public class PropertiesMetadataEnhancer implements MetadataEnhancer {
+public class PropertiesMetadataEnhancer extends BaseMetadataEnhancerImpl {
     
     private final Properties properties;
     

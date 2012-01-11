@@ -1,0 +1,42 @@
+package esg.search.publish.thredds;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import esg.search.publish.api.MetadataEnhancer;
+
+/**
+ * Useful superclass for {@link MetadataEnhancer} implementations.
+ * 
+ * @author Luca Cinquini
+ *
+ */
+public abstract class BaseMetadataEnhancerImpl implements MetadataEnhancer {
+    
+    private Set<String> recordTypes = new HashSet<String>();
+    
+    public BaseMetadataEnhancerImpl() {}
+
+    @Override
+    public boolean appliesToRecordType(final String recordType) {
+        return recordTypes.contains(recordType);
+    }
+    
+    /**
+     * Method to set multiple record types.
+     * @param recordTypes
+     */
+    public void setTypes(final Set<String> recordTypes) {
+        this.recordTypes = recordTypes;
+    }
+    
+    /**
+     * Method to set a single record type.
+     * @param recordType
+     */
+    public void setType(final String recordType) {
+        this.recordTypes.add(recordType);
+    }
+    
+
+}
