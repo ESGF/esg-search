@@ -1,5 +1,8 @@
 package esg.search.publish.thredds;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.util.Assert;
@@ -80,7 +83,9 @@ public class ExperimentMetadataEnhancerTest {
     
     private void check(String experiment, String experiment_family) {
         final Record record = new RecordImpl();
-        eme.enhance(ThreddsPars.EXPERIMENT, experiment, record);
+        List<String> values = new ArrayList<String>();
+        values.add(experiment);
+        eme.enhance(ThreddsPars.EXPERIMENT, values, record);
         Assert.isTrue(record.getFieldValues(SolrXmlPars.FIELD_EXPERIMENT_FAMILY).contains(experiment_family));
         Assert.isTrue(record.getFieldValues(SolrXmlPars.FIELD_EXPERIMENT_FAMILY).contains(ExperimentMetadataEnhancer.FAMILY_ALL));
     }

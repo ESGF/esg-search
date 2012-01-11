@@ -1,6 +1,7 @@
 package esg.search.publish.thredds;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -83,18 +84,23 @@ public class ExperimentMetadataEnhancer implements MetadataEnhancer {
         ATMOS-ONLY = amip, amip4K, amip4xCO2, amipFuture, aqua4K, aqua4xCO2, aquaControl, sst2030, sstClim, sstClim4xCO2, sstClimSulfate, sstClimAerosol (12 items)
      */
     @Override
-    public void enhance(String name, String value, Record record) {
+    public void enhance(String name, List<String> values, Record record) {
                 
         // only process "experiment"
         if (name.equals(KEYIN)) {
             record.addField(KEYOUT, FAMILY_ALL);
             
-            for (final Pattern pattern : patterns.keySet()) {
-                final Matcher matcher = pattern.matcher(value.toLowerCase()); 
-                if (matcher.matches()) {
-                    record.addField(KEYOUT, patterns.get(pattern));
-                }
-            }      
+            System.out.println("setting the exp family");
+            
+            // loop over all possible experiment values
+            for (final String value : values) {
+                for (final Pattern pattern : patterns.keySet()) {
+                    final Matcher matcher = pattern.matcher(value.toLowerCase()); 
+                    if (matcher.matches()) {
+                        record.addField(KEYOUT, patterns.get(pattern));
+                    }
+                }      
+            }
         }
                 
     }

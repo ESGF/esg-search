@@ -79,7 +79,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    
 	    metadataEnhancers.put(ThreddsPars.EXPERIMENT, new ExperimentMetadataEnhancer());
 	    try {
-	        metadataEnhancers.put(ThreddsPars.ID, new PropertiesMetadataEnhancer(new ESGFProperties()));
+	        // NOTE: use a mandatory record field
+	        metadataEnhancers.put(QueryParameters.FIELD_TYPE, new PropertiesMetadataEnhancer(QueryParameters.FIELD_INDEX_PEER, new ESGFProperties()));
 	    } catch(Exception e) {
 	        LOG.warn(e.getMessage());
 	    }
@@ -212,8 +213,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	                                                ThreddsPars.SERVICE_TYPE_CATALOG));
 	        
         // add indexing host name
-        final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.ID);
-        if (me!=null) me.enhance(QueryParameters.FIELD_INDEX_PEER, null, record);
+        //final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.ID);
+        //if (me!=null) me.enhance(QueryParameters.FIELD_INDEX_PEER, null, record);
                 
         // FIXME
         // metadata format
@@ -236,6 +237,17 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         // and after properties have been parsed
         boolean isReplica = Boolean.valueOf(record.getFieldValue(ThreddsPars.IS_REPLICA));
         this.setReplicaFields(record, isReplica, hostName);
+        
+        // apply metadata enhancers - for now, to top-level dataset only
+        // (fields are inherited)
+        final Map<String, List<String>> fields = record.getFields();
+        for (final String field : new ArrayList<String>(fields.keySet())) {
+            System.out.println("enhancing field="+field);
+            if (metadataEnhancers.containsKey(field)) {
+                final MetadataEnhancer me = metadataEnhancers.get(field);
+                me.enhance(field, record.getFieldValues(field), record);
+            }
+        }
                 
         return record;
 	        
@@ -340,15 +352,6 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
                 }
             } else if (property.getName().equals(ThreddsPars.SIZE)) {
                 record.addField(SolrXmlPars.FIELD_SIZE, property.getValue());
-            
-            } else if (property.getName().equals(ThreddsPars.EXPERIMENT)) {
-                
-                // add "experiment"
-                record.addField(property.getName(), property.getValue());
-                
-                // add "experiment_family"
-                final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.EXPERIMENT);
-                if (me!=null) me.enhance(property.getName(), property.getValue(), record);
                 
             } else {
                 // index all other properties verbatim
