@@ -1,5 +1,7 @@
 package esg.search.publish.impl;
 
+import org.springframework.util.StringUtils;
+
 /**
  * Helper class to encode/decode URL tuples of the form (url, mime/type, description).
  * 
@@ -26,18 +28,36 @@ public class RecordHelper {
 	}
 	
 	/**
-	 * Utility method that parses a URL tuple in its constituent components.
+	 * Utility method that splits a tuple in its constituent components based on the delimiter character.
+	 * Note that this method does not check the number of parts,
+	 * so it can be used for different fields.
 	 * 
-	 * @param serviceField
 	 * @return
 	 * @throws Exception
 	 */
-	public static String[] decodeUrlTuple(final String tuple) throws Exception {
+	public static String[] decodeTuple(final String tuple) throws Exception {
 		
 		final String[] parts = tuple.split("\\|");
 		if (parts.length!=3) throw new Exception("Invalid Record URL value: "+tuple);
 		return parts;
 		
+	}
+	
+	/**
+	 * Utility method that joins the parts of an xlink tuple (href, title, type) with a delimiting character.
+	 * @param href : the xlink URL, must be not null
+	 * @param title : the xlink title, may be null
+	 * @param type : the xlink type, may be null
+	 * @return
+	 */
+	public static String encodeXlinkTuple(final String href, final String title, final String type) {
+	    final StringBuilder tuple = new StringBuilder();
+        tuple.append(href)
+             .append(CHAR)
+             .append( StringUtils.hasText(title) ? title : "" )
+             .append(CHAR)
+             .append( StringUtils.hasText(type) ? type : "" );
+        return tuple.toString();
 	}
 	
 

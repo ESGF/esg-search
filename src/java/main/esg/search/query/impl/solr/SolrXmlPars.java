@@ -65,8 +65,8 @@ public class SolrXmlPars {
 	//final public static String FIELD_URL = "url";
 	//final public static String FIELD_SERVICE = "service";
 	//final public static String FIELD_SERVICE_TYPE = "service_type";
-	final public static String FIELD_XLINK = "xlink";
-	final public static String FIELD_XREF = "xref";
+	//final public static String FIELD_XLINK = "xlink";
+	//final public static String FIELD_XREF = "xref";
 	//final public static String FIELD_TIMESTAMP = "timestamp";
 	
 	// field names: metadata file information

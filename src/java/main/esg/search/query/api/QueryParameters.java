@@ -37,6 +37,7 @@ public class QueryParameters {
     final public static String FIELD_DESCRIPTION = "description";
     final public static String FIELD_TIMESTAMP = "timestamp";
     final public static String FIELD_URL = "url";
+    final public static String FIELD_XLINK = "xlink";
     final public static String FIELD_SIZE = "size";
     final public static String FIELD_DATASET_ID = "dataset_id"; // note: generic notation to allow parent-child relations beyond just datasets   
     final public static String FIELD_FILE_ID = "file_id";

@@ -113,7 +113,7 @@ public class WgetController {
                 }
                 if (childEl.getAttributeValue("name").equals(QueryParameters.FIELD_URL)) {
                     String tuple = childEl.getChild("str").getTextNormalize();
-                    String[] parts = RecordHelper.decodeUrlTuple(tuple);
+                    String[] parts = RecordHelper.decodeTuple(tuple);
                     if (parts[2].equalsIgnoreCase(ThreddsPars.SERVICE_TYPE_HTTP)) {
                         url = parts[0];
                     }

@@ -97,7 +97,7 @@ public class RssViewBuilder {
         for (String urlTuple : record.getFieldValues(QueryParameters.FIELD_URL)) {
             
             // (url, mime type, description)
-            final String[] _parts = RecordHelper.decodeUrlTuple(urlTuple);
+            final String[] _parts = RecordHelper.decodeTuple(urlTuple);
                     
             Enclosure enc = new Enclosure();
             enc.setUrl(_parts[0]);
@@ -231,7 +231,7 @@ public class RssViewBuilder {
             
             // (url, mime type, description)
             try {
-                final String[] _parts = RecordHelper.decodeUrlTuple(urlTuple);                
+                final String[] _parts = RecordHelper.decodeTuple(urlTuple);                
                 // THREDDS catalog xml/html page
                 if (_parts[1].equalsIgnoreCase(QueryParameters.MIME_TYPE_THREDDS)) {
                     return _parts[0];   

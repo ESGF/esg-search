@@ -276,12 +276,14 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         if (inherit) {
             final Map<String, List<String>> datasetFields = records.get(0).getFields();
             for (final String key : datasetFields.keySet()) {  
-                // don't override file-level properties
-                if (record.getFieldValue(key)==null) {
-                    for (final String value : datasetFields.get(key)) {
-                        record.addField(key, value);
-                    }
-                }            
+                if (!key.equals(QueryParameters.FIELD_XLINK)) { // // don't inherit documentation links
+                    // don't override file-level properties
+                    if (record.getFieldValue(key)==null) {
+                        for (final String value : datasetFields.get(key)) {
+                            record.addField(key, value);
+                        }
+                    }            
+                }
             }
         }
         	    
@@ -353,9 +355,12 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             for (final Variable variable : variables.getVariableList()) {
                 record.addField(SolrXmlPars.FIELD_VARIABLE, variable.getName());
                 if (vocabulary.equals(ThreddsPars.CF)) {
+                    // convert all CF names to lower case, and join by "_"
+                    record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, 
+                                   variable.getVocabularyName().toLowerCase().replaceAll("\\s+", "_"));
                     // do not include if containing upper case letters or spaces
-                    final Matcher matcher = NON_CF_PATTERN.matcher(variable.getVocabularyName());
-                    if (!matcher.matches()) record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, variable.getVocabularyName());
+                    //final Matcher matcher = NON_CF_PATTERN.matcher(variable.getVocabularyName());
+                    //if (!matcher.matches()) record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, variable.getVocabularyName());
                 }
                 if (StringUtils.hasText(variable.getDescription())) record.addField(SolrXmlPars.FIELD_VARIABLE_LONG_NAME, variable.getDescription());
             }
@@ -411,9 +416,15 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         
         // <documentation type="...">.......</documentation>
         for (final InvDocumentation documentation : dataset.getDocumentation()) {
+            // inline documentation
             final String content = documentation.getInlineContent();
             if (StringUtils.hasText(content)) {
                 record.addField(QueryParameters.FIELD_DESCRIPTION, content);
+            }
+            // xlink documentation
+            final String href = documentation.getXlinkHref();
+            if (StringUtils.hasText(href)) {
+                record.addField(QueryParameters.FIELD_XLINK, RecordHelper.encodeXlinkTuple(href, documentation.getXlinkTitle(), documentation.getType()) );
             }
         }
         

@@ -86,3 +86,7 @@ Internal changes to URLs resolved by the servlet
 - Fixed bugs in wget script generation:
 	- use MAX_LIMIT=1000 for max number of files
 	- output all POST parameters in wget script
+	
+1.8.3
+- Parse xlink documentation into Solr fields, to enable display of technical notes
+- Convert all "non-standard" CF names to lower case, and join by "_"
