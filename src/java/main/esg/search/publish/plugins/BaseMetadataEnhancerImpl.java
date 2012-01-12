@@ -1,9 +1,8 @@
-package esg.search.publish.thredds;
+package esg.search.publish.plugins;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import esg.search.publish.api.MetadataEnhancer;
 
 /**
  * Useful superclass for {@link MetadataEnhancer} implementations.

@@ -10,5 +10,8 @@
 	  	
     <!-- Security configuration -->
   	<import resource="classpath:esg/search/config/security-context.xml" />
+  	
+  	<!-- Metadata plugins -->
+  	<import resource="classpath:esg/search/config/application-plugins.xml" /> 
 	
 </beans>

@@ -70,41 +70,5 @@
 	<bean id="registryService" class="esg.security.registry.service.impl.RegistryServiceLocalXmlImpl">
   		<constructor-arg index="0"><value>/esg/config/esgf_shards.xml</value></constructor-arg>
   	</bean>
-  			
-  	<!-- Metadata Enhancers -->
-  	<!-- note: bean naming convention: <field>MetadataEnhancer (because Spring doesn't use the proper map keys...) -->
-	<bean class="esg.search.publish.thredds.StaticPropertiesMetadataEnhancer" id="typeMetadataEnhancer">
-    	<constructor-arg index="0" value="esgf.index.peer"/>
-    	<constructor-arg index="1" ref="esgfProperties"/>
-    	<property name="type" value="Dataset"/>
-    </bean> 
-    <bean class="esg.search.publish.thredds.MappingPropertiesMetadataEnhencer" id="modelMetadataEnhancer">
-    	<constructor-arg index="0" value="esg/search/config/models.properties"/>
-    	<property name="type" value="Dataset"/>
-    </bean> 
-    <bean class="esg.search.publish.thredds.MappingPropertiesMetadataEnhencer" id="instituteMetadataEnhancer">
-    	<constructor-arg index="0" value="esg/search/config/institutes.properties"/>
-    	<property name="type" value="Dataset"/>
-    </bean> 
-    <bean class="esg.search.publish.thredds.MappingPropertiesMetadataEnhencer" id="projectMetadataEnhancer">
-    	<constructor-arg index="0" value="esg/search/config/projects.properties"/>
-    	<property name="type" value="Dataset"/>
-    </bean> 
-    <bean class="esg.search.publish.thredds.ExperimentMetadataEnhancer" id="experimentMetadataEnhancer">
-    	<constructor-arg index="0" value="esg/search/config/experiments.properties"/>
-		<property name="type" value="Dataset"/>
-	</bean> 
-    <bean class="esg.search.publish.thredds.TechNoteMetadataEnhancer" id="file_idMetadataEnhancer">
-    	<constructor-arg index="0"><value>/esg/config/techNotes.properties</value></constructor-arg>
-    	<property name="type" value="File"/>
-    </bean>
-    
-    <!-- metadata enhancers -->
-    <util:map id="metadataEnhancers" map-class="java.util.LinkedHashMap"  value-type="esg.search.publish.api.MetadataEnhancer">
-		<!-- note: Spring seems to be using "value-ref" as the map key, not "key" -->
-		<entry key="experiment" value-ref="experimentMetadataEnhancer"/>
-		<entry key="type" value-ref="typeMetadataEnhancer"/>
-		<entry key="file_id" value-ref="file_idMetadataEnhancer"/>
-	</util:map>
 	
 </beans>

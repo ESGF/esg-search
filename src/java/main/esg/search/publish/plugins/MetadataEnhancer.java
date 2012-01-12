@@ -1,4 +1,4 @@
-package esg.search.publish.api;
+package esg.search.publish.plugins;
 
 import java.util.List;
 import java.util.Set;

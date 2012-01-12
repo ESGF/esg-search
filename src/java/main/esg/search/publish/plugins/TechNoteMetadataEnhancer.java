@@ -1,4 +1,4 @@
-package esg.search.publish.thredds;
+package esg.search.publish.plugins;
 
 import java.io.FileInputStream;
 import java.util.List;

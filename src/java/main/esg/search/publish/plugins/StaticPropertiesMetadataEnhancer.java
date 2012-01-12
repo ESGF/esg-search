@@ -1,4 +1,4 @@
-package esg.search.publish.thredds;
+package esg.search.publish.plugins;
 
 import java.util.List;
 import java.util.Properties;

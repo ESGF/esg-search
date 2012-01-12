@@ -1,4 +1,4 @@
-package esg.search.publish.thredds;
+package esg.search.publish.plugins;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +9,8 @@ import org.springframework.util.Assert;
 
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
+import esg.search.publish.plugins.ExperimentMetadataEnhancer;
+import esg.search.publish.thredds.ThreddsPars;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**

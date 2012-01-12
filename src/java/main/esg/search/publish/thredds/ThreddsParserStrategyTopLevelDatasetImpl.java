@@ -45,9 +45,9 @@ import thredds.catalog.ThreddsMetadata.Variables;
 import ucar.nc2.units.DateRange;
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
-import esg.search.publish.api.MetadataEnhancer;
 import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.impl.RecordHelper;
+import esg.search.publish.plugins.MetadataEnhancer;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
 
@@ -89,6 +89,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	
 	/**
 	 * Method to set a map of {@link MetadataEnhancer}, keyed by the property name.
+	 * Note that this map is automatically populated by Spring with all the {@link MetadataEnhancer}s beans found in the configuration,
+	 * keyed by the bean id.
+	 * 
 	 * @param metadataEnhancers
 	 */
 	@Autowired
@@ -544,7 +547,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         
         final Map<String, List<String>> fields = record.getFields();
         for (final String field : new ArrayList<String>(fields.keySet())) {
-            // FIXME ?
+            // note: retrieve bean by adopted naming convention
             String key = field + "MetadataEnhancer";
             if (metadataEnhancers.containsKey(key)) {
                 final MetadataEnhancer me = metadataEnhancers.get(key);

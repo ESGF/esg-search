@@ -1,0 +1,51 @@
+<!-- Spring configuration file for metadata plugins -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:util="http://www.springframework.org/schema/util"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+	   					   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.0.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+                              			
+  	<!-- All beans of type MetadataEnhencer declared in this file are automatically loaded by Spring into a map keyed by bean id.
+  	     To be invoked for a specific metadata field, the bean id must follow the convention: <field>MetadataEnhancer -->
+
+	<bean class="esg.search.publish.plugins.StaticPropertiesMetadataEnhancer" id="typeMetadataEnhancer">
+    	<constructor-arg index="0" value="esgf.index.peer"/>
+    	<constructor-arg index="1" ref="esgfProperties"/>
+    	<property name="type" value="Dataset"/>
+    </bean> 
+
+    <bean class="esg.search.publish.plugins.MappingPropertiesMetadataEnhencer" id="modelMetadataEnhancer">
+    	<constructor-arg index="0" value="esg/search/config/models.properties"/>
+    	<property name="type" value="Dataset"/>
+    </bean> 
+
+    <bean class="esg.search.publish.plugins.MappingPropertiesMetadataEnhencer" id="instituteMetadataEnhancer">
+    	<constructor-arg index="0" value="esg/search/config/institutes.properties"/>
+    	<property name="type" value="Dataset"/>
+    </bean> 
+
+    <bean class="esg.search.publish.plugins.MappingPropertiesMetadataEnhencer" id="projectMetadataEnhancer">
+    	<constructor-arg index="0" value="esg/search/config/projects.properties"/>
+    	<property name="type" value="Dataset"/>
+    </bean> 
+
+    <bean class="esg.search.publish.plugins.ExperimentMetadataEnhancer" id="experimentMetadataEnhancer">
+    	<constructor-arg index="0" value="esg/search/config/experiments.properties"/>
+		<property name="type" value="Dataset"/>
+	</bean> 
+
+    <bean class="esg.search.publish.plugins.TechNoteMetadataEnhancer" id="file_idMetadataEnhancer">
+    	<constructor-arg index="0"><value>/esg/config/techNotes.properties</value></constructor-arg>
+    	<property name="type" value="File"/>
+    </bean>
+    
+    <!-- Full map of metadata enhancers 
+    <util:map id="metadataEnhancers" map-class="java.util.LinkedHashMap"  value-type="esg.search.publish.plugins.MetadataEnhancer">
+		<entry key="type" value-ref="typeMetadataEnhancer"/>
+		<entry key="experiment" value-ref="experimentMetadataEnhancer"/>
+		<entry key="file_id" value-ref="file_idMetadataEnhancer"/>
+	</util:map> -->
+	
+</beans>

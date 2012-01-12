@@ -1,4 +1,4 @@
-package esg.search.publish.thredds;
+package esg.search.publish.plugins;
 
 import java.util.HashMap;
 import java.util.List;
@@ -7,6 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import esg.search.core.Record;
+import esg.search.publish.thredds.ThreddsPars;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
