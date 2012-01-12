@@ -18,7 +18,7 @@ public abstract class BaseMetadataEnhancerImpl implements MetadataEnhancer {
     public BaseMetadataEnhancerImpl() {}
 
     @Override
-    public boolean appliesToRecordType(final String recordType) {
+    public boolean forType(final String recordType) {
         return recordTypes.contains(recordType);
     }
     

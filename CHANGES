@@ -90,3 +90,6 @@ Internal changes to URLs resolved by the servlet
 1.8.3
 - Parse xlink documentation into Solr fields, to enable display of technical notes
 - Convert all "non-standard" CF names to lower case, and join by "_"
+- Inserted extensible framework for enhancement of metadata
+	- Applied to publication of technical notes for obs4MIPs datasets
+	- Applied to mapping of CMIP5 metadata fields

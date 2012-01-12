@@ -548,7 +548,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             String key = field + "MetadataEnhancer";
             if (metadataEnhancers.containsKey(key)) {
                 final MetadataEnhancer me = metadataEnhancers.get(key);
-                if (me.appliesToRecordType(record.getType())) {
+                if (me.forType(record.getType())) {
                     me.enhance(field, record.getFieldValues(field), record);
                 }
             }

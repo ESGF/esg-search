@@ -132,6 +132,14 @@ public class RecordImpl implements Record, Serializable {
 		
 	}
 	
+	/**
+     * {@inheritDoc}
+     * 
+     */
+	public void setField(final String name, final List<String> values) {
+	    fields.put(name, values);
+	}
+	
     /**
      * {@inheritDoc}
      */

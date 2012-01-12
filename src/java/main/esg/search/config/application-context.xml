@@ -73,14 +73,27 @@
   			
   	<!-- Metadata Enhancers -->
   	<!-- note: bean naming convention: <field>MetadataEnhancer (because Spring doesn't use the proper map keys...) -->
-	<bean class="esg.search.publish.thredds.ExperimentMetadataEnhancer" id="experimentMetadataEnhancer">
-		<property name="type" value="Dataset"/>
-	</bean> 
-	<bean class="esg.search.publish.thredds.PropertiesMetadataEnhancer" id="typeMetadataEnhancer">
+	<bean class="esg.search.publish.thredds.StaticPropertiesMetadataEnhancer" id="typeMetadataEnhancer">
     	<constructor-arg index="0" value="esgf.index.peer"/>
     	<constructor-arg index="1" ref="esgfProperties"/>
     	<property name="type" value="Dataset"/>
     </bean> 
+    <bean class="esg.search.publish.thredds.MappingPropertiesMetadataEnhencer" id="modelMetadataEnhancer">
+    	<constructor-arg index="0" value="esg/search/config/models.properties"/>
+    	<property name="type" value="Dataset"/>
+    </bean> 
+    <bean class="esg.search.publish.thredds.MappingPropertiesMetadataEnhencer" id="instituteMetadataEnhancer">
+    	<constructor-arg index="0" value="esg/search/config/institutes.properties"/>
+    	<property name="type" value="Dataset"/>
+    </bean> 
+    <bean class="esg.search.publish.thredds.MappingPropertiesMetadataEnhencer" id="projectMetadataEnhancer">
+    	<constructor-arg index="0" value="esg/search/config/projects.properties"/>
+    	<property name="type" value="Dataset"/>
+    </bean> 
+    <bean class="esg.search.publish.thredds.ExperimentMetadataEnhancer" id="experimentMetadataEnhancer">
+    	<constructor-arg index="0" value="esg/search/config/experiments.properties"/>
+		<property name="type" value="Dataset"/>
+	</bean> 
     <bean class="esg.search.publish.thredds.TechNoteMetadataEnhancer" id="file_idMetadataEnhancer">
     	<constructor-arg index="0"><value>/esg/config/techNotes.properties</value></constructor-arg>
     	<property name="type" value="File"/>

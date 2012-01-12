@@ -60,6 +60,13 @@ public interface Record {
 	void addField(final String name, final String value);
 	
 	/**
+	 * Method to completely replace a record's field with a new set of values.
+	 * @param name
+	 * @param values
+	 */
+	void setField(String name, List<String> values);
+	
+	/**
 	 * Method to return an (unmodifiable) map of multi-valued fields for this record.
 	 * @return
 	 */

@@ -22,7 +22,7 @@ public class ExperimentMetadataEnhancerTest {
     
     @Before
     public void setup() {
-        eme = new ExperimentMetadataEnhancer();
+        eme = new ExperimentMetadataEnhancer("");
     }
     
     /**

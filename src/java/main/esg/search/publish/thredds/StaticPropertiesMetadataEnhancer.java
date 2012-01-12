@@ -10,10 +10,13 @@ import esg.search.core.Record;
 /**
  * Class that enhances the published metadata from a static properties file.
  * 
+ * Specifically, the configured metadata key is looked up in the properties file
+ * and added to the field records.
+ * 
  * @author Luca Cinquini
  *
  */
-public class PropertiesMetadataEnhancer extends BaseMetadataEnhancerImpl {
+public class StaticPropertiesMetadataEnhancer extends BaseMetadataEnhancerImpl {
     
     private final Properties properties;
     
@@ -23,7 +26,7 @@ public class PropertiesMetadataEnhancer extends BaseMetadataEnhancerImpl {
      * Constructor
      * @param properties : the static properties file that contains additional metadata to be added to the records.
      */
-    public PropertiesMetadataEnhancer(final String key, final Properties properties) {
+    public StaticPropertiesMetadataEnhancer(final String key, final Properties properties) {
         this.key = key;
         this.properties = properties;
     }

@@ -10,13 +10,17 @@ import esg.search.core.Record;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
- * Class to infer the "experiment_family" category from the "experiment" value.
- * Note that the processing is case-independent.
+ * Class to post-process the "experiment" metadata field by:
+ * 
+ * a) first, the standard value mappings driven by the experiments properties file are applied
+ * b) second, the "experiment_family" category is inferred from the "experiment" value.
+ * 
+ * Note that the experiment_family assignment is case-independent.
  * 
  * @author Luca Cinquini
  *
  */
-public class ExperimentMetadataEnhancer extends BaseMetadataEnhancerImpl {
+public class ExperimentMetadataEnhancer extends MappingPropertiesMetadataEnhencer {
     
     final static String KEYIN = ThreddsPars.EXPERIMENT;
     final static String KEYOUT = SolrXmlPars.FIELD_EXPERIMENT_FAMILY;
@@ -69,7 +73,9 @@ public class ExperimentMetadataEnhancer extends BaseMetadataEnhancerImpl {
         
     }
         
-    public ExperimentMetadataEnhancer() {}
+    public ExperimentMetadataEnhancer(final String filepath) {
+        super(filepath);
+    }
 
     /**
      *  ALL = all individual experiments, as in the current scheme (about 80 items in all)
@@ -87,10 +93,15 @@ public class ExperimentMetadataEnhancer extends BaseMetadataEnhancerImpl {
                 
         // only process "experiment"
         if (name.equals(KEYIN)) {
+            
+            // apply mapping values
+            super.enhance(name, values, record);
+            
+            // add 'All' family
             record.addField(KEYOUT, FAMILY_ALL);
             
-            // loop over all possible experiment values
-            for (final String value : values) {
+            // loop over all possible experiment values, map to experiment family
+            for (final String value : record.getFieldValues(name)) {
                 for (final Pattern pattern : patterns.keySet()) {
                     final Matcher matcher = pattern.matcher(value.toLowerCase()); 
                     if (matcher.matches()) {

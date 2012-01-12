@@ -26,6 +26,6 @@ public interface MetadataEnhancer {
      * Method to determine if these metadata enhancements should be applied to the given record type.
      * @return
      */
-    boolean appliesToRecordType(String recordType);
+    boolean forType(String recordType);
 
 }
