@@ -51,6 +51,18 @@ public interface Record {
 	 * @param type
 	 */
 	void setType(String type);
+	
+	/**
+	 * Method to determine wether this record is a replica.
+	 * @return
+	 */
+	boolean isReplica();
+	
+	/**
+	 * Method to set the replica flag of a record.
+	 * @param replica
+	 */
+	void setReplica(boolean replica);
 
 	/**
 	 * Method to add a field (name, value) pair to the record.
@@ -65,6 +77,13 @@ public interface Record {
 	 * @param values
 	 */
 	void setField(String name, List<String> values);
+	
+	/**
+     * Method to completely replace a record's field with one new value.
+     * @param name
+     * @param values
+     */
+    void setField(String name, String value);
 	
 	/**
 	 * Method to return an (unmodifiable) map of multi-valued fields for this record.

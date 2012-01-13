@@ -9,8 +9,6 @@ import org.springframework.util.Assert;
 
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
-import esg.search.publish.plugins.ExperimentMetadataEnhancer;
-import esg.search.publish.thredds.ThreddsPars;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
@@ -87,7 +85,7 @@ public class ExperimentMetadataEnhancerTest {
         final Record record = new RecordImpl();
         List<String> values = new ArrayList<String>();
         values.add(experiment);
-        eme.enhance(ThreddsPars.EXPERIMENT, values, record);
+        eme.enhance(SolrXmlPars.FIELD_EXPERIMENT, values, record);
         Assert.isTrue(record.getFieldValues(SolrXmlPars.FIELD_EXPERIMENT_FAMILY).contains(experiment_family));
         Assert.isTrue(record.getFieldValues(SolrXmlPars.FIELD_EXPERIMENT_FAMILY).contains(ExperimentMetadataEnhancer.FAMILY_ALL));
     }

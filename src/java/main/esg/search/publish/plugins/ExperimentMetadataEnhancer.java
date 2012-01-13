@@ -23,7 +23,7 @@ import esg.search.query.impl.solr.SolrXmlPars;
  */
 public class ExperimentMetadataEnhancer extends MappingPropertiesMetadataEnhencer {
     
-    final static String KEYIN = ThreddsPars.EXPERIMENT;
+    final static String KEYIN = SolrXmlPars.FIELD_EXPERIMENT;
     final static String KEYOUT = SolrXmlPars.FIELD_EXPERIMENT_FAMILY;
     
     final static String FAMILY_ALL = "All";

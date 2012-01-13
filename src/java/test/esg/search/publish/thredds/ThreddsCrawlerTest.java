@@ -65,9 +65,10 @@ public class ThreddsCrawlerTest {
 		
 		// tests number of metadata records
 		final Map<String, Record> records = consumer.getRecords();
-		Assert.assertEquals(12,records.size());
-		Assert.assertEquals(1,records.get("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run2").getVersion());
-		Assert.assertEquals(2,records.get("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1").getVersion());
+		Assert.assertEquals(18,records.size());		
+		Assert.assertEquals(1,records.get("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1:localhost").getVersion());
+		Assert.assertEquals(2,records.get("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v2:localhost").getVersion());
+		Assert.assertEquals(1,records.get("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run2.v1:localhost").getVersion());
 	}
 
 }

@@ -140,11 +140,32 @@ public class RecordImpl implements Record, Serializable {
 	    fields.put(name, values);
 	}
 	
+	/**
+     * {@inheritDoc}
+     * 
+     */
+    public void setField(final String name, final String value) {
+        final List<String> values = new ArrayList<String>();
+        values.add(value);
+        fields.put(name, values);
+    }
+	
     /**
      * {@inheritDoc}
      */
     public String getType() {
         return this.getFieldValue(QueryParameters.FIELD_TYPE);
+    }
+
+    
+    @Override
+    public boolean isReplica() {
+        return Boolean.valueOf(this.getFieldValue(QueryParameters.FIELD_REPLICA));
+    }
+
+    @Override
+    public void setReplica(boolean replica) {
+        this.setField(QueryParameters.FIELD_REPLICA, Boolean.toString(replica));
     }
 
     /**
