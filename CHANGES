@@ -93,3 +93,7 @@ Internal changes to URLs resolved by the servlet
 - Inserted extensible framework for enhancement of metadata
 	- Applied to publication of technical notes for obs4MIPs datasets
 	- Applied to mapping of CMIP5 metadata fields
+	
+1.9.0
+- Support for versioning.
+- Optimize index after every commit

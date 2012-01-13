@@ -106,6 +106,7 @@ public class SolrUrlBuilder {
 
     /**
 	 * Method to generate the "update" URL to a specific core.
+	 * Note that the index is optimized after every commit.
 	 * This method is independent of the specific state of the object.
 	 * @return
 	 * @throws MalformedURLException
@@ -114,7 +115,7 @@ public class SolrUrlBuilder {
 	public URL buildUpdateUrl(final String core, final boolean commit) throws MalformedURLException, UnsupportedEncodingException {
 		
 		final StringBuilder sb = new StringBuilder(url.toString()).append("/").append(core).append("/update");
-		if (commit) sb.append("?commit=true");
+		if (commit) sb.append("?commit=true&optimize=true");
 		return new URL(sb.toString());
 		
 	}
