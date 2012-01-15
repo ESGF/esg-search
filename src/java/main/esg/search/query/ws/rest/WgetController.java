@@ -17,7 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import esg.search.publish.impl.RecordHelper;
+import esg.search.core.RecordHelper;
 import esg.search.publish.thredds.ThreddsPars;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;

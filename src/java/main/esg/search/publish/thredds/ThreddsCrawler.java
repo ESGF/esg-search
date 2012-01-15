@@ -38,7 +38,6 @@ import esg.search.publish.api.MetadataRepositoryCrawler;
 import esg.search.publish.api.MetadataRepositoryCrawlerListener;
 import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.RecordProducer;
-import esg.search.publish.impl.FileLogger;
 
 /**
  * Implementation of {@link MetadataRepositoryCrawler} for processing a hierarchy of THREDDS catalogs.

@@ -19,7 +19,7 @@ import com.sun.syndication.feed.rss.Item;
 import com.sun.syndication.feed.rss.Source;
 
 import esg.search.core.Record;
-import esg.search.publish.impl.RecordHelper;
+import esg.search.core.RecordHelper;
 import esg.search.query.api.QueryParameters;
 
 /**
