@@ -25,6 +25,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -69,8 +70,13 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 		
 	private final Log LOG = LogFactory.getLog(this.getClass());
 	
+	/**
+	 * Note that the constructor uses the secondary search service, that queries the master Solr instance where records are published.
+	 * @param parser
+	 * @param searchService
+	 */
 	@Autowired
-	public ThreddsCrawler(final ThreddsParserStrategy parser, final SearchService searchService) {
+	public ThreddsCrawler(final ThreddsParserStrategy parser, final @Qualifier("searchService2") SearchService searchService) {
 		this.parser = parser;
 		this.searchService = searchService;
 	}

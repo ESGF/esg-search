@@ -105,6 +105,26 @@ public class SolrXmlBuilder {
 
 	}
 	
+	/**
+	 * Method that returns the Solr commit instruction.
+	 * @param ids
+	 * @param indent
+	 * @return
+	 */
+	public String buildCommitMessage() {
+	    return "<commit waitfFlush=\"true\" waitSearcher=\"true\"/>";
+	}
+	
+	/**
+     * Method that returns the Solr optimize instruction.
+     * @param ids
+     * @param indent
+     * @return
+     */
+    public String buildOptimizeMessage() {
+        return "<optimize/>";
+    }
+	
 	private String toString(final Element element, final boolean indent) {
 	  	Format format = (indent ? Format.getPrettyFormat() : Format.getCompactFormat());
 	  	XMLOutputter outputter = new XMLOutputter(format);

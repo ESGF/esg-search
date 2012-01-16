@@ -49,14 +49,9 @@ public class SolrUrlBuilderTest {
 	    
 	    String core = "core";
 		
-		// commit=false
-		URL url = solrUrlBuilder.buildUpdateUrl(core, false);
+		URL url = solrUrlBuilder.buildUpdateUrl(core);
 		Assert.assertEquals(SOLR_URL+"/core/update", url.toString());
-		
-		// commit=true
-		url = solrUrlBuilder.buildUpdateUrl(core, true);
-		Assert.assertEquals(SOLR_URL+"/core/update?commit=true&optimize=true", url.toString());		
-		
+				
 	}
 	
 	@Test
