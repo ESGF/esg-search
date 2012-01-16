@@ -516,8 +516,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         // ...or assign random UUID if dataset id was not found
         if (id==null) id = UUID.randomUUID().toString();
         
-        // combine dataset id with host name
-        final String rid = id + ":" + hostName;
+        // combine dataset id with host name and version
+        final String rid = id + "|" + hostName;
         
         final Record record = new RecordImpl(rid);
         
