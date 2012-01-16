@@ -30,9 +30,10 @@ public interface ThreddsParserStrategy {
 
 	/**
 	 * Method to parse a THREDDS dataset and return an ordered list of search records
-	 * @param dataset
+	 * @param dataset : the THREDDS dataset to be parsed into metadata records
+	 * @param latest : latest flag to be assigned to the records
 	 * @return
 	 */
-	List<Record> parseDataset(InvDataset dataset) throws Exception;
+	List<Record> parseDataset(InvDataset dataset, boolean latest) throws Exception;
 	
 }

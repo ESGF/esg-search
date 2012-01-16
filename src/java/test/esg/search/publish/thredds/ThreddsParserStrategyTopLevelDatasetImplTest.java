@@ -56,13 +56,17 @@ public class ThreddsParserStrategyTopLevelDatasetImplTest {
 		ThreddsParserStrategy parser = new ThreddsParserStrategyTopLevelDatasetImpl();
 		
 		// tests number of metadata records (1 dataset, 5 files)
-		final List<Record> records = parser.parseDataset(dataset);
+		final List<Record> records = parser.parseDataset(dataset, true); // latest=true
 		Assert.assertTrue(records.size()==6);
 		
 		// test record fields
 		final Record record = records.get(0);
 		if (LOG.isInfoEnabled()) LOG.info(record);
 		Assert.assertTrue(record.getId().equals("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1:localhost"));
+		Assert.assertTrue(record.getMasterId().equals("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1")); // note: no hostname or version
+		Assert.assertTrue(record.isLatest());
+		Assert.assertFalse(record.isReplica());
+		Assert.assertTrue(record.getVersion()==1);
 		
 		final Map<String, List<String>> fields = record.getFields();
 		Assert.assertTrue(fields.get("type").contains("Dataset"));

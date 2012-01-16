@@ -30,7 +30,8 @@ import java.util.Map;
 public interface Record {
 	
 	/**
-	 * Method to return the record's unique identifier.
+	 * Method to return the record's unique identifier,
+	 * which is different across versions and replicas.
 	 * @return
 	 */
 	String getId();
@@ -39,6 +40,19 @@ public interface Record {
 	 * Method to assign the record's unique identifier;
 	 */
 	void setId(String id);
+	
+	/**
+	 * Method to return the record's master identifier,
+	 * which is the same for all versions and replicas of this record.
+	 * @return
+	 */
+	String getMasterId();
+	
+	/**
+	 * Method to set the record's master identifier.
+	 * @param master_id
+	 */
+	void setMasterId(String master_id);
 	
 	/**
 	 * Method to return the record discriminating type.

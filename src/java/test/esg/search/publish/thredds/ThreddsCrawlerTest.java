@@ -45,7 +45,7 @@ public class ThreddsCrawlerTest {
 		
 	@Before
 	public void setup() {
-		threddsHarvester = new ThreddsCrawler( new ThreddsParserStrategyTopLevelDatasetImpl() );
+		threddsHarvester = new ThreddsCrawler( new ThreddsParserStrategyTopLevelDatasetImpl(), null ); // no search service
 		consumer = new InMemoryStore();
 		producer = new RecordProducerImpl();
 		producer.subscribe(consumer);

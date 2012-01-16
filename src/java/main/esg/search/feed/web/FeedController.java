@@ -17,7 +17,6 @@ import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchOutput;
 import esg.search.query.api.SearchService;
 import esg.search.query.impl.solr.SearchInputImpl;
-import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
  * Controller responsible for processing ALL syndication feed requests (RSS and Atom).
@@ -114,14 +113,14 @@ public class FeedController {
     public String datasetFeed(@PathVariable("datasetId") String datasetId, final HttpServletResponse res, final Model model) throws Exception {  
                            
         // search for single record of type dataset, across all nodes
-        final SearchInput input1 = newSearchInput(SolrXmlPars.TYPE_DATASET, true);
+        final SearchInput input1 = newSearchInput(QueryParameters.TYPE_DATASET, true);
         input1.addConstraint(QueryParameters.FIELD_ID, datasetId); 
         
         SearchOutput output1 = searchService.search(input1); 
         model.addAttribute(MODEL_KEY_DATASET, output1);  
         
         // search for all records of type file, with given parent
-        final SearchInput input2 = newSearchInput(SolrXmlPars.TYPE_FILE, true);
+        final SearchInput input2 = newSearchInput(QueryParameters.TYPE_FILE, true);
         input2.addConstraint(QueryParameters.FIELD_DATASET_ID, datasetId);
         
         SearchOutput output2 = searchService.search(input2); 
@@ -156,7 +155,7 @@ public class FeedController {
     private String datasetFeed(final Model model, boolean distrib, Map<String,String> constraints) throws Exception {  
         
         // search for all records of type dataset (across one node, or all nodes)
-        final SearchInput input = newSearchInput(SolrXmlPars.TYPE_DATASET, distrib);
+        final SearchInput input = newSearchInput(QueryParameters.TYPE_DATASET, distrib);
         
         // add additional constraints
         if (constraints!=null) {

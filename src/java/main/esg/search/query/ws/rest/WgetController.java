@@ -61,7 +61,7 @@ public class WgetController {
             baseController.sendError(HttpServletResponse.SC_BAD_REQUEST, "HTTP parameter type is fixed to value: File", response);
             return;
         } else {
-            command.setConstraint(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_FILE);
+            command.setConstraint(QueryParameters.FIELD_TYPE, QueryParameters.TYPE_FILE);
         }
         
         // set limit=MAX_LIMIT to enable massive retrieval through wget scripting

@@ -102,7 +102,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
     /**
 	 * Method to parse the catalog top-level dataset.
 	 */
-	public List<Record> parseDataset(final InvDataset dataset) {
+	public List<Record> parseDataset(final InvDataset dataset, final boolean latest) {
 		
 	    // instantiate overall list of records from this catalogs
         final List<Record> records = new ArrayList<Record>();
@@ -111,7 +111,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         final String hostName = getHostName(dataset);
 
         // parse top-level dataset
-        final Record record = this.parseCollection(dataset, hostName);
+        final Record record = this.parseCollection(dataset, latest, hostName);
                 
         // IMPORTANT: add top-level dataset as first record
         records.add(record);
@@ -119,7 +119,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		// set replica flag from top-level dataset
         boolean isReplica = record.isReplica();
         // recursion
-		long size = parseSubDatasets(dataset, records, isReplica, hostName);
+		long size = parseSubDatasets(dataset, latest, records, isReplica, hostName);
 		// set total size of dataset
 		record.addField(SolrXmlPars.FIELD_SIZE, Long.toString(size));
 		
@@ -140,7 +140,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @param records
 	 * @return
 	 */
-	private long parseSubDatasets(final InvDataset dataset, final List<Record> records, boolean isReplica, String hostName) {
+	private long parseSubDatasets(final InvDataset dataset, final boolean latest, final List<Record> records, boolean isReplica, String hostName) {
 	    
 	    if (LOG.isTraceEnabled()) LOG.trace("Crawling dataset: "+dataset.getID()+" for files");
 	    
@@ -151,7 +151,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	            
 	            // parse files into separate records, inherit top dataset metadata
 	            boolean inherit = true;
-	            dataset_size += this.parseFile(childDataset, records, inherit, isReplica, hostName);
+	            dataset_size += this.parseFile(childDataset, latest, records, inherit, isReplica, hostName);
 
 	        } else if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.AGGREGATION_ID) )) {
 	            
@@ -161,7 +161,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        }
 	        
 	        // recursion
-	        dataset_size += parseSubDatasets(childDataset, records, isReplica, hostName);
+	        dataset_size += parseSubDatasets(childDataset, latest, records, isReplica, hostName);
 	        
 	    }
 	    
@@ -180,19 +180,19 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    
 	}
 	
-	private Record parseCollection(final InvDataset dataset, final String hostName) {
+	private Record parseCollection(final InvDataset dataset, final boolean latest, final String hostName) {
 	    
 	    if (LOG.isDebugEnabled()) LOG.debug("Parsing dataset: "+dataset.getID());
 	        	    	    
 	    // create new record with universally unique record identifier
-	    final Record record = newRecord(dataset, hostName);
+	    final Record record = newRecord(dataset, latest, hostName);
 	    
 	    final String name = dataset.getName();
 	    Assert.notNull(name, "Dataset name cannot be null");
 	    record.addField(QueryParameters.FIELD_TITLE, name);
 	        
 	    // type
-	    record.setType(SolrXmlPars.TYPE_DATASET);
+	    record.setType(QueryParameters.TYPE_DATASET);
 	    //record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_DATASET);
 	        	        
 	    // encode dataset catalog as first access URL
@@ -237,11 +237,11 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @param inherit : set to true to copy dataset fields as file record fields (without overriding existing fields)
 	 * @return : the file size for computational purposes, or 0 if un-available.
 	 */
-	private long parseFile(final InvDataset file, final List<Record> records, boolean inherit,
+	private long parseFile(final InvDataset file, final boolean latest, final List<Record> records, boolean inherit,
 	                       boolean isReplica, final String hostName) {
 	    
         // create new record with universally unique record identifier
-        final Record record = newRecord(file, hostName);
+        final Record record = newRecord(file, latest, hostName);
         
         // name -> title
         final String name = file.getName();
@@ -249,7 +249,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         record.addField(QueryParameters.FIELD_TITLE, name);
         // type
         //record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_FILE);  
-        record.setType(SolrXmlPars.TYPE_FILE);
+        record.setType(QueryParameters.TYPE_FILE);
         // parent dataset
         record.addField(QueryParameters.FIELD_DATASET_ID, records.get(0).getId());
 
@@ -305,7 +305,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
                 // note: override "master_id" with version-independent identifier
                 // <property name="dataset_id" value="obs4MIPs.NASA-JPL.AIRS.mon"/>
                 // <property name="file_id" value="obs4MIPs.NASA-JPL.AIRS.mon.husNobs_AIRS_L3_RetStd-v5_200209-201105.nc"/>
-                record.setField(QueryParameters.FIELD_MASTER_ID, property.getValue());
+                record.setMasterId(property.getValue());
                 
             } else if (property.getName().equals(QueryParameters.FIELD_TITLE)) {
                 // note: record title already set from dataset name
@@ -501,12 +501,13 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * Factory method to create a new record for a THREDDS dataset or file:
 	 * o) the record is assigned a universally unique "id"
 	 * o) the record is assigned a default "master_id" which can be overridden later from the dataset properties
-	 * o) the "replica" flag is set to false by deafult, and can be overridden later from the dataset properties
+	 * o) the "replica" flag is set to false by default, and can be overridden later from the dataset properties
 	 * 
 	 * @param dataset
+	 * @param latest
 	 * @param hostName
 	 */
-	private Record newRecord(final InvDataset dataset, final String hostName) {
+	private Record newRecord(final InvDataset dataset, final boolean latest, final String hostName) {
 	    
 	    // retrieve dataset ID from THREDDS catalog...
 	    // <dataset name="...." ID="..." restrictAccess="...">
@@ -521,10 +522,13 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         final Record record = new RecordImpl(rid);
         
         // assign a default "master_id" equal to the THREDDS ID (or the UUID if not found)
-        record.setField(QueryParameters.FIELD_MASTER_ID, id);
+        record.setMasterId(id);
         
         // set "replica"=false by default
         record.setReplica(false);
+        
+        // set "latest" flag as requested
+        record.setLatest(latest);
         
         return record;
 

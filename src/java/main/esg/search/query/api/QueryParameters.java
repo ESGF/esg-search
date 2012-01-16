@@ -100,11 +100,17 @@ public class QueryParameters {
      * Maximum limit on returned results
      */
     public final static int MAX_LIMIT = 1000;
-    
+
+    /**
+     * Common record types.
+     */
+    public final static String TYPE_DATASET = "Dataset";
+    public final static String TYPE_FILE = "File";
+
     /**
      * The default results type to search for, if none is specified.
      */
-    public final static String DEFAULT_TYPE = "Dataset";
+    public final static String DEFAULT_TYPE = TYPE_DATASET;
     
     private QueryParameters() {};
 

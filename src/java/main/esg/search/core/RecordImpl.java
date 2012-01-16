@@ -80,7 +80,19 @@ public class RecordImpl implements Record, Serializable {
 		this.id = id;
 	}
 	
-	/**
+	
+	
+	@Override
+    public String getMasterId() {
+        return this.getFieldValue(QueryParameters.FIELD_MASTER_ID);
+    }
+
+    @Override
+    public void setMasterId(String master_id) {
+       this.setField(QueryParameters.FIELD_MASTER_ID, master_id);
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
 	public Map<String, List<String>> getFields() {
