@@ -32,6 +32,7 @@ public class QueryParameters {
     final public static String FIELD_ID = "id";
     final public static String FIELD_TYPE = "type";
     final public static String FIELD_REPLICA = "replica";
+    final public static String FIELD_LATEST = "latest";
     final public static String FIELD_MASTER_ID = "master_id";
     final public static String FIELD_TITLE = "title";
     final public static String FIELD_DESCRIPTION = "description";
@@ -47,7 +48,7 @@ public class QueryParameters {
     final public static String FIELD_INDEX_PEER = "esgf.index.peer";
     
     public final static List<String> STANDARD_FIELDS = Arrays.asList( new String[]{ 
-            FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_MASTER_ID, FIELD_TITLE, 
+            FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_LATEST, FIELD_MASTER_ID, FIELD_TITLE, 
             FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_SIZE, FIELD_DATASET_ID,
             FIELD_FILE_ID, FIELD_VERSION, FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE, FIELD_INDEX_PEER });
     

@@ -53,7 +53,7 @@ public interface Record {
 	void setType(String type);
 	
 	/**
-	 * Method to determine wether this record is a replica.
+	 * Method to determine whether this record is a replica.
 	 * @return
 	 */
 	boolean isReplica();
@@ -63,6 +63,18 @@ public interface Record {
 	 * @param replica
 	 */
 	void setReplica(boolean replica);
+	
+	/**
+     * Method to set the latest flag of a record.
+     * @param replica
+     */
+    void setLatest(boolean latest);
+    
+    /**
+     * Method to determine whether this record is a the latest version
+     * @return
+     */
+    boolean isLatest();
 
 	/**
 	 * Method to add a field (name, value) pair to the record.

@@ -103,10 +103,15 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 				} else {
 				    
 					// parse this catalog
-					final List<Record> records = parser.parseDataset(dataset);
+					final List<Record> records = parser.parseDataset(dataset); // set latest=true by default
 					
 					// top-level dataset
 					final Record drecord = records.get(0);	
+					
+					// compare to latest version in local solr
+					// if older: set latest=false for all records, send records to RecordProducer for publishing
+					// if newer: parse previous catalog non-recursively with latest=false
+					//           insert both set of records at once
 					
 					// publish
 					if (publish) {

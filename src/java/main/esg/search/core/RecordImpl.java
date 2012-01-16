@@ -167,6 +167,16 @@ public class RecordImpl implements Record, Serializable {
     public void setReplica(boolean replica) {
         this.setField(QueryParameters.FIELD_REPLICA, Boolean.toString(replica));
     }
+    
+    @Override
+    public void setLatest(boolean latest) {
+        this.setField(QueryParameters.FIELD_LATEST, Boolean.toString(latest));
+    }
+    
+    @Override
+    public boolean isLatest() {
+        return Boolean.valueOf(this.getFieldValue(QueryParameters.FIELD_LATEST));
+    }
 
     /**
      * {@inheritDoc}
