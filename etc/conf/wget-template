@@ -100,6 +100,20 @@ if [[ "$output" ]]; then
 fi
 
 ##############################################################################
+check_java() {
+    if ! type java >& /dev/null; then
+        echo "Java is required for retrieving the certificate and couldn't be found."
+        exit 1
+    fi
+    jversion=($(jversion=$(java -version 2>&1 | awk '/version/ {gsub("\"","");print $3}'); echo ${jversion//./ }))
+    mVer=${jversion[1]}
+    if ((mVer<5)); then
+        echo "Java version 1.5+ is required for retrieving the certificate." >&2
+        echo "Current version seems older: $(java -version | head -n1) " >&2  
+        exit 1
+    fi
+}
+
 # get certificates from rainbow
 get_certificates() {
     # don't if this was already done today
@@ -128,6 +142,7 @@ get_certificates() {
 
 # Retrieve ESG credentials
 get_credentials() {
+    check_java
     #get all certificates
     get_certificates
 
@@ -280,7 +295,7 @@ download() {
 
         #are we just writing a file?
         if [ "$output" ]; then
-            echo "$file - $url" >> $output
+            echo "$url" >> $output
             echo ""
             continue
         fi
