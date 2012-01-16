@@ -18,6 +18,7 @@
  ******************************************************************************/
 package esg.search.publish.thredds;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,7 +63,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	
 	/**
 	 * Service needed to query existing metadata storage for latest versions fo records,
-	 * before ingestinhg new ones.
+	 * before ingesting new ones.
 	 */
 	private final SearchService searchService;
 	
@@ -97,14 +98,12 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	 */
 	public void crawl(final URI catalogURI, boolean recursive, final RecordProducer callback, boolean publish) throws Exception {
 		
-		final InvCatalogFactory factory = new InvCatalogFactory("default", true); // validate=true
-		final InvCatalog catalog = factory.readXML(catalogURI);
-		final StringBuilder buff = new StringBuilder();
-				
-		// valid catalog
-		if (catalog.check(buff)) {
-			
-			if (LOG.isInfoEnabled()) LOG.info("Parsing catalog: "+catalogURI.toString());
+	    try {
+	        
+	        // parse THREDDS catalog
+	        if (LOG.isInfoEnabled()) LOG.info("Parsing catalog: "+catalogURI.toString());
+	        final InvCatalog catalog = parseCatalog(catalogURI.toString());
+							
 			for (final InvDataset dataset : catalog.getDatasets()) {
 				
 				if (dataset instanceof InvCatalogRef) {
@@ -132,11 +131,6 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 					// top-level dataset
 					final Record drecord = records.get(0);	
 					
-					// compare to latest version in local solr
-					// if older: set latest=false for all records, send records to RecordProducer for publishing
-					// if newer: parse previous catalog non-recursively with latest=false
-					//           insert both set of records at once
-					
 					// publish
 					if (publish) {
 					    
@@ -154,28 +148,19 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 					                String exCatalogUri = RecordHelper.selectUrlByMimeType(exRecord, QueryParameters.MIME_TYPE_THREDDS);
 					                if (StringUtils.hasText(exCatalogUri)) {
 					                    
-					                    final InvCatalogFactory exFactory = new InvCatalogFactory("default", true); // validate=true
-					                    final InvCatalog exCatalog = exFactory.readXML(exCatalogUri);
-					                    final StringBuilder exBuff = new StringBuilder();
-					                    
-					                    if (exCatalog.check(exBuff)) {
+					                    final InvCatalog exCatalog = parseCatalog(exCatalogUri);
 					                        
-					                        for (final InvDataset exDataset : exCatalog.getDatasets()) {
-					                            if (LOG.isInfoEnabled()) 
-					                                LOG.info("Latest version in index: catalog uri="+exCatalogUri+" record id="
-					                                        +exRecord.getId()+" record master_id="+exRecord.getMasterId()+" version="+exRecord.getVersion());
-					                            if (exDataset instanceof InvDatasetImpl) {
-					                                // publish previous records with "latest"=false
-					                                if (LOG.isInfoEnabled()) LOG.info("Republishing dataset: "+exDataset.getID()+" with latest=false");
-					                                _records.addAll( parser.parseDataset(exDataset, false));
-					                            }
-					                        }
-					                        
-					                    } else {
-					                        // abort this publishing if previous version cannot be re-published
-					                        throw new Exception("Invalid previous version of catalog: "+exCatalogUri);
-					                    }
-					                    
+				                        for (final InvDataset exDataset : exCatalog.getDatasets()) {
+				                            if (LOG.isInfoEnabled()) 
+				                                LOG.info("Latest version in index: catalog uri="+exCatalogUri+" record id="
+				                                        +exRecord.getId()+" record master_id="+exRecord.getMasterId()+" version="+exRecord.getVersion());
+				                            if (exDataset instanceof InvDatasetImpl) {
+				                                // publish previous records with "latest"=false
+				                                if (LOG.isInfoEnabled()) LOG.info("Republishing dataset: "+exDataset.getID()+" with latest=false");
+				                                _records.addAll( parser.parseDataset(exDataset, false));
+				                            }
+				                        }
+					                        					                    
 					                }
 					              
 					            } else if (exRecord.getVersion()>drecord.getVersion()) {
@@ -213,16 +198,37 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 			} // loop over datasets
 		    			
 		// invalid catalog
-		} else {
+		} catch(IOException e) {
             // notify listener of crawling error
             if (listener!=null) listener.afterCrawlingError(catalogURI.toString());
             // throw the exception up the stack
-			throw new Exception(buff.toString()); 
+			throw e;
 		}
 		
         // notify listener of successful completion
         if (listener!=null) listener.afterCrawlingSuccess(catalogURI.toString());
 				
+	}
+	
+	/**
+	 * Private method to parse a THREDDS catalog referenced by a URI into an object,
+	 * leveraging the underlying THREDDS java library.
+	 * 
+	 * @param uri
+	 * @return
+	 */
+	private InvCatalog parseCatalog(final String uri) throws IOException {
+	    
+        final InvCatalogFactory factory = new InvCatalogFactory("default", true); // validate=true
+        final InvCatalog catalog = factory.readXML(uri);
+        final StringBuilder buff = new StringBuilder();
+        
+        if (catalog.check(buff)) {
+            return catalog;
+        } else {
+            throw new IOException("Invalid THREDDS catalog at uri: "+uri+" error: "+buff.toString());
+        }
+	    
 	}
 	
 	/**
