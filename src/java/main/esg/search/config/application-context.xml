@@ -30,6 +30,16 @@
 	<!-- feed context -->
 	<context:component-scan base-package="esg.search.feed"/>
 	
+	<!-- main search service that uses the slave Solr instance on 8983 -->
+	<bean name="searchService" class="esg.search.query.impl.solr.SearchServiceImpl">
+		<constructor-arg value="${esg.search.solr.query.url}"/>
+	</bean>
+	
+	<!-- secondary search service that uses the master Solr instance on port 8984 - used during publication -->
+	<bean name="searchService2" class="esg.search.query.impl.solr.SearchServiceImpl">
+		<constructor-arg value="${esg.search.solr.publish.url}"/>
+	</bean>
+	
   	<!-- Facet profile example -->
 	<bean name="wsFacetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
 		<constructor-arg index="0">

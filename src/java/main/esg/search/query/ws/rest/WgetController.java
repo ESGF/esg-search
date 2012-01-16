@@ -17,7 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import esg.search.publish.impl.RecordHelper;
+import esg.search.core.RecordHelper;
 import esg.search.publish.thredds.ThreddsPars;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
@@ -61,7 +61,7 @@ public class WgetController {
             baseController.sendError(HttpServletResponse.SC_BAD_REQUEST, "HTTP parameter type is fixed to value: File", response);
             return;
         } else {
-            command.setConstraint(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_FILE);
+            command.setConstraint(QueryParameters.FIELD_TYPE, QueryParameters.TYPE_FILE);
         }
         
         // set limit=MAX_LIMIT to enable massive retrieval through wget scripting

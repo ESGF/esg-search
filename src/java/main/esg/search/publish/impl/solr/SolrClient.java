@@ -18,6 +18,9 @@
  ******************************************************************************/
 package esg.search.publish.impl.solr;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.apache.commons.logging.Log;
@@ -25,6 +28,7 @@ import org.apache.commons.logging.LogFactory;
 
 import esg.search.publish.api.RecordConsumer;
 import esg.search.query.impl.solr.SolrUrlBuilder;
+import esg.search.query.impl.solr.SolrXmlPars;
 import esg.search.utils.HttpClient;
 
 /**
@@ -60,6 +64,29 @@ public abstract class SolrClient implements RecordConsumer {
 		
 		solrUrlBuilder = new SolrUrlBuilder(url);
 		
+	}
+	
+	/**
+	 * Method to commit changes to all cores,
+	 * and wait till the commit goes into effect
+	 */
+	public void commit(boolean optimize) throws MalformedURLException, UnsupportedEncodingException, IOException  {
+	    
+        for (final String core : SolrXmlPars.CORES.values()) {
+            
+            String xml = messageBuilder.buildCommitMessage();
+            URL postUrl = solrUrlBuilder.buildUpdateUrl(core);
+            if (LOG.isInfoEnabled()) LOG.info("Issuing commit:"+xml+" to URL:"+postUrl.toString());
+            httpClient.doPost(postUrl, xml, true);
+            
+            // optimize index ?
+            if (optimize) {
+                xml = messageBuilder.buildOptimizeMessage();
+                if (LOG.isInfoEnabled()) LOG.info("Issuing optimize:"+xml+" to URL:"+postUrl.toString());
+                httpClient.doPost(postUrl, xml, true);
+            }
+
+        }
 	}
 
 

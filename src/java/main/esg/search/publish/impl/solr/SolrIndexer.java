@@ -48,20 +48,27 @@ public class SolrIndexer extends SolrClient {
 
 	/**
 	 * {@inheritDoc}
+	 * 
 	 */
 	public void consume(final Record record) throws Exception {
 		
 		final String xml = messageBuilder.buildAddMessage(record, true);
         final String core = SolrXmlPars.CORES.get(record.getType());
         if (!StringUtils.hasText(core)) throw new Exception("Unmapped core for record type="+record.getType());
-		final URL postUrl = solrUrlBuilder.buildUpdateUrl(core, true); // commit=true
+		final URL postUrl = solrUrlBuilder.buildUpdateUrl(core);
 		if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
 		httpClient.doPost(postUrl, xml, true);
+		
+		// commit changes, do not optimize for a single record
+		commit(false); // optimize=false
 		
 	}
 	
 	/**
      * {@inheritDoc}
+     * 
+     * Note that this implementation will first index all records,
+     * then commit all changes at once, and optimize the index.
      */
     public void consume(final Collection<Record> records) throws Exception {
         
@@ -72,17 +79,13 @@ public class SolrIndexer extends SolrClient {
             final String core = SolrXmlPars.CORES.get(record.getType());
             if (!StringUtils.hasText(core)) throw new Exception("Unmapped core for record type="+record.getType());
             cores.add(core);
-            final URL postUrl = solrUrlBuilder.buildUpdateUrl(core, false); // commit=false
-            if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
+            final URL postUrl = solrUrlBuilder.buildUpdateUrl(core);
+            if (LOG.isTraceEnabled()) LOG.trace("Posting record:"+xml+" to URL:"+postUrl.toString());
             httpClient.doPost(postUrl, xml, true);
         }
         
-        // commit all records at once, to all cores
-        for (final String core : cores) {
-            final URL getUrl = solrUrlBuilder.buildUpdateUrl(core, true); // commit=true
-            if (LOG.isDebugEnabled()) LOG.debug("Issuing commit: URL:"+getUrl.toString());
-            httpClient.doGet(getUrl);
-        }
+        // commit all records at once, to all cores, and optimize the index
+        commit(true); // optimize=true
         
     }
 

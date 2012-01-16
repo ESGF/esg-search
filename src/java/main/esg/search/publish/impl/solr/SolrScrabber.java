@@ -51,14 +51,17 @@ public class SolrScrabber extends SolrClient {
 	 */
 	public void consume(final Record record) throws Exception {
 		
-	    // loop over all cores, remove datasets and files from all
+	    // loop over all cores, remove datasets and files from all cores alike
 	    for (final String core : SolrXmlPars.CORES.values()) {
 	        final List<String> ids = Arrays.asList(new String[]{record.getId()} );
 	        final String xml = messageBuilder.buildDeleteMessage(ids, true);
-	        final URL postUrl = solrUrlBuilder.buildUpdateUrl(core, true); // commit=true
+	        final URL postUrl = solrUrlBuilder.buildUpdateUrl(core); 
 	        if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
 	        httpClient.doPost(postUrl, xml, true);
 	    }
+	    
+	    // commit+optimize all changes to all cores
+	    commit(true); // optimize=true
 		
 	}
 	

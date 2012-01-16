@@ -21,6 +21,8 @@ package esg.search.query.impl.solr;
 import java.util.HashMap;
 import java.util.Map;
 
+import esg.search.query.api.QueryParameters;
+
 /**
  * Class containing parameters for the Solr XML schema.
  */
@@ -102,10 +104,7 @@ public class SolrXmlPars {
 	
 	final public static String FIELD_DATA_FORMAT = "data_format";
 	final public static String FIELD_FILE_NAME = "file_name";
-	
-	final public static String TYPE_DATASET = "Dataset";
-	final public static String TYPE_FILE = "File";
-	
+		
 	/**
 	 * Map holding references from record type to Solr core storing those records.
 	 */
@@ -113,8 +112,8 @@ public class SolrXmlPars {
 
 	// static population of Solr cores mapping
 	static {
-	    CORES.put(TYPE_DATASET, "datasets");
-	    CORES.put(TYPE_FILE, "files");
+	    CORES.put(QueryParameters.TYPE_DATASET, "datasets");
+	    CORES.put(QueryParameters.TYPE_FILE, "files");
 	}
 	
 	/**

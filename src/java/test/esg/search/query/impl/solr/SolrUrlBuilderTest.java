@@ -49,14 +49,9 @@ public class SolrUrlBuilderTest {
 	    
 	    String core = "core";
 		
-		// commit=false
-		URL url = solrUrlBuilder.buildUpdateUrl(core, false);
+		URL url = solrUrlBuilder.buildUpdateUrl(core);
 		Assert.assertEquals(SOLR_URL+"/core/update", url.toString());
-		
-		// commit=true
-		url = solrUrlBuilder.buildUpdateUrl(core, true);
-		Assert.assertEquals(SOLR_URL+"/core/update?commit=true", url.toString());		
-		
+				
 	}
 	
 	@Test
@@ -69,7 +64,7 @@ public class SolrUrlBuilderTest {
 		Assert.assertEquals(SOLR_URL+"/datasets/select/?indent=true&q=*&fq=type%3ADataset&start=0&rows=10", url.toString());
 		
 		// query default field, specify results type as query filter
-		input.setConstraint(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_FILE);
+		input.setConstraint(QueryParameters.FIELD_TYPE, QueryParameters.TYPE_FILE);
 		url = new URL(solrUrlBuilder.buildSelectUrl() + "?" + solrUrlBuilder.buildSelectQueryString());
 		Assert.assertEquals(SOLR_URL+"/files/select/?indent=true&q=*&fq=type%3AFile&start=0&rows=10", url.toString());
 		

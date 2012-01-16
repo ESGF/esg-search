@@ -1,9 +1,14 @@
-package esg.search.publish.impl;
+package esg.search.core;
+
+import java.util.List;
 
 import org.springframework.util.StringUtils;
 
+import esg.search.query.api.QueryParameters;
+
 /**
- * Helper class to encode/decode URL tuples of the form (url, mime/type, description).
+ * Helper class to encode/decode composite record fields.
+ * For example, the "url" field of a record is encoded as a tuple of the form (url, mime/type, description).
  * 
  * Example:
  * 
@@ -41,6 +46,29 @@ public class RecordHelper {
 		if (parts.length!=3) throw new Exception("Invalid Record URL value: "+tuple);
 		return parts;
 		
+	}
+	
+	/**
+	 * Utility method to select the first URL of a given record that matches a given mime type.
+	 * 
+	 * @param record
+	 * @param mimeType
+	 * @return
+	 */
+	public static String selectUrlByMimeType(final Record record, final String mimeType) throws Exception {
+	   
+	    // loop over all record URLs
+        final List<String> values = record.getFieldValues(QueryParameters.FIELD_URL);
+        
+        for (String value : values) {
+            String[] parts = RecordHelper.decodeTuple(value);
+            // return first URL matching the requested mime type
+            if (parts[1].equals(mimeType)) return parts[0];
+        }
+        
+        // URL of given mime type not found
+	    return null;
+	    
 	}
 	
 	/**
