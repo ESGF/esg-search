@@ -97,3 +97,4 @@ Internal changes to URLs resolved by the servlet
 1.9.0
 - Support for versioning.
 - Optimize index after every commit
+- Inserted "data_node", "index_node" and "latest" fields.
