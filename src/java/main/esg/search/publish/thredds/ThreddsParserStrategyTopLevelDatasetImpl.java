@@ -502,6 +502,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * o) the record is assigned a universally unique "id"
 	 * o) the record is assigned a default "master_id" which can be overridden later from the dataset properties
 	 * o) the "replica" flag is set to false by default, and can be overridden later from the dataset properties
+	 * o) the "latest" flag is set as requested
+	 * o) the "data_node" field is assigned the hostName value
 	 * 
 	 * @param dataset
 	 * @param latest
@@ -529,6 +531,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         
         // set "latest" flag as requested
         record.setLatest(latest);
+        
+        // "data_node" field
+        record.setField(QueryParameters.FIELD_DATA_NODE, hostName);
         
         return record;
 

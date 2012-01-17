@@ -12,7 +12,8 @@
 
 	<bean class="esg.search.publish.plugins.StaticPropertiesMetadataEnhancer" id="typeMetadataEnhancer">
     	<constructor-arg index="0" value="esgf.index.peer"/>
-    	<constructor-arg index="1" ref="esgfProperties"/>
+    	<constructor-arg index="1" value="index_node"/>
+    	<constructor-arg index="2" ref="esgfProperties"/>
     	<property name="type" value="Dataset"/>
     </bean> 
 

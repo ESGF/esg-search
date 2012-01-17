@@ -20,14 +20,23 @@ public class StaticPropertiesMetadataEnhancer extends BaseMetadataEnhancerImpl {
     
     private final Properties properties;
     
+    /*
+     * The property lookup key.
+     */
     private final String key;
+    
+    /**
+     * The name of the metadata field to assign the property value to.
+     */
+    private final String name;
         
     /**
      * Constructor
      * @param properties : the static properties file that contains additional metadata to be added to the records.
      */
-    public StaticPropertiesMetadataEnhancer(final String key, final Properties properties) {
+    public StaticPropertiesMetadataEnhancer(final String key, final String name, final Properties properties) {
         this.key = key;
+        this.name = name;
         this.properties = properties;
     }
 
@@ -38,8 +47,8 @@ public class StaticPropertiesMetadataEnhancer extends BaseMetadataEnhancerImpl {
     @Override
     public void enhance(final String name, final List<String> values, final Record record) {
                 
-        if (StringUtils.hasText(properties.getProperty(key))) {
-            record.addField(key, properties.getProperty(key));
+        if (StringUtils.hasText(properties.getProperty(this.key))) {
+            record.addField(this.name, properties.getProperty(this.key));
         }
                 
     }

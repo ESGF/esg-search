@@ -45,12 +45,13 @@ public class QueryParameters {
     final public static String FIELD_VERSION = "version";
     final public static String FIELD_CHECKSUM = "checksum";
     final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
-    final public static String FIELD_INDEX_PEER = "esgf.index.peer";
+    final public static String FIELD_INDEX_NODE = "index_node";
+    final public static String FIELD_DATA_NODE = "data_node";
     
     public final static List<String> STANDARD_FIELDS = Arrays.asList( new String[]{ 
             FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_LATEST, FIELD_MASTER_ID, FIELD_TITLE, 
             FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_SIZE, FIELD_DATASET_ID,
-            FIELD_FILE_ID, FIELD_VERSION, FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE, FIELD_INDEX_PEER });
+            FIELD_FILE_ID, FIELD_VERSION, FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE, FIELD_DATA_NODE, FIELD_INDEX_NODE });
     
     // special query fields for open search geo extension
     public final static String FIELD_BBOX ="bbox";  // west, south, east, north
