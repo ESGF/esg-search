@@ -98,3 +98,5 @@ Internal changes to URLs resolved by the servlet
 - Support for versioning.
 - Optimize index after every commit
 - Inserted "data_node", "index_node" and "latest" fields.
+- wget script passes unix proxy settings to java, fixed bug 144 and improves
+  compatibility with MyProxyLogonGUI. 
