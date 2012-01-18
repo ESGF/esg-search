@@ -138,6 +138,8 @@ get_certificates() {
         wget https://rainbow.llnl.gov/dist/certs/esg_trusted_certificates.tar
         echo "Could't update certs!" >&2
         return 1
+    else
+        touch $ESG_CERT_DIR
     fi
     #if here everythng went fine. Replace old cert with this ones    
     [[ -d $ESG_CERT_DIR ]] && rm -r $ESG_CERT_DIR
@@ -157,6 +159,8 @@ get_truststore() {
         wget https://rainbow.llnl.gov/dist/certs/esg-truststore.ts -O $TRUSTSTORE
         echo "Could't update truststore!" >&2
         return 1
+    else
+        touch $TRUSTSTORE
     fi
     
     echo "done!" >&2	
@@ -200,12 +204,15 @@ get_credentials() {
         [[ "$REPLY" ]] && username="$REPLY"
     fi
     
-    local args=
-    [[ "$openId" ]] && args=$args" --oid $openId"
     #get password
     local pass
     read -sp "MyProxy Password? " pass
+
+    local args=
+    [[ "$openId" ]] && args=$args" --oid $openId"
     [[ "$pass" ]] && args=$args" -P $pass"
+    [[ "$username" ]] && args=$args" -l $username"
+    
     echo -n $'\nRetrieving Credentials...' >&2
     if ! java $(proxy_to_java) -Djavax.net.ssl.trustStore=$TRUSTSTORE -Djavax.net.ssl.trustStorePassword=changeit -jar $MYPROXY_GETCERT $args --output $ESG_CREDENTIALS ; then        
         echo "Certificate could not be retrieved"
@@ -217,7 +224,7 @@ get_credentials() {
 
 # check the certificate validity
 check_cert() {
-    if [[ ! -f "$ESG_CERT" || ! -f "$TRUSTSTORE" || $force ]]; then
+    if [[ ! -f "$ESG_CERT" || $force ]]; then
         #not there, just get it
         get_credentials
     elif which openssl &>/dev/null; then
