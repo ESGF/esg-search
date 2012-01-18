@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="ESGF-v1.1" version="1.2">
+<schema name="ESGF-v1.2" version="1.2">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        Applications should change this to reflect the nature of the search collection.
        version="1.2" is Solr's version number for the schema syntax and semantics.  It should
@@ -440,23 +440,30 @@
    
    <!-- URL that represent record access points, encoded as 3-tuple of the form (URL|mime-type|service name) -->
    <field name="url" type="string" indexed="true" required="false" stored="true" multiValued="true" />
-   
-   <!-- Other optional access services encoded as <service type>|<service name>|<service url>  
-   <field name="service" type="string" indexed="true" required="false" stored="true" multiValued="true" /> -->
-   
+      
    <!-- The document type, used to enable searching on different targets (mandatory) -->
-   <field name="type" type="string" indexed="true" required="true" stored="true"/>
+   <field name="type" type="string" indexed="true" required="true" stored="true" multiValued="false"/>
+   
+   <!-- Replica flag -->
+   <field name="replica" type="boolean" indexed="true" stored="true" required="true" multiValued="false" default="false" />
+   
+   <!-- Latest flag -->
+   <field name="latest" type="boolean" indexed="true" stored="true" required="true" multiValued="false" default="true" />
    
    <!-- The version of the document (optional) -->
-   <field name="version" type="string" indexed="true" stored="true" required="false" />
+   <field name="version" type="string" indexed="true" stored="true" required="false" multiValued="false" />
    
    <!-- The parent record if (optional) -->
    <field name="dataset_id" type="string" indexed="true" stored="true" required="false" multiValued="false" />
-
-   <!-- Replica flag -->
-   <field name="replica" type="boolean" indexed="true" stored="true" required="true" multiValued="false" default="false" />
-   <!-- Pointer to master record (for replicas only) -->
+   
+   <!-- The record logical identifier, same for all versions and replicas  -->
    <field name="master_id" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+   
+   <!-- The host serving the data  -->
+   <field name="data_node" type="string" indexed="true" stored="true" required="true" multiValued="false" />
+
+   <!-- The host indexing the data  -->
+   <field name="index_node" type="string" indexed="true" stored="true" required="true" multiValued="false" />
    
    <!-- The date the document was last indexed (set by default to the current time) -->
    <field name="timestamp" type="date" indexed="true" stored="true" default="NOW" multiValued="false"/>

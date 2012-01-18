@@ -118,8 +118,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		
 		// set replica flag from top-level dataset
         boolean isReplica = record.isReplica();
+        
         // recursion
-		long size = parseSubDatasets(dataset, latest, records, isReplica, hostName);
+		long size = parseSubDatasets(dataset, latest, isReplica, records, hostName);
 		// set total size of dataset
 		record.addField(SolrXmlPars.FIELD_SIZE, Long.toString(size));
 		
@@ -140,7 +141,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @param records
 	 * @return
 	 */
-	private long parseSubDatasets(final InvDataset dataset, final boolean latest, final List<Record> records, boolean isReplica, String hostName) {
+	private long parseSubDatasets(final InvDataset dataset, final boolean latest, final boolean isReplica,
+	                              final List<Record> records, String hostName) {
 	    
 	    if (LOG.isTraceEnabled()) LOG.trace("Crawling dataset: "+dataset.getID()+" for files");
 	    
@@ -151,7 +153,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	            
 	            // parse files into separate records, inherit top dataset metadata
 	            boolean inherit = true;
-	            dataset_size += this.parseFile(childDataset, latest, records, inherit, isReplica, hostName);
+	            dataset_size += this.parseFile(childDataset, latest, isReplica, records, inherit, hostName);
 
 	        } else if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.AGGREGATION_ID) )) {
 	            
@@ -161,7 +163,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        }
 	        
 	        // recursion
-	        dataset_size += parseSubDatasets(childDataset, latest, records, isReplica, hostName);
+	        dataset_size += parseSubDatasets(childDataset, latest, isReplica, records, hostName);
 	        
 	    }
 	    
@@ -201,11 +203,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	                    RecordHelper.encodeUrlTuple(url, 
 	                                                ThreddsPars.getMimeType(url, ThreddsPars.SERVICE_TYPE_CATALOG),
 	                                                ThreddsPars.SERVICE_TYPE_CATALOG));
-	        
-        // add indexing host name
-        //final MetadataEnhancer me = metadataEnhancers.get(ThreddsPars.ID);
-        //if (me!=null) me.enhance(QueryParameters.FIELD_INDEX_PEER, null, record);
-                
+	                        
         // FIXME
         // metadata format
         record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");      
@@ -237,11 +235,15 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @param inherit : set to true to copy dataset fields as file record fields (without overriding existing fields)
 	 * @return : the file size for computational purposes, or 0 if un-available.
 	 */
-	private long parseFile(final InvDataset file, final boolean latest, final List<Record> records, boolean inherit,
-	                       boolean isReplica, final String hostName) {
+	private long parseFile(final InvDataset file, final boolean latest, final boolean isReplica, 
+	                       final List<Record> records, boolean inherit,
+	                       final String hostName) {
 	    
         // create new record with universally unique record identifier
         final Record record = newRecord(file, latest, hostName);
+        
+        // set replica flag same as top-level dataset
+        record.setReplica(isReplica);
         
         // name -> title
         final String name = file.getName();
