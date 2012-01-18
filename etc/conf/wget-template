@@ -33,7 +33,7 @@ MYPROXY_STATUS=$HOME/.MyProxyLogon
 TRUSTSTORE=$ESG_HOME/esg-truststore.ts
 COOKIE_JAR=$ESG_HOME/cookies
 MYPROXY_GETCERT=$ESG_HOME/getcert.jar
-CERT_EXPIRATION_WARNING=$((60 * 60 * 12))   #One hour (in seconds)
+CERT_EXPIRATION_WARNING=$((60 * 60 * 8))   #Eight hour (in seconds)
 
 # Configure checking of server SSL certificates.
 #   Disabling server certificate checking can resolve problems with myproxy
@@ -143,6 +143,15 @@ get_certificates() {
     [[ -d $ESG_CERT_DIR ]] && rm -r $ESG_CERT_DIR
     mv $ESG_HOME/esg_trusted_certificates $ESG_CERT_DIR
 
+    echo "done!" >&2
+}
+
+#get truststore from rainbow
+get_truststore() {
+    # don't if this was already done today
+    [[ -z $force && "$(find $TRUSTSTORE -type f -mtime -1 2>/dev/null)" ]] && return 0
+    echo -n "Retrieving Federation Truststore..." >&2
+    
     if ! wget https://rainbow.llnl.gov/dist/certs/esg-truststore.ts -O $TRUSTSTORE -q ; then
         #certificates tarred into esg_trusted_certificates. (if it breaks, let the user know why
         wget https://rainbow.llnl.gov/dist/certs/esg-truststore.ts -O $TRUSTSTORE
@@ -150,7 +159,7 @@ get_certificates() {
         return 1
     fi
     
-    echo "done!" >&2
+    echo "done!" >&2	
 }
 
 # Retrieve ESG credentials
@@ -158,7 +167,9 @@ get_credentials() {
     check_java
     #get all certificates
     get_certificates
-
+    #get truststore 
+    get_truststore
+    
     if [[ -z "$(find $MYPROXY_GETCERT -type f -mtime -1 2>/dev/null)" ]]; then
         echo -n "(Downloading $MYPROXY_GETCERT... "
         mkdir -p $(dirname $MYPROXY_GETCERT)
@@ -206,7 +217,7 @@ get_credentials() {
 
 # check the certificate validity
 check_cert() {
-    if [[ ! -f "$ESG_CERT" || $force ]]; then
+    if [[ ! -f "$ESG_CERT" || ! -f "$TRUSTSTORE" || $force ]]; then
         #not there, just get it
         get_credentials
     elif which openssl &>/dev/null; then
