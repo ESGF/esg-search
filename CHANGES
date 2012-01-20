@@ -101,3 +101,6 @@ Internal changes to URLs resolved by the servlet
 - wget script passes unix proxy settings to java, fixed bug 144 and improves
   compatibility with MyProxyLogonGUI. 
 - Updated schema.xml to v1.2
+
+1.9.1
+- Changed facet-based RSS feeds to be distributed

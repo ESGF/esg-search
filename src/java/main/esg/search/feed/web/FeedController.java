@@ -97,7 +97,7 @@ public class FeedController {
         final Map<String, String> constraints = new HashMap<String, String>();
         constraints.put(facetName, facetValue);
         
-        return this.datasetFeed(model, false, constraints);
+        return this.datasetFeed(model, true, constraints);
 
     }
                     
