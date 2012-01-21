@@ -277,6 +277,7 @@ setup_search_service() {
         mv -v ${search_web_service_dir}{,.bak}
 
     mkdir -p ${search_web_service_dir}
+    [ $? != 0 ] && echo "Could not create dir ${search_web_service_dir}" && popd >& /dev/null && checked_done 1
     cd ${search_web_service_dir}
     
     echo "Expanding war ${search_service_war_file} in $(pwd)"
