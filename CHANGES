@@ -104,3 +104,6 @@ Internal changes to URLs resolved by the servlet
 
 1.9.1
 - Changed facet-based RSS feeds to be distributed
+
+1.9.2
+- Temporarily removed optimization of solr index because it takes too long when harvesting.
