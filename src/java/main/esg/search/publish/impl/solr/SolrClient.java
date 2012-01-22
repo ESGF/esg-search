@@ -80,11 +80,11 @@ public abstract class SolrClient implements RecordConsumer {
             httpClient.doPost(postUrl, xml, true);
             
             // optimize index ?
-            if (optimize) {
-                xml = messageBuilder.buildOptimizeMessage();
-                if (LOG.isInfoEnabled()) LOG.info("Issuing optimize:"+xml+" to URL:"+postUrl.toString());
-                httpClient.doPost(postUrl, xml, true);
-            }
+            //if (optimize) {
+            //    xml = messageBuilder.buildOptimizeMessage();
+            //    if (LOG.isInfoEnabled()) LOG.info("Issuing optimize:"+xml+" to URL:"+postUrl.toString());
+            //    httpClient.doPost(postUrl, xml, true);
+            //}
 
         }
 	}
