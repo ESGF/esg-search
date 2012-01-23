@@ -178,11 +178,10 @@ public class BaseController {
                     response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported parameter: "+parName);
                           
                 // SINGLE-VALUED CONSTRAINTS (only parse first HTTP parameter value)
-                // &id=... &type=...
+                // &type=...
                 // &replica=true|false (or True|False or T|F)
                 // NOTE: only one value allowed
-                } else if (   parName.equals(QueryParameters.FIELD_ID) 
-                           || parName.equals(QueryParameters.FIELD_TYPE)
+                } else if (   parName.equals(QueryParameters.FIELD_TYPE)
                            || parName.equals(QueryParameters.FIELD_REPLICA)
                            || parName.equals(QueryParameters.FIELD_START)
                            || parName.equals(QueryParameters.FIELD_END)

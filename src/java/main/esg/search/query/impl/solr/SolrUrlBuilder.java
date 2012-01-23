@@ -176,15 +176,10 @@ public class SolrUrlBuilder {
 		if (!constraints.isEmpty()) {
 			for (final String name : constraints.keySet()) {
 			      
+			    // first process single-valued constraints
 		        if (name.equals(QueryParameters.FIELD_TYPE)) {
 		            fq.append("&fq="+URLEncoder.encode( name+":"+input.getConstraint(name), "UTF-8" ));
 		           
-	            // wildcard id --> q=id:....
-		        //} else if (name.equals(QueryParameters.FIELD_ID)) {		            
-		        //    if (StringUtils.hasText(input.getConstraint(name))) {
-		        //        qs.add(name+":"+URLEncoder.encode(input.getConstraint(name), "UTF-8") );
-		        //    }
-
 		        // boolean replica=true|false, latest=true|false
 		        } else if (name.equals(QueryParameters.FIELD_REPLICA) || name.equals(QueryParameters.FIELD_LATEST)) {   
 		            if (StringUtils.hasText(input.getConstraint(name))) {
