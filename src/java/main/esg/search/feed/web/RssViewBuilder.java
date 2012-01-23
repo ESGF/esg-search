@@ -1,5 +1,6 @@
 package esg.search.feed.web;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ import esg.search.query.api.QueryParameters;
  */
 public class RssViewBuilder {
     
-    private static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+    private static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
     private static SimpleDateFormat df;
     
     private final static String FEED_TITLE_PROPERTY_KEY = "esgf.feed.datasets.title";
@@ -134,10 +135,15 @@ public class RssViewBuilder {
     }
     
     // <pubDate>Wed, 24 Aug 2011 16:43:47 GMT</pubDate>
-    public final static void addPubDate(Item feedItem, Record record) throws Exception {      
-        // replace Zulu time with GMT time zone
-        String date = record.getFieldValue(QueryParameters.FIELD_TIMESTAMP).replace("Z", "+0000");
-        feedItem.setPubDate( df.parse( date )); // result is on locale time
+    public final static void addPubDate(Item feedItem, Record record) {
+        try {
+            // replace Zulu time with GMT time zone
+            String date = record.getFieldValue(QueryParameters.FIELD_TIMESTAMP).replaceAll("(\\.\\d\\d\\d)?Z", "+0000");
+            feedItem.setPubDate( df.parse( date )); // result is on locale time
+        } catch(ParseException e) {
+            LOG.warn(e.getMessage());
+            LOG.warn("Record timestamp="+record.getFieldValue(QueryParameters.FIELD_TIMESTAMP));
+        }
     }
 
     // <guid isPermaLink="true">http://coastwatch.noaa.gov/thredds/fileServer/chloraAquaMODISDailyCWHDFGL05/MODSCW_P2011189_C4_1720_1725_1900_1905_GL05_closest_chlora.hdf</guid>
