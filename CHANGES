@@ -111,3 +111,6 @@ Internal changes to URLs resolved by the servlet
 1.9.3
 - Fixed problem with parsing Solr dates for RSS fields
 - Fixed probelm with querying boolean flag "latest"
+
+1.9.4
+- Fixed problem with not allowing multiple 'id' values when querying.
