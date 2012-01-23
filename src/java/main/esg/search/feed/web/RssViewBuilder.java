@@ -138,7 +138,7 @@ public class RssViewBuilder {
     public final static void addPubDate(Item feedItem, Record record) {
         try {
             // replace Zulu time with GMT time zone
-            String date = record.getFieldValue(QueryParameters.FIELD_TIMESTAMP).replaceAll("(\\.\\d\\d\\d)?Z", "+0000");
+            String date = record.getFieldValue(QueryParameters.FIELD_TIMESTAMP).replaceAll("(\\.\\d+)?Z", "+0000");
             feedItem.setPubDate( df.parse( date )); // result is on locale time
         } catch(ParseException e) {
             LOG.warn(e.getMessage());

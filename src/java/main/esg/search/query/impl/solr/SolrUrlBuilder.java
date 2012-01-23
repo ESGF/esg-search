@@ -185,12 +185,12 @@ public class SolrUrlBuilder {
 		                qs.add(name+":"+URLEncoder.encode(input.getConstraint(name), "UTF-8") );
 		            }
 
-		        // replica=true|false
-		        } else if (name.equals(QueryParameters.FIELD_REPLICA)) {   
+		        // boolean replica=true|false, latest=true|false
+		        } else if (name.equals(QueryParameters.FIELD_REPLICA) || name.equals(QueryParameters.FIELD_LATEST)) {   
 		            if (StringUtils.hasText(input.getConstraint(name))) {
 		                fq.append("&fq="+URLEncoder.encode( name+":"+input.getConstraint(name), "UTF-8" ));
 		            }
-
+		            
 		        // start --> start <= datetime_stop --> datetime_stop:[start to *]
 		        } else if (name.equals(QueryParameters.FIELD_START)) { 
 		            if (StringUtils.hasText(input.getConstraint(name))) {

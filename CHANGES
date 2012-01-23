@@ -107,3 +107,7 @@ Internal changes to URLs resolved by the servlet
 
 1.9.2
 - Temporarily removed optimization of solr index because it takes too long when harvesting.
+
+1.9.3
+- Fixed problem with parsing Solr dates for RSS fields
+- Fixed probelm with querying boolean flag "latest"
