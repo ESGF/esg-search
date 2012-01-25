@@ -30,6 +30,7 @@ public class TechNoteMetadataEnhancer extends BaseMetadataEnhancerImpl {
     public TechNoteMetadataEnhancer(final String propertiesFilePath) {
         try {
             properties.load(new FileInputStream(propertiesFilePath));
+            if (LOG.isInfoEnabled()) LOG.info("Using information for Technical Notes xlinks from file:"+propertiesFilePath);
         } catch(Exception e) {
             LOG.warn("Properties file: "+propertiesFilePath+" not found, skipping");
         }
@@ -38,9 +39,10 @@ public class TechNoteMetadataEnhancer extends BaseMetadataEnhancerImpl {
     @Override
     public void enhance(String name, List<String> values, Record record) {
         
-        if (name.equals(QueryParameters.FIELD_ID)) {
+        if (name.equals(QueryParameters.FIELD_MASTER_ID)) {
             for (String value : values) {
                 if (StringUtils.hasText(properties.getProperty(value))) {
+                    if (LOG.isDebugEnabled()) LOG.debug("Setting Tech Note xlink="+properties.getProperty(value));
                     record.addField(QueryParameters.FIELD_XLINK, properties.getProperty(value));
                 }
             }
