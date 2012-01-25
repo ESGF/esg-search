@@ -114,3 +114,6 @@ Internal changes to URLs resolved by the servlet
 
 1.9.4
 - Fixed problem with not allowing multiple 'id' values when querying.
+
+1.9.5
+- Attached published of tech notes to record "id" field, not "file_id" field

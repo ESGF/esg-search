@@ -38,7 +38,7 @@ public class TechNoteMetadataEnhancer extends BaseMetadataEnhancerImpl {
     @Override
     public void enhance(String name, List<String> values, Record record) {
         
-        if (name.equals(QueryParameters.FIELD_FILE_ID)) {
+        if (name.equals(QueryParameters.FIELD_ID)) {
             for (String value : values) {
                 if (StringUtils.hasText(properties.getProperty(value))) {
                     record.addField(QueryParameters.FIELD_XLINK, properties.getProperty(value));

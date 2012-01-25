@@ -37,7 +37,7 @@
 		<property name="type" value="Dataset"/>
 	</bean> 
 
-    <bean class="esg.search.publish.plugins.TechNoteMetadataEnhancer" id="file_idMetadataEnhancer">
+    <bean class="esg.search.publish.plugins.TechNoteMetadataEnhancer" id="idMetadataEnhancer">
     	<constructor-arg index="0"><value>/esg/config/techNotes.properties</value></constructor-arg>
     	<property name="type" value="File"/>
     </bean>

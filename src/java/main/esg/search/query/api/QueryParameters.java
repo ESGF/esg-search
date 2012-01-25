@@ -41,7 +41,7 @@ public class QueryParameters {
     final public static String FIELD_XLINK = "xlink";
     final public static String FIELD_SIZE = "size";
     final public static String FIELD_DATASET_ID = "dataset_id"; // note: generic notation to allow parent-child relations beyond just datasets   
-    final public static String FIELD_FILE_ID = "file_id";
+    //final public static String FIELD_FILE_ID = "file_id";
     final public static String FIELD_VERSION = "version";
     final public static String FIELD_CHECKSUM = "checksum";
     final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
@@ -51,7 +51,7 @@ public class QueryParameters {
     public final static List<String> STANDARD_FIELDS = Arrays.asList( new String[]{ 
             FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_LATEST, FIELD_MASTER_ID, FIELD_TITLE, 
             FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_SIZE, FIELD_DATASET_ID,
-            FIELD_FILE_ID, FIELD_VERSION, FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE, FIELD_DATA_NODE, FIELD_INDEX_NODE });
+            FIELD_VERSION, FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE, FIELD_DATA_NODE, FIELD_INDEX_NODE });
     
     // special query fields for open search geo extension
     public final static String FIELD_BBOX ="bbox";  // west, south, east, north
