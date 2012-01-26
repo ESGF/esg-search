@@ -199,6 +199,12 @@ public class BaseController {
             }
         }
         
+        // FIXME: temporary fix to alleviate problems in displaying files in data cart
+        if (command.getConstraint(QueryParameters.FIELD_TYPE).equals(QueryParameters.TYPE_FILE)
+            && request.getParameter(QueryParameters.LIMIT)==null) {
+            command.setLimit(QueryParameters.DEFAULT_FILE_LIMIT);
+        }
+        
         if (!response.isCommitted()) {
         
             // attempt query numberOfTries times

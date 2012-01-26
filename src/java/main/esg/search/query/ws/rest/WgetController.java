@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import esg.search.core.RecordHelper;
 import esg.search.publish.thredds.ThreddsPars;
 import esg.search.query.api.QueryParameters;
-import esg.search.query.impl.solr.SolrXmlPars;
 import esg.search.utils.XmlParser;
 
 /**
@@ -64,8 +63,8 @@ public class WgetController {
             command.setConstraint(QueryParameters.FIELD_TYPE, QueryParameters.TYPE_FILE);
         }
         
-        // set limit=MAX_LIMIT to enable massive retrieval through wget scripting
-        command.setLimit(QueryParameters.MAX_LIMIT);
+        // set limit=MAX_LIMIT to enable massive retrieval through wget scripting, unless explicitly set already
+        if (request.getParameter(QueryParameters.LIMIT)==null) command.setLimit(QueryParameters.MAX_LIMIT);
         
         // process request, obtain Solr/XML output
         String xml = baseController.process(request, command, response);
