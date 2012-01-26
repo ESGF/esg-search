@@ -105,7 +105,7 @@ public class QueryParameters {
     /**
      * Default number of files requested, if not specified.
      */
-    public final static int DEFAULT_FILE_LIMIT = 1000;
+    public final static int DEFAULT_FILE_LIMIT = 100;
 
     /**
      * Common record types.
