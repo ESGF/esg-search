@@ -124,3 +124,6 @@ Internal changes to URLs resolved by the servlet
 1.9.7
 - Fixed bug that always fixed limit=1000 when generating wget scripts, thus preventing the generation of scripts with less files, if needed.
 - Inserted temporary patch to allow up to 100 files in data cart.
+
+1.9.8
+- Updating security dependency.
