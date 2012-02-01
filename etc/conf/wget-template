@@ -139,13 +139,13 @@ get_certificates() {
         echo "Could't update certs!" >&2
         return 1
     else
+	    #if here everythng went fine. Replace old cert with this ones    
+	    [[ -d $ESG_CERT_DIR ]] && rm -r $ESG_CERT_DIR
+	    mv $ESG_HOME/esg_trusted_certificates $ESG_CERT_DIR
         touch $ESG_CERT_DIR
+        echo "done!" >&2
     fi
-    #if here everythng went fine. Replace old cert with this ones    
-    [[ -d $ESG_CERT_DIR ]] && rm -r $ESG_CERT_DIR
-    mv $ESG_HOME/esg_trusted_certificates $ESG_CERT_DIR
 
-    echo "done!" >&2
 }
 
 #get truststore from rainbow
