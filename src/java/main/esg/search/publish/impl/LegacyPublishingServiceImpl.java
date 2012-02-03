@@ -81,8 +81,10 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 		
 	    try {
 	        
+	        List<Record> records = new ArrayList<Record>();
+	        
     	    // find all datasets matching the given "master_id"
-    	    List<Record> records = getDatasetsByIdType(QueryParameters.FIELD_MASTER_ID, datasetId);
+    	    records.addAll(getDatasetsByIdType(QueryParameters.FIELD_MASTER_ID, datasetId));
     	    
     	    // find all datasets matching the given "instance_id"
     	    records.addAll(getDatasetsByIdType(QueryParameters.FIELD_INSTANCE_ID, datasetId));
