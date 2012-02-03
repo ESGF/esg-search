@@ -63,8 +63,13 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	@Override
 	public String createDataset(final String parentId, final String threddsURL, final int resursionLevel, final String status) throws Exception {
 		
-		this.publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
-		return RETURN_VALUE;
+	    try {
+	        this.publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
+	        return RETURN_VALUE;
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	        throw e;
+	    }
 		
 	}
 
@@ -74,19 +79,26 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	@Override
 	public void deleteDataset(final String datasetId, final boolean recursive, final String message) throws Exception {
 		
-	    // find all datasets matching the given "master_id"
-	    List<Record> records = getDatasetsByIdType(QueryParameters.FIELD_MASTER_ID, datasetId);
-	    
-	    // find all datasets matching the given "instance_id"
-	    records.addAll(getDatasetsByIdType(QueryParameters.FIELD_INSTANCE_ID, datasetId));
-	    
-	    // delete all matching datasets
-		final List<String> ids = new ArrayList<String>();
-		for (final Record record : records) {
-		    ids.add(record.getId());
-		    if (LOG.isInfoEnabled()) LOG.info("Deleting dataset with id="+record.getId());
-		}
-		this.publishingService.unpublish(ids);
+	    try {
+	        
+    	    // find all datasets matching the given "master_id"
+    	    List<Record> records = getDatasetsByIdType(QueryParameters.FIELD_MASTER_ID, datasetId);
+    	    
+    	    // find all datasets matching the given "instance_id"
+    	    records.addAll(getDatasetsByIdType(QueryParameters.FIELD_INSTANCE_ID, datasetId));
+    	    
+    	    // delete all matching datasets
+    		final List<String> ids = new ArrayList<String>();
+    		for (final Record record : records) {
+    		    ids.add(record.getId());
+    		    if (LOG.isInfoEnabled()) LOG.info("Deleting dataset with id="+record.getId());
+    		}
+    		this.publishingService.unpublish(ids);
+    		
+	    } catch(Exception e) {
+	        e.printStackTrace();
+	        throw e;
+	    }
 		
 	}
 
@@ -94,7 +106,7 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	 *{@inheritDoc}
 	 */
 	@Override
-	public String getPublishingStatus(String operationHandle) throws Exception {
+	public String getPublishingStatus(String operationHandle) {
 		return RETURN_VALUE;
 	}
 	
