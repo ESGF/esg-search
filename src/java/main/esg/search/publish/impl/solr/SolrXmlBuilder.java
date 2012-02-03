@@ -22,8 +22,9 @@ public class SolrXmlBuilder {
 	
 	/**
 	 * Method to create an XML message to delete records with given ids.
-	 * Note that this method also removed all records that declare that record as a <i>parent</i> record.
-	 * Example output XML: <delete><id>05991</id><query>parent_id:05991</query><id>06544</id><query>parent_id:06544</query></delete>
+	 * 
+	 * Note that this method also removes all records that declare that record as a <i>parent</i> record.
+	 * Example output XML: <delete><id>05991</id><query>dataset_id:05991</query><id>06544</id><query>dataset_id:06544</query></delete>
 	 * @param ids
 	 */
 	public String buildDeleteMessage(final List<String> ids, final boolean indent) {

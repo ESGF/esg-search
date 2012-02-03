@@ -32,6 +32,8 @@ public interface Record {
 	/**
 	 * Method to return the record's unique identifier,
 	 * which is different across versions and replicas.
+	 * The record identifier is mean to be totally opaque:
+	 * it should NOT be parsed by clients to extract any semantic information.
 	 * @return
 	 */
 	String getId();
@@ -53,6 +55,20 @@ public interface Record {
 	 * @param master_id
 	 */
 	void setMasterId(String master_id);
+	
+	/**
+	 * Method to return the "instance" identifier,
+	 * which is meant to track the "realization" of a record:
+	 * it is the different from one version to another, 
+	 * but will be the same for all replicas of the same version.
+	 * @return
+	 */
+	String getInstanceId();
+	
+	/**
+	 * Method to set the instance identifier of a record.
+	 */
+	void setInstanceId(String instance_id);
 	
 	/**
 	 * Method to return the record discriminating type.

@@ -78,9 +78,7 @@ public class RecordImpl implements Record, Serializable {
 	 */
 	public void setId(String id) {
 		this.id = id;
-	}
-	
-	
+	}	
 	
 	@Override
     public String getMasterId() {
@@ -90,6 +88,16 @@ public class RecordImpl implements Record, Serializable {
     @Override
     public void setMasterId(String master_id) {
        this.setField(QueryParameters.FIELD_MASTER_ID, master_id);
+    }
+    
+    @Override
+    public String getInstanceId() {
+        return this.getFieldValue(QueryParameters.FIELD_INSTANCE_ID);
+    }
+
+    @Override
+    public void setInstanceId(String instance_id) {
+       this.setField(QueryParameters.FIELD_INSTANCE_ID, instance_id);
     }
 
     /**

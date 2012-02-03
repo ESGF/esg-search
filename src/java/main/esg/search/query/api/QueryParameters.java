@@ -34,6 +34,7 @@ public class QueryParameters {
     final public static String FIELD_REPLICA = "replica";
     final public static String FIELD_LATEST = "latest";
     final public static String FIELD_MASTER_ID = "master_id";
+    final public static String FIELD_INSTANCE_ID = "instance_id";
     final public static String FIELD_TITLE = "title";
     final public static String FIELD_DESCRIPTION = "description";
     final public static String FIELD_TIMESTAMP = "timestamp";

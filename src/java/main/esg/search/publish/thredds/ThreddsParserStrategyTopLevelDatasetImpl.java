@@ -519,14 +519,18 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         
         // ...or assign random UUID if dataset id was not found
         if (id==null) id = UUID.randomUUID().toString();
-        
+                
         // combine dataset id with host name and version
-        final String rid = id + "|" + hostName;
+        final String rid = RecordHelper.getUniqueRecordId(id, hostName);
         
         final Record record = new RecordImpl(rid);
         
         // assign a default "master_id" equal to the THREDDS ID (or the UUID if not found)
+        // may later be overridden from property "dataset_id" or "file_id", if found
         record.setMasterId(id);
+        
+        // assign "instance_id" equal to the THREDDS ID (or the UUID if not found)
+        record.setInstanceId(id);
         
         // set "replica"=false by default
         record.setReplica(false);

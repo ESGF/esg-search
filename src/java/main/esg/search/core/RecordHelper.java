@@ -20,6 +20,19 @@ public class RecordHelper {
 	final static String CHAR = "|";
 	
 	/**
+	 * Utility method that can be used to create a unique record identifier from the versioned dataset or file id,
+	 * and the data node host name.
+	 * Example: obs4MIPs.CNES.AVISO.mon.v1|esg-datanode.jpl.nasa.gov
+	 * 
+	 * @param versionedId
+	 * @param hostName
+	 * @return
+	 */
+	public final static String getUniqueRecordId(final String versionedId, final String hostName) {
+	    return versionedId + "|" + hostName;
+	}
+	
+	/**
 	 * Utility method that joins the parts of a URL tuple (url, mime/type, name) with a delimiting character.
 	 * @param url : the URL location
 	 * @param mimeType : the URL mime/type
