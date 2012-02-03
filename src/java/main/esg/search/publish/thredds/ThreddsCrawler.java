@@ -62,7 +62,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	private final ThreddsParserStrategy parser;
 	
 	/**
-	 * Service needed to query existing metadata storage for latest versions fo records,
+	 * Service needed to query existing metadata storage for latest versions for records,
 	 * before ingesting new ones.
 	 */
 	private final SearchService searchService;
@@ -240,7 +240,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	private List<Record> getLatestDatasets(final String master_id) throws Exception {
 	    
 	    // query for latest records of type Dataset, by master_id, on local index only
-        final SearchInput input = new SearchInputImpl(QueryParameters.DEFAULT_TYPE);
+        final SearchInput input = new SearchInputImpl(QueryParameters.TYPE_DATASET);
         input.setConstraint(QueryParameters.FIELD_MASTER_ID, master_id);
         input.setConstraint(QueryParameters.FIELD_LATEST, "true");
         input.setDistrib(false);

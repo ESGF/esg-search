@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="ESGF-v1.2" version="1.2">
+<schema name="ESGF-v1.3" version="1.2">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        Applications should change this to reflect the nature of the search collection.
        version="1.2" is Solr's version number for the schema syntax and semantics.  It should
@@ -458,6 +458,9 @@
    
    <!-- The record logical identifier, same for all versions and replicas  -->
    <field name="master_id" type="string" indexed="true" stored="true" required="false" multiValued="false" />
+   
+   <!-- The instance or realization identifier, different for different versions, same for all replicas of the same version  -->
+   <field name="instance_id" type="string" indexed="true" stored="true" required="false" multiValued="false" />
    
    <!-- The host serving the data  -->
    <field name="data_node" type="string" indexed="true" stored="true" required="true" multiValued="false" />

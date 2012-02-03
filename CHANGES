@@ -127,3 +127,7 @@ Internal changes to URLs resolved by the servlet
 
 1.9.8
 - Updating security dependency.
+
+1.9.9
+- Introducing field "instance_id" to re-instate deletion from the ESGF publisher.
+- Updated Solr schema to ESGF-v1.3 accordingly

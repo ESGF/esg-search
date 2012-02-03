@@ -24,7 +24,8 @@ public interface LegacyPublishingService {
 	
 	/**
 	 * Method to unpublish a single dataset.
-	 * Note: all input parameters are ignored except for the root dataset identifier.
+	 * Note: all input parameters are ignored except for the root dataset identifier,
+	 * which is matched against both the "master_id" and "instance_id" of all records in the local index.
 	 * 
 	 * @param datasetId: the root dataset identifier (version-independent).
 	 * @param recursive: ignored (only one dataset at a time can be unpublished, since dataset are not organized hierarchically).
