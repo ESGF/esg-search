@@ -140,7 +140,7 @@ get_certificates() {
         return 1
     else
 	    #if here everythng went fine. Replace old cert with this ones    
-	    [[ -d $ESG_CERT_DIR ]] && rm -r $ESG_CERT_DIR
+	    [[ -d $ESG_CERT_DIR ]] && rm -r $ESG_CERT_DIR || mkdir -p $(dirname $ESG_CERT_DIR)
 	    mv $ESG_HOME/esg_trusted_certificates $ESG_CERT_DIR
         touch $ESG_CERT_DIR
         echo "done!" >&2
