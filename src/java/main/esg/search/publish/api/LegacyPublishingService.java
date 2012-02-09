@@ -2,6 +2,7 @@ package esg.search.publish.api;
 
 /**
  * API for publishing and unpublishing metadata, in support of legacy clients.
+ * All methods throw RuntimeExceptions, which can be correctly propagated through the Hessian protocol by the Spring frameowrk.
  * 
  * @author luca.cinquini
  *
@@ -20,7 +21,7 @@ public interface LegacyPublishingService {
 	 * 
 	 * throws Exception: if the operation did not complete successfully.
 	 */
-	String createDataset(String parentId, String threddsURL, int resursionLevel, String status) throws Exception;
+	String createDataset(String parentId, String threddsURL, int resursionLevel, String status) throws RuntimeException;
 	
 	/**
 	 * Method to unpublish a single dataset.
@@ -33,7 +34,7 @@ public interface LegacyPublishingService {
 	 * 
 	 * @throws Exception: if the unpublishing operation did not complete successfully.
 	 */
-	void deleteDataset(String datasetId, boolean recursive, String message) throws Exception;
+	void deleteDataset(String datasetId, boolean recursive, String message) throws RuntimeException;
 	
     /**
      * Legacy method to check for the status of a current (asynchronous) ongoing publishing operation.
@@ -43,6 +44,6 @@ public interface LegacyPublishingService {
      *
      * @return always "SUCCESSFUL".
      */
-	String getPublishingStatus(final String operationHandle) throws Exception;
+	String getPublishingStatus(final String operationHandle) throws RuntimeException;
 
 }

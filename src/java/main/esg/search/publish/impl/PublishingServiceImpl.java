@@ -50,23 +50,38 @@ public class PublishingServiceImpl implements PublishingService {
     }
 
     @Override
-	public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws Exception {
-               
-		publisherCrawler.crawl(uri, recursive, metadataRepositoryType, true); // publish=true
+	public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RuntimeException {
+             
+        try {
+            publisherCrawler.crawl(uri, recursive, metadataRepositoryType, true); // publish=true
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
 		
 	}
 
     @Override
-    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws Exception {
+    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RuntimeException {
 
-        unpublisherCrawler.crawl(uri, recursive, metadataRepositoryType, false); // publish=false
+        try {
+            unpublisherCrawler.crawl(uri, recursive, metadataRepositoryType, false); // publish=false
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
 
     }
 
     @Override
-    public void unpublish(List<String> ids) throws Exception {
+    public void unpublish(List<String> ids) throws RuntimeException {
 
-        recordRemover.delete(ids);
+        try {
+            recordRemover.delete(ids);
+        } catch(Exception e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+        }
 
     }
 

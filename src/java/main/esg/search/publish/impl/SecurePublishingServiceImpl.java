@@ -47,7 +47,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
     }
 
     @Override
-    public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws Exception {
+    public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RuntimeException {
         
         checkAuthorization(uri);
         this.publishingService.publish(uri, recursive, metadataRepositoryType);
@@ -55,7 +55,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
     }
 
     @Override
-    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws Exception {
+    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RuntimeException {
         
         checkAuthorization(uri);
         this.publishingService.unpublish(uri, recursive, metadataRepositoryType);
@@ -63,7 +63,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
     }
 
     @Override
-    public void unpublish(List<String> ids) throws Exception {
+    public void unpublish(List<String> ids) throws RuntimeException {
         
         for (String id : ids) checkAuthorization(id);
         this.publishingService.unpublish(ids);
@@ -75,7 +75,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
      * @param uri
      * @throws Exception
      */
-    private void checkAuthorization(String uri) throws Exception {
+    private void checkAuthorization(String uri) throws RuntimeException {
         
         if (authorizer!=null) {
             
@@ -98,7 +98,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
             if (!authorized) {
                 String message = "User: "+openid+" is not authorized to publish/unpublish resource: "+uri;
                 LOG.warn(message);
-                throw new Exception(message);
+                throw new RuntimeException(message);
             }
             
         }

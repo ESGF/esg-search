@@ -61,14 +61,14 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String createDataset(final String parentId, final String threddsURL, final int resursionLevel, final String status) throws Exception {
+	public String createDataset(final String parentId, final String threddsURL, final int resursionLevel, final String status) throws RuntimeException {
 		
 	    try {
 	        this.publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
 	        return RETURN_VALUE;
 	    } catch(Exception e) {
 	        e.printStackTrace();
-	        throw e;
+	        throw new RuntimeException(e);
 	    }
 		
 	}
@@ -77,7 +77,7 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	 *{@inheritDoc}
 	 */
 	@Override
-	public void deleteDataset(final String datasetId, final boolean recursive, final String message) throws Exception {
+	public void deleteDataset(final String datasetId, final boolean recursive, final String message) throws RuntimeException {
 		
 	    try {
 	        
@@ -99,7 +99,7 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
     		
 	    } catch(Exception e) {
 	        e.printStackTrace();
-	        throw e;
+	        throw new RuntimeException(e);
 	    }
 		
 	}
