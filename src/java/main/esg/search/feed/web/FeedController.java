@@ -140,7 +140,7 @@ public class FeedController {
         
         final SearchInput searchInput = new SearchInputImpl(type);
         searchInput.setDistrib(distrib);
-        searchInput.setLimit(QueryParameters.MAX_LIMIT);
+        searchInput.setLimit(QueryParameters.DEFAULT_LIMIT);
         return searchInput;
         
     }

@@ -101,12 +101,12 @@ public class QueryParameters {
     /**
      * Maximum limit on returned results
      */
-    public final static int MAX_LIMIT = 1000;
+    public final static int MAX_LIMIT = 10000;
     
     /**
-     * Default number of files requested, if not specified.
+     * Default number of records requested, if not specified.
      */
-    public final static int DEFAULT_FILE_LIMIT = 100;
+    public final static int DEFAULT_LIMIT = 100;
 
     /**
      * Common record types.
