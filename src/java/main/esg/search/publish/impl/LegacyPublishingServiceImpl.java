@@ -64,8 +64,14 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	@Override
 	public String createDataset(final String parentId, final String threddsURL, final int resursionLevel, final String status) throws PublishingException {
 			 
-        this.publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
-        return RETURN_VALUE;
+	    try {
+	        this.publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
+	        return RETURN_VALUE;
+	    } catch(PublishingException e) {
+	        LOG.error(e.getMessage());
+	        e.printStackTrace();
+	        throw(e);
+	    }
 		
 	}
 
