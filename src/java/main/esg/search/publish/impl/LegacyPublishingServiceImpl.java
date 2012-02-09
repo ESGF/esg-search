@@ -1,5 +1,6 @@
 package esg.search.publish.impl;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +62,7 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String createDataset(final String parentId, final String threddsURL, final int resursionLevel, final String status) throws RuntimeException {
+	public String createDataset(final String parentId, final String threddsURL, final int resursionLevel, final String status) throws RemoteException {
 		
 	    try {
 	        this.publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
@@ -69,7 +70,7 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	    } catch(Exception e) {
 	        LOG.error(e.getMessage());
 	        e.printStackTrace();
-	        throw new RuntimeException(e.getMessage());
+	        throw new RemoteException(e.getMessage());
 	    }
 		
 	}
@@ -78,7 +79,7 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	 *{@inheritDoc}
 	 */
 	@Override
-	public void deleteDataset(final String datasetId, final boolean recursive, final String message) throws RuntimeException {
+	public void deleteDataset(final String datasetId, final boolean recursive, final String message) throws RemoteException {
 		
 	    try {
 	        
@@ -99,8 +100,9 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
     		this.publishingService.unpublish(ids);
     		
 	    } catch(Exception e) {
+	        LOG.error(e.getMessage());
 	        e.printStackTrace();
-	        throw new RuntimeException(e);
+	        throw new RemoteException(e.getMessage());
 	    }
 		
 	}

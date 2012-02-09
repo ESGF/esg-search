@@ -1,7 +1,10 @@
 package esg.search.publish.impl;
 
+import java.rmi.RemoteException;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +35,8 @@ public class PublishingServiceImpl implements PublishingService {
      * unpublishing records from the system.
      */
     private final MetadataRepositoryCrawlerManager unpublisherCrawler;
+    
+    private final Log LOG = LogFactory.getLog(this.getClass());
 
     /**
      * Collaborator that deletes records with known identifiers.
@@ -50,37 +55,40 @@ public class PublishingServiceImpl implements PublishingService {
     }
 
     @Override
-	public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RuntimeException {
+	public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RemoteException {
              
         try {
             publisherCrawler.crawl(uri, recursive, metadataRepositoryType, true); // publish=true
         } catch(Exception e) {
+            LOG.error(e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new RemoteException(e.getMessage());
         }
 		
 	}
 
     @Override
-    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RuntimeException {
+    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RemoteException {
 
         try {
             unpublisherCrawler.crawl(uri, recursive, metadataRepositoryType, false); // publish=false
         } catch(Exception e) {
+            LOG.error(e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException(e);
+            throw new RuntimeException(e.getMessage());
         }
 
     }
 
     @Override
-    public void unpublish(List<String> ids) throws RuntimeException {
+    public void unpublish(List<String> ids) throws RemoteException {
 
         try {
             recordRemover.delete(ids);
         } catch(Exception e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
+            LOG.error(e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e.getMessage());
         }
 
     }

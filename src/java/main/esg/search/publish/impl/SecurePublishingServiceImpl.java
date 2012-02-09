@@ -1,5 +1,6 @@
 package esg.search.publish.impl;
 
+import java.rmi.RemoteException;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -47,7 +48,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
     }
 
     @Override
-    public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RuntimeException {
+    public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RemoteException {
         
         checkAuthorization(uri);
         this.publishingService.publish(uri, recursive, metadataRepositoryType);
@@ -55,7 +56,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
     }
 
     @Override
-    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RuntimeException {
+    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RemoteException {
         
         checkAuthorization(uri);
         this.publishingService.unpublish(uri, recursive, metadataRepositoryType);
@@ -63,7 +64,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
     }
 
     @Override
-    public void unpublish(List<String> ids) throws RuntimeException {
+    public void unpublish(List<String> ids) throws RemoteException {
         
         for (String id : ids) checkAuthorization(id);
         this.publishingService.unpublish(ids);
@@ -75,7 +76,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
      * @param uri
      * @throws Exception
      */
-    private void checkAuthorization(String uri) throws RuntimeException {
+    private void checkAuthorization(String uri) throws RemoteException {
         
         if (authorizer!=null) {
             
@@ -98,7 +99,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
             if (!authorized) {
                 String message = "User: "+openid+" is not authorized to publish/unpublish resource: "+uri;
                 LOG.warn(message);
-                throw new RuntimeException(message);
+                throw new RemoteException(message);
             }
             
         }
