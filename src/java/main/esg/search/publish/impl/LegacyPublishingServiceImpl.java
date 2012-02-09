@@ -67,8 +67,9 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	        this.publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
 	        return RETURN_VALUE;
 	    } catch(Exception e) {
+	        LOG.error(e.getMessage());
 	        e.printStackTrace();
-	        throw new RuntimeException(e);
+	        throw new RuntimeException(e.getMessage());
 	    }
 		
 	}

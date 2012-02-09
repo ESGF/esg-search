@@ -131,3 +131,7 @@ Internal changes to URLs resolved by the servlet
 1.9.9
 - Introducing field "instance_id" to re-instate deletion from the ESGF publisher.
 - Updated Solr schema to ESGF-v1.3 accordingly
+
+1.9.10
+- Changed PublishingService interface and implementations to throw RuntimeExceptions, so that they can be correctly
+propagated to the client through the Hessian protocol by the Spring framework.
