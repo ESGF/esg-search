@@ -133,5 +133,5 @@ Internal changes to URLs resolved by the servlet
 - Updated Solr schema to ESGF-v1.3 accordingly
 
 1.9.10
-- Changed PublishingService interface and implementations to throw RemoteExceptions, so that they can be correctly
-propagated to the client through the Hessian protocol by the Spring framework.
+- Changed PublishingService interface and implementations to throw PublishingException, 
+which are correctly propagated to the client through the Hessian protocol by the Spring framework.

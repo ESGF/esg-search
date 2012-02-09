@@ -1,6 +1,5 @@
 package esg.search.publish.impl;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import esg.orp.app.Authorizer;
 import esg.search.publish.api.MetadataRepositoryType;
+import esg.search.publish.api.PublishingException;
 import esg.search.publish.api.PublishingService;
 
 /**
@@ -48,7 +48,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
     }
 
     @Override
-    public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RemoteException {
+    public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
         
         checkAuthorization(uri);
         this.publishingService.publish(uri, recursive, metadataRepositoryType);
@@ -56,7 +56,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
     }
 
     @Override
-    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RemoteException {
+    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
         
         checkAuthorization(uri);
         this.publishingService.unpublish(uri, recursive, metadataRepositoryType);
@@ -64,7 +64,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
     }
 
     @Override
-    public void unpublish(List<String> ids) throws RemoteException {
+    public void unpublish(List<String> ids) throws PublishingException {
         
         for (String id : ids) checkAuthorization(id);
         this.publishingService.unpublish(ids);
@@ -76,7 +76,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
      * @param uri
      * @throws Exception
      */
-    private void checkAuthorization(String uri) throws RemoteException {
+    private void checkAuthorization(String uri) throws PublishingException {
         
         if (authorizer!=null) {
             
@@ -99,7 +99,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
             if (!authorized) {
                 String message = "User: "+openid+" is not authorized to publish/unpublish resource: "+uri;
                 LOG.warn(message);
-                throw new RemoteException(message);
+                throw new PublishingException(message);
             }
             
         }

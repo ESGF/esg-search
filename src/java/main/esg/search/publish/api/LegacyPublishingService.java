@@ -5,8 +5,6 @@ import java.rmi.RemoteException;
 /**
  * API for publishing and unpublishing metadata, in support of legacy clients.
  * 
- * All methods throw RemoteExceptions, which can be correctly propagated through the Hessian protocol by the Spring frameowrk.
- * 
  * @author luca.cinquini
  *
  */
@@ -22,9 +20,9 @@ public interface LegacyPublishingService {
 	 * @param status: ignored.
 	 * @return: the string "SUCCESSFUL" if the operation completed successfully.
 	 * 
-	 * throws Exception: if the operation did not complete successfully.
+	 * throws PublishingException: if the operation did not complete successfully.
 	 */
-	String createDataset(String parentId, String threddsURL, int resursionLevel, String status) throws RemoteException;
+	String createDataset(String parentId, String threddsURL, int resursionLevel, String status) throws PublishingException;
 	
 	/**
 	 * Method to unpublish a single dataset.
@@ -35,9 +33,9 @@ public interface LegacyPublishingService {
 	 * @param recursive: ignored (only one dataset at a time can be unpublished, since dataset are not organized hierarchically).
 	 * @param message: ignored.
 	 * 
-	 * @throws Exception: if the unpublishing operation did not complete successfully.
+	 * @throws PublishingException: if the unpublishing operation did not complete successfully.
 	 */
-	void deleteDataset(String datasetId, boolean recursive, String message) throws RemoteException;
+	void deleteDataset(String datasetId, boolean recursive, String message) throws PublishingException;
 	
     /**
      * Legacy method to check for the status of a current (asynchronous) ongoing publishing operation.
@@ -47,6 +45,6 @@ public interface LegacyPublishingService {
      *
      * @return always "SUCCESSFUL".
      */
-	String getPublishingStatus(final String operationHandle) throws RemoteException;
+	String getPublishingStatus(final String operationHandle) throws PublishingException;
 
 }

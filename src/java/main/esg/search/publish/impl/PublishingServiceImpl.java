@@ -1,6 +1,5 @@
 package esg.search.publish.impl;
 
-import java.rmi.RemoteException;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -11,6 +10,7 @@ import org.springframework.stereotype.Service;
 import esg.search.publish.api.MetadataDeletionService;
 import esg.search.publish.api.MetadataRepositoryCrawlerManager;
 import esg.search.publish.api.MetadataRepositoryType;
+import esg.search.publish.api.PublishingException;
 import esg.search.publish.api.PublishingService;
 
 /**
@@ -55,40 +55,40 @@ public class PublishingServiceImpl implements PublishingService {
     }
 
     @Override
-	public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RemoteException {
+	public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
              
         try {
             publisherCrawler.crawl(uri, recursive, metadataRepositoryType, true); // publish=true
         } catch(Exception e) {
             LOG.error(e.getMessage());
             e.printStackTrace();
-            throw new RemoteException(e.getMessage());
+            throw new PublishingException(e.getMessage());
         }
 		
 	}
 
     @Override
-    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws RemoteException {
+    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
 
         try {
             unpublisherCrawler.crawl(uri, recursive, metadataRepositoryType, false); // publish=false
         } catch(Exception e) {
             LOG.error(e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
+            throw new PublishingException(e.getMessage());
         }
 
     }
 
     @Override
-    public void unpublish(List<String> ids) throws RemoteException {
+    public void unpublish(List<String> ids) throws PublishingException {
 
         try {
             recordRemover.delete(ids);
         } catch(Exception e) {
             LOG.error(e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException(e.getMessage());
+            throw new PublishingException(e.getMessage());
         }
 
     }

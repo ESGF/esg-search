@@ -1,6 +1,5 @@
 package esg.search.publish.impl;
 
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Service;
 import esg.search.core.Record;
 import esg.search.publish.api.LegacyPublishingService;
 import esg.search.publish.api.MetadataRepositoryType;
+import esg.search.publish.api.PublishingException;
 import esg.search.publish.api.PublishingService;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
@@ -62,16 +62,10 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String createDataset(final String parentId, final String threddsURL, final int resursionLevel, final String status) throws RemoteException {
-		
-	    try {
-	        this.publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
-	        return RETURN_VALUE;
-	    } catch(Exception e) {
-	        LOG.error(e.getMessage());
-	        e.printStackTrace();
-	        throw new RemoteException(e.getMessage());
-	    }
+	public String createDataset(final String parentId, final String threddsURL, final int resursionLevel, final String status) throws PublishingException {
+			 
+        this.publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
+        return RETURN_VALUE;
 		
 	}
 
@@ -79,31 +73,23 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	 *{@inheritDoc}
 	 */
 	@Override
-	public void deleteDataset(final String datasetId, final boolean recursive, final String message) throws RemoteException {
-		
-	    try {
-	        
-	        List<Record> records = new ArrayList<Record>();
-	        
-    	    // find all datasets matching the given "master_id"
-    	    records.addAll(getDatasetsByIdType(QueryParameters.FIELD_MASTER_ID, datasetId));
-    	    
-    	    // find all datasets matching the given "instance_id"
-    	    records.addAll(getDatasetsByIdType(QueryParameters.FIELD_INSTANCE_ID, datasetId));
-    	    
-    	    // delete all matching datasets
-    		final List<String> ids = new ArrayList<String>();
-    		for (final Record record : records) {
-    		    ids.add(record.getId());
-    		    if (LOG.isInfoEnabled()) LOG.info("Deleting dataset with id="+record.getId());
-    		}
-    		this.publishingService.unpublish(ids);
-    		
-	    } catch(Exception e) {
-	        LOG.error(e.getMessage());
-	        e.printStackTrace();
-	        throw new RemoteException(e.getMessage());
-	    }
+	public void deleteDataset(final String datasetId, final boolean recursive, final String message) throws PublishingException {
+			        
+        List<Record> records = new ArrayList<Record>();
+        
+	    // find all datasets matching the given "master_id"
+	    records.addAll(getDatasetsByIdType(QueryParameters.FIELD_MASTER_ID, datasetId));
+	    
+	    // find all datasets matching the given "instance_id"
+	    records.addAll(getDatasetsByIdType(QueryParameters.FIELD_INSTANCE_ID, datasetId));
+	    
+	    // delete all matching datasets
+		final List<String> ids = new ArrayList<String>();
+		for (final Record record : records) {
+		    ids.add(record.getId());
+		    if (LOG.isInfoEnabled()) LOG.info("Deleting dataset with id="+record.getId());
+		}
+		this.publishingService.unpublish(ids);
 		
 	}
 
@@ -120,16 +106,21 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
      * 
      * @param master_id
      */
-    private List<Record> getDatasetsByIdType(final String idType, final String idValue) throws Exception {
+    private List<Record> getDatasetsByIdType(final String idType, final String idValue) throws PublishingException {
         
-        final SearchInput input = new SearchInputImpl(QueryParameters.TYPE_DATASET);
-        input.setConstraint(idType, idValue);
-        input.setDistrib(false);
-                
-        // execute query
-        final SearchOutput output = searchService.search(input);
-        
-        return output.getResults();
+        try {
+            final SearchInput input = new SearchInputImpl(QueryParameters.TYPE_DATASET);
+            input.setConstraint(idType, idValue);
+            input.setDistrib(false);
+                    
+            // execute query
+            final SearchOutput output = searchService.search(input);
+            
+            return output.getResults();
+            
+        } catch(Exception e) {
+            throw new PublishingException(e.getMessage());
+        }
         
     }
 	
