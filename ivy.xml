@@ -102,10 +102,10 @@ Note: Check Maven for propery dependency parameter values @
     </dependency>  
     <dependency org="junit" name="junit" rev="4.8.1"/>
     <dependency org="com.sun.xml.bind" name="jaxb-xjc" rev="2.2"/>
-    <dependency org="com.springsource.com.caucho" name="com.springsource.com.caucho" rev="3.2.1"/>
+    <!-- <dependency org="com.springsource.com.caucho" name="com.springsource.com.caucho" rev="3.2.1"/> -->
     <dependency org="unidata.thredds" name="netcdf" rev="4.0"/>
 
-    <!-- <dependency org="com.caucho" name="hessian" rev="3.0.20" /> -->
+    <dependency org="com.caucho" name="hessian" rev="3.1.3" />
     <!-- <dependency org="com.caucho" name="com.springsource.com.caucho" rev="3.2.1" /> -->
 
     <dependency org="aopalliance" name="aopalliance" rev="1.0"/>

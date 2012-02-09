@@ -83,7 +83,6 @@
 	<classpathentry kind="lib" path="lib/fetched/commons-lang-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-pool-1.5.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/geronimo-jta_1.1_spec-1.1.1.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/hessian-3.0.20.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/jaxb-api-2.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/jaxb-impl-2.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/jcl-over-slf4j-1.6.1.jar"/>
@@ -117,10 +116,10 @@
 	<classpathentry kind="lib" path="lib/fetched/XSGroupRole-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/com.springsource.com.caucho-3.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/netcdf-4.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/servlet-api-6.0.29.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esg-orp-1.2.9.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-security-1.5.4.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/hessian-4.0.7.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
