@@ -45,11 +45,11 @@
 		<constructor-arg index="0">
 			 <map>
 			 			 
-			    <!--  special facets -->
+			    <!--  special facets
 			 	<entry key="type"><value>Type</value></entry>
 			 	<entry key="master_id"><value>Master ID</value></entry>
 			 	<entry key="dataset_id"><value>Dataset ID</value></entry>
-			 	<entry key="file_id"><value>File ID</value></entry>
+			 	<entry key="file_id"><value>File ID</value></entry> -->
 			 
 			 	<!-- model facets -->
 	          	<entry key="project"><value>Project</value></entry>

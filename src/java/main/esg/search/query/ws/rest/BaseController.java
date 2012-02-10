@@ -123,7 +123,7 @@ public class BaseController {
 
 	    
         // keyword "facets": &facets=facet1,facet2,...
-        // -) translate "*" into explicit list
+        // -) translate "*" into explicit list of facets defined in facet profile
         // -) process comma-separated list from HTTP request into list of string values
         final Set<String> allowedFacets = facetProfile.getTopLevelFacets().keySet();
         if (!command.getFacets().isEmpty()) {
