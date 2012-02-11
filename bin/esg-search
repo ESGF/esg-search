@@ -121,6 +121,7 @@ setup_search() {
 
     #setup_zookeeper && configure_zookeeper && write_zookeeper_install_log
     #[ $? != 0 ] && echo " ERROR: Could not fully install zookeeper :-( " && checked_done 1
+
     debug_print "solr_config_types = ${solr_config_types}"
     for config_type in $solr_config_types; do
         echo "Doing setup and configuration for type ${config_type}"
@@ -132,6 +133,8 @@ setup_search() {
     [ $? != 0 ] && echo " ERROR: Could not fully install search service" && checked_done 1
     write_as_property index_endpoint "http://${esgf_host:-$(hostname --fqdn)}/esg-search/search"
     write_as_property index_app_home ${search_web_service_dir}
+    write_as_property index_master_port
+    write_as_property index_slave_port
     
     write_as_property publishing_service_endpoint "https://${esgf_host:-$(hostname --fqdn)}/esg-search/remote/secure/client-cert/hessian/publishingService"
     write_as_property publishing_service_app_home ${search_web_service_dir}
@@ -531,6 +534,9 @@ remove_zookeeper() {
 #---------------------------------------------------------
 
 solr_init() {
+    get_property index_master_port "8984"
+    get_property index_slave_port "8983"
+
     solr_version=3.5.0
     solr_dist_url=${esg_dist_url}/thirdparty/apache-solr-${solr_version}.tgz
     #solr_dist_url=http://mirror.metrocast.net/apache//lucene/solr/${solr_version}/apache-solr-${solr_version}.tgz
@@ -542,7 +548,7 @@ solr_init() {
 
     solr_install_dir=${install_prefix}/esgf-solr-${solr_version}-${solr_config_type}
     solr_data_dir=${esg_root_dir}/solr-index-${solr_config_type}
-    solr_server_port=$([ "${solr_config_type}" = "master" ] && echo "8984" || echo "8983")
+    solr_server_port=$([ "${solr_config_type}" = "master" ] && echo "${index_master_port}" || echo "${index_slave_port}")
     solr_cores=(datasets files)
 }
 
@@ -672,7 +678,7 @@ configure_solr() {
     #	- cp esg-search/etc/conf/jetty/realm.properties /usr/local/esgf-solr-3.1.0-slave/etc/.
     #	- cp esg-search/etc/conf/jetty/webdefault.xml-auth /usr/local/esgf-solr-3.1.0-slave/etc/webdefault.xml
     #
-    #This is because the slave is available on port 8983 to the world,
+    #This is because the slave is available on port ${index_slave_port} to the world,
     #and needs to be protected.
     #
     #NOTE: we should consider replacing the username, password in
@@ -759,7 +765,7 @@ write_solr_install_log() {
     return 0
 }
 
-# start Solr server on port 8983 connecting to Zookeeper on port 2181
+# start Solr server on port ${index_slave_port} connecting to Zookeeper on port 2181
 start_solr() {  
     while [ -n "$1" ]; do 
         solr_init ${1}
