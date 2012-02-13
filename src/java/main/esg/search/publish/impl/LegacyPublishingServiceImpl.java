@@ -30,7 +30,7 @@ import esg.search.utils.ApplicationContextProvider;
 public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	    
     // Identifier of PublishingService bean deployed in Spring context.
-    private final static String PUBLISHING_SERVICE_BEAN = "publishingService";
+    private final static String PUBLISHING_SERVICE_BEAN = "securePublishingService";
     
     // Identifier of SearchService bean deployed in Spring context
     // The SearchService is needed to query for all datasets matching a given "instance_id" or "master_id".
