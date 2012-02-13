@@ -13,47 +13,12 @@
     <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
     <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
-    
-   	<!-- URLs configuration 
-	<bean id="urlMappings" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
-	    <property name="order" value="1" />
-		<property name="mappings">
-			<props>
-			
-				<prop key="/remote/hessian/publish/">publishingWebService</prop>
-				
-				<prop key="/remote/secure/client-cert/hessian/publishingService">legacyPublishingWebService</prop>
-																				
-			</props>
-		</property>
-	</bean> -->
 	
 	<!-- View resolver is only used for RSS feeds -->
 	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
-
-	<!-- Publishing Web Service
-    <bean name="publishingWebService" class="org.springframework.remoting.caucho.HessianServiceExporter">
-        <property name="service">
-            <ref bean="securePublishingService"/>
-        </property>
-        <property name="serviceInterface">
-            <value>esg.search.publish.api.PublishingService</value>
-        </property>
-    </bean> -->
     
     <!-- RSS Views -->
     <bean id="datasetsRssView" class="esg.search.feed.web.DatasetsRssView" p:properties-ref="esgfProperties"/>
     <bean id="filesRssView" class="esg.search.feed.web.FilesRssView" />
           
-    <!-- Legacy Publishing Web Service 
-    <bean name="legacyPublishingWebService" class="org.springframework.remoting.caucho.HessianServiceExporter">
-        <property name="service">
-            <ref bean="legacyPublishingService"/>
-        </property>
-        <property name="serviceInterface">
-            <value>esg.search.publish.api.LegacyPublishingService</value>
-        </property>
-    </bean> -->
-  
-
 </beans>

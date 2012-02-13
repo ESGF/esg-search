@@ -135,3 +135,7 @@ Internal changes to URLs resolved by the servlet
 
 1.9.10
 - Fixed problem with requesting all facets through facets=*
+
+1.9.11
+- Total refactoring of publishing service exposed through Hessian protocol, 
+  to bypass buggy Spring support for transmitting exceptions through Hessian protocol.
