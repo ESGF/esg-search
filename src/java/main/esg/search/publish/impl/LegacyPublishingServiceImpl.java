@@ -59,7 +59,11 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	}
 	*/
 	
-	public LegacyPublishingServiceImpl() {}
+	public LegacyPublishingServiceImpl() {
+	    
+	    LOG.info("INSTANTIATING LegacyPublishingServiceImpl");
+	    
+	}
 
 	/**
 	 * {@inheritDoc}
@@ -70,6 +74,9 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	    final PublishingService publishingService = ApplicationContextProvider.getApplicationContext()
 	                                                                          .getBean(PUBLISHING_SERVICE_BEAN, PublishingService.class);
 	    
+	    // FIXME
+	    throw new PublishingException("User not authorized");
+	    /*
 	    try {
 	        publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
 	        return RETURN_VALUE;
@@ -77,7 +84,7 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	        LOG.error(e.getMessage());
 	        e.printStackTrace();
 	        throw(e);
-	    }
+	    }*/
 		
 	}
 
