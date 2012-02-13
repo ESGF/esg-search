@@ -28,7 +28,7 @@ import esg.search.publish.api.LegacyPublishingService;
  * @author luca.cinquini
  *
  */
-public class LegacyPublishingServiceMain {
+public class RemotePublishingServiceMain {
 	
 	
     private static String[] configLocations = new String[] { "classpath:esg/search/config/application-context.xml" };
@@ -42,9 +42,9 @@ public class LegacyPublishingServiceMain {
 	public static void main(String[] args) throws Exception {
 		
 	    final ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(configLocations);
-	    final LegacyPublishingService publishingService = (LegacyPublishingService)context.getBean("legacyPublishingService");
+	    final LegacyPublishingService publishingService = (LegacyPublishingService)context.getBean("remotePublishingService");
 	    
-	    final LegacyPublishingServiceMain self = new LegacyPublishingServiceMain();
+	    final RemotePublishingServiceMain self = new RemotePublishingServiceMain();
 	    self.run(publishingService, args);
 	    
 	}

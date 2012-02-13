@@ -14,26 +14,24 @@
     <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
     <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
     
-   	<!-- URLs configuration -->
+   	<!-- URLs configuration 
 	<bean id="urlMappings" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
 	    <property name="order" value="1" />
 		<property name="mappings">
 			<props>
 			
-				<!-- Publishing Web Services -->
 				<prop key="/remote/hessian/publish/">publishingWebService</prop>
 				
-				<!-- legacy URL -->
-				<!-- <prop key="/remote/secure/client-cert/hessian/publishingService">legacyPublishingWebService</prop> -->
+				<prop key="/remote/secure/client-cert/hessian/publishingService">legacyPublishingWebService</prop>
 																				
 			</props>
 		</property>
-	</bean>
+	</bean> -->
 	
 	<!-- View resolver is only used for RSS feeds -->
 	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
 
-	<!-- Publishing Web Service -->
+	<!-- Publishing Web Service
     <bean name="publishingWebService" class="org.springframework.remoting.caucho.HessianServiceExporter">
         <property name="service">
             <ref bean="securePublishingService"/>
@@ -41,13 +39,13 @@
         <property name="serviceInterface">
             <value>esg.search.publish.api.PublishingService</value>
         </property>
-    </bean> 
+    </bean> -->
     
     <!-- RSS Views -->
     <bean id="datasetsRssView" class="esg.search.feed.web.DatasetsRssView" p:properties-ref="esgfProperties"/>
     <bean id="filesRssView" class="esg.search.feed.web.FilesRssView" />
           
-    <!-- Legacy Publishing Web Service -->
+    <!-- Legacy Publishing Web Service 
     <bean name="legacyPublishingWebService" class="org.springframework.remoting.caucho.HessianServiceExporter">
         <property name="service">
             <ref bean="legacyPublishingService"/>
@@ -55,7 +53,7 @@
         <property name="serviceInterface">
             <value>esg.search.publish.api.LegacyPublishingService</value>
         </property>
-    </bean>
+    </bean> -->
   
 
 </beans>

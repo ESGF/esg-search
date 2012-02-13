@@ -28,22 +28,23 @@
 	</filter-mapping>
 
 	<servlet>
-		<servlet-name>hessian</servlet-name>
+		<servlet-name>hessianPublishingServlet</servlet-name>
 		<servlet-class>com.caucho.hessian.server.HessianServlet</servlet-class>
 		<init-param>
 			<param-name>home-class</param-name>
-			<param-value>esg.search.publish.impl.LegacyPublishingServiceImpl</param-value>
+			<param-value>esg.search.publish.impl.RemotePublishingServiceImpl</param-value>
 		</init-param>
 		<init-param>
 			<param-name>home-api</param-name>
-			<param-value>esg.search.publish.api.LegacyPublishingService</param-value>
+			<param-value>esg.search.publish.api.RemotePublishingService</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
 	<servlet-mapping>
-		<servlet-name>hessian</servlet-name>
-		<url-pattern>/remote/secure/client-cert/hessian/publishingService</url-pattern>			
+		<servlet-name>hessianPublishingServlet</servlet-name>
+		<url-pattern>/remote/secure/client-cert/hessian/publishingService</url-pattern>		
+		<url-pattern>/remote/hessian/publish</url-pattern>			
 	</servlet-mapping>
 	
 
