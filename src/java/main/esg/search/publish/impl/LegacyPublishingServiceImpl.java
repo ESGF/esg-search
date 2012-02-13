@@ -59,11 +59,7 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	}
 	*/
 	
-	public LegacyPublishingServiceImpl() {
-	    
-	    LOG.info("INSTANTIATING LegacyPublishingServiceImpl");
-	    
-	}
+	public LegacyPublishingServiceImpl() {}
 
 	/**
 	 * {@inheritDoc}
@@ -74,9 +70,6 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	    final PublishingService publishingService = ApplicationContextProvider.getApplicationContext()
 	                                                                          .getBean(PUBLISHING_SERVICE_BEAN, PublishingService.class);
 	    
-	    // FIXME
-	    throw new PublishingException("User not authorized");
-	    /*
 	    try {
 	        publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
 	        return RETURN_VALUE;
@@ -84,7 +77,7 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	        LOG.error(e.getMessage());
 	        e.printStackTrace();
 	        throw(e);
-	    }*/
+	    }
 		
 	}
 
@@ -132,11 +125,9 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
         
         final SearchService searchService = ApplicationContextProvider.getApplicationContext()
                                                                       .getBean(SEARCH_SERVICE_BEAN, SearchService.class);
-        
-        System.out.println("searchservice="+searchService);
-       
+               
         try {
-            final SearchInput input = new SearchInputImpl("hello");
+            final SearchInput input = new SearchInputImpl(QueryParameters.TYPE_DATASET);
             input.setConstraint(idType, idValue);
             input.setDistrib(false);
                     
