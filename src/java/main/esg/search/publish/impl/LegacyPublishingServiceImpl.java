@@ -125,9 +125,11 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
         
         final SearchService searchService = ApplicationContextProvider.getApplicationContext()
                                                                       .getBean(SEARCH_SERVICE_BEAN, SearchService.class);
+        
+        System.out.println("searchservice="+searchService);
        
         try {
-            final SearchInput input = new SearchInputImpl(QueryParameters.TYPE_DATASET);
+            final SearchInput input = new SearchInputImpl("hello");
             input.setConstraint(idType, idValue);
             input.setDistrib(false);
                     
