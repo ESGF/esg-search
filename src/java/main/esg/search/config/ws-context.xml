@@ -24,7 +24,7 @@
 				<prop key="/remote/hessian/publish/">publishingWebService</prop>
 				
 				<!-- legacy URL -->
-				<prop key="/remote/secure/client-cert/hessian/publishingService">legacyPublishingWebService</prop>
+				<!-- <prop key="/remote/secure/client-cert/hessian/publishingService">legacyPublishingWebService</prop> -->
 																				
 			</props>
 		</property>

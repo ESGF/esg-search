@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import esg.search.core.Record;
@@ -19,6 +17,7 @@ import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchOutput;
 import esg.search.query.api.SearchService;
 import esg.search.query.impl.solr.SearchInputImpl;
+import esg.search.utils.ApplicationContextProvider;
 
 /**
  * Implementation of {@link LegacyPublishingService} that delegates all functionality
@@ -29,13 +28,13 @@ import esg.search.query.impl.solr.SearchInputImpl;
  */
 @Service("legacyPublishingService")
 public class LegacyPublishingServiceImpl implements LegacyPublishingService {
-	
-	private final PublishingService publishingService;
-	
-	/**
-     * Service needed to query for all datasets matching a given "instance_id" or "master_id".
-     */
-    private final SearchService searchService;
+	    
+    // Identifier of PublishingService bean deployed in Spring context.
+    private final static String PUBLISHING_SERVICE_BEAN = "publishingService";
+    
+    // Identifier of SearchService bean deployed in Spring context
+    // The SearchService is needed to query for all datasets matching a given "instance_id" or "master_id".
+    private final static String SEARCH_SERVICE_BEAN = "searchService2";
 	
 	/**
 	 * Only harvest THREDDS metadata repositories.
@@ -51,21 +50,28 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	
 	private final Log LOG = LogFactory.getLog(this.getClass());
 	
+	/*
 	@Autowired
 	public LegacyPublishingServiceImpl(final @Qualifier("securePublishingService") PublishingService publishingService,
 	                                   final @Qualifier("searchService2") SearchService searchService) {
 		this.publishingService = publishingService;
 		this.searchService = searchService;
 	}
+	*/
+	
+	public LegacyPublishingServiceImpl() {}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public String createDataset(final String parentId, final String threddsURL, final int resursionLevel, final String status) throws PublishingException {
-			 
+		
+	    final PublishingService publishingService = ApplicationContextProvider.getApplicationContext()
+	                                                                          .getBean(PUBLISHING_SERVICE_BEAN, PublishingService.class);
+	    
 	    try {
-	        this.publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
+	        publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
 	        return RETURN_VALUE;
 	    } catch(PublishingException e) {
 	        LOG.error(e.getMessage());
@@ -80,6 +86,9 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 	 */
 	@Override
 	public void deleteDataset(final String datasetId, final boolean recursive, final String message) throws PublishingException {
+	    
+	    final PublishingService publishingService = ApplicationContextProvider.getApplicationContext()
+	                                                                          .getBean(PUBLISHING_SERVICE_BEAN, PublishingService.class);
 			        
         List<Record> records = new ArrayList<Record>();
         
@@ -95,7 +104,7 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
 		    ids.add(record.getId());
 		    if (LOG.isInfoEnabled()) LOG.info("Deleting dataset with id="+record.getId());
 		}
-		this.publishingService.unpublish(ids);
+		publishingService.unpublish(ids);
 		
 	}
 
@@ -114,6 +123,9 @@ public class LegacyPublishingServiceImpl implements LegacyPublishingService {
      */
     private List<Record> getDatasetsByIdType(final String idType, final String idValue) throws PublishingException {
         
+        final SearchService searchService = ApplicationContextProvider.getApplicationContext()
+                                                                      .getBean(SEARCH_SERVICE_BEAN, SearchService.class);
+       
         try {
             final SearchInput input = new SearchInputImpl(QueryParameters.TYPE_DATASET);
             input.setConstraint(idType, idValue);

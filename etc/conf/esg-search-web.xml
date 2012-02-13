@@ -27,6 +27,26 @@
 		<url-pattern>/*</url-pattern>
 	</filter-mapping>
 
+	<servlet>
+		<servlet-name>hessian</servlet-name>
+		<servlet-class>com.caucho.hessian.server.HessianServlet</servlet-class>
+		<init-param>
+			<param-name>home-class</param-name>
+			<param-value>esg.search.publish.impl.LegacyPublishingServiceImpl</param-value>
+		</init-param>
+		<init-param>
+			<param-name>home-api</param-name>
+			<param-value>esg.search.publish.api.LegacyPublishingService</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>hessian</servlet-name>
+		<url-pattern>/remote/secure/client-cert/hessian/publishingService</url-pattern>			
+	</servlet-mapping>
+	
+
 	<!-- Spring Dispatcher servlet -->
 	<servlet>
 		<servlet-name>DispatcherServlet</servlet-name>
