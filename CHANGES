@@ -134,5 +134,8 @@ Internal changes to URLs resolved by the servlet
 - Updated Solr schema to ESGF-v1.3 accordingly
 
 1.9.10
-- Changed PublishingService interface and implementations to throw PublishingException, 
-which are correctly propagated to the client through the Hessian protocol by the Spring framework.
+- Fixed problem with requesting all facets through facets=*
+
+1.9.11
+- Total refactoring of publishing service exposed through Hessian protocol, 
+  to bypass buggy Spring support for transmitting exceptions through Hessian protocol.

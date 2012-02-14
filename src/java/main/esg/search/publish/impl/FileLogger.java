@@ -2,13 +2,13 @@ package esg.search.publish.impl;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import esg.search.publish.api.MetadataRepositoryCrawlerListener;
 
 /**

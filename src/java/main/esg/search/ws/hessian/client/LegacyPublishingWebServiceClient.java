@@ -4,7 +4,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import esg.search.publish.api.LegacyPublishingService;
-import esg.search.publish.impl.LegacyPublishingServiceMain;
+import esg.search.publish.impl.RemotePublishingServiceMain;
 import esg.search.utils.CertUtils;
 
 
@@ -15,7 +15,7 @@ import esg.search.utils.CertUtils;
  * @author luca.cinquini
  *
  */
-public class LegacyPublishingWebServiceClient extends LegacyPublishingServiceMain {
+public class LegacyPublishingWebServiceClient extends RemotePublishingServiceMain {
 		
 	public static void main(final String[] args) throws Exception {
 		
