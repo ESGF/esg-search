@@ -92,11 +92,6 @@ public class QueryParameters {
     public static Pattern INVALID_CHARACTERS = Pattern.compile(".*[^a-zA-Z0-9_+\\-\\.\\@\\'\\:\\;\\,\\s/()\\*\\\"\\[\\]].*!");
     
     /**
-     * Patter for replicas ids: <id:origin:publisher>
-     */
-    public static Pattern REPLICA_PATTERN = Pattern.compile("([^:]+):([^:]+):([^:]+)");
-
-    /**
      * Format for temporal queries.
      */
     private static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";

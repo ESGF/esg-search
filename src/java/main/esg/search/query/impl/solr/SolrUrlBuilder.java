@@ -231,11 +231,11 @@ public class SolrUrlBuilder {
 			        StringBuilder yesClause = new StringBuilder("");
 			        StringBuilder noClause = new StringBuilder("");
     				for (final String value : constraints.get(name)) {	
-    				    if (value.startsWith("!")) {
-    				        String val = quote(value.substring(1));
-    				        noClause.append("&fq=-").append(URLEncoder.encode( name+":"+val,"UTF-8" ));
+    				    String val = quote(value);
+    				    if (name.endsWith("!")) {
+    				        String _name = name.substring(0, name.length()-1 ); // remove trailing '!'
+    				        noClause.append("&fq=-").append(URLEncoder.encode( _name+":"+val,"UTF-8" ));
     				    } else {
-    				        String val = quote(value);
     				        // combine multiple values for the same facet in logical "OR"
     				        if (yesClause.length()==0) {
     				            yesClause.append("&fq=");
