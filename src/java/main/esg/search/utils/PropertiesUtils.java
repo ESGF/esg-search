@@ -13,8 +13,7 @@ public class PropertiesUtils {
     private final static Log LOG = LogFactory.getLog(PropertiesUtils.class);
     
     /**
-     * Method to load a Properties file from either an absolute path,
-     * or a relative classpath
+     * Method to load a Properties file from either an absolute path, or a relative classpath.
      * @param filepath
      * @return
      */

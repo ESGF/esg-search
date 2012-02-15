@@ -84,7 +84,9 @@ public class BaseController {
             final SearchCommand command, 
             final HttpServletResponse response) throws Exception {
 	    	    	    
-	    // check all HTTP parameters for bad characters
+	    // check all HTTP parameters:
+	    //  -) reject if they contain bad characters
+	    //  -) reject if not contained in list of allowed parameters
 	    for (final Object obj : request.getParameterMap().keySet()) {
 	        
 	        // check parameter name
@@ -105,6 +107,13 @@ public class BaseController {
                                                       "Invalid character(s) detected in parameter value="+values[i],
                                                       response); 
                                                                                   
+            }
+            
+            // check parameter name versus allowed list
+            if (   !facetProfile.getTopLevelFacets().keySet().contains(key)
+                && !QueryParameters.KEYWORDS.contains(key)
+                && !QueryParameters.CORE_QUERY_FIELDS.contains(key)) {
+                sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid HTTP query parameter="+key, response); 
             }
 	        
 	    }

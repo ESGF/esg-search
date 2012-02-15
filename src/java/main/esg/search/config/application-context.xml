@@ -45,38 +45,7 @@
 	
   	<!-- Facet profile example -->
 	<bean name="wsFacetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
-		<constructor-arg index="0">
-			 <map>
-			 			 
-			    <!--  special facets
-			 	<entry key="type"><value>Type</value></entry>
-			 	<entry key="master_id"><value>Master ID</value></entry>
-			 	<entry key="dataset_id"><value>Dataset ID</value></entry>
-			 	<entry key="file_id"><value>File ID</value></entry> -->
-			 
-			 	<!-- model facets -->
-	          	<entry key="project"><value>Project</value></entry>
-	          	<entry key="model"><value>Model</value></entry>
-	          	<entry key="experiment"><value>Experiment</value></entry>
-	          	<entry key="experiment_family"><value>Experiment Family</value></entry>
-	          	<entry key="time_frequency"><value>Frequency</value></entry>
-	          	<entry key="realm"><value>Realm</value></entry>
-	          	<entry key="cf_standard_name"><value>CF Standard Name</value></entry>
-	          	<entry key="institute"><value>Institute</value></entry>
-	          	<entry key="variable"><value>Variable</value></entry>
-	          	<entry key="product"><value>Product</value></entry>
-	          	<entry key="ensemble"><value>Ensemble</value></entry>
-	          	<entry key="MIP_table"><value>MIP table</value></entry>
-	          	<entry key="variable_long_name"><value>Variable Long Name</value></entry>
-	          		          	
-	          	<!-- obs facets -->
-	          	<entry key="source_id"><value>Instrument</value></entry>
-	          	<entry key="processing_level"><value>Processing Level</value></entry>
-	          	<entry key="data_structure"><value>Data Structure</value></entry>
-	          	<!-- <entry key="processing_version"><value>Processing Version</value></entry> -->
-	          			      
-		      </map>
-		</constructor-arg>
+		<constructor-arg index="0"><value>/esg/config/facets.properties</value></constructor-arg>
 	</bean>
 	
 	<!-- Registry service providing dynamic list of shards for distributed search -->

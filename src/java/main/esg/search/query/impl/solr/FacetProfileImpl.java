@@ -20,11 +20,17 @@ package esg.search.query.impl.solr;
 
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import esg.search.query.api.Facet;
 import esg.search.query.api.FacetProfile;
+import esg.search.utils.PropertiesUtils;
 
 /**
  * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs.
@@ -33,10 +39,26 @@ public class FacetProfileImpl implements FacetProfile, Serializable {
 	
 	private Map<String, Facet> facets = new LinkedHashMap<String, Facet>();
 	
+	private final Log LOG = LogFactory.getLog(this.getClass());
+	
 	private static final long serialVersionUID = 1L;
+	
+	/**
+	 * Constructor that builds the list of facets from a properties file.
+	 * @param propertisFile
+	 */
+	public FacetProfileImpl(final String propertiesFilePath) {
+	    final Properties properties = PropertiesUtils.load(propertiesFilePath);	    
+	    for (Iterator iter = properties.keySet().iterator(); iter.hasNext();) {
+	        String key = (String) iter.next();
+	        String value = (String) properties.get(key);
+	        facets.put(key, new FacetImpl(key, value, ""));
+	        if (LOG.isInfoEnabled()) LOG.info("Using facet:"+key+" label="+value);
+	      }
+	}
 
 	/**
-	 * Constructor builds the list of facets from a configuration map composed of (facet key, facet label) pairs.
+	 * Constructor that builds the list of facets from a configuration map composed of (facet key, facet label) pairs.
 	 * @param facets
 	 */
 	public FacetProfileImpl(final LinkedHashMap<String, String> map) {
