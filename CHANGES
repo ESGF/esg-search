@@ -143,3 +143,6 @@ Internal changes to URLs resolved by the servlet
 1.9.12
 - Only allowing facets configured in a properties file.
 - Changed negative constraint syntax to facet_name!=facet_value
+
+1.9.13
+- Extended list of allowed facets in facets.properties.
