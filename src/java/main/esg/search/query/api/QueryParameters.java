@@ -61,7 +61,7 @@ public class QueryParameters {
     public final static String FIELD_START = "start";
     public final static String FIELD_END = "end";
     
-    // fields that are always allowed in queries
+    // fields that are always allowed in queries, in addition to configured facets
     public final static List<String> CORE_QUERY_FIELDS = Arrays.asList( new String[]{ 
             FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_LATEST, FIELD_MASTER_ID, FIELD_INSTANCE_ID,  
             FIELD_TITLE, FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_XLINK, FIELD_SIZE, FIELD_DATASET_ID,

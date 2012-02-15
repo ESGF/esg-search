@@ -110,9 +110,9 @@ public class BaseController {
             }
             
             // check parameter name versus allowed list
-            if (   !facetProfile.getTopLevelFacets().keySet().contains(key)
-                && !QueryParameters.KEYWORDS.contains(key)
-                && !QueryParameters.CORE_QUERY_FIELDS.contains(key)) {
+            if (   !QueryParameters.KEYWORDS.contains(key)
+                && !QueryParameters.CORE_QUERY_FIELDS.contains(key)
+                && !facetProfile.getTopLevelFacets().keySet().contains(key)) {
                 sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid HTTP query parameter="+key, response); 
             }
 	        
@@ -134,12 +134,12 @@ public class BaseController {
         // keyword "facets": &facets=facet1,facet2,...
         // -) translate "*" into explicit list of facets defined in facet profile
         // -) process comma-separated list from HTTP request into list of string values
-        final Set<String> allowedFacets = facetProfile.getTopLevelFacets().keySet();
+        final Set<String> defaultFacets = facetProfile.getTopLevelFacets().keySet();
         if (!command.getFacets().isEmpty()) {
             for (String facets : command.getFacets()) {
                 // special value: include all configured facets
                 if (facets.equals("*")) {
-                    command.setFacets(new ArrayList<String>(allowedFacets));
+                    command.setFacets(new ArrayList<String>(defaultFacets));
                 } else {
                     command.setFacets( Arrays.asList( facets.split("\\s*,\\s*") ));
                 }
