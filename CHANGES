@@ -139,3 +139,13 @@ Internal changes to URLs resolved by the servlet
 1.9.11
 - Total refactoring of publishing service exposed through Hessian protocol, 
   to bypass buggy Spring support for transmitting exceptions through Hessian protocol.
+
+1.9.12
+- Only allowing facets configured in a properties file.
+- Changed negative constraint syntax to facet_name!=facet_value
+
+1.9.13
+- Extended list of allowed facets in facets.properties.
+
+1.9.14
+- Moving "drs_id" to core query parameters so it doesn't interfere with "facets=*".

@@ -1,7 +1,10 @@
 package esg.search.query.ws.rest;
 
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.List;
 
@@ -32,7 +35,8 @@ import esg.search.utils.XmlParser;
 @Controller("wgetController")
 public class WgetController {
     
-    private static final String SCRIPT_NAME = "wget.sh";
+    private static final String SCRIPT_NAME = "wget-%s.sh";
+    private static final DateFormat timestamp = new SimpleDateFormat("yyyyMMddHHmmss");
     
     /**
      * The underlying base controller to which all calls are delegated.
@@ -77,18 +81,20 @@ public class WgetController {
         XPath xpath = XPath.newInstance("/response/result/doc");
         
         // write out the URL + GET/POST parameters to the wget script
-        String urlQuery = request.getRequestURL().toString();
+        StringBuilder parameters = new StringBuilder().append('?');
+        @SuppressWarnings("unchecked")
         final Enumeration<String> e = request.getParameterNames();
-        boolean first = true;
         while (e.hasMoreElements()) {
             String name = e.nextElement();
             for (String value : request.getParameterValues(name)) {
-                urlQuery += (first ? "?" : "&") + name + "=" +value;
-                if (first) first = false;
+                parameters.append(name).append('=').append(value).append('&');
             }
         }
-        WgetScriptGenerator.WgetDescriptor desc = new WgetScriptGenerator.WgetDescriptor(request.getServerName(), null, urlQuery);
-        
+        //there's always one more. either '?' if empty or '&' if not.
+        parameters.setLength(parameters.length()-1);
+        WgetScriptGenerator.WgetDescriptor desc = new WgetScriptGenerator.WgetDescriptor(
+                request.getServerName(), null, 
+                request.getRequestURL().toString() + parameters.toString());
         
         final List<String> urls = new ArrayList<String>();
         
@@ -143,7 +149,7 @@ public class WgetController {
                 
                 // write out the script to the HTTP response
                 response.setContentType("text/x-sh");
-                response.addHeader("Content-Disposition", "attachment; filename=" + SCRIPT_NAME );
+                response.addHeader("Content-Disposition", "attachment; filename=" + String.format(SCRIPT_NAME, timestamp.format(new Date())) );
                 response.setContentLength((int) wgetScript.length());
                 PrintWriter out = response.getWriter();
                 out.print(wgetScript);

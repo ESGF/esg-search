@@ -35,6 +35,7 @@ public class QueryParameters {
     final public static String FIELD_LATEST = "latest";
     final public static String FIELD_MASTER_ID = "master_id";
     final public static String FIELD_INSTANCE_ID = "instance_id";
+    final public static String FIELD_DRS_ID = "drs_id";
     final public static String FIELD_TITLE = "title";
     final public static String FIELD_DESCRIPTION = "description";
     final public static String FIELD_TIMESTAMP = "timestamp";
@@ -48,12 +49,7 @@ public class QueryParameters {
     final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
     final public static String FIELD_INDEX_NODE = "index_node";
     final public static String FIELD_DATA_NODE = "data_node";
-    
-    public final static List<String> STANDARD_FIELDS = Arrays.asList( new String[]{ 
-            FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_LATEST, FIELD_MASTER_ID, FIELD_TITLE, 
-            FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_SIZE, FIELD_DATASET_ID,
-            FIELD_VERSION, FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE, FIELD_DATA_NODE, FIELD_INDEX_NODE });
-    
+        
     // special query fields for open search geo extension
     public final static String FIELD_BBOX ="bbox";  // west, south, east, north
     public final static String FIELD_LAT ="lat";
@@ -65,6 +61,15 @@ public class QueryParameters {
     // special query fields for open search time extension
     public final static String FIELD_START = "start";
     public final static String FIELD_END = "end";
+    
+    // fields that are always allowed in queries, in addition to configured facets
+    public final static List<String> CORE_QUERY_FIELDS = Arrays.asList( new String[]{ 
+            FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_LATEST, FIELD_MASTER_ID, FIELD_INSTANCE_ID, FIELD_DRS_ID,
+            FIELD_TITLE, FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_XLINK, FIELD_SIZE, FIELD_DATASET_ID,
+            FIELD_VERSION, FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE, FIELD_DATA_NODE, FIELD_INDEX_NODE,
+            FIELD_BBOX, FIELD_BBOX, FIELD_LON, FIELD_LON, FIELD_RADIUS, FIELD_POLYGON,
+            FIELD_START, FIELD_END });
+
     
     // HTTP mime types
     public final static String MIME_TYPE_THREDDS = "application/xml+thredds";   
@@ -87,11 +92,6 @@ public class QueryParameters {
      */
     public static Pattern INVALID_CHARACTERS = Pattern.compile(".*[^a-zA-Z0-9_+\\-\\.\\@\\'\\:\\;\\,\\s/()\\*\\\"\\[\\]].*!");
     
-    /**
-     * Patter for replicas ids: <id:origin:publisher>
-     */
-    public static Pattern REPLICA_PATTERN = Pattern.compile("([^:]+):([^:]+):([^:]+)");
-
     /**
      * Format for temporal queries.
      */

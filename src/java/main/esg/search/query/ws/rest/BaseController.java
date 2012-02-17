@@ -84,7 +84,9 @@ public class BaseController {
             final SearchCommand command, 
             final HttpServletResponse response) throws Exception {
 	    	    	    
-	    // check all HTTP parameters for bad characters
+	    // check all HTTP parameters:
+	    //  -) reject if they contain bad characters
+	    //  -) reject if not contained in list of allowed parameters
 	    for (final Object obj : request.getParameterMap().keySet()) {
 	        
 	        // check parameter name
@@ -106,6 +108,15 @@ public class BaseController {
                                                       response); 
                                                                                   
             }
+            
+            // check parameter name versus allowed list
+            // remove possible trailing '!' for negative constraints
+            final String _key = key.replaceAll("!$", "");
+            if (   !QueryParameters.KEYWORDS.contains(_key)
+                && !QueryParameters.CORE_QUERY_FIELDS.contains(_key)
+                && !facetProfile.getTopLevelFacets().keySet().contains(_key)) {
+                sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid HTTP query parameter="+key, response); 
+            }
 	        
 	    }
 	            
@@ -125,12 +136,12 @@ public class BaseController {
         // keyword "facets": &facets=facet1,facet2,...
         // -) translate "*" into explicit list of facets defined in facet profile
         // -) process comma-separated list from HTTP request into list of string values
-        final Set<String> allowedFacets = facetProfile.getTopLevelFacets().keySet();
+        final Set<String> defaultFacets = facetProfile.getTopLevelFacets().keySet();
         if (!command.getFacets().isEmpty()) {
             for (String facets : command.getFacets()) {
                 // special value: include all configured facets
                 if (facets.equals("*")) {
-                    command.setFacets(new ArrayList<String>(allowedFacets));
+                    command.setFacets(new ArrayList<String>(defaultFacets));
                 } else {
                     command.setFacets( Arrays.asList( facets.split("\\s*,\\s*") ));
                 }

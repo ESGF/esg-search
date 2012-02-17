@@ -84,10 +84,11 @@ Note: Check Maven for propery dependency parameter values @
     <dependency org="org.springframework.security" name="spring-security-core" rev="3.0.5.RELEASE" transitive="false"/>
     <dependency org="org.springframework.security" name="spring-security-web" rev="3.0.5.RELEASE" transitive="false"/>    
     
-    <dependency org="org.esgf" name="esg-orp" rev="1.2.9"/>
-    <dependency org="org.esgf" name="esgf-security" rev="1.5.4">
-    	<exclude org="com.google.code.guice"/>
+    <dependency org="org.esgf" name="esg-orp" rev="1.2.9">
+            <exclude org="com.google.code.guice"/>
     </dependency>    
+    <dependency org="org.esgf" name="esgf-security" rev="1.5.4"/>
+
     
     <dependency org="org.jdom" name="jdom" rev="1.1"/>
     
