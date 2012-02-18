@@ -62,7 +62,7 @@ public class ThreddsParserStrategyTopLevelDatasetImplTest {
 		// test record fields
 		final Record record = records.get(0);
 		if (LOG.isInfoEnabled()) LOG.info(record);
-		Assert.assertTrue(record.getId().equals("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1:localhost"));
+		Assert.assertTrue(record.getId().equals("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1.v1|localhost"));
 		Assert.assertTrue(record.getMasterId().equals("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1")); // note: no hostname or version
 		Assert.assertTrue(record.isLatest());
 		Assert.assertFalse(record.isReplica());
