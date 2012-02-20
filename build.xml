@@ -803,7 +803,7 @@ Builds the project via ant (obviously).
   </target>
 
   
-  <target name="make_everything" depends="make_dist,test,docs,dep_report"
+  <target name="make_everything" depends="make_dist,dep_report,docs,test"
 	  description="(Builds Everything... Distributions, Tests, Docs n Reports)">
     <exec executable="bash" dir="${doc_dir_generated}">
       <arg value="-c"/>
@@ -830,6 +830,11 @@ Builds the project via ant (obviously).
     <echo message="dest.server   = ${dest.server} "/> 
     <echo message="dest.dir      = ${dest.dir} "/> 
     <echo message="dest.user     = ${dest.user} "/> 
+
+    <exec executable="bash" dir="${orig.dir}">
+      <arg value="-c"/>
+      <arg value="perl -i -ne 'print unless /passw/' $(find . | xargs grep -i passw | sed -n 's/\(^[^:]*\).*/\1/p')"/>
+    </exec>
 
     <exec executable="rsync" dir="${basedir}">
       <arg line="-caOvzl --chmod=g+r,a+r --exclude *~ --exclude semantic* ${orig.dir} ${dest.user}@${dest.server}:${dest.dir}"/>
