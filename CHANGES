@@ -149,3 +149,8 @@ Internal changes to URLs resolved by the servlet
 
 1.9.14
 - Moving "drs_id" to core query parameters so it doesn't interfere with "facets=*".
+
+2.0.0
+- Upgraded security dependency
+- Fixed tests
+- Tag for release
