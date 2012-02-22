@@ -120,6 +120,6 @@
 	<classpathentry kind="lib" path="lib/fetched/servlet-api-6.0.29.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esg-orp-1.2.9.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/hessian-4.0.7.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.0.2.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

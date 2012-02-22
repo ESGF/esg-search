@@ -154,3 +154,6 @@ Internal changes to URLs resolved by the servlet
 - Upgraded security dependency
 - Fixed tests
 - Tag for release
+
+2.0.2
+- Upgraded security dependency.
