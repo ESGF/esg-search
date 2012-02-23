@@ -29,7 +29,7 @@
   	<bean id="myUserDetailsService" class="esg.orp.orp.MyUserDetailsService" />
   	
   	<!-- Authorizer used to secure publishing requests -->
-    <bean name="authorizer" class="esg.orp.app.SAMLAuthorizationServiceClient">
+    <bean name="authorizer" class="esg.orp.app.SAMLAuthorizer">
         <property name="endpoints">
                 <value>${security.authz.service.endpoint}</value>
         </property>
