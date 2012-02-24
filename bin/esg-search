@@ -131,8 +131,8 @@ setup_search() {
 
     setup_search_service ${upgrade} && write_search_service_install_log
     [ $? != 0 ] && echo " ERROR: Could not fully install search service" && checked_done 1
-    write_as_property index_endpoint "http://${esgf_host:-$(hostname --fqdn)}/esg-search/search"
-    write_as_property index_app_home ${search_web_service_dir}
+    write_as_property index_service_endpoint "http://${esgf_host:-$(hostname --fqdn)}/esg-search/search"
+    write_as_property index_service_app_home ${search_web_service_dir}
     write_as_property index_master_port
     write_as_property index_slave_port
     
@@ -176,8 +176,8 @@ clean_search_subsystem() {
     #Remove configuration properties
     #---------------
     remove_search_rss_properties
-    remove_property index_endpoint
-    remove_property index_app_home
+    remove_property index_service_endpoint
+    remove_property index_service_app_home
     remove_property publishing_service_endpoint
     remove_property publishing_service_app_home
 
@@ -233,7 +233,7 @@ setup_search_service() {
         read -p "Do you want to make a back up of the existing distribution?? [Y/n] " dobackup
         [ -z "${dobackup}" ] && dobackup=${default}
         if [ "${dobackup}" = "Y" ] || [ "${dobackup}" = "y" ]; then
-            echo "Creating a backup archive of this web application $security_app_home"
+            echo "Creating a backup archive of this web application ${search_web_service_dir}"
             backup ${search_web_service_dir}
         fi
 
