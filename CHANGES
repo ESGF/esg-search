@@ -160,3 +160,6 @@ Internal changes to URLs resolved by the servlet
 
 2.0.3
 - Upgraded ORP dependency
+
+2.1.0
+- Upgraded ORP & security dependency
