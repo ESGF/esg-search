@@ -163,3 +163,6 @@ Internal changes to URLs resolved by the servlet
 
 2.1.0
 - Upgraded ORP & security dependency
+
+2.1.1
+- Upgraded node-manager dependency
