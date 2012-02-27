@@ -122,7 +122,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         // recursion
 		long size = parseSubDatasets(dataset, latest, isReplica, records, hostName);
 		// set total size of dataset
-		record.addField(SolrXmlPars.FIELD_SIZE, Long.toString(size));
+		record.addField(QueryParameters.FIELD_SIZE, Long.toString(size));
 		
 		// debug
 		if (LOG.isDebugEnabled()) {
@@ -258,8 +258,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         long size = 0; // 0 file size by default
         this.parseProperties(file, record);
         // set size if found
-        if (StringUtils.hasText( record.getFieldValue(SolrXmlPars.FIELD_SIZE)) ) {
-            size = Long.parseLong(record.getFieldValue(SolrXmlPars.FIELD_SIZE));
+        if (StringUtils.hasText( record.getFieldValue(QueryParameters.FIELD_SIZE)) ) {
+            size = Long.parseLong(record.getFieldValue(QueryParameters.FIELD_SIZE));
         }
         
         this.parseVariables(file, record);
@@ -322,7 +322,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
                 }
                 
             } else if (property.getName().equals(ThreddsPars.SIZE)) {
-                record.addField(SolrXmlPars.FIELD_SIZE, property.getValue());
+                record.addField(QueryParameters.FIELD_SIZE, property.getValue());
                 
             // set replica flag
             } else if (property.getName().equals(ThreddsPars.IS_REPLICA)) {
