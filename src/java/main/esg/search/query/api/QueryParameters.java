@@ -132,8 +132,8 @@ public class QueryParameters {
     /**
      * Common record types.
      */
-    public final static String TYPE_DATASET = "Dataset";
-    public final static String TYPE_FILE = "File";
+    public final static String TYPE_DATASET = "dataset";
+    public final static String TYPE_FILE = "file";
 
     /**
      * The default results type to search for, if none is specified.

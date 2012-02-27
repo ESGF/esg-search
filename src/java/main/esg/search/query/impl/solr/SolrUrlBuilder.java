@@ -347,7 +347,7 @@ public class SolrUrlBuilder {
 	private String getCore() throws MalformedURLException {
 	        
         // The specific Solr core, as determined by the results type
-        final String type = input.getConstraint(QueryParameters.FIELD_TYPE);
+        final String type = input.getConstraint(QueryParameters.FIELD_TYPE).toLowerCase();
         final String core = SolrXmlPars.CORES.get(type);
         if (!StringUtils.hasText(core)) {
             throw new MalformedURLException("Unsupported results type: "+type+" is not mapped to any Solr core");

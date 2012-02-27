@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 
 import esg.node.connection.ESGConnector;
 import esg.search.query.api.FacetProfile;
@@ -24,6 +26,7 @@ import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchReturnType;
 import esg.search.query.api.SearchService;
+import esg.search.query.impl.solr.SearchInputImpl;
 
 /**
  * Class containing the base functionality for executing RESTful requests to the ESGF metadata services.
@@ -111,7 +114,8 @@ public class BaseController {
             
             // check parameter name versus allowed list
             // remove possible trailing '!' for negative constraints
-            final String _key = key.replaceAll("!$", "");
+            // perform case-insensitive search
+            final String _key = key.replaceAll("!$", "").toLowerCase();
             if (   !QueryParameters.KEYWORDS.contains(_key)
                 && !QueryParameters.CORE_QUERY_FIELDS.contains(_key)
                 && !facetProfile.getTopLevelFacets().keySet().contains(_key)) {
@@ -128,7 +132,7 @@ public class BaseController {
         }
         
         // keyword "format": check requested output format
-        SearchReturnType format = SearchReturnType.forMimeType(command.getFormat());
+        SearchReturnType format = SearchReturnType.forMimeType(command.getFormat().toLowerCase());
         if (format==null) sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, 
                                     "Invalid requested format: "+ command.getFormat(), response);
 
@@ -176,8 +180,10 @@ public class BaseController {
 	    // note that keywords are automatically bound by Spring to the SearchInput fields
 	    // &query=... &offset=... &limit=... &format=... &facets=... &fields=... &distrib=... &shards=... &from=... &to=...
         for (final Object obj : request.getParameterMap().keySet()) {
-            final String parName = (String)obj;
-            if (!QueryParameters.KEYWORDS.contains( parName.toLowerCase() )) {
+            final String _parName = (String)obj;
+            // reduce HTTP parameter name to lower case
+            final String parName = _parName.toLowerCase();
+            if (!QueryParameters.KEYWORDS.contains( parName )) {
              
                 // Unsupported fields
                 if (   parName.equals(QueryParameters.FIELD_LAT) 
@@ -203,7 +209,7 @@ public class BaseController {
                 // MULTI-VALUED CONSTRAINTS (parse all HTTP parameter values)
                 // &facet1=value1&facet1=value2
                 } else {
-                    final String[] parValues = request.getParameterValues(parName);
+                    final String[] parValues = request.getParameterValues(_parName); // retrieve by original parameter name
                     for (final String parValue : parValues) command.addConstraint(parName, parValue);
                 }
                 
