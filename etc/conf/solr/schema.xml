@@ -426,8 +426,9 @@
        when adding a document.
    -->
 
-   <!--  The unique ID of the document -->
-   <field name="id" type="lowercase" indexed="true" stored="true" required="true" /> 
+   <!--  The unique ID of the document. 
+         Note that this field MUST be of type string, as per Solr requirements. -->
+   <field name="id" type="string" indexed="true" stored="true" required="true" /> 
    
    <!-- Other mandatory fields necessary for finding, displaying and hyper-linking search results. -->
    
