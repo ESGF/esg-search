@@ -206,9 +206,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	                        
         // FIXME
         // metadata format
-        record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");      
+        record.addField(QueryParameters.FIELD_METADATA_FORMAT, "THREDDS");      
         // metadata file name
-        record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
+        record.addField(QueryParameters.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
         
         this.parseDocumentation(dataset, record);
         
@@ -350,16 +350,16 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         for (final Variables variables : dataset.getVariables()) {
             final String vocabulary = variables.getVocabulary();
             for (final Variable variable : variables.getVariableList()) {
-                record.addField(SolrXmlPars.FIELD_VARIABLE, variable.getName());
+                record.addField(QueryParameters.FIELD_VARIABLE, variable.getName());
                 if (vocabulary.equals(ThreddsPars.CF)) {
                     // convert all CF names to lower case, and join by "_"
-                    record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, 
+                    record.addField(QueryParameters.FIELD_CF_STANDARD_NAME, 
                                    variable.getVocabularyName().toLowerCase().replaceAll("\\s+", "_"));
                     // do not include if containing upper case letters or spaces
                     //final Matcher matcher = NON_CF_PATTERN.matcher(variable.getVocabularyName());
                     //if (!matcher.matches()) record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, variable.getVocabularyName());
                 }
-                if (StringUtils.hasText(variable.getDescription())) record.addField(SolrXmlPars.FIELD_VARIABLE_LONG_NAME, variable.getDescription());
+                if (StringUtils.hasText(variable.getDescription())) record.addField(QueryParameters.FIELD_VARIABLE_LONG_NAME, variable.getDescription());
             }
         }
 	    
@@ -454,13 +454,13 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		
 		if (gsc!=null) {
 		    
-			record.addField(SolrXmlPars.FIELD_SOUTH, Double.toString(gsc.getNorthSouthRange().getStart()));
+			record.addField(QueryParameters.FIELD_SOUTH, Double.toString(gsc.getNorthSouthRange().getStart()));
 		
-			record.addField(SolrXmlPars.FIELD_NORTH, Double.toString(gsc.getNorthSouthRange().getStart()+gsc.getNorthSouthRange().getSize()));
+			record.addField(QueryParameters.FIELD_NORTH, Double.toString(gsc.getNorthSouthRange().getStart()+gsc.getNorthSouthRange().getSize()));
 			
-			record.addField(SolrXmlPars.FIELD_WEST, Double.toString(gsc.getEastWestRange().getStart()));
+			record.addField(QueryParameters.FIELD_WEST, Double.toString(gsc.getEastWestRange().getStart()));
 			
-			record.addField(SolrXmlPars.FIELD_EAST, Double.toString(gsc.getEastWestRange().getStart()+gsc.getEastWestRange().getSize()));
+			record.addField(QueryParameters.FIELD_EAST, Double.toString(gsc.getEastWestRange().getStart()+gsc.getEastWestRange().getSize()));
 			
 		}
 	}
@@ -480,8 +480,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		final DateRange daterange = dataset.getTimeCoverage();
 		
 		if (daterange!=null) {
-			record.addField(SolrXmlPars.FIELD_DATETIME_START, daterange.getStart().toDateTimeStringISO());	
-			record.addField(SolrXmlPars.FIELD_DATETIME_STOP, daterange.getEnd().toDateTimeStringISO());
+			record.addField(QueryParameters.FIELD_DATETIME_START, daterange.getStart().toDateTimeStringISO());	
+			record.addField(QueryParameters.FIELD_DATETIME_STOP, daterange.getEnd().toDateTimeStringISO());
 		}
 		
 	}

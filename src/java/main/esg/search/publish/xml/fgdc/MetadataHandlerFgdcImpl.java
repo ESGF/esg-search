@@ -55,10 +55,10 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 		final Namespace ns = root.getNamespace();
 		
 		//metadata format
-		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "FGDC");
+		record.addField(QueryParameters.FIELD_METADATA_FORMAT, "FGDC");
 		
 		//metadata file name
-		record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
+		record.addField(QueryParameters.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
 		
 		
 		//add the required field type
@@ -183,10 +183,10 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 		if(begdateEl != null && enddateEl != null)
 		{
 			String date = dateConversion(begdateEl.getTextNormalize());
-			record.addField(SolrXmlPars.FIELD_DATETIME_START, date);
+			record.addField(QueryParameters.FIELD_DATETIME_START, date);
 			
 			date = dateConversion(enddateEl.getTextNormalize());
-			record.addField(SolrXmlPars.FIELD_DATETIME_STOP, date);
+			record.addField(QueryParameters.FIELD_DATETIME_STOP, date);
 			
 			
 		}
@@ -227,10 +227,10 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 		
 		if(westbcEl != null && eastbcEl != null && northbcEl != null && southbcEl != null)
 		{
-			record.addField(SolrXmlPars.FIELD_WEST, westbcEl.getTextNormalize());
-			record.addField(SolrXmlPars.FIELD_EAST, eastbcEl.getTextNormalize());
-			record.addField(SolrXmlPars.FIELD_NORTH, northbcEl.getTextNormalize());
-			record.addField(SolrXmlPars.FIELD_SOUTH, southbcEl.getTextNormalize());
+			record.addField(QueryParameters.FIELD_WEST, westbcEl.getTextNormalize());
+			record.addField(QueryParameters.FIELD_EAST, eastbcEl.getTextNormalize());
+			record.addField(QueryParameters.FIELD_NORTH, northbcEl.getTextNormalize());
+			record.addField(QueryParameters.FIELD_SOUTH, southbcEl.getTextNormalize());
 		}
 		
 		
@@ -268,7 +268,7 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 				for(final Object themekeyEl : ((Element)themeEl).getChildren("theme")) 
 				{
 					String themekeyStr = ((Element)themekeyEl).getTextNormalize();
-					record.addField(SolrXmlPars.FIELD_INSTRUMENT, themekeyStr);
+					record.addField(QueryParameters.FIELD_INSTRUMENT, themekeyStr);
 				}
 			}
 			/*
@@ -282,7 +282,7 @@ public class MetadataHandlerFgdcImpl implements MetadataHandler {
 				for(final Object themekeyEl : ((Element)themeEl).getChildren("theme")) 
 				{
 					String themekeyStr = ((Element)themekeyEl).getTextNormalize();
-					record.addField(SolrXmlPars.FIELD_VARIABLE, themekeyStr);
+					record.addField(QueryParameters.FIELD_VARIABLE, themekeyStr);
 				}
 			}
 			

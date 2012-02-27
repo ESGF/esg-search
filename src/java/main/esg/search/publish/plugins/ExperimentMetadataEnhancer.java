@@ -7,8 +7,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import esg.search.core.Record;
-import esg.search.publish.thredds.ThreddsPars;
-import esg.search.query.impl.solr.SolrXmlPars;
+import esg.search.query.api.QueryParameters;
 
 /**
  * Class to post-process the "experiment" metadata field by:
@@ -23,8 +22,8 @@ import esg.search.query.impl.solr.SolrXmlPars;
  */
 public class ExperimentMetadataEnhancer extends MappingPropertiesMetadataEnhencer {
     
-    final static String KEYIN = SolrXmlPars.FIELD_EXPERIMENT;
-    final static String KEYOUT = SolrXmlPars.FIELD_EXPERIMENT_FAMILY;
+    final static String KEYIN = QueryParameters.FIELD_EXPERIMENT;
+    final static String KEYOUT = QueryParameters.FIELD_EXPERIMENT_FAMILY;
     
     final static String FAMILY_ALL = "All";
     final static String FAMILY_DECADAL = "Decadal";

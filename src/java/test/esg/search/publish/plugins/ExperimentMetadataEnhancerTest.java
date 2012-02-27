@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
-import esg.search.query.impl.solr.SolrXmlPars;
+import esg.search.query.api.QueryParameters;
 
 /**
  * Test class for {@link ExperimentMetadataEnhancer}.
@@ -85,9 +85,9 @@ public class ExperimentMetadataEnhancerTest {
         final Record record = new RecordImpl();
         List<String> values = new ArrayList<String>();
         values.add(experiment);
-        eme.enhance(SolrXmlPars.FIELD_EXPERIMENT, values, record);
-        Assert.isTrue(record.getFieldValues(SolrXmlPars.FIELD_EXPERIMENT_FAMILY).contains(experiment_family));
-        Assert.isTrue(record.getFieldValues(SolrXmlPars.FIELD_EXPERIMENT_FAMILY).contains(ExperimentMetadataEnhancer.FAMILY_ALL));
+        eme.enhance(QueryParameters.FIELD_EXPERIMENT, values, record);
+        Assert.isTrue(record.getFieldValues(QueryParameters.FIELD_EXPERIMENT_FAMILY).contains(experiment_family));
+        Assert.isTrue(record.getFieldValues(QueryParameters.FIELD_EXPERIMENT_FAMILY).contains(ExperimentMetadataEnhancer.FAMILY_ALL));
     }
 
 }

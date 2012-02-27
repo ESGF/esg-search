@@ -74,10 +74,10 @@ public class MetadataHandlerCasRdfImpl implements MetadataHandler {
 		record.setId(id.trim());
 		
 		//metadata format
-		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "CAS");
+		record.addField(QueryParameters.FIELD_METADATA_FORMAT, "CAS");
 		
 		//metadata file name
-		record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
+		record.addField(QueryParameters.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
 		
 		
 		
@@ -94,7 +94,7 @@ public class MetadataHandlerCasRdfImpl implements MetadataHandler {
 		record.addField(QueryParameters.FIELD_URL, about);
 		
 		// FIXME: hardwire project
-		record.addField(SolrXmlPars.FIELD_PROJECT, "MLS");		
+		record.addField(QueryParameters.FIELD_PROJECT, "MLS");		
 		
 		// <esg:RANGEBEGINNINGDATE>"2008-04-16"</esg:RANGEBEGINNINGDATE>
 		// <esg:RANGEBEGINNINGTIME>"00:00:00.000000Z"</esg:RANGEBEGINNINGTIME>
@@ -102,27 +102,27 @@ public class MetadataHandlerCasRdfImpl implements MetadataHandler {
 		// <esg:RANGEENDINGTIME>"23:59:59.999999Z"</esg:RANGEENDINGTIME>
 		final String beginDate = element.getChildText("RANGEBEGINNINGDATE", CasPars.ESG_NS).replaceAll("\"", "");
 		final String beginTime = element.getChildText("RANGEBEGINNINGTIME", CasPars.ESG_NS).replaceAll("\"", "");
-		record.addField(SolrXmlPars.FIELD_DATETIME_START, beginDate + "T" + beginTime);
+		record.addField(QueryParameters.FIELD_DATETIME_START, beginDate + "T" + beginTime);
 		final String endDate = element.getChildText("RANGEENDINGDATE", CasPars.ESG_NS).replaceAll("\"", "");
 		final String endTime = element.getChildText("RANGEENDINGTIME", CasPars.ESG_NS).replaceAll("\"", "");
-		record.addField(SolrXmlPars.FIELD_DATETIME_STOP, endDate + "T" + endTime);
+		record.addField(QueryParameters.FIELD_DATETIME_STOP, endDate + "T" + endTime);
 
 		// <esg:NORTHBOUNDINGCOORDINATE>90.0</esg:NORTHBOUNDINGCOORDINATE>
 		// <esg:EASTBOUNDINGCOORDINATE>180.0</esg:EASTBOUNDINGCOORDINATE>
 		// <esg:WESTBOUNDINGCOORDINATE>-180.0</esg:WESTBOUNDINGCOORDINATE>
 		// <esg:SOUTHBOUNDINGCOORDINATE>-90.0</esg:SOUTHBOUNDINGCOORDINATE>
 		final String north = element.getChildText("NORTHBOUNDINGCOORDINATE", CasPars.ESG_NS).replaceAll("\"", "");
-		record.addField(SolrXmlPars.FIELD_NORTH, north);
+		record.addField(QueryParameters.FIELD_NORTH, north);
 		final String south = element.getChildText("SOUTHBOUNDINGCOORDINATE", CasPars.ESG_NS).replaceAll("\"", "");
-		record.addField(SolrXmlPars.FIELD_SOUTH, south);
+		record.addField(QueryParameters.FIELD_SOUTH, south);
 		final String east = element.getChildText("EASTBOUNDINGCOORDINATE", CasPars.ESG_NS).replaceAll("\"", "");
-		record.addField(SolrXmlPars.FIELD_EAST, east);
+		record.addField(QueryParameters.FIELD_EAST, east);
 		final String west = element.getChildText("WESTBOUNDINGCOORDINATE", CasPars.ESG_NS).replaceAll("\"", "");
-		record.addField(SolrXmlPars.FIELD_WEST, west);
+		record.addField(QueryParameters.FIELD_WEST, west);
 		
 		// <cas:ProductType>he5</cas:ProductType>
 		final String productType = element.getChildText("ProductType", CasPars.CAS_NS).replaceAll("\"", "");
-		record.addField(SolrXmlPars.FIELD_DATA_FORMAT, productType);
+		record.addField(QueryParameters.FIELD_DATA_FORMAT, productType);
 		
 		// <cas:FileLocation>/home/joshuaga/staging/products/mls/</cas:FileLocation>
 		// <esg:LOCALVERSIONID>"c01"</esg:LOCALVERSIONID>

@@ -55,10 +55,10 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 		record.setId(entryId);
 		
 		//metadata format
-		record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "OAI");
+		record.addField(QueryParameters.FIELD_METADATA_FORMAT, "OAI");
 		
 		//metadata file name
-		record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
+		record.addField(QueryParameters.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
 		
 		
 		// type
@@ -76,7 +76,7 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 		// </Parameters>
 		for (final Object parametersEl : root.getChildren("Parameters", ns)) {
 			final String parameter = parseParameter( (Element)parametersEl );
-			record.addField(SolrXmlPars.FIELD_GCMD_TERM, parameter);
+			record.addField(QueryParameters.FIELD_GCMD_TERM, parameter);
 		}
 		
 		// <Project>
@@ -88,7 +88,7 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 			final Element shortNameEl = projectEl.getChild("Short_Name", ns);
 			final String project = shortNameEl.getTextNormalize();
 			//final Element longNameEl = projectEl.getChild("Long_Name", ns);
-			record.addField(SolrXmlPars.FIELD_PROJECT, project);
+			record.addField(QueryParameters.FIELD_PROJECT, project);
 		}
 		
 		// <Sensor_Name>
@@ -100,7 +100,7 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 			final Element shortNameEl = sensorEl.getChild("Short_Name", ns);
 			final Element longNameEl = sensorEl.getChild("Long_Name", ns);
 			final String instrument = longNameEl.getTextNormalize();
-			record.addField(SolrXmlPars.FIELD_INSTRUMENT, instrument);
+			record.addField(QueryParameters.FIELD_INSTRUMENT, instrument);
 		}
 		
 		// <Related_URL>
@@ -134,16 +134,16 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 			final Element _spatial_coverageEl = (Element)_geoEl;
 			
 			final Element _Southernmost_LatitudeEl = _spatial_coverageEl.getChild("Southernmost_Latitude", ns);
-			record.addField(SolrXmlPars.FIELD_SOUTH, _Southernmost_LatitudeEl.getTextNormalize());
+			record.addField(QueryParameters.FIELD_SOUTH, _Southernmost_LatitudeEl.getTextNormalize());
 			
 			final Element _Northernmost_LatitudeEl = _spatial_coverageEl.getChild("Northernmost_Latitude", ns);
-			record.addField(SolrXmlPars.FIELD_NORTH, _Northernmost_LatitudeEl.getTextNormalize());
+			record.addField(QueryParameters.FIELD_NORTH, _Northernmost_LatitudeEl.getTextNormalize());
 			
 			final Element _Westernmost_LatitudeEl = _spatial_coverageEl.getChild("Westernmost_Longitude", ns);
-			record.addField(SolrXmlPars.FIELD_WEST, _Westernmost_LatitudeEl.getTextNormalize());
+			record.addField(QueryParameters.FIELD_WEST, _Westernmost_LatitudeEl.getTextNormalize());
 			
 			final Element _Easternmost_LatitudeEl = _spatial_coverageEl.getChild("Easternmost_Longitude", ns);
-			record.addField(SolrXmlPars.FIELD_EAST, _Easternmost_LatitudeEl.getTextNormalize());
+			record.addField(QueryParameters.FIELD_EAST, _Easternmost_LatitudeEl.getTextNormalize());
 			
 		}
 		
@@ -157,10 +157,10 @@ public class MetadataHandlerDifImpl implements MetadataHandler {
 			final Element _spatial_coverageEl = (Element)_geoEl;
 			
 			final Element _Start_DateEl = _spatial_coverageEl.getChild("Start_Date", ns);
-			record.addField(SolrXmlPars.FIELD_DATETIME_START, dateToISO8601(_Start_DateEl.getTextNormalize()));
+			record.addField(QueryParameters.FIELD_DATETIME_START, dateToISO8601(_Start_DateEl.getTextNormalize()));
 			
 			final Element _Stop_DateEl = _spatial_coverageEl.getChild("Stop_Date", ns);
-			record.addField(SolrXmlPars.FIELD_DATETIME_STOP, dateToISO8601(_Stop_DateEl.getTextNormalize()));
+			record.addField(QueryParameters.FIELD_DATETIME_STOP, dateToISO8601(_Stop_DateEl.getTextNormalize()));
 			
 		}
 		

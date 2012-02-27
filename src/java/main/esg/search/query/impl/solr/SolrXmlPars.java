@@ -72,9 +72,9 @@ public class SolrXmlPars {
 	//final public static String FIELD_TIMESTAMP = "timestamp";
 	
 	// field names: metadata file information
-	final public static String FIELD_METADATA_FORMAT = "metadata_format";
-	final public static String FIELD_METADATA_URL = "metadata_url";
-	final public static String FIELD_METADATA_FILE_NAME = "metadata_file_name";
+	//final public static String FIELD_METADATA_FORMAT = "metadata_format";
+	//final public static String FIELD_METADATA_URL = "metadata_url";
+	//final public static String FIELD_METADATA_FILE_NAME = "metadata_file_name";
 
 	// field names:
 	
@@ -85,25 +85,25 @@ public class SolrXmlPars {
 	
 	
 	// field names: physical data
-	final public static String FIELD_PROJECT = "project";
-	final public static String FIELD_INSTRUMENT = "instrument";
-	final public static String FIELD_VARIABLE = "variable";
-	final public static String FIELD_CF_STANDARD_NAME = "cf_standard_name";
-	final public static String FIELD_VARIABLE_LONG_NAME = "variable_long_name";
-	final public static String FIELD_GCMD_TERM = "gcmd_term";
-	final public static String FIELD_EXPERIMENT = "experiment";
-	final public static String FIELD_EXPERIMENT_FAMILY = "experiment_family";
+	//final public static String FIELD_PROJECT = "project";
+	//final public static String FIELD_INSTRUMENT = "instrument";
+	//final public static String FIELD_VARIABLE = "variable";
+	//final public static String FIELD_CF_STANDARD_NAME = "cf_standard_name";
+	//final public static String FIELD_VARIABLE_LONG_NAME = "variable_long_name";
+	//final public static String FIELD_GCMD_TERM = "gcmd_term";
+	//final public static String FIELD_EXPERIMENT = "experiment";
+	//final public static String FIELD_EXPERIMENT_FAMILY = "experiment_family";
 	
-	final public static String FIELD_DATETIME_START = "datetime_start";
-	final public static String FIELD_DATETIME_STOP = "datetime_stop";
+	//final public static String FIELD_DATETIME_START = "datetime_start";
+	//final public static String FIELD_DATETIME_STOP = "datetime_stop";
 	
-	final public static String FIELD_NORTH = "north_degrees";
-	final public static String FIELD_SOUTH = "south_degrees";
-	final public static String FIELD_EAST = "east_degrees";
-	final public static String FIELD_WEST = "west_degrees";
+	//final public static String FIELD_NORTH = "north_degrees";
+	//final public static String FIELD_SOUTH = "south_degrees";
+	//final public static String FIELD_EAST = "east_degrees";
+	//final public static String FIELD_WEST = "west_degrees";
 	
-	final public static String FIELD_DATA_FORMAT = "data_format";
-	final public static String FIELD_FILE_NAME = "file_name";
+	//final public static String FIELD_DATA_FORMAT = "data_format";
+	//final public static String FIELD_FILE_NAME = "file_name";
 		
 	/**
 	 * Map holding references from record type to Solr core storing those records.
