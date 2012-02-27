@@ -36,7 +36,7 @@ public class StaticPropertiesMetadataEnhancer extends BaseMetadataEnhancerImpl {
      */
     public StaticPropertiesMetadataEnhancer(final String key, final String name, final Properties properties) {
         this.key = key;
-        this.name = name;
+        this.name = name.toLowerCase();
         this.properties = properties;
     }
 

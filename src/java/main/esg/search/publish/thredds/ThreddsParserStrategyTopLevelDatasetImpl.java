@@ -292,7 +292,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	}
 	
 	/**
-	 * Method to parse all (key,value) pair properties of a dataset into a search record fields.
+	 * Method to parse all (key,value) pair properties of a dataset into the search record fields.
 	 * @param dataset
 	 * @param record
 	 */
@@ -330,7 +330,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
                 
             } else {
                 // index all other properties verbatim
-                record.addField(property.getName(), property.getValue());
+                // reduce the property name to lower case
+                record.addField(property.getName().toLowerCase(), property.getValue());
             }
         }
 	    
@@ -544,23 +545,6 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         return record;
 
 	}
-	
-	/**
-	 * Method to encode master/replica information.
-	 */
-	/*
-	private void setReplicaFields(final Record record, final boolean isReplica, final String hostName) {
-	    
-        if (isReplica) {
-            record.addField(QueryParameters.FIELD_REPLICA, "true");
-            record.addField(QueryParameters.FIELD_MASTER_ID, record.getId());
-            record.setId(this.buildReplicaId(record.getId(), hostName));
-        } else {
-            record.addField(QueryParameters.FIELD_REPLICA, "false");
-            record.addField(QueryParameters.FIELD_MASTER_ID, record.getId());
-        }
-
-	} */
 	
 	/**
 	 * Utility method to apply the configured metadata enhancers

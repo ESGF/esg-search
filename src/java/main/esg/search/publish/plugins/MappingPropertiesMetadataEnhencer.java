@@ -42,7 +42,7 @@ public class MappingPropertiesMetadataEnhencer extends BaseMetadataEnhancerImpl 
                 _values.add(value);
             }
         }
-        record.setField(name, _values);
+        record.setField(name.toLowerCase(), _values);
         
     }
 

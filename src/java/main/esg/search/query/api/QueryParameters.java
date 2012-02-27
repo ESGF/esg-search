@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 /**
  * Class containing query constants.
+ * Note: by convention, all query parameters need to be lower case.
  * 
  * @author Luca Cinquini
  *
