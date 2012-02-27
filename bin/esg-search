@@ -275,24 +275,23 @@ setup_search_service() {
     local search_service_war_file=$(pwd)/${trimmed_name}.war
     echo "search_service_war_file = "${search_service_war_file}
 
-    [ -d "${search_web_service_dir}" ] && \
-        echo "Moving Previous Installation of the ESGF Search Services..." && \
-        mv -v ${search_web_service_dir}{,.bak}
+    #----------------------------
+    #make room for new install
+    set_aside_web_app ${search_web_service_dir}
+    #----------------------------
 
     mkdir -p ${search_web_service_dir}
     [ $? != 0 ] && echo "Could not create dir ${search_web_service_dir}" && popd >& /dev/null && checked_done 1
     cd ${search_web_service_dir}
     
     echo "Expanding war ${search_service_war_file} in $(pwd)"
-    $JAVA_HOME/bin/jar xf ${search_service_war_file} && \
-        chown -R ${tomcat_user}  ${search_web_service_dir} && \
-        chgrp -R ${tomcat_group} ${search_web_service_dir} || (popd >& /dev/null && rm -rf "${search_web_service_dir}" && mv -v ${search_web_service_dir}{.bak,} && checked_done 1)
+    $JAVA_HOME/bin/jar xf ${search_service_war_file}
+    set_aside_web_app_cleanup ${search_web_service_dir} $?
 
-    [ -d "${search_web_service_dir}.bak" ] && \
-        echo "Removing Previous Installation of the ESGF Search Services..." && \
-        rm -rf "${search_web_service_dir}.bak"
-
+    chown -R ${tomcat_user}  ${search_web_service_dir}
+    chgrp -R ${tomcat_group} ${search_web_service_dir} 
     popd >& /dev/null
+    #----------------------------
     (( ! upgrade )) 
     checked_done 0
 
