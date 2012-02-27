@@ -174,7 +174,10 @@ public class SolrUrlBuilder {
 		// experiment=1pctCO2&variable=!huss&variable=!clt --> fq=experiment:"1pctCO2"&fq=-variable:"huss"&fq=-variable:"clt"
 		// experiment=1pctCO2&variable=!huss&variable=clt --> fq=experiment:"1pctCO2"&fq=variable:"clt"&fq=-variable:"huss"
 		if (!constraints.isEmpty()) {
-			for (final String name : constraints.keySet()) {
+			for (final String parname : constraints.keySet()) {
+			    
+			    // reduce query parameter name to lower case
+			    final String name = parname.toLowerCase();
 			      
 			    // first process single-valued constraints
 		        if (name.equals(QueryParameters.FIELD_TYPE)) {
