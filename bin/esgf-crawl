@@ -54,7 +54,7 @@
 envfile=/etc/esg.env
 [ -e "${envfile}" ] && source ${envfile} && ((VERBOSE)) && printf "sourcing environment from: ${envfile} \n"
 
-search_app_home=$(sed -n 's@^[ ]*index.app.home[ ]*=[ ]*\(.*\)$@\1@p' $ESGF_HOME/config/esgf.properties)
+search_app_home=$(sed -n 's@^[ ]*index.service.app.home[ ]*=[ ]*\(.*\)$@\1@p' $ESGF_HOME/config/esgf.properties)
 
 DEBUG=${DEBUG:-0}
 VERBOSE=${VERBOSE:-0}
