@@ -62,7 +62,7 @@ Note: Check Maven for propery dependency parameter values @
   <info organisation="org.esgf" module="esg-search"/>
   <dependencies>
       
-    <dependency org="org.esgf" name="esgf-node-manager" rev="0.6.5"/>
+    <dependency org="org.esgf" name="esgf-node-manager" rev="latest.milestone"/>
 
     <dependency org="org.apache.solr" name="solr-core" rev="1.4.0"/>
     <dependency org="org.apache.solr" name="solr-solrj" rev="1.4.0"/>
@@ -84,10 +84,10 @@ Note: Check Maven for propery dependency parameter values @
     <dependency org="org.springframework.security" name="spring-security-core" rev="3.0.5.RELEASE" transitive="false"/>
     <dependency org="org.springframework.security" name="spring-security-web" rev="3.0.5.RELEASE" transitive="false"/>    
     
-    <dependency org="org.esgf" name="esg-orp" rev="2.1.0">
+    <dependency org="org.esgf" name="esg-orp" rev="latest.milestone">
             <exclude org="com.google.code.guice"/>
     </dependency>    
-    <dependency org="org.esgf" name="esgf-security" rev="2.1.0"/>
+    <dependency org="org.esgf" name="esgf-security" rev="latst.milestone"/>
 
     
     <dependency org="org.jdom" name="jdom" rev="1.1"/>
