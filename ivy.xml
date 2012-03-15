@@ -87,7 +87,7 @@ Note: Check Maven for propery dependency parameter values @
     <dependency org="org.esgf" name="esg-orp" rev="latest.milestone">
             <exclude org="com.google.code.guice"/>
     </dependency>    
-    <dependency org="org.esgf" name="esgf-security" rev="latst.milestone"/>
+    <dependency org="org.esgf" name="esgf-security" rev="latest.milestone"/>
 
     
     <dependency org="org.jdom" name="jdom" rev="1.1"/>

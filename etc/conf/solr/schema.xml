@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="ESGF-v1.3" version="1.2">
+<schema name="ESGF-v1.4" version="1.2">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        Applications should change this to reflect the nature of the search collection.
        version="1.2" is Solr's version number for the schema syntax and semantics.  It should
@@ -480,24 +480,8 @@
    <field name="east_degrees" type="float" indexed="true" stored="true" multiValued="false"/>
    <field name="south_degrees" type="float" indexed="true" stored="true" multiValued="false"/>
    <field name="west_degrees" type="float" indexed="true" stored="true" multiValued="false"/>
-
-   <!-- Metadata file fields -->
-   <field name="metadata_format" type="string" indexed="true" stored="true" multiValued="false"/>
-   <field name="metadata_url" type="string" indexed="true" stored="true" multiValued="false"/>
-   <field name="metadata_file_name" type="string" indexed="true" stored="true" multiValued="false"/>
-
-   <!-- Physical Dataset url and name 
-   <field name="file_id" type="string" indexed="true" stored="true" multiValued="true"/>
-   <field name="file_url" type="string" indexed="true" stored="true" multiValued="true"/>
-   -->
    
    <field name="size" type="long" indexed="true" stored="true" multiValued="false"/>
-   <!-- <field name="file_size" type="long" indexed="true" stored="true" multiValued="true"/> -->
-   
-   <!-- This field is of type string and will be harvested as-is if found - no need to define it explicitly.
-   <field name="service_type" type="string" indexed="true" stored="true" multiValued="true"/>
-   -->
-   
    
    <!-- catch-all field, containing all other searchable text fields 
         (implemented via copyField further on in this schema).
@@ -513,6 +497,10 @@
         unknown fields indexed and/or stored by default --> 
    <!--dynamicField name="*" type="ignored" multiValued="true" /-->
     
+   <!-- All other fields named 'date' or 'time' are assigned date type -->
+   <dynamicField name="*date*" type="date" indexed="true" stored="true" multiValued="false"/>
+   <dynamicField name="*time*" type="date" indexed="true" stored="true" multiValued="false"/>
+   
    <!-- All other fields are indexed and stored as-is and can have multiple values.
         No text processing is applied to enable exact retrieval of facet by field value. 
         Values are not stored since text faceting always returns the indexed values anyway. -->
