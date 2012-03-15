@@ -468,7 +468,8 @@
    <!-- The host indexing the data  -->
    <field name="index_node" type="string" indexed="true" stored="true" required="true" multiValued="false" />
    
-   <!-- The date the document was last indexed (set by default to the current time) -->
+   <!-- The date the document was last modified 
+        (set by default to the current time, if no better date/time is found) -->
    <field name="timestamp" type="date" indexed="true" stored="true" default="NOW" multiValued="false"/>
 
    <!-- The date/time boundaries -->

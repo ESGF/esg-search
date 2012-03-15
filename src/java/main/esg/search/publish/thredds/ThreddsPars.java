@@ -18,8 +18,12 @@
  ******************************************************************************/
 package esg.search.publish.thredds;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import esg.search.query.api.QueryParameters;
 
@@ -39,14 +43,21 @@ public class ThreddsPars {
 	public final static String SIZE = "size";
 	public final static String DATE = "date";
 	public final static String TIME = "time";
-	//public final static String EXPERIMENT = "experiment";
+    final public static String MOD_TIME = "mod_time";
+    final public static String CREATION_TIME = "creation_time";
 	
 	// replica properties
 	public final static String IS_REPLICA = "is_replica";
-	//public final static String MASTER_NODE = "master_node";
-	//public final static String REPLICA_NODE = "replica_node";
 	
+	private static String THREDDS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
+	public static final DateFormat THREDDS_DATE_TIME_PARSER = new SimpleDateFormat(THREDDS_DATE_FORMAT);
 	
+	static {
+	    // interpret THREDDS dates as local time, since no time zone is specified
+	    TimeZone local = Calendar.getInstance().getTimeZone(); // local time zone
+	    THREDDS_DATE_TIME_PARSER.setTimeZone(local);
+	}
+
 	// THREDDS service types
 	/**
 	  <!-- ServiceTypeEnum -->

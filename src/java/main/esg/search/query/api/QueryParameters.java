@@ -49,10 +49,7 @@ public class QueryParameters {
     final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
     final public static String FIELD_INDEX_NODE = "index_node";
     final public static String FIELD_DATA_NODE = "data_node";
-    final public static String FIELD_MOD_TIME = "mod_time";
-    final public static String FIELD_CREATION_TIME = "creation_time";
-    
-        
+            
     // special query fields for open search geo extension
     public final static String FIELD_BBOX ="bbox";  // west, south, east, north
     public final static String FIELD_LAT ="lat";
@@ -70,7 +67,6 @@ public class QueryParameters {
             FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_LATEST, FIELD_MASTER_ID, FIELD_INSTANCE_ID, FIELD_DRS_ID,
             FIELD_TITLE, FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_XLINK, FIELD_SIZE, FIELD_DATASET_ID,
             FIELD_VERSION, FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE, FIELD_DATA_NODE, FIELD_INDEX_NODE,
-            FIELD_MOD_TIME, FIELD_CREATION_TIME,
             FIELD_BBOX, FIELD_BBOX, FIELD_LON, FIELD_LON, FIELD_RADIUS, FIELD_POLYGON,
             FIELD_START, FIELD_END });
 
@@ -100,11 +96,11 @@ public class QueryParameters {
      * Format for temporal queries.
      */
     // recognized date/time format for input metadata records
-    public static String[] DATE_PATTERNS = new String[] { "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd",
-                                                          "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd" };                                                     
+    //public static String[] DATE_PATTERNS = new String[] { "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd",
+    //                                                      "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd" };                                                     
     // required date/time format for Solr documents
-    public static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-    public static final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+    //public static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    //public static final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     
     /**
      * Maximum limit on returned results
