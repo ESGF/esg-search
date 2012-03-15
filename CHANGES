@@ -170,3 +170,6 @@ Internal changes to URLs resolved by the servlet
 2.3.1
 - Indexing of all '*date' and '*time' fields as of type 'date'
 - Allowing facet 'mod_time" and 'creation_time'
+
+2.3.2
+- Using the value of "creation_time" and "mod_time" as the value of the field "timestamp".

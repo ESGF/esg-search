@@ -18,8 +18,11 @@
  ******************************************************************************/
 package esg.search.query.impl.solr;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 
 import esg.search.query.api.QueryParameters;
 
@@ -109,11 +112,21 @@ public class SolrXmlPars {
 	 * Map holding references from record type to Solr core storing those records.
 	 */
 	final public static Map<String, String> CORES = new HashMap<String,String>();
+	
+    // required date/time format for Solr documents
+    public static String SOLR_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
+    public static final DateFormat SOLR_DATE_TIME_FORMATTER = new SimpleDateFormat(SOLR_DATE_FORMAT);
 
 	// static population of Solr cores mapping
 	static {
+	    
 	    CORES.put(QueryParameters.TYPE_DATASET, "datasets");
 	    CORES.put(QueryParameters.TYPE_FILE, "files");
+
+	    // Solr must ingest dates in UTC=GMT time zone
+        TimeZone gmt = TimeZone.getTimeZone("GMT");
+        SOLR_DATE_TIME_FORMATTER.setTimeZone(gmt);
+
 	}
 	
 	/**

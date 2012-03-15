@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -331,11 +330,22 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             } else if (property.getName().equals(ThreddsPars.IS_REPLICA)) {
                 record.setReplica(Boolean.parseBoolean(property.getValue()));
                 
-            // date/time properties
+            
+            // "creation_time", "mod_time" --> "timestamp"
+            } else if (property.getName().equals(ThreddsPars.CREATION_TIME) || property.getName().equals(ThreddsPars.MOD_TIME)) {
+                try {
+                    final Date date = ThreddsPars.THREDDS_DATE_TIME_PARSER.parse(property.getValue());
+                    record.setField(QueryParameters.FIELD_TIMESTAMP, SolrXmlPars.SOLR_DATE_TIME_FORMATTER.format(date));
+                } catch(ParseException e) {
+                    LOG.warn("Error parsing date/time field: property name="+property.getName()+" value="+property.getValue());
+                    LOG.warn(e.getMessage());
+                }
+                
+            // other date/time properties
             } else if (   property.getName().endsWith(ThreddsPars.DATE) || property.getName().endsWith(ThreddsPars.TIME) ) {
                 try {
-                    final Date date = DateUtils.parseDate(property.getValue(), QueryParameters.DATE_PATTERNS);
-                    record.addField(property.getName(), QueryParameters.dateFormat.format(date));
+                    final Date date = ThreddsPars.THREDDS_DATE_TIME_PARSER.parse(property.getValue());
+                    record.setField(property.getName(), SolrXmlPars.SOLR_DATE_TIME_FORMATTER.format(date));
                 } catch(ParseException e) {
                     LOG.warn("Error parsing date/time field: property name="+property.getName()+" value="+property.getValue());
                     LOG.warn(e.getMessage());
