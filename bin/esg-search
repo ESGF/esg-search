@@ -616,7 +616,7 @@ setup_solr() {
     [ -d ${solr_install_dir} ] && (echo "Backing up previous install... " && (backup ${solr_install_dir} || (mv ${solr_install_dir}{,.bak} || echo "Could not move aside prev install")))
     cp -R ${solr_dist_dir}/example ${solr_install_dir}
     for ((i=0;i<${#solr_cores[@]};i++)) ; do
-        mv -v ${solr_install_dir}/multicore/{core${i},${solr_cores[${i}]}}
+        [ -e ${solr_install_dir}/multicore/core${i} ] && mv -v ${solr_install_dir}/multicore/{core${i},${solr_cores[${i}]}}
         #special files needed to complete the configuration...
         cp ${solr_workdir}/apache-solr-${solr_version}/example/solr/conf/{stopwords.txt,synonyms.txt,protwords.txt,elevate.xml} ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/
     done
