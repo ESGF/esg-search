@@ -20,13 +20,16 @@ package esg.search.publish.thredds;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -327,6 +330,16 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             // set replica flag
             } else if (property.getName().equals(ThreddsPars.IS_REPLICA)) {
                 record.setReplica(Boolean.parseBoolean(property.getValue()));
+                
+            // date/time properties
+            } else if (   property.getName().endsWith(ThreddsPars.DATE) || property.getName().endsWith(ThreddsPars.TIME) ) {
+                try {
+                    final Date date = DateUtils.parseDate(property.getValue(), QueryParameters.DATE_PATTERNS);
+                    record.addField(property.getName(), QueryParameters.dateFormat.format(date));
+                } catch(ParseException e) {
+                    LOG.warn("Error parsing date/time field: property name="+property.getName()+" value="+property.getValue());
+                    LOG.warn(e.getMessage());
+                }
                 
             } else {
                 // index all other properties verbatim

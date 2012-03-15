@@ -99,7 +99,11 @@ public class QueryParameters {
     /**
      * Format for temporal queries.
      */
-    private static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
+    // recognized date/time format for input metadata records
+    public static String[] DATE_PATTERNS = new String[] { "yyyy-MM-dd'T'HH:mm:ssZ", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd",
+                                                          "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd" };                                                     
+    // required date/time format for Solr documents
+    public static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     public static final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
     
     /**

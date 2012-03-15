@@ -37,6 +37,8 @@ public class ThreddsPars {
 	public final static String DATASET_VERSION = "dataset_version";
 	public final static String FILE_VERSION = "file_version";
 	public final static String SIZE = "size";
+	public final static String DATE = "date";
+	public final static String TIME = "time";
 	//public final static String EXPERIMENT = "experiment";
 	
 	// replica properties
