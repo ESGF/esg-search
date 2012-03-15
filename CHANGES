@@ -167,6 +167,6 @@ Internal changes to URLs resolved by the servlet
 2.1.1
 - Upgraded node-manager dependency
 
-2.2.0
+2.3.0
 - Indexing of all '*date*' and '*time*' fields as of type 'date'
 - Allowing facet 'mod_time" and 'creation_time'
