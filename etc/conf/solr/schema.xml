@@ -482,6 +482,11 @@
    <field name="south_degrees" type="float" indexed="true" stored="true" multiValued="false"/>
    <field name="west_degrees" type="float" indexed="true" stored="true" multiValued="false"/>
    
+   <!-- Metadata file fields -->
+   <field name="metadata_format" type="string" indexed="true" stored="true" multiValued="false"/>
+   <field name="metadata_url" type="string" indexed="true" stored="true" multiValued="false"/>
+   <field name="metadata_file_name" type="string" indexed="true" stored="true" multiValued="false"/>
+   
    <field name="size" type="long" indexed="true" stored="true" multiValued="false"/>
    
    <!-- catch-all field, containing all other searchable text fields 

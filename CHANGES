@@ -173,3 +173,6 @@ Internal changes to URLs resolved by the servlet
 
 2.3.2
 - Using the value of "creation_time" and "mod_time" as the value of the field "timestamp".
+
+2.3.3
+- Reinstated metadata fields in solr schema (temporarily).
