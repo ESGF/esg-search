@@ -41,7 +41,7 @@ public class FeedController {
     public final static String MODEL_KEY_FEED_TITLE = "feed_title";
     
     // last update time span for returned records
-    private final static String TIME_SPAN = "NOW-10DAY";
+    //private final static String TIME_SPAN = "NOW-10DAY";
     
     private final static String NODES_FEED_TITLE = "ESGF RSS Feed";
     
@@ -165,7 +165,10 @@ public class FeedController {
         }
         
         // only return most recent datasets
-        input.addConstraint(QueryParameters.FROM, TIME_SPAN);
+        //input.addConstraint(QueryParameters.FROM, TIME_SPAN);
+        
+        // sort records by descending timestamp
+        input.setSort(true);
         
         SearchOutput output = searchService.search(input); 
         model.addAttribute(MODEL_KEY_DATASETS, output);  

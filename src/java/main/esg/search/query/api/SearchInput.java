@@ -233,4 +233,16 @@ public interface SearchInput {
      */
     public void setTo(String to);
     
+    /**
+     * Getter method for sorting last updated records first.
+     * @return
+     */
+    public boolean isSort();
+    
+    /**
+     * Setter method for sorting last updated records first.
+     * @param sort
+     */
+    public void setSort(boolean sort);
+    
 }

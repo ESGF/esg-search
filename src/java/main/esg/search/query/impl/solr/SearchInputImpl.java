@@ -107,6 +107,11 @@ public class SearchInputImpl implements SearchInput, Serializable {
      */
 	private String to = "";
 	
+	/**
+	 * Don't sort records by default
+	 */
+	private boolean sort = false;
+	
 	private final static String NEWLINE = System.getProperty("line.separator");
 	
 	/**
@@ -234,20 +239,20 @@ public class SearchInputImpl implements SearchInput, Serializable {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	//public String getType() {
-	//	return type;
-	//}
+     * {@inheritDoc}
+     */
+	public boolean isSort() {
+        return sort;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	//public void setType(final String type) {
-	//	this.type = type;
-	//}
-	
-	/**
+    /**
+     * {@inheritDoc}
+     */
+    public void setSort(boolean sort) {
+        this.sort = sort;
+    }
+
+    /**
 	 * Overridden method to print the instance content.
 	 */
 	@Override

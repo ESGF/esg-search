@@ -316,6 +316,11 @@ public class SolrUrlBuilder {
             sb.append("&wt=json");
         }        
         
+        // sort by timestamp descending
+        if (input.isSort()) {
+            sb.append("&sort="+URLEncoder.encode(QueryParameters.FIELD_TIMESTAMP+" desc","UTF-8"));
+        }
+        
         final String queryString = sb.toString();
 		if (LOG.isInfoEnabled()) LOG.info("Select Query String: "+queryString);
 		return queryString;
