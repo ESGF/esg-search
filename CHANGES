@@ -176,3 +176,6 @@ Internal changes to URLs resolved by the servlet
 
 2.3.3
 - Reinstated metadata fields in solr schema (temporarily).
+
+2.4.0
+- Introduced sorting by timestamp desc in RSS dataset feeds.
