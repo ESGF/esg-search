@@ -51,7 +51,8 @@ public class RssViewBuilder {
     // ESGF namespace
     public final static String ESGF_NS = "http://www.esgf.org/cv/0.1/";
     
-    // ESGF facets included in RSS feeds
+    // ESGF facets included in RSS feeds as "categories"
+    // Example: <category domain="http://www.esgf.org/cv/0.1/model">Obs-TES</category>
     public final static String[] FACETS = new String[] {
             "id",
             "type",
