@@ -179,3 +179,6 @@ Internal changes to URLs resolved by the servlet
 
 2.4.0
 - Introduced sorting by timestamp desc in RSS dataset feeds.
+
+2.4.1
+- Fixed wrong endpoint for authorization service.
