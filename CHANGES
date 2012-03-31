@@ -182,3 +182,9 @@ Internal changes to URLs resolved by the servlet
 
 2.4.1
 - Fixed wrong endpoint for authorization service.
+
+2.5.0
+- Mapped DRS CV from:
+http://esg-pcmdi.llnl.gov/internal/esg-data-node-documentation/cmip5_controlled_vocab.txt/view
+to:
+http://cmip-pcmdi.llnl.gov/cmip5/docs/CMIP5_modeling_groups.pdf
