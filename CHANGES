@@ -188,3 +188,6 @@ Internal changes to URLs resolved by the servlet
 http://esg-pcmdi.llnl.gov/internal/esg-data-node-documentation/cmip5_controlled_vocab.txt/view
 to:
 http://cmip-pcmdi.llnl.gov/cmip5/docs/CMIP5_modeling_groups.pdf
+
+2.5.1
+Updated the DRS mappings with new (key, value) pairs.

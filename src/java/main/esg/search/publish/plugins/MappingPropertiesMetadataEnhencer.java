@@ -13,7 +13,7 @@ import esg.search.utils.PropertiesUtils;
 
 /**
  * Class that transforms a record's metadata by applying the mappings found in a properties file.
- * Note that the property keys are all lower case, 
+ * Note that the property keys must be all lower case, 
  * and the field values are converted to lower case before matching occurs.
  * 
  * @author Luca Cinquini

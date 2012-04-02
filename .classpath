@@ -119,7 +119,7 @@
 	<classpathentry kind="lib" path="lib/fetched/hessian-4.0.7.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.1.3.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.1.5.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.6.7.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.6.7.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-1.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-1.3.0.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
