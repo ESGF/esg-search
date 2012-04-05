@@ -195,3 +195,6 @@ Updated the DRS mappings with new (key, value) pairs.
 2.5.2
 Storing new metadata field "number_of_file" for each dataset.
 Implemented auto-pruning of search service.
+
+2.5.3
+Updated Solr schema to version 2.5.3

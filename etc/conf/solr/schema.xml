@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="ESGF-v1.4" version="1.2">
+<schema name="ESGF-v1.5" version="1.2">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        Applications should change this to reflect the nature of the search collection.
        version="1.2" is Solr's version number for the schema syntax and semantics.  It should
@@ -488,6 +488,7 @@
    <field name="metadata_file_name" type="string" indexed="true" stored="true" multiValued="false"/>
    
    <field name="size" type="long" indexed="true" stored="true" multiValued="false"/>
+   <field name="number_of_files" type="int" indexed="true" stored="true" multiValued="false"/>
    
    <!-- catch-all field, containing all other searchable text fields 
         (implemented via copyField further on in this schema).
