@@ -14,8 +14,8 @@ import esg.search.utils.XmlParser;
 
 /**
  * Utility class to probe a single Solr shard in a separate thread of execution.
+ * 
  * @author Luca Cinquini
- *
  */
 public class ShardProbe extends Thread {
     
@@ -69,7 +69,7 @@ public class ShardProbe extends Thread {
             if (LOG.isInfoEnabled()) LOG.info("Number of Results="+this.numFound+" Query Time="+this.queryTime+" Elapsed Time="+this.elapsedTime);
             
         } catch(Exception e) {
-            System.out.println("ERROR:"+e.getMessage());
+            System.out.println("Error probing shard="+shard+" :"+e.getMessage());
         }
 
         
