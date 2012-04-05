@@ -44,6 +44,12 @@ public interface SearchService {
 	 * @throws Exception
 	 */
 	public String query(final SearchInput input, final SearchReturnType returnType) throws Exception;
+	
+	/**
+	 * Hook to run recovery procedures in case the query results in an error.
+	 * @throws Exception
+	 */
+	public void recover() throws Exception;
 		
 
 }

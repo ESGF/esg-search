@@ -20,11 +20,11 @@ package esg.search.query.impl.solr;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.LinkedHashSet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import esg.search.query.api.SearchInput;
@@ -123,7 +123,19 @@ public class SearchServiceImpl implements SearchService {
 		
 	}
 	
-	private String transform(final String output, final SearchReturnType returnType) throws Exception {
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+    public void recover() throws Exception {
+        
+	    LinkedHashSet<String> newShards = ShardMonitor.monitor(registryService.getShards());
+	    registryService.setShards(newShards);
+        
+    }
+
+    private String transform(final String output, final SearchReturnType returnType) throws Exception {
 	    
 	    if (returnType==SearchReturnType.SOLR_XML || returnType==SearchReturnType.SOLR_JSON) {
 	        return output;
