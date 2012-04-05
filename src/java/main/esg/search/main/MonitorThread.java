@@ -32,6 +32,8 @@ public class MonitorThread extends Thread {
         this.xPath1 = XPath.newInstance(MonitorManager.XPATH1);
         this.xPath2 = XPath.newInstance(MonitorManager.XPATH2);
         httpClient = new HttpClient();
+        httpClient.setConnectionTimeout(MonitorManager.CONNECTION_TIMEOUT);
+        httpClient.setReadTimeout(MonitorManager.READ_TIMEOUT);
 
     }
 

@@ -19,14 +19,19 @@ public class MonitorManager {
                                                          //"esg.ccs.ornl.gov",
                                                          "esg1-gw.pnl.gov",
                                                          "pcmdi11.llnl.gov",
-                                                         "pcmdi9.llnl.gov" 
+                                                         "pcmdi9.llnl.gov",
+                                                         "test-datanode.jpl.nasa.gov"
                                                          };
     
     // query parameters
-    public final static String QUERY = "q=*&replica=false&latest=true";
+    public final static String SOLR_QUERY = "q=*&replica=false&latest=true";
+    public final static String API_QUERY = "query=*&replica=false&latest=true&distrib=false";
     public final static String XPATH1 = "/response/lst[@name='responseHeader']/int[@name='QTime']";
     public final static String XPATH2 = "/response/result";
     private final static String[] CORES = new String[]{"datasets","files"};
+    
+    public final static int CONNECTION_TIMEOUT = 1000;
+    public final static int READ_TIMEOUT = 5000;
     
     // the specific Solr core to probe
     private String core;
@@ -101,7 +106,17 @@ public class MonitorManager {
     }
     
     public final static String buildUrl(String server, String core) {
-        return "http://"+server+":8983/solr/"+core+"/select/?"+QUERY;
+        
+        // query Solr directly
+        return "http://"+server+":8983/solr/"+core+"/select/?"+SOLR_QUERY;
+        
+        // query the search web service
+        /*
+        if (core.equals("datasets")) {
+            return "http://"+server+"/esg-search/search?"+API_QUERY+"&type=Dataset";
+        } else {
+            return "http://"+server+"/esg-search/search?"+API_QUERY+"&type=File";
+        }*/
     }
     
     /**

@@ -25,12 +25,21 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import esg.search.query.impl.solr.SolrUrlBuilder;
+
 /**
  * Simple class to execute an HTTP GET/POST request,
  * and return the HTTP response as a single string.
  */
 public class HttpClient {
-	
+        
+    // default time outs ("A timeout of zero is interpreted as an infinite timeout.")
+    private int connectionTimeout = 0;
+    private int readTimeout = 0;
+    	
 	/**
 	 * Method to execute an HTTP GET request.
 	 * @param url
@@ -40,7 +49,9 @@ public class HttpClient {
 	public String doGet(final URL url) throws IOException {
 						
 		// prepare HTTP request
-		final URLConnection connection = url.openConnection();		
+		final URLConnection connection = url.openConnection();	
+		if (connectionTimeout!=0) connection.setConnectTimeout(connectionTimeout);
+		if (readTimeout!=0) connection.setReadTimeout(readTimeout);
 		connection.setUseCaches(false);
 				
 	    // execute HTTP request
@@ -62,6 +73,8 @@ public class HttpClient {
 	    final URLConnection connection = url.openConnection();
 	    connection.setUseCaches(false);
 	    connection.setDoOutput(true); // POST method
+	    if (connectionTimeout!=0) connection.setConnectTimeout(connectionTimeout);
+	    if (readTimeout!=0) connection.setReadTimeout(readTimeout);
 	    if (xml) connection.setRequestProperty("Content-Type", "text/xml");
 	    connection.setRequestProperty("Charset", "utf-8");
 	    
@@ -99,5 +112,14 @@ public class HttpClient {
 	    return sb.toString();
 	    
 	}
+	
+    public void setConnectionTimeout(int connectionTimeout) {
+        this.connectionTimeout = connectionTimeout;
+    }
+
+    public void setReadTimeout(int readTimeout) {
+        this.readTimeout = readTimeout;
+    }
+
 
 }
