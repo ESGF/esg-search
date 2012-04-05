@@ -122,9 +122,10 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         boolean isReplica = record.isReplica();
         
         // recursion
-		long size = parseSubDatasets(dataset, latest, isReplica, records, hostName);
-		// set total size of dataset
-		record.addField(SolrXmlPars.FIELD_SIZE, Long.toString(size));
+		final DatasetSummary ds = parseSubDatasets(dataset, latest, isReplica, records, hostName);
+		// set total size of dataset, number of files
+		record.addField(QueryParameters.FIELD_SIZE, Long.toString(ds.size));
+		record.addField(QueryParameters.FIELD_NUMBER_OF_FILES, Long.toString(ds.numberOfFiles));
 		
 		// debug
 		if (LOG.isDebugEnabled()) {
@@ -143,19 +144,20 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @param records
 	 * @return
 	 */
-	private long parseSubDatasets(final InvDataset dataset, final boolean latest, final boolean isReplica,
+	private DatasetSummary parseSubDatasets(final InvDataset dataset, final boolean latest, final boolean isReplica,
 	                              final List<Record> records, String hostName) {
 	    
 	    if (LOG.isTraceEnabled()) LOG.trace("Crawling dataset: "+dataset.getID()+" for files");
 	    
-	    long dataset_size = 0L;
+	    final DatasetSummary ds = new DatasetSummary();
 	    for (final InvDataset childDataset : dataset.getDatasets()) {
 	        
 	        if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.FILE_ID) )) {
 	            
 	            // parse files into separate records, inherit top dataset metadata
 	            boolean inherit = true;
-	            dataset_size += this.parseFile(childDataset, latest, isReplica, records, inherit, hostName);
+	            ds.size += this.parseFile(childDataset, latest, isReplica, records, inherit, hostName);
+	            ds.numberOfFiles += 1;
 
 	        } else if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.AGGREGATION_ID) )) {
 	            
@@ -165,11 +167,13 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        }
 	        
 	        // recursion
-	        dataset_size += parseSubDatasets(childDataset, latest, isReplica, records, hostName);
+	        final DatasetSummary sds = parseSubDatasets(childDataset, latest, isReplica, records, hostName);
+	        ds.size += sds.size;
+	        ds.numberOfFiles += sds.numberOfFiles;
 	        
 	    }
 	    
-	    return dataset_size;
+	    return ds;
         
 	}
 	
@@ -604,6 +608,14 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         }
         
 	}
-		
+	
+	/**
+	 * Data structure to keep track of critical dataset fields.
+	 *
+	 */
+	private class DatasetSummary  {
+	    long size = 0L;
+	    int numberOfFiles = 0;
+	}
 	
 }

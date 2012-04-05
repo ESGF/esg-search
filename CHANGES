@@ -191,3 +191,6 @@ http://cmip-pcmdi.llnl.gov/cmip5/docs/CMIP5_modeling_groups.pdf
 
 2.5.1
 Updated the DRS mappings with new (key, value) pairs.
+
+2.5.2
+Storing new metadata field "number_of_file" for each dataset.

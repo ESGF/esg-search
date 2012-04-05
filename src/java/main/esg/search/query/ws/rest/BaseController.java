@@ -280,11 +280,14 @@ public class BaseController {
 	    if (n==0) {
 	        // ask the node manager to prune the shards list
 	        if (LOG.isDebugEnabled()) LOG.debug("Pruning the shards list");
+	        long startTime = System.currentTimeMillis();
 	        if (ESGConnector.getInstance().setEndpoint().prune()) {
 	            if (LOG.isDebugEnabled()) LOG.debug("Pruned dead peer connections from localhost");
             } else {
                 if (LOG.isDebugEnabled()) LOG.debug("There were no dead peer connections detected on localhost (or host itself is dead)");
             }
+	        long stopTime = System.currentTimeMillis();
+	        if (LOG.isDebugEnabled()) LOG.debug("Pruning Elapsed Time: "+(stopTime-startTime)+" ms");
 	        
 	    } else {
 	        // execute non-distributed query

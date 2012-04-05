@@ -49,6 +49,7 @@ public class QueryParameters {
     final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
     final public static String FIELD_INDEX_NODE = "index_node";
     final public static String FIELD_DATA_NODE = "data_node";
+    final public static String FIELD_NUMBER_OF_FILES = "number_of_files";
             
     // special query fields for open search geo extension
     public final static String FIELD_BBOX ="bbox";  // west, south, east, north
@@ -65,7 +66,8 @@ public class QueryParameters {
     // fields that are always allowed in queries, in addition to configured facets
     public final static List<String> CORE_QUERY_FIELDS = Arrays.asList( new String[]{ 
             FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_LATEST, FIELD_MASTER_ID, FIELD_INSTANCE_ID, FIELD_DRS_ID,
-            FIELD_TITLE, FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_XLINK, FIELD_SIZE, FIELD_DATASET_ID,
+            FIELD_TITLE, FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_XLINK, FIELD_SIZE, 
+            FIELD_NUMBER_OF_FILES, FIELD_DATASET_ID,
             FIELD_VERSION, FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE, FIELD_DATA_NODE, FIELD_INDEX_NODE,
             FIELD_BBOX, FIELD_BBOX, FIELD_LON, FIELD_LON, FIELD_RADIUS, FIELD_POLYGON,
             FIELD_START, FIELD_END });

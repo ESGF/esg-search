@@ -39,6 +39,7 @@ public class MonitorThread extends Thread {
 
     public void run() {
         
+        
         String url = MonitorManager.buildUrl(server, core);
         System.out.println("Querying URL="+url);
         try {
@@ -63,5 +64,5 @@ public class MonitorThread extends Thread {
 
         
     }
-    
+        
 }
