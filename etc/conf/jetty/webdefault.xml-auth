@@ -376,7 +376,7 @@
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>ESGF Solr</web-resource-name>
-      <url-pattern>/admin/*</url-pattern>
+      <url-pattern>/datasets/admin/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>admin</role-name>
@@ -385,7 +385,7 @@
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>ESGF Solr</web-resource-name>
-      <url-pattern>/update/*</url-pattern>
+      <url-pattern>/datasets/update/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>publisher</role-name>
@@ -394,7 +394,35 @@
   <security-constraint>
     <web-resource-collection>
       <web-resource-name>ESGF Solr</web-resource-name>
-      <url-pattern>/delete/*</url-pattern>
+      <url-pattern>/datasets/delete/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>publisher</role-name>
+    </auth-constraint>
+  </security-constraint>
+  
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>ESGF Solr</web-resource-name>
+      <url-pattern>/files/admin/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>ESGF Solr</web-resource-name>
+      <url-pattern>/files/update/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>publisher</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>ESGF Solr</web-resource-name>
+      <url-pattern>/files/delete/*</url-pattern>
     </web-resource-collection>
     <auth-constraint>
       <role-name>publisher</role-name>

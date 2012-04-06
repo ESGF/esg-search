@@ -198,3 +198,6 @@ Implemented auto-pruning of search service.
 
 2.5.3
 Updated Solr schema to version 2.5.3
+
+2.5.4
+Fixed security bug in Jetty access.
