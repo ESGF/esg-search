@@ -201,3 +201,6 @@ Updated Solr schema to version 2.5.3
 
 2.5.4
 Fixed security bug in Jetty access.
+
+2.5.5
+Updated institutes CV.
