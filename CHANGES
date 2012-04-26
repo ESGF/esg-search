@@ -205,5 +205,5 @@ Fixed security bug in Jetty access.
 2.5.5
 Updated institutes CV.
 
-2.5.6
+2.5.7
 Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
