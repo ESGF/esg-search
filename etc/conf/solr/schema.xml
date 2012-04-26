@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="ESGF-v1.5" version="1.2">
+<schema name="ESGF-v1.6" version="1.2">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        Applications should change this to reflect the nature of the search collection.
        version="1.2" is Solr's version number for the schema syntax and semantics.  It should
@@ -504,11 +504,10 @@
         unknown fields indexed and/or stored by default --> 
    <!--dynamicField name="*" type="ignored" multiValued="true" /-->
     
-   <!-- All other fields ending in 'date' or 'time' are assigned date type.
+   <!-- All other fields ending in 'date' are assigned date type.
         Note: be careful that 'time_frequency' is a string... -->
    <dynamicField name="*date" type="date" indexed="true" stored="true" multiValued="false"/>
-   <dynamicField name="*time" type="date" indexed="true" stored="true" multiValued="false"/>
-   
+
    <!-- All other fields are indexed and stored as-is and can have multiple values.
         No text processing is applied to enable exact retrieval of facet by field value. 
         Values are not stored since text faceting always returns the indexed values anyway. -->
