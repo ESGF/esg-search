@@ -120,6 +120,6 @@
 	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.1.5.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-1.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-1.3.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.1.4.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.1.6.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
