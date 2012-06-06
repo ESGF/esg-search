@@ -11,7 +11,6 @@ import esg.search.utils.XmlParser;
 
 public class MonitorThread extends Thread {
     
-   
     private final XPath xPath1;
     private final XPath xPath2;
     private final XmlParser xmlParser;

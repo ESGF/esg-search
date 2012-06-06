@@ -11,7 +11,6 @@ import org.jdom.xpath.XPath;
 import esg.search.utils.HttpClient;
 import esg.search.utils.XmlParser;
 
-
 /**
  * Utility class to probe a single Solr shard in a separate thread of execution.
  * 
