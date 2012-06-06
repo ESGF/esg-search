@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<shards xmlns="http://www.esgf.org/whitelist">
+    
+    <!-- CSSEF -->
+    <value>dev.esg.anl.gov:8983/solr</value>
+    <!-- <value>esg1-gw.pnl.gov:8983/solr</value> -->
+    
+</shards>

@@ -15,9 +15,5 @@
   
     <!-- Asia -->
     <!-- <value>cmip5.bnu.edu.cn:8983/solr</value> -->
-    
-    <!-- CSSEF -->
-    <value>dev.esg.anl.gov:8983/solr</value>
-    <!-- <value>esg1-gw.pnl.gov:8983/solr</value> -->
-    
+        
 </shards>
