@@ -48,18 +48,18 @@ public class SecurePublishingServiceImpl implements PublishingService {
     }
 
     @Override
-    public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
+    public void publish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
         
         checkAuthorization(uri);
-        this.publishingService.publish(uri, recursive, metadataRepositoryType);
+        this.publishingService.publish(uri, filter, recursive, metadataRepositoryType);
 
     }
 
     @Override
-    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
+    public void unpublish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
         
         checkAuthorization(uri);
-        this.publishingService.unpublish(uri, recursive, metadataRepositoryType);
+        this.publishingService.unpublish(uri, filter, recursive, metadataRepositoryType);
 
     }
 

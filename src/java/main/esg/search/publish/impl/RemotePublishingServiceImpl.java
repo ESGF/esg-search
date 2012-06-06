@@ -62,13 +62,13 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
 
 
     @Override
-    public void publish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
-        this.getPublishingService().publish(uri, recursive, metadataRepositoryType);
+    public void publish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
+        this.getPublishingService().publish(uri, filter, recursive, metadataRepositoryType);
     }
 
     @Override
-    public void unpublish(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
-        this.getPublishingService().unpublish(uri, recursive, metadataRepositoryType);
+    public void unpublish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
+        this.getPublishingService().unpublish(uri, filter, recursive, metadataRepositoryType);
     }
 
     @Override
@@ -85,7 +85,8 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
         final PublishingService publishingService = this.getPublishingService();
         
         try {
-            publishingService.publish(threddsURL, RECURSIVE, METADATA_REPOSITORY_TYPE);
+            // Note filter=null since dataset is being created
+            publishingService.publish(threddsURL, null, RECURSIVE, METADATA_REPOSITORY_TYPE); 
             return RETURN_VALUE;
         } catch(PublishingException e) {
             LOG.error(e.getMessage());

@@ -7,7 +7,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import esg.search.core.Record;
-import esg.search.publish.thredds.ThreddsPars;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**

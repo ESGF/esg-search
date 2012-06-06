@@ -55,8 +55,10 @@ public class FgdcCrawler implements MetadataRepositoryCrawler  {
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * Note: this implementation currently ignores the @param filter.
 	 */
-	public void crawl(final URI uri, final boolean recursive, final RecordProducer callback, boolean publish) throws Exception {
+	public void crawl(final URI uri, String filter, final boolean recursive, final RecordProducer callback, boolean publish) throws Exception {
 		//LOG.debug("FGDCCrawler.crawl");
 		
 		// parse XML document

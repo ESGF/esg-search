@@ -32,11 +32,14 @@ public interface MetadataRepositoryCrawler {
 	 * Method to crawl the metadata repository available at some URI,
 	 * and optionally follow the symbolic links encountered while crawling.
 	 * @param uri : the starting URI of metadata repository
+	 * @param filter: regular expression string to filter the uri parameter.
+	 *        Filter may be null or blank, in which case no filtering is applied. 
+	 *        The special value "ALL" can also be used to crawl ALL URis (i.e. no filtering is applied).
 	 * @param recursive : true to recursively crawl the locations referenced by the starting location
 	 * @param callback: a {@link RecordProducer} that is triggered every time a new Record is generated while crawling
 	 * @param : a boolean flag indicating whether the repository is crawled for publishing (true) or un-pubishing (false)
 	 */
-	public void crawl(URI uri, boolean recursive, RecordProducer callback, boolean publish) throws Exception;
+	public void crawl(URI uri, String filter, boolean recursive, RecordProducer callback, boolean publish) throws Exception;
 	
 	/**
 	 * Method to indicate the {@link MetadataRepositoryType} supported by this crawler.

@@ -183,6 +183,7 @@ Internal changes to URLs resolved by the servlet
 2.4.1
 - Fixed wrong endpoint for authorization service.
 
+<<<<<<< HEAD
 2.5.0
 - Mapped DRS CV from:
 http://esg-pcmdi.llnl.gov/internal/esg-data-node-documentation/cmip5_controlled_vocab.txt/view
@@ -193,7 +194,7 @@ http://cmip-pcmdi.llnl.gov/cmip5/docs/CMIP5_modeling_groups.pdf
 Updated the DRS mappings with new (key, value) pairs.
 
 2.5.2
-Storing new metadata field "number_of_file" for each dataset.
+Storing new metadata field "number_of_files" for each dataset.
 Implemented auto-pruning of search service.
 
 2.5.3
@@ -207,3 +208,6 @@ Updated institutes CV.
 
 2.5.7
 Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
+
+2.5.9
+- Enabled publishing/unpublishing/crawling with regular expression to match URIs

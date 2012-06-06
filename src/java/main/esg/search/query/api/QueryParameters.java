@@ -1,7 +1,5 @@
 package esg.search.query.api;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -124,6 +122,11 @@ public class QueryParameters {
      * The default results type to search for, if none is specified.
      */
     public final static String DEFAULT_TYPE = TYPE_DATASET;
+    
+    /**
+     * Special value for crawling filter to process ALL catalogs (i.e. no filter is applied).
+     */
+    public final static String ALL = "ALL";
     
     private QueryParameters() {};
 

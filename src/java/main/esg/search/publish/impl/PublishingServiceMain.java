@@ -68,8 +68,8 @@ public class PublishingServiceMain {
 	 * @throws Exception
 	 */
     protected void run(final PublishingService publishingService, MetadataRepositoryCrawler crawler, final String[] args) throws Exception {
-    	
-	    if (args.length!=1 && args.length!=3 && args.length!=4) {
+    	        
+	    if (args.length!=1 && args.length!=4 && args.length!=5) {
 	    	exit();
 	    }
 	        
@@ -79,26 +79,32 @@ public class PublishingServiceMain {
 	    	publishingService.unpublish(Arrays.asList(new String[] {id}));
 	    	
 	    // publish/unpublish full repository
-	    } else if (args.length==3 || args.length==4) {
+	    } else if (args.length==4 || args.length==5) {
 	    	
+	        // URI
 		    final String uri = args[0];
-		    final MetadataRepositoryType type = MetadataRepositoryType.valueOf(args[1]);
 		    
+		    // filter
+		    final String filter = args[1];
+		    
+		    // repsitory type
+		    final MetadataRepositoryType type = MetadataRepositoryType.valueOf(args[2]);		    
 		    //change the Metadata file's URL
 		    PublishingServiceMain.METADATA_URL = uri;
-		    		    
-		    final boolean publish = Boolean.parseBoolean(args[2]);
+		    
+		    // publish/unpublish
+		    final boolean publish = Boolean.parseBoolean(args[3]);
 		    
 		    // configure optional crawling listener
-		    if (args.length==4) {
-		        final FileLogger logger = new FileLogger(args[3]);
+		    if (args.length==5) {
+		        final FileLogger logger = new FileLogger(args[4]);
 		        crawler.setListener(logger);
 		    }
 		    
 		    if (publish) {
-		    	publishingService.publish(uri, true, type);    // recursive=true
+		    	publishingService.publish(uri, filter, true, type);    // recursive=true
 		    } else {
-		    	publishingService.unpublish(uri, true, type);  // recursive=true
+		    	publishingService.unpublish(uri, filter, true, type);  // recursive=true
 		    }
 	    }
 		
@@ -112,14 +118,15 @@ public class PublishingServiceMain {
     	System.out.println("Usage #1: to unpublish a single record:");
     	System.out.println("          java esg.search.publish.impl."+this.getClass().getName()+" <id>");
     	System.out.println("Usage #2: to publish or unpublish a remote metadata repository: ");
-    	System.out.println("          java esg.search.publish.impl."+this.getClass().getName()+" <Metadata Repository URL> <Metadata repository Type> true|false [optional log file]");
+    	System.out.println("          java esg.search.publish.impl."+this.getClass().getName()+" <Metadata Repository URL> <regex filter> <Metadata repository Type> true|false [optional log file]");
     	System.out.println("          where true:publish, false:unpublish");
+    	System.out.println("Note: use <filter>='regular expression' to filter the catalogs to publish/unpublish. To apply no filtering, use <filter>='*' or <filter>='ALL'");
     	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" nasa.jpl.tes.monthly");
-    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS true|false /tmp/publishing.log");
-    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" http://pcmdi3.llnl.gov/thredds/esgcet/catalog.xml THREDDS true|false /tmp/publishing.log");
-    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" http://esg-datanode.jpl.nasa.gov/thredds/esgcet/catalog.xml THREDDS true|false");
-    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml OAI true|false");
-    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/cas_rdf.xml CAS true|false");
+    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml '*' THREDDS true|false /tmp/publishing.log");
+    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" http://pcmdi3.llnl.gov/thredds/esgcet/catalog.xml ALL THREDDS true|false /tmp/publishing.log");
+    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" http://esg-datanode.jpl.nasa.gov/thredds/esgcet/catalog.xml ALL THREDDS true|false");
+    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml '*' OAI true|false");
+    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/cas_rdf.xml '*' CAS true|false");
     	System.exit(-1);
 
 	}

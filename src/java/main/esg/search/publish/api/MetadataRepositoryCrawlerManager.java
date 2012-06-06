@@ -27,11 +27,12 @@ public interface MetadataRepositoryCrawlerManager {
 	/**
 	 * 
 	 * @param uri
+	 * @param filter
 	 * @param recursive
 	 * @param metadataRepositoryType
 	 * @param publish
 	 * @throws Exception
 	 */
-	void crawl(String uri, boolean recursive, MetadataRepositoryType metadataRepositoryType, boolean publish) throws Exception;
+	void crawl(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType, boolean publish) throws Exception;
 
 }
