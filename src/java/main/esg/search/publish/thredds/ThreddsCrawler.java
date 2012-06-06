@@ -22,6 +22,8 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -90,124 +92,144 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	}
 	
 	/**
-	 * Method to crawl a THREDDS catalog located at some URI,
-	 * and optionally the whole hierarchy of referenced catalogs.
+	 * Method to crawl a THREDDS catalog located at some URI, and optionally the whole hierarchy of referenced catalogs.
+	 * An optional filter expression can be specified to filter the catalogs URIs.
 	 * @param uri : the URI of the starting THREDDS catalog
 	 * @param recursive : true to crawl the whole catalog hierarchy
 	 * @param publish: true to publish, false to unpublish
 	 */
-	public void crawl(final URI catalogURI, boolean recursive, final RecordProducer callback, boolean publish) throws Exception {
+	public void crawl(final URI catalogURI, final String filter, boolean recursive, final RecordProducer callback, boolean publish) throws Exception {
 		
-	    try {
-	        
-	        // parse THREDDS catalog
-	        if (LOG.isInfoEnabled()) LOG.info("Parsing catalog: "+catalogURI.toString());
-	        final InvCatalog catalog = parseCatalog(catalogURI.toString());
-							
-			for (final InvDataset dataset : catalog.getDatasets()) {
-				
-				if (dataset instanceof InvCatalogRef) {
-				    
-					if (recursive) {
-						// crawl catalogs recursively
-						final URI catalogRef = getCatalogRef(dataset);
-						try {
-						    crawl(catalogRef, recursive, callback, publish);
-						} catch(Exception e) {
-						    // print error from nested invocation
-						    LOG.warn("Error parsing catalog: "+catalogRef.toString());
-						    LOG.warn(e.getMessage());
-						}
-					}
-					
-				} else if (dataset instanceof InvDatasetImpl) {
-				    
-                    // list or previous records to be republished
-                    final List<Record> _records = new ArrayList<Record>();
-				    
-					// list of records from this catalog
-					final List<Record> records = parser.parseDataset(dataset, true); // set latest=true by default
-										
-					// top-level dataset
-					final Record drecord = records.get(0);	
-					
-					// publish
-					if (publish) {
-					    
-					    // check versus existing records in the metadata repository
-					    if (searchService!=null) {
-					        final List<Record> exRecords = this.getLatestDatasets(drecord.getMasterId());
-					        // loop over existing records
-					        for (final Record exRecord : exRecords) {
-					            
-					            if (exRecord.getVersion()<drecord.getVersion()) {
-					                // case 1) publishing a newer version:
-					                // republish previous version with "latest"=false
-					                
-					                // retrieve previous record THREDDS catalogs URI
-					                String exCatalogUri = RecordHelper.selectUrlByMimeType(exRecord, QueryParameters.MIME_TYPE_THREDDS);
-					                if (StringUtils.hasText(exCatalogUri)) {
-					                    
-					                    final InvCatalog exCatalog = parseCatalog(exCatalogUri);
-					                        
-				                        for (final InvDataset exDataset : exCatalog.getDatasets()) {
-				                            if (LOG.isInfoEnabled()) 
-				                                LOG.info("Latest version in index: catalog uri="+exCatalogUri+" record id="
-				                                        +exRecord.getId()+" record master_id="+exRecord.getMasterId()+" version="+exRecord.getVersion());
-				                            if (exDataset instanceof InvDatasetImpl) {
-				                                // publish previous records with "latest"=false
-				                                if (LOG.isInfoEnabled()) LOG.info("Republishing dataset: "+exDataset.getID()+" with latest=false");
-				                                _records.addAll( parser.parseDataset(exDataset, false));
-				                            }
-				                        }
-					                        					                    
-					                }
-					              
-					            } else if (exRecord.getVersion()>drecord.getVersion()) {
-					                // case 2) publishing an older version:
-					                // change latest flag of this version before publishing it
-				                    if (LOG.isInfoEnabled()) LOG.info("Index already contains newer version: "+exRecord.getVersion()
-				                                                     +" - setting latest=false for this version: "+drecord.getVersion());
+	    // regex pattern to match THREDDS catalogs URIs
+	    Pattern pattern = Pattern.compile(".*"); // match everything by default
+	    if (StringUtils.hasText(filter) && !filter.equals("*") && !filter.equalsIgnoreCase(QueryParameters.ALL)) {
+	        pattern = Pattern.compile(filter);
+	    }
+        if (LOG.isDebugEnabled()) LOG.debug("Crawling catalogs that match regex="+pattern.toString());
+	    
+	    // only crawl catalogs that match filter provided
+	    final Matcher matcher = pattern.matcher(catalogURI.toString());
+	    
+    	    try {
+    	        
+    	        // parse THREDDS catalog
+    	        if (LOG.isInfoEnabled()) LOG.info("Parsing catalog: "+catalogURI.toString());
+    	        final InvCatalog catalog = parseCatalog(catalogURI.toString());
+    							
+    			for (final InvDataset dataset : catalog.getDatasets()) {
+    				
+    				if (dataset instanceof InvCatalogRef) {
+    				    
+    					if (recursive) {
+    						// crawl catalogs recursively
+    						final URI catalogRef = getCatalogRef(dataset);
+    						try {
+    						    crawl(catalogRef, filter, recursive, callback, publish);
+    						} catch(Exception e) {
+    						    // print error from nested invocation
+    						    LOG.warn("Error parsing catalog: "+catalogRef.toString());
+    						    LOG.warn(e.getMessage());
+    						}
+    					}
+    					
+    				} else if (dataset instanceof InvDatasetImpl) {
+    				    
+    			        if (matcher.matches()) {
 
-					                for (final Record record : records) {
-					                    record.setLatest(false);
-					                }
-					                
-					            } else {
-					                // case 3) publishing the same version:
-					                // nothing to do
-					            }
-					        }
-					    }
-					    
-					    // publish new and older versions as a single commit
-					    records.addAll(_records);
-					    callback.notify(records);
-    					    					
-					// un-publish
-					} else {
-					    
-					    // remove top-level dataset only, files will follow
-                        if (LOG.isDebugEnabled()) LOG.debug("Removing catalog for top-level dataset="+drecord.getId());
-                        callback.notify(drecord);
-					    
-					}
-					
-				}
-				
-			} // loop over datasets
-		    			
-		// invalid catalog
-		} catch(IOException e) {
-            // notify listener of crawling error
-            if (listener!=null) listener.afterCrawlingError(catalogURI.toString());
-            // throw the exception up the stack
-			throw e;
-		}
-		
-        // notify listener of successful completion
-        if (listener!=null) listener.afterCrawlingSuccess(catalogURI.toString());
-				
+    			            if (LOG.isInfoEnabled()) 
+    			                LOG.info("Catalog "+catalogURI.toString()+" matches filter regular expression, proceeding with publishing/unpubishing of records");
+    				    
+                            // list or previous records to be republished
+                            final List<Record> _records = new ArrayList<Record>();
+        				    
+        					// list of records from this catalog
+        					final List<Record> records = parser.parseDataset(dataset, true); // set latest=true by default
+        										
+        					// top-level dataset
+        					final Record drecord = records.get(0);	
+        					
+        					// publish
+        					if (publish) {
+        					    
+        					    // check versus existing records in the metadata repository
+        					    if (searchService!=null) {
+        					        final List<Record> exRecords = this.getLatestDatasets(drecord.getMasterId());
+        					        // loop over existing records
+        					        for (final Record exRecord : exRecords) {
+        					            
+        					            if (exRecord.getVersion()<drecord.getVersion()) {
+        					                // case 1) publishing a newer version:
+        					                // republish previous version with "latest"=false
+        					                
+        					                // retrieve previous record THREDDS catalogs URI
+        					                String exCatalogUri = RecordHelper.selectUrlByMimeType(exRecord, QueryParameters.MIME_TYPE_THREDDS);
+        					                if (StringUtils.hasText(exCatalogUri)) {
+        					                    
+        					                    final InvCatalog exCatalog = parseCatalog(exCatalogUri);
+        					                        
+        				                        for (final InvDataset exDataset : exCatalog.getDatasets()) {
+        				                            if (LOG.isInfoEnabled()) 
+        				                                LOG.info("Latest version in index: catalog uri="+exCatalogUri+" record id="
+        				                                        +exRecord.getId()+" record master_id="+exRecord.getMasterId()+" version="+exRecord.getVersion());
+        				                            if (exDataset instanceof InvDatasetImpl) {
+        				                                // publish previous records with "latest"=false
+        				                                if (LOG.isInfoEnabled()) LOG.info("Republishing dataset: "+exDataset.getID()+" with latest=false");
+        				                                _records.addAll( parser.parseDataset(exDataset, false));
+        				                            }
+        				                        }
+        					                        					                    
+        					                }
+        					              
+        					            } else if (exRecord.getVersion()>drecord.getVersion()) {
+        					                // case 2) publishing an older version:
+        					                // change latest flag of this version before publishing it
+        				                    if (LOG.isInfoEnabled()) LOG.info("Index already contains newer version: "+exRecord.getVersion()
+        				                                                     +" - setting latest=false for this version: "+drecord.getVersion());
+        
+        					                for (final Record record : records) {
+        					                    record.setLatest(false);
+        					                }
+        					                
+        					            } else {
+        					                // case 3) publishing the same version:
+        					                // nothing to do
+        					            }
+        					        }
+        					    }
+        					    
+        					    // publish new and older versions as a single commit
+        					    records.addAll(_records);
+        					    callback.notify(records);
+            					    					
+        					// un-publish
+        					} else {
+        					    
+        					    // remove top-level dataset only, files will follow
+                                if (LOG.isDebugEnabled()) LOG.debug("Removing catalog for top-level dataset="+drecord.getId());
+                                callback.notify(drecord);
+        					    
+        					}
+        					
+    			        } else {
+    			            if (LOG.isInfoEnabled()) 
+    			                LOG.info("Catalog: "+catalogURI.toString()+" does not match regular expression filter, skipping publishing/unpublishing of records.");
+    			        }
+    					
+    				} // dataset instanceof InvCatalogRef or InvDatasetImpl
+    				
+    			} // loop over datasets
+    		    			
+    		// invalid catalog
+    		} catch(IOException e) {
+                // notify listener of crawling error
+                if (listener!=null) listener.afterCrawlingError(catalogURI.toString());
+                // throw the exception up the stack
+    			throw e;
+    		}
+    		
+            // notify listener of successful completion
+            if (listener!=null) listener.afterCrawlingSuccess(catalogURI.toString());
+            				
 	}
 	
 	/**

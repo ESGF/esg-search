@@ -50,8 +50,10 @@ public class CasCrawler implements MetadataRepositoryCrawler {
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * * Note: this implementation currently ignores the @param filter.
 	 */
-	public void crawl(final URI uri, final boolean recursive, final RecordProducer callback, boolean publish) throws Exception {
+	public void crawl(final URI uri, String filter, final boolean recursive, final RecordProducer callback, boolean publish) throws Exception {
 		
 		// parse XML document
 		final String xml = (new HttpClient()).doGet( uri.toURL() );

@@ -182,3 +182,6 @@ Internal changes to URLs resolved by the servlet
 
 2.4.1
 - Fixed wrong endpoint for authorization service.
+
+2.5.9
+- Enabled publishing/unpublishing/crawling with regular expression to match URIs
