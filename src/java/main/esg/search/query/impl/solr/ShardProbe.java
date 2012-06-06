@@ -65,7 +65,7 @@ public class ShardProbe extends Thread {
             final Element resultElement = (Element)xPath2.selectSingleNode(doc);
             this.numFound = Integer.parseInt( resultElement.getAttributeValue("numFound") );
             
-            if (LOG.isInfoEnabled()) LOG.info("Number of Results="+this.numFound+" Query Time="+this.queryTime+" Elapsed Time="+this.elapsedTime);
+            if (LOG.isInfoEnabled()) LOG.info("Shard="+shard+" Number of Results="+this.numFound+" Query Time="+this.queryTime+" Elapsed Time="+this.elapsedTime);
             
         } catch(Exception e) {
             System.out.println("Error probing shard="+shard+": "+e.getMessage());

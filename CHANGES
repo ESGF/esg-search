@@ -214,3 +214,6 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 
 2.6.0
 - Merged changes from master, cleanup.
+
+2.6.1
+- Including static list of shards as reference
