@@ -10,6 +10,7 @@
     
     <!-- Europe -->
     <value>euclipse1.dkrz.de:8983/solr</value>
+    <value>esgf-dev.dkrz.de:8983/solr</value>
     <value>adm07.cmcc.it:8983/solr</value>
     <value>esgf-node.ipsl.fr:8983/solr</value>
   
