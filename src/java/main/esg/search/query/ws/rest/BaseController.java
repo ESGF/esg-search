@@ -210,7 +210,7 @@ public class BaseController {
             }
         }
         
-        // FIXME: temporary fix to alleviate problems in displaying files in data cart
+        // Default limit of 1000 for file queries (for generation of wget scripts)
         if (command.getConstraint(QueryParameters.FIELD_TYPE).equals(QueryParameters.TYPE_FILE)
             && request.getParameter(QueryParameters.LIMIT)==null) {
             command.setLimit(QueryParameters.DEFAULT_LIMIT);
