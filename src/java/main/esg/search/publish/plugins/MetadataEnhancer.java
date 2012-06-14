@@ -1,7 +1,6 @@
 package esg.search.publish.plugins;
 
 import java.util.List;
-import java.util.Set;
 
 import esg.search.core.Record;
 

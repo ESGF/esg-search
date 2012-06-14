@@ -1,6 +1,5 @@
 package esg.search.publish.api;
 
-import java.rmi.RemoteException;
 
 /**
  * API for publishing and unpublishing metadata, in support of legacy clients.

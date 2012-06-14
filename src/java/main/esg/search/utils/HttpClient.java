@@ -25,11 +25,6 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import esg.search.query.impl.solr.SolrUrlBuilder;
-
 /**
  * Simple class to execute an HTTP GET/POST request,
  * and return the HTTP response as a single string.

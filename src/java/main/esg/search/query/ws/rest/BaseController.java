@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.StringUtils;
 
-import esg.node.connection.ESGConnector;
 import esg.search.query.api.FacetProfile;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
