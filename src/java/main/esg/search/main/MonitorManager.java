@@ -13,25 +13,32 @@ public class MonitorManager {
     
     // the servers to probe
     private final static String[] SERVERS = new String[]{
-                                                         "adm07.cmcc.it",
+                                                         // USA
                                                          "dev.esg.anl.gov",
                                                          "esg-datanode.jpl.nasa.gov",
-                                                         //"esg.ccs.ornl.gov",
-                                                         "esg1-gw.pnl.gov",
+                                                         "esg.ccs.ornl.gov",
+                                                         "esgf.nccs.nasa.gov",
+                                                         //"esg1-gw.pnl.gov",
                                                          "pcmdi11.llnl.gov",
                                                          "pcmdi9.llnl.gov",
-                                                         "test-datanode.jpl.nasa.gov"
-                                                         };
+                                                         //"test-datanode.jpl.nasa.gov"
+                                                         // Europe
+                                                         "adm07.cmcc.it",
+                                                         "euclipse1.dkrz.de",
+                                                         "esgf-node.ipsl.fr",
+                                                        };
     
     // query parameters
-    public final static String SOLR_QUERY = "q=*&replica=false&latest=true";
-    public final static String API_QUERY = "query=*&replica=false&latest=true&distrib=false";
+    //public final static String SOLR_QUERY = "q=*&replica=false&latest=true";
+    public final static String SOLR_QUERY = "q=*";   
+    //public final static String API_QUERY = "query=*&replica=false&latest=true&distrib=false";
+    public final static String API_QUERY = "query=*&distrib=false";
     public final static String XPATH1 = "/response/lst[@name='responseHeader']/int[@name='QTime']";
     public final static String XPATH2 = "/response/result";
     private final static String[] CORES = new String[]{"datasets","files"};
     
-    public final static int CONNECTION_TIMEOUT = 1000;
-    public final static int READ_TIMEOUT = 5000;
+    public final static int CONNECTION_TIMEOUT = 10000;
+    public final static int READ_TIMEOUT = 50000;
     
     // the specific Solr core to probe
     private String core;
@@ -64,7 +71,8 @@ public class MonitorManager {
         List<MonitorThread> threads = new ArrayList<MonitorThread>();
         long startTime = System.currentTimeMillis();
         for (String server : SERVERS) {
-            MonitorThread mt = new MonitorThread(server, core);
+            String url = MonitorManager.buildUrl(server, core);
+            MonitorThread mt = new MonitorThread(url);
             mt.run();
             threads.add(mt);
         }
@@ -88,7 +96,8 @@ public class MonitorManager {
         List<MonitorThread> threads = new ArrayList<MonitorThread>();
         long startTime = System.currentTimeMillis();
         for (String server : SERVERS) {
-            MonitorThread mt = new MonitorThread(server, core);
+            String url = MonitorManager.buildUrl(server, core);
+            MonitorThread mt = new MonitorThread(url);
             mt.start();
             threads.add(mt);
         }
@@ -125,7 +134,7 @@ public class MonitorManager {
      */
     private void print(List<MonitorThread> threads) {
         for (MonitorThread mt : threads) {
-            System.out.println("Server="+mt.server+" Core="+core+" Query Time="+mt.queryTime+" Elapsed Time="+mt.elapsedTime+" Number of Results="+mt.numFound);
+            mt.print();
         }
     }
     
