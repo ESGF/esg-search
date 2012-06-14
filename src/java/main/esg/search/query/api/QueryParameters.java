@@ -110,7 +110,7 @@ public class QueryParameters {
     /**
      * Default number of records requested, if not specified.
      */
-    public final static int DEFAULT_LIMIT = 1000;
+    public final static int DEFAULT_LIMIT = 100;
 
     /**
      * Common record types.

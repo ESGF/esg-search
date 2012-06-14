@@ -220,3 +220,6 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 
 2.6.4
 -- Raising the default limit for file query to 1000.
+
+2.6.5
+-- Back to 100 because of scalability issues
