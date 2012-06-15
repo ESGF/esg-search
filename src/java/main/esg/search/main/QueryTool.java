@@ -26,12 +26,20 @@ public class QueryTool {
         //String postdata = args[1];
         
         String apiUrl = "http://esg-datanode.jpl.nasa.gov/esg-search/search";
-        //String solrUrl = "http://esg-datanode.jpl.nasa.gov:8983/solr/files/select/";
+        String solrUrl = "http://esg-datanode.jpl.nasa.gov:8983/solr/files/select/";
         
-        String apiPostdata = "type=File&limit=100&project=CMIP5&distrib=true&realm=ocean&shards=pcmdi11.llnl.gov:8983/solr&variable=basin";
+        //&project=CMIP5&latest=true&replica=false&realm=atmos&variable=hfls&facets=model,data_node
+        String apiPostdata = "type=File&project=CMIP5&distrib=true&latest=true&replica=false"
+                           + "&shards=pcmdi11.llnl.gov:8983/solr"
+                           + "&realm=ocean&variable=basin"
+                           + "&experiment=historical&limit=100";
         //String solrPostdata = "indent=true&q=*&fq=type%3AFile&facet=true&start=0&rows=100";
+        String solrPostData = "indent=true&q=*&fq=type%3AFile&fq=time_frequency%3A%22day%22&fq=project%3A%22CMIP5%22&fq=realm%3A%22atmos%22"
+                            + "&fq=experiment%3A%22historical%22&fq=variable%3A%22basin%22&facet=true&start=0&rows=100"
+                            + "&shards=pcmdi11.llnl.gov:8983/solr/files";
         
         MonitorThread mt = new MonitorThread(apiUrl, apiPostdata);
+        //MonitorThread mt = new MonitorThread(solrUrl, solrPostData);
         mt.run();
         mt.print();
         
