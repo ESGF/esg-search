@@ -155,7 +155,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.FILE_ID) )) {
 	            
 	            // parse files into separate records, inherit top dataset metadata
-	            boolean inherit = true;
+	            boolean inherit = false;
 	            ds.size += this.parseFile(childDataset, latest, isReplica, records, inherit, hostName);
 	            ds.numberOfFiles += 1;
 
