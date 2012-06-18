@@ -223,3 +223,6 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 
 2.6.5
 -- Back to 100 because of scalability issues
+
+2.6.7
+-- Writing "index_node" properties for all Files directly from the esgf.properties file (i.e. not inherited from the containing Dataset)
