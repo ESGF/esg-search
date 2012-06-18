@@ -5,7 +5,7 @@ lock_file=${lock_dir}/${0##*/}.lock
 
 clear_lock() {
     [ -e "${lock_file}" ] && rm ${lock_file} && ( ((debug)) && echo "cleared lockfile: ${lock_file}" )
-    exit 1
+    exit 0
 }
 
 optimize_index() {
