@@ -101,6 +101,7 @@ esg_search_version=${esg_search_version:-"1.2.0"}
 search_install_dir=${ESGF_INSTALL_DIR:-"${install_prefix}/esgf_search"}
 seach_data_dir=${ESGF_DATA_DIR:="${esg_root_dir}/search_data"}
 esgf_crawl_launcher="esgf-crawl"
+esgf_index_optimization_launcher="esgf-optimize-index"
 
 
 #---------------------------------------------------------
@@ -143,6 +144,7 @@ setup_search() {
 
     #Get utility script for crawling thredds sites
     fetch_crawl_launcher
+    fetch_index_optimization_launcher
 
     echo "done"
     echo
@@ -948,6 +950,15 @@ fetch_crawl_launcher() {
     checked_get ${esgf_crawl_launcher} ${esg_dist_url}/${search_web_service_name}/${esgf_crawl_launcher} $((force_install))
     (( $? > 1 )) && echo " ERROR: Could not download ${esg_dist_url}/${search_web_service_name}/${esgf_crawl_launcher} :-(" && popd >& /dev/null && return 1
     chmod 755 ${esgf_crawl_launcher}
+    popd >& /dev/null
+    return 0
+}
+
+fetch_index_optimization_launcher() {
+    pushd ${scripts_dir} >& /dev/null
+    checked_get ${esgf_index_optimization_launcher} ${esg_dist_url}/${search_web_service_name}/${esgf_index_optimization_launcher} $((force_install))
+    (( $? > 1 )) && echo " ERROR: Could not download ${esg_dist_url}/${search_web_service_name}/${esgf_index_optimization_launcher} :-(" && popd >& /dev/null && return 1
+    chmod 755 ${esgf_index_optimization_launcher}
     popd >& /dev/null
     return 0
 }
