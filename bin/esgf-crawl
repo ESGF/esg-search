@@ -64,7 +64,7 @@ out_dir="/tmp"
 
 crawl_site() {
     local site=$(resolve_site ${1})
-    local regex='ALL'
+    local regex=${2:-'ALL'}
     local host=$(echo "${site}" | sed -n 's@http[s]*://\([^/]*\)/.*@\1@p')
     verbose_print "------------"
     verbose_print "host: ${host}"
