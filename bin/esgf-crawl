@@ -64,22 +64,31 @@ out_dir="/tmp"
 
 crawl_site() {
     local site=$(resolve_site ${1})
+    local regex=${2:-'ALL'}
     local host=$(echo "${site}" | sed -n 's@http[s]*://\([^/]*\)/.*@\1@p')
     verbose_print "------------"
     verbose_print "host: ${host}"
     echo "crawling ${site} ...."
     ((DEBUG)) && curl -s ${site}
-    verbose_print "$JAVA_HOME/bin/java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} THREDDS $( ((REMOVE)) && echo "false" || echo "true") ${out_dir}/${host}_publishing.log"
-    $JAVA_HOME/bin/java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} THREDDS $( ((REMOVE)) && echo "false" || echo "true") ${out_dir}/${host}_publishing.log
+    verbose_print "$JAVA_HOME/bin/java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} ${regex} THREDDS $( ((REMOVE)) && echo "false" || echo "true") ${out_dir}/${host}_publishing.log"
+    $JAVA_HOME/bin/java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} ${regex} THREDDS $( ((REMOVE)) && echo "false" || echo "true") ${out_dir}/${host}_publishing.log
     verbose_print "------------"
 }
 
+# this will respect the arg syntax of:
+# site1 {regex1} site2 {regex2} site3 ...
 crawl_sites() {
     local sites=($@)
     echo "Setting up to crawl these sites:"
     echo "${sites[@]}"
-    for site in ${sites[@]}; do
-        crawl_site $site
+    local regex
+    for ((i=0; i < ${#sites[@]}; i++)) ; do
+        site=$(sed -n 's/[{]\([^}]*\)[}]/\1/p' <<< ${sites[i]})
+        [ -n "${site}" ] && continue
+        regex=$(sed -n 's/[{]\([^}]*\)[}]/\1/p' <<< ${sites[((i+1))]})
+        crawl_site ${sites[i]} ${regex}
+        [ -n "${regex}" ] && ((++i))
+        unset regex
     done
 }
 
