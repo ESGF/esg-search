@@ -75,12 +75,20 @@ crawl_site() {
     verbose_print "------------"
 }
 
+# this will respect the arg syntax of:
+# site1 {regex1} site2 {regex2} site3 ...
 crawl_sites() {
     local sites=($@)
     echo "Setting up to crawl these sites:"
     echo "${sites[@]}"
-    for site in ${sites[@]}; do
-        crawl_site $site
+    local regex
+    for ((i=0; i < ${#sites[@]}; i++)) ; do
+        site=$(sed -n 's/[{]\([^}]*\)[}]/\1/p' <<< ${sites[i]})
+        [ -n "${site}" ] && continue
+        regex=$(sed -n 's/[{]\([^}]*\)[}]/\1/p' <<< ${sites[((i+1))]})
+        crawl_site ${sites[i]} ${regex}
+        [ -n "${regex}" ] && ((++i))
+        unset regex
     done
 }
 
