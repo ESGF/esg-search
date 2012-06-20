@@ -261,6 +261,8 @@ public class SearchInputImpl implements SearchInput, Serializable {
 		final StringBuilder s = new StringBuilder();
 		// distributed search
 		s.append("Distributed Search:"+this.isDistrib()).append(NEWLINE);
+		// sort
+		s.append("Sort:"+this.isSort()).append(NEWLINE);
 		// query
 	    s.append("Search Text:"+this.getQuery()).append(NEWLINE);
 	    // offset, limit

@@ -23,8 +23,9 @@ public class QueryParameters {
     public final static String SHARDS = "shards";
     public final static String FROM = "from";
     public final static String TO = "to";
+    public final static String SORT = "sort";
         
-    public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB, SHARDS, FROM, TO } );
+    public final static List<String> KEYWORDS = Arrays.asList( new String[]{ OFFSET, LIMIT, QUERY, FORMAT, FACETS, FIELDS, DISTRIB, SHARDS, FROM, TO, SORT } );
              
     // standard metadata fields, always included for each result (if available)
     final public static String FIELD_ID = "id";
