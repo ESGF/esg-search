@@ -513,6 +513,9 @@
         <!-- return only facet values that match one or more documents -->
         <str name="facet.mincount">1</str>
         <str name="facet.method">enum</str>
+        <!-- shards parameters to be supported in Solr 4.0
+        <bool name="shards.info">true</bool>
+        <bool name="shards.tolerant">true</bool> -->
      </lst>
 
      <!-- distributed search parameters -->
