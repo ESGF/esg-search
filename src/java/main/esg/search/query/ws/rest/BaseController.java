@@ -91,18 +91,19 @@ public class BaseController {
 	        // check parameter name
 	        String key = obj.toString();
 	        final Matcher keyMatcher = QueryParameters.INVALID_CHARACTERS.matcher(key);
-            if (keyMatcher.matches()) sendError(HttpServletResponse.SC_BAD_REQUEST, 
-                                                "Invalid character(s) detected in parameter name="+key,
-                                                response);                                                        
+            if (keyMatcher.matches())
+                    return sendError(HttpServletResponse.SC_BAD_REQUEST, 
+                                     "Invalid character(s) detected in parameter name="+key,
+                                     response);  
             
             // check parameter values
             String[] values = request.getParameterValues(key);
             for (int i=0; i<values.length; i++) {
                 final Matcher valueMatcher = QueryParameters.INVALID_CHARACTERS.matcher(values[i]);
-                if (!StringUtils.hasText(values[i])) sendError(HttpServletResponse.SC_BAD_REQUEST, 
+                if (!StringUtils.hasText(values[i])) return sendError(HttpServletResponse.SC_BAD_REQUEST, 
                                                                "Invalid empty value for parameter="+key,
                                                                response);
-                if (valueMatcher.matches()) sendError(HttpServletResponse.SC_BAD_REQUEST, 
+                if (valueMatcher.matches()) return sendError(HttpServletResponse.SC_BAD_REQUEST, 
                                                       "Invalid character(s) detected in parameter value="+values[i],
                                                       response); 
                                                                                   
@@ -114,21 +115,21 @@ public class BaseController {
             if (   !QueryParameters.KEYWORDS.contains(_key)
                 && !QueryParameters.CORE_QUERY_FIELDS.contains(_key)
                 && !facetProfile.getTopLevelFacets().keySet().contains(_key)) {
-                sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid HTTP query parameter="+key, response); 
+                return sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid HTTP query parameter="+key, response); 
             }
 	        
 	    }
 	            
         // keyword "limit": impose maximum count on returned results
         if (command.getLimit()>QueryParameters.MAX_LIMIT) {
-            sendError(HttpServletResponse.SC_BAD_REQUEST, 
-                    "Too many records requested, maximum allowed value is limit="+QueryParameters.MAX_LIMIT,
-                    response);  
+            return sendError(HttpServletResponse.SC_BAD_REQUEST, 
+                            "Too many records requested, maximum allowed value is limit="+QueryParameters.MAX_LIMIT,
+                             response);  
         }
         
         // keyword "format": check requested output format
         SearchReturnType format = SearchReturnType.forMimeType(command.getFormat());
-        if (format==null) sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, 
+        if (format==null) return sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, 
                                     "Invalid requested format: "+ command.getFormat(), response);
 
 	    
@@ -185,7 +186,7 @@ public class BaseController {
                     || parName.equals(QueryParameters.FIELD_RADIUS)
                     || parName.equals(QueryParameters.FIELD_POLYGON) ) {
                     
-                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported parameter: "+parName);
+                    return sendError(HttpServletResponse.SC_BAD_REQUEST, "Unsupported parameter: "+parName, response);
                           
                 // SINGLE-VALUED CONSTRAINTS (only parse first HTTP parameter value)
                 // &type=...
@@ -210,10 +211,10 @@ public class BaseController {
         }
         
         // Default limit of 1000 for file queries (for generation of wget scripts)
-        if (command.getConstraint(QueryParameters.FIELD_TYPE).equals(QueryParameters.TYPE_FILE)
-            && request.getParameter(QueryParameters.LIMIT)==null) {
-            command.setLimit(QueryParameters.DEFAULT_LIMIT);
-        }
+        //if (command.getConstraint(QueryParameters.FIELD_TYPE).equals(QueryParameters.TYPE_FILE)
+        //    && request.getParameter(QueryParameters.LIMIT)==null) {
+        //    command.setLimit(QueryParameters.DEFAULT_LIMIT);
+        //}
         
         if (!response.isCommitted()) {
         
@@ -256,15 +257,17 @@ public class BaseController {
 
 	/**
 	 * Method to return an HTTP error in the response.
+	 * The response body itself is blank.
 	 *  
 	 * @param sc
 	 * @param message
 	 * @param response
 	 * @throws IOException
 	 */
-	void sendError(int sc, final String message, final HttpServletResponse response) throws IOException {
+	String sendError(int sc, final String message, final HttpServletResponse response) throws IOException {
         LOG.warn(message);
         response.sendError(sc, message);
+        return "";
 	}
 	
 	/**

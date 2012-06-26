@@ -102,16 +102,21 @@ public class QueryParameters {
     // required date/time format for Solr documents
     //public static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     //public static final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+        
+    /**
+     * Default number of records requested, if not specified.
+     */
+    public final static int DEFAULT_LIMIT = 100;
+    
+    /**
+     * Large default limit for wget scripts.
+     */
+    public final static int LARGE_LIMIT = 1000;
     
     /**
      * Maximum limit on returned results
      */
     public final static int MAX_LIMIT = 10000;
-    
-    /**
-     * Default number of records requested, if not specified.
-     */
-    public final static int DEFAULT_LIMIT = 100;
 
     /**
      * Common record types.

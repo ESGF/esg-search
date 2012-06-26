@@ -233,3 +233,5 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 
 2.7.0
 -- Externalizing facets configuration in /esg/config/facets.properties
+-- Changed BaseController to return immediately in case of error
+-- Set default LARGE_LIMIT to 1000 for wget scripts

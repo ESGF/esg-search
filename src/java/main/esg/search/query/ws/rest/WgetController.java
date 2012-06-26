@@ -67,8 +67,8 @@ public class WgetController {
             command.setConstraint(QueryParameters.FIELD_TYPE, QueryParameters.TYPE_FILE);
         }
         
-        // set limit=MAX_LIMIT to enable massive retrieval through wget scripting, unless explicitly set already
-        if (request.getParameter(QueryParameters.LIMIT)==null) command.setLimit(QueryParameters.MAX_LIMIT);
+        // set limit=DEFAULT_LIMIT to enable large retrieval through wget scripting, unless explicitly set already
+        if (request.getParameter(QueryParameters.LIMIT)==null) command.setLimit(QueryParameters.LARGE_LIMIT);
         
         // process request, obtain Solr/XML output
         String xml = baseController.process(request, command, response);
