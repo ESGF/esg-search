@@ -14,6 +14,7 @@ public class PropertiesUtils {
     
     /**
      * Method to load a Properties file from either an absolute path, or a relative classpath.
+     * 
      * @param filepath
      * @return
      */
@@ -31,8 +32,9 @@ public class PropertiesUtils {
             FileInputStream in = new FileInputStream(file);
             properties.load(in);
             in.close();           
+            if (LOG.isInfoEnabled()) LOG.info("Loaded properties file: "+filepath);
         } catch(Exception e) {
-            LOG.warn("Properties file: "+filepath+" not found, properties not loaded");
+            if (LOG.isWarnEnabled()) LOG.warn("Properties file: "+filepath+" not found, properties not loaded");
         } 
         
         return properties;

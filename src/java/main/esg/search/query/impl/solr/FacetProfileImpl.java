@@ -33,7 +33,8 @@ import esg.search.query.api.FacetProfile;
 import esg.search.utils.PropertiesUtils;
 
 /**
- * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs.
+ * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs,
+ * or from a properties file.
  */
 public class FacetProfileImpl implements FacetProfile, Serializable {
 	

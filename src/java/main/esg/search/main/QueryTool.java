@@ -25,21 +25,27 @@ public class QueryTool {
         //String url = args[0];
         //String postdata = args[1];
         
-        String apiUrl = "http://esg-datanode.jpl.nasa.gov/esg-search/search";
-        String solrUrl = "http://esg-datanode.jpl.nasa.gov:8983/solr/files/select/";
+        String apiUrl = "http://esgf-dev.dkrz.de/esg-search/search";
+        apiUrl = "http://esg-datanode.jpl.nasa.gov/esg-search/search";
+        String solrUrl = "http://esg-datanode.jpl.nasa.gov:8983/solr/datasets/select/";
         
         //&project=CMIP5&latest=true&replica=false&realm=atmos&variable=hfls&facets=model,data_node
         String apiPostdata = "type=File&project=CMIP5&distrib=true&latest=true&replica=false"
                            + "&shards=pcmdi11.llnl.gov:8983/solr"
                            + "&realm=ocean&variable=basin"
                            + "&experiment=historical&limit=100";
+        //apiPostdata = "query=cmip5&limit=3&institute=INM&experiment=amip&ensemble=r0i0p0&realm=atmos&test=";
+        apiPostdata = "type=Dataset&fields=master_id,version&replica=False&limit=1&offset=1000&distrib=True&query=master_id:cmip5.output2.*&latest=True";
         //String solrPostdata = "indent=true&q=*&fq=type%3AFile&facet=true&start=0&rows=100";
         String solrPostData = "indent=true&q=*&fq=type%3AFile&fq=time_frequency%3A%22day%22&fq=project%3A%22CMIP5%22&fq=realm%3A%22atmos%22"
                             + "&fq=experiment%3A%22historical%22&fq=variable%3A%22basin%22&facet=true&start=0&rows=100"
                             + "&shards=pcmdi11.llnl.gov:8983/solr/files";
+        solrPostData ="q=master_id%3Acmip5.output2.*&fq=type%3ADataset&fq=latest%3ATrue&fq=replica%3AFalse"
+                     +"&start=1000&rows=1"
+                     +"&shards=pcmdi11.llnl.gov:8983/solr/datasets,esg-datanode.jpl.nasa.gov:8983/solr/datasets,esg.ccs.ornl.gov:8983/solr/datasets,esgf.nccs.nasa.gov:8983/solr/datasets,euclipse1.dkrz.de:8983/solr/datasets,adm07.cmcc.it:8983/solr/datasets,esgf-node.ipsl.fr:8983/solr/datasets";
         
-        MonitorThread mt = new MonitorThread(apiUrl, apiPostdata);
-        //MonitorThread mt = new MonitorThread(solrUrl, solrPostData);
+        //MonitorThread mt = new MonitorThread(apiUrl, apiPostdata);
+        MonitorThread mt = new MonitorThread(solrUrl, solrPostData);
         mt.run();
         mt.print();
         
