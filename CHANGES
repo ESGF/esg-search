@@ -230,3 +230,6 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 2.6.8
 -- Allowing additional "sort" parameter in search API
 -- Inserting alternative wget2 controller
+
+2.7.0
+-- Externalizing facets configuration in /esg/config/facets.properties
