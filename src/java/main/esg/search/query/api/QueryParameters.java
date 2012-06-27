@@ -49,6 +49,7 @@ public class QueryParameters {
     final public static String FIELD_INDEX_NODE = "index_node";
     final public static String FIELD_DATA_NODE = "data_node";
     final public static String FIELD_NUMBER_OF_FILES = "number_of_files";
+    final public static String FIELD_NUMBER_OF_AGGREGATIONS = "number_of_aggregations";
             
     // special query fields for open search geo extension
     public final static String FIELD_BBOX ="bbox";  // west, south, east, north
@@ -123,6 +124,7 @@ public class QueryParameters {
      */
     public final static String TYPE_DATASET = "Dataset";
     public final static String TYPE_FILE = "File";
+    public final static String TYPE_AGGREGATION = "Aggregation";
 
     /**
      * The default results type to search for, if none is specified.

@@ -20,9 +20,7 @@ package esg.search.publish.thredds;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,19 +35,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import thredds.catalog.InvAccess;
 import thredds.catalog.InvDataset;
-import thredds.catalog.InvDocumentation;
-import thredds.catalog.InvProperty;
-import thredds.catalog.ThreddsMetadata.GeospatialCoverage;
-import thredds.catalog.ThreddsMetadata.Variable;
-import thredds.catalog.ThreddsMetadata.Variables;
-import ucar.nc2.units.DateRange;
 import esg.search.core.Record;
 import esg.search.core.RecordHelper;
 import esg.search.core.RecordImpl;
-import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.plugins.MetadataEnhancer;
+import esg.search.publish.thredds.parsers.AccessParser;
+import esg.search.publish.thredds.parsers.DocumentationParser;
+import esg.search.publish.thredds.parsers.MetadataGroupParser;
+import esg.search.publish.thredds.parsers.PropertiesParser;
+import esg.search.publish.thredds.parsers.ThreddsElementParser;
+import esg.search.publish.thredds.parsers.VariablesParser;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
 
@@ -71,12 +67,27 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	private ThreddsDataseUrlBuilder urlBuilder = new ThreddsDatasetUrlBuilderCatalogUrlImpl();
 	
 	/**
+	 * List of THREDDS element parsers (currently the same for each record type).
+	 */
+	private List<ThreddsElementParser> parsers;
+	
+	/**
 	 * Optional map of metadata enhancers.
 	 * For performance, each metadata enhancer is triggered by a single field, the map key.
 	 */
 	private Map<String, MetadataEnhancer> metadataEnhancers = new LinkedHashMap<String, MetadataEnhancer>();
 		
-	public ThreddsParserStrategyTopLevelDatasetImpl() {}
+	public ThreddsParserStrategyTopLevelDatasetImpl() {
+	    
+	    // instantiate THREDDS element parsers
+	    parsers = new ArrayList<ThreddsElementParser>();
+	    parsers.add( new AccessParser() );	    
+	    parsers.add( new DocumentationParser() );
+	    parsers.add( new MetadataGroupParser() );
+	    parsers.add( new PropertiesParser() );
+	    parsers.add( new VariablesParser() );
+	    	    	    
+	}
 	
 	/**
 	 * Method to set the builder for the URL to be associated with each record
@@ -123,9 +134,10 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         
         // recursion
 		final DatasetSummary ds = parseSubDatasets(dataset, latest, isReplica, records, hostName);
-		// set total size of dataset, number of files
+		// set total size of dataset, number of files, number of aggregations
 		record.addField(QueryParameters.FIELD_SIZE, Long.toString(ds.size));
 		record.addField(QueryParameters.FIELD_NUMBER_OF_FILES, Long.toString(ds.numberOfFiles));
+		record.addField(QueryParameters.FIELD_NUMBER_OF_AGGREGATIONS, Long.toString(ds.numberOfAggregations));
 		
 		// debug
 		if (LOG.isDebugEnabled()) {
@@ -154,15 +166,17 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        
 	        if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.FILE_ID) )) {
 	            
-	            // parse files into separate records, inherit top dataset metadata
+	            // parse files into separate records
 	            boolean inherit = true;
-	            ds.size += this.parseFile(childDataset, latest, isReplica, records, inherit, hostName);
+	            ds.size += this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, QueryParameters.TYPE_FILE);
 	            ds.numberOfFiles += 1;
 
 	        } else if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.AGGREGATION_ID) )) {
 	            
-	            // parse aggregation INTO TOP LEVEL DATASET
-	            //this.parseAggregation(childDataset, records.get(0) );
+	            // parse aggregations into separate records
+	            boolean inherit = false;
+	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, QueryParameters.TYPE_AGGREGATION);
+	            ds.numberOfAggregations += 1;
 	            
 	        }
 	        
@@ -170,22 +184,12 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        final DatasetSummary sds = parseSubDatasets(childDataset, latest, isReplica, records, hostName);
 	        ds.size += sds.size;
 	        ds.numberOfFiles += sds.numberOfFiles;
+	        ds.numberOfAggregations += sds.numberOfAggregations;
 	        
 	    }
 	    
 	    return ds;
         
-	}
-	
-	/**
-	 * Method to parse the aggregation information into given record ( = top-level dataset)
-	 * @param dataset
-	 * @param record
-	 */
-	private void parseAggregation(final InvDataset dataset, final Record record) {
-	    
-	    this.parseAccess(dataset, record);
-	    
 	}
 	
 	private Record parseCollection(final InvDataset dataset, final boolean latest, final String hostName) {
@@ -201,7 +205,6 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        
 	    // type
 	    record.setType(QueryParameters.TYPE_DATASET);
-	    //record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_DATASET);
 	        	        
 	    // encode dataset catalog as first access URL
 	    final String url = dataset.getCatalogUrl();
@@ -210,22 +213,11 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	                                                ThreddsPars.getMimeType(url, ThreddsPars.SERVICE_TYPE_CATALOG),
 	                                                ThreddsPars.SERVICE_TYPE_CATALOG));
 	                        
-        // FIXME
-        // metadata format
-        record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");      
-        // metadata file name
-        record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
-        
-        this.parseDocumentation(dataset, record);
-        
-        this.parseVariables(dataset, record);
-        
-        this.parseAccess(dataset, record);
-        
-        this.parseProperties(dataset, record);
-
-        this.parseMetadataGroup(dataset,record);
-        
+	    // parse THREDDS elements
+        for (final ThreddsElementParser parser : parsers) {
+            parser.parse(dataset, record);
+        }
+                
         this.enhanceMetadata(record);
                 
         return record;
@@ -233,47 +225,47 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	}
 	
 	/**
-	 * Specific method to parse file-level information into a newly separate record, 
+	 * Specific method to parse sub-dataset level information into a newly separate record, 
 	 * which is added to the list of already existing records.
 	 * 
 	 * @param dataset
 	 * @param records
-	 * @param inherit : set to true to copy dataset fields as file record fields (without overriding existing fields)
+	 * @param inherit : set to true to copy parent dataset fields as file record fields (without overriding existing fields)
 	 * @return : the file size for computational purposes, or 0 if un-available.
 	 */
-	private long parseFile(final InvDataset file, final boolean latest, final boolean isReplica, 
-	                       final List<Record> records, boolean inherit,
-	                       final String hostName) {
+	private long parseSubDataset(final InvDataset subDataset, 
+	                             final boolean latest, final boolean isReplica, 
+	                             final List<Record> records, boolean inherit,
+	                             final String hostName, final String recordType) {
 	    
         // create new record with universally unique record identifier
-        final Record record = newRecord(file, latest, hostName);
+        final Record record = newRecord(subDataset, latest, hostName);
         
         // set replica flag same as top-level dataset
         record.setReplica(isReplica);
         
         // name -> title
-        final String name = file.getName();
+        final String name = subDataset.getName();
         Assert.notNull(name, "File name cannot be null");
         record.addField(QueryParameters.FIELD_TITLE, name);
+        
         // type
-        //record.addField(QueryParameters.FIELD_TYPE, SolrXmlPars.TYPE_FILE);  
-        record.setType(QueryParameters.TYPE_FILE);
+        record.setType(recordType);
+        
         // parent dataset
         record.addField(QueryParameters.FIELD_DATASET_ID, records.get(0).getId());
+        
+        // parse THREDDS elements
+        for (final ThreddsElementParser parser : parsers) {
+            parser.parse(subDataset, record);
+        }
 
-        long size = 0; // 0 file size by default
-        this.parseProperties(file, record);
         // set size if found
+        long size = 0; // 0 file size by default
         if (StringUtils.hasText( record.getFieldValue(SolrXmlPars.FIELD_SIZE)) ) {
             size = Long.parseLong(record.getFieldValue(SolrXmlPars.FIELD_SIZE));
         }
-        
-        this.parseVariables(file, record);
-        
-        this.parseAccess(file, record);
-        
-        this.parseDocumentation(file, record);
-        
+               
         this.enhanceMetadata(record);
                 
         // copy all fields from parent dataset to file
@@ -295,222 +287,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         records.add(record);
 	    return size;
 	    
-	}
-	
-	/**
-	 * Method to parse all (key,value) pair properties of a dataset into a search record fields.
-	 * @param dataset
-	 * @param record
-	 */
-	private void parseProperties(final InvDataset dataset, final Record record) {
-	    
-	    // <property name="..." value="..." />
-        for (final InvProperty property : dataset.getProperties()) {
-            
-            if (LOG.isTraceEnabled()) LOG.trace("Property: " + property.getName() + "=" + property.getValue());
-            
-            if (property.getName().equals(ThreddsPars.DATASET_ID) || property.getName().equals(ThreddsPars.FILE_ID)) {
-                // note: override "master_id" with version-independent identifier
-                // <property name="dataset_id" value="obs4MIPs.NASA-JPL.AIRS.mon"/>
-                // <property name="file_id" value="obs4MIPs.NASA-JPL.AIRS.mon.husNobs_AIRS_L3_RetStd-v5_200209-201105.nc"/>
-                record.setMasterId(property.getValue());
-                
-            } else if (property.getName().equals(QueryParameters.FIELD_TITLE)) {
-                // note: record title already set from dataset name
-                record.addField(QueryParameters.FIELD_DESCRIPTION, property.getValue());
-                
-            } else if (property.getName().equals(ThreddsPars.DATASET_VERSION) || property.getName().equals(ThreddsPars.FILE_VERSION)) {
-                // note: map "dataset_version", "file_version" to "version"
-                try {
-                    record.setVersion(Long.parseLong(property.getValue()));
-                } catch (NumberFormatException e) {
-                    // no version, defaults to 0
-                }
-                
-            } else if (property.getName().equals(ThreddsPars.SIZE)) {
-                record.addField(SolrXmlPars.FIELD_SIZE, property.getValue());
-                
-            // set replica flag
-            } else if (property.getName().equals(ThreddsPars.IS_REPLICA)) {
-                record.setReplica(Boolean.parseBoolean(property.getValue()));
-                
-            
-            // "creation_time", "mod_time" --> "timestamp"
-            } else if (property.getName().equals(ThreddsPars.CREATION_TIME) || property.getName().equals(ThreddsPars.MOD_TIME)) {
-                try {
-                    final Date date = ThreddsPars.THREDDS_DATE_TIME_PARSER.parse(property.getValue());
-                    record.setField(QueryParameters.FIELD_TIMESTAMP, SolrXmlPars.SOLR_DATE_TIME_FORMATTER.format(date));
-                } catch(ParseException e) {
-                    LOG.warn("Error parsing date/time field: property name="+property.getName()+" value="+property.getValue());
-                    LOG.warn(e.getMessage());
-                }
-                
-            // other date/time properties
-            } else if (   property.getName().endsWith(ThreddsPars.DATE) || property.getName().endsWith(ThreddsPars.TIME) ) {
-                try {
-                    final Date date = ThreddsPars.THREDDS_DATE_TIME_PARSER.parse(property.getValue());
-                    record.setField(property.getName(), SolrXmlPars.SOLR_DATE_TIME_FORMATTER.format(date));
-                } catch(ParseException e) {
-                    LOG.warn("Error parsing date/time field: property name="+property.getName()+" value="+property.getValue());
-                    LOG.warn(e.getMessage());
-                }
-                
-            } else {
-                // index all other properties verbatim
-                record.addField(property.getName(), property.getValue());
-            }
-        }
-	    
-	}
-	
-	/**
-	 * Method to parse the variable information associated with a dataset into the metadata search record
-	 * @param dataset
-	 * @param record
-	 */
-	private void parseVariables(final InvDataset dataset, final Record record) {
-	    	    
-	    // <variables vocabulary="CF-1.0">
-        //   <variable name="hfss" vocabulary_name="surface_upward_sensible_heat_flux" units="W m-2">Surface Sensible Heat Flux</variable>
-        // </variables>
-        for (final Variables variables : dataset.getVariables()) {
-            final String vocabulary = variables.getVocabulary();
-            for (final Variable variable : variables.getVariableList()) {
-                record.addField(SolrXmlPars.FIELD_VARIABLE, variable.getName());
-                if (vocabulary.equals(ThreddsPars.CF)) {
-                    // convert all CF names to lower case, and join by "_"
-                    record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, 
-                                   variable.getVocabularyName().toLowerCase().replaceAll("\\s+", "_"));
-                    // do not include if containing upper case letters or spaces
-                    //final Matcher matcher = NON_CF_PATTERN.matcher(variable.getVocabularyName());
-                    //if (!matcher.matches()) record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, variable.getVocabularyName());
-                }
-                if (StringUtils.hasText(variable.getDescription())) record.addField(SolrXmlPars.FIELD_VARIABLE_LONG_NAME, variable.getDescription());
-            }
-        }
-	    
-	}
-	
-	/**
-	 * Method to parse the access information associated with a dataset into the metadata record search.
-     *
-	 * @param dataset
-	 * @param record
-	 */
-	private void parseAccess(final InvDataset dataset, final Record record) {
-	    
-	    // <access urlPath="/ipcc/sresb1/atm/3h/hfss/miroc3_2_hires/run1/hfss_A3_2050.nc" serviceName="GRIDFTPatPCMDI" dataFormat="NetCDF" />
-        for (final InvAccess access : dataset.getAccess()) {
-            
-            if (LOG.isTraceEnabled()) LOG.trace("Dataset="+dataset.getID()+" Service="+access.getService().getName()+" URL="+access.getStandardUri().toString());
-                       
-            String url = access.getStandardUri().toString();
-            final String type = access.getService().getServiceType().toString();
-            // special processing of opendap endpoints since URL in thredds catalog is unusable without a suffix
-            if (type.equalsIgnoreCase(ThreddsPars.SERVICE_TYPE_OPENDAP)) url += ".html";
-            
-            // encode URL tuple
-            record.addField(QueryParameters.FIELD_URL, 
-                            RecordHelper.encodeUrlTuple(url, ThreddsPars.getMimeType(url, type), access.getService().getDescription() ));
-
-        }
-	    
-	}
-	
-	
-	/**
-	 * Method to extract metadata information from a thredds dataset
-	 * Included in this metadata are the geospatial and temporal info contained
-	 * in the xml tags:
-	 * <>
-	 * 
-	 */
-	private void parseMetadataGroup(final InvDataset dataset, final Record record) {
-	    
-		this.parseGeoSpatialCoverage(dataset,record);
-		this.parseTimeCoverage(dataset,record);
-		
-	}
-	
-	/**
-     * Method to extract documentation information from a dataset into the search metadata record.
-     */
-    private void parseDocumentation(final InvDataset dataset, final Record record) {
-        
-        // <documentation type="...">.......</documentation>
-        for (final InvDocumentation documentation : dataset.getDocumentation()) {
-            // inline documentation
-            final String content = documentation.getInlineContent();
-            if (StringUtils.hasText(content)) {
-                record.addField(QueryParameters.FIELD_DESCRIPTION, content);
-            }
-            // xlink documentation
-            final String href = documentation.getXlinkHref();
-            if (StringUtils.hasText(href)) {
-                record.addField(QueryParameters.FIELD_XLINK, RecordHelper.encodeXlinkTuple(href, documentation.getXlinkTitle(), documentation.getType()) );
-            }
-        }
-        
-    }
-	
-	/**
-	 * Helper method to extract Geospatial metadata from a thredds dataset
-	 * <geospatialCoverage zpositive="down">
-	 *		<northsouth>
-	 *			<start>36.6058</start>
-	 *			<size>0.0</size>
-	 *			<units>degrees_north</units>
-	 *		</northsouth>
-	 *		<eastwest>
-	 *			<start>-97.4888</start>
-	 *			<size>0.0</size>
-	 *			<units>degrees_west</units>
-	 *		</eastwest>
-	 *		<updown>
-	 *			<start>314.0</start>
-	 *			<size>0.0</size>
-	 *			<units>m</units>
-	 *		</updown>
-	 *	</geospatialCoverage>
-	 * 
-	 */
-	private void parseGeoSpatialCoverage(final InvDataset dataset, final Record record) {
-	    
-		final GeospatialCoverage gsc = dataset.getGeospatialCoverage();
-		
-		if (gsc!=null) {
-		    
-			record.addField(SolrXmlPars.FIELD_SOUTH, Double.toString(gsc.getNorthSouthRange().getStart()));
-		
-			record.addField(SolrXmlPars.FIELD_NORTH, Double.toString(gsc.getNorthSouthRange().getStart()+gsc.getNorthSouthRange().getSize()));
-			
-			record.addField(SolrXmlPars.FIELD_WEST, Double.toString(gsc.getEastWestRange().getStart()));
-			
-			record.addField(SolrXmlPars.FIELD_EAST, Double.toString(gsc.getEastWestRange().getStart()+gsc.getEastWestRange().getSize()));
-			
-		}
-	}
-	
-	
-	/**
-	 * Helper method to extract temporal metadata from a thredds dataset
-	 * Note: not all representations are covered, just the following
-	 * <timeCoverage zpositive="down">
-	 *		<start>1999-11-16T12:00</start>
-	 *		<end>2009-11-16T12:00</end>
-	 *	</timeCoverage>
-	 * 
-	 */
-	private void parseTimeCoverage(final InvDataset dataset,Record record) {
-	    
-		final DateRange daterange = dataset.getTimeCoverage();
-		
-		if (daterange!=null) {
-			record.addField(SolrXmlPars.FIELD_DATETIME_START, daterange.getStart().toDateTimeStringISO());	
-			record.addField(SolrXmlPars.FIELD_DATETIME_STOP, daterange.getEnd().toDateTimeStringISO());
-		}
-		
-	}
+	}	
 	
 	/**
 	 * Method to extract the host name from the THREDDS catalog.
@@ -553,7 +330,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         final Record record = new RecordImpl(rid);
         
         // assign a default "master_id" equal to the THREDDS ID (or the UUID if not found)
-        // may later be overridden from property "dataset_id" or "file_id", if found
+        // may later be overridden from property "dataset_id", "file_id" or "aggregation_id", if found
         record.setMasterId(id);
         
         // assign "instance_id" equal to the THREDDS ID (or the UUID if not found)
@@ -571,23 +348,6 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         return record;
 
 	}
-	
-	/**
-	 * Method to encode master/replica information.
-	 */
-	/*
-	private void setReplicaFields(final Record record, final boolean isReplica, final String hostName) {
-	    
-        if (isReplica) {
-            record.addField(QueryParameters.FIELD_REPLICA, "true");
-            record.addField(QueryParameters.FIELD_MASTER_ID, record.getId());
-            record.setId(this.buildReplicaId(record.getId(), hostName));
-        } else {
-            record.addField(QueryParameters.FIELD_REPLICA, "false");
-            record.addField(QueryParameters.FIELD_MASTER_ID, record.getId());
-        }
-
-	} */
 	
 	/**
 	 * Utility method to apply the configured metadata enhancers
@@ -616,6 +376,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	private class DatasetSummary  {
 	    long size = 0L;
 	    int numberOfFiles = 0;
+	    int numberOfAggregations = 0;
 	}
 	
 }

@@ -231,7 +231,8 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 -- Allowing additional "sort" parameter in search API
 -- Inserting alternative wget2 controller
 
-2.7.0
+3.0.0
+-- New Solr core "aggregations/" and corresponding search record type=Aggregation
 -- Externalizing facets configuration in /esg/config/facets.properties
 -- Changed BaseController to return immediately in case of error
 -- Set default LARGE_LIMIT to 1000 for wget scripts
