@@ -39,6 +39,7 @@ import thredds.catalog.InvDataset;
 import esg.search.core.Record;
 import esg.search.core.RecordHelper;
 import esg.search.core.RecordImpl;
+import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.plugins.MetadataEnhancer;
 import esg.search.publish.thredds.parsers.AccessParser;
 import esg.search.publish.thredds.parsers.DocumentationParser;
@@ -212,6 +213,13 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	                    RecordHelper.encodeUrlTuple(url, 
 	                                                ThreddsPars.getMimeType(url, ThreddsPars.SERVICE_TYPE_CATALOG),
 	                                                ThreddsPars.SERVICE_TYPE_CATALOG));
+	    
+        // FIXME
+        // metadata format
+        record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");      
+        // metadata file name
+        record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
+
 	                        
 	    // parse THREDDS elements
         for (final ThreddsElementParser parser : parsers) {
