@@ -61,6 +61,10 @@ public class QueryParameters {
     public final static String FIELD_START = "start";
     public final static String FIELD_END = "end";
     
+    //special query fields for the wget scirpt generator
+    public final static String FIELD_WGET_PATH = "download_structure";
+    public static final String FIELD_WGET_EMPTYPATH = "download_emptypath";
+    
     // fields that are always allowed in queries, in addition to configured facets
     public final static List<String> CORE_QUERY_FIELDS = Arrays.asList( new String[]{ 
             FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_LATEST, FIELD_MASTER_ID, FIELD_INSTANCE_ID, FIELD_DRS_ID,
@@ -68,7 +72,8 @@ public class QueryParameters {
             FIELD_NUMBER_OF_FILES, FIELD_DATASET_ID,
             FIELD_VERSION, FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE, FIELD_DATA_NODE, FIELD_INDEX_NODE,
             FIELD_BBOX, FIELD_BBOX, FIELD_LON, FIELD_LON, FIELD_RADIUS, FIELD_POLYGON,
-            FIELD_START, FIELD_END });
+            FIELD_START, FIELD_END,
+            FIELD_WGET_PATH, FIELD_WGET_EMPTYPATH});
 
     
     // HTTP mime types
@@ -127,6 +132,7 @@ public class QueryParameters {
      * Special value for crawling filter to process ALL catalogs (i.e. no filter is applied).
      */
     public final static String ALL = "ALL";
+    
     
     private QueryParameters() {};
 
