@@ -550,7 +550,7 @@ solr_init() {
     solr_install_dir=${install_prefix}/esgf-solr-${solr_version}-${solr_config_type}
     solr_data_dir=${esg_root_dir}/solr-index-${solr_config_type}
     solr_server_port=$([ "${solr_config_type}" = "master" ] && echo "${index_master_port}" || echo "${index_slave_port}")
-    solr_cores=(datasets files)
+    solr_cores=(datasets files aggregations)
 }
 
 setup_solr() {
