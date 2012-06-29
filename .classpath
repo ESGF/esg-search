@@ -31,7 +31,6 @@
 	<classpathentry kind="lib" path="lib/fetched/junit-4.8.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/junit-4.8.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/logkit-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/lucene-analyzers-2.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/lucene-core-2.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/lucene-highlighter-2.9.1.jar"/>
@@ -120,6 +119,6 @@
 	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.1.11.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.6.11.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.6.11.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.2.1.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.1.10.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

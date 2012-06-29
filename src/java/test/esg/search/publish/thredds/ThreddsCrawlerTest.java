@@ -18,6 +18,7 @@
  ******************************************************************************/
 package esg.search.publish.thredds;
 
+import java.io.File;
 import java.net.URI;
 import java.util.Map;
 
@@ -59,8 +60,13 @@ public class ThreddsCrawlerTest {
 	 */
 	@Test
 	public void crawl() throws Exception {
-		
-		final URI uri = new URI( "file://"+XMLFILE.getFile().getAbsolutePath() );
+		//made more OS friendly
+	    String localPath = XMLFILE.getFile().getAbsolutePath();
+	    if (localPath.charAt(0) != '/') {
+	        //windows!  I know... but perhaps other OSs too :-)
+	        localPath = "/" + localPath.replace(File.separatorChar, '/');
+	    }
+		final URI uri = new URI( "file://" + localPath );
 		threddsHarvester.crawl(uri, null, true, producer, true);
 		
 		// tests number of metadata records
