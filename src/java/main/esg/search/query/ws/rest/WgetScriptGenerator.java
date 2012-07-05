@@ -41,16 +41,22 @@ public class WgetScriptGenerator {
 		 */
 		private class File {
 			String url;
-			String id;		//future use, to allow the user to define a directory structure
+			String dir;		//future use, to allow the user to define a directory structure
 			String size;	//unused
 			String chksumType;
 			String chksum;
+	        public String toString() {
+	            return String.format("Url:%s, Dir:%s, size:%s, chksum:%s (%s)\n", 
+	                                 url, dir, size, chksum, chksumType);
+	        }
 		}
 
 		String userOpenId;	//
 		String hostName;
 		String searchUrl;
+		String message;
 		List<File> files = new LinkedList<File>();
+		
 
 		public WgetDescriptor(String hostName, String userOpenId,
 				String searchUrl) {
@@ -59,15 +65,34 @@ public class WgetScriptGenerator {
 			this.searchUrl = searchUrl;
 		}
 
-		public void addFile(String url, String id, String size,
+		public void addFile(String url, String dir_structure, String size,
 				String chksumType, String chksum) {
 			File fd = new File();
 			fd.url = url;
-			fd.id = id;
+			fd.dir = dir_structure;
+			//assure it ends in a slash if defined
+			if (fd.dir != null && fd.dir.length() > 0 && fd.dir.charAt(fd.dir.length()-1) != '/') 
+			    fd.dir = dir_structure + '/';
 			fd.size = size;
 			fd.chksum = chksum;
 			fd.chksumType = chksumType;
 			files.add(fd);
+		}
+		
+		public void addMessage(String message) {
+		    this.message = message;
+		}
+		
+		public String toString() {
+		    StringBuilder sb = new StringBuilder();
+		    sb.append(String.format("OpenID:%s\nhostanme:%s\nsearchUrl:%s\nmessage:%s\n",
+		                            userOpenId,hostName,searchUrl,message));
+		    sb.append("Files:\n");
+		    for (File f : files) {
+		        sb.append('\t').append(f);
+            }
+		    
+		    return sb.toString();
 		}
 	}
 
@@ -83,8 +108,8 @@ public class WgetScriptGenerator {
 	 * @return the resulting script as a string
 	 */
 	static private String replace(String temp, Map<String, String> tags) {
-		// incredibly slow but working
-		// expected speed up Nx, where N > tags.size()
+		// incredibly slow but working O(tags.size()*temp.length())
+		// potential speed up O(temp.length())
 		for (Entry<String, String> e : tags.entrySet()) {
 			temp = temp.replaceAll("\\{\\{" + e.getKey() + "\\}\\}",
 					e.getValue());
@@ -94,7 +119,7 @@ public class WgetScriptGenerator {
 
 	/**
 	 * @param desc descriptor to fill into the script
-	 * @return the string conatining the whole script
+	 * @return the string containing the whole script
 	 */
 	static public String getWgetScript(WgetDescriptor desc) {
 		String template = getTemplate(null);
@@ -119,8 +144,13 @@ public class WgetScriptGenerator {
 		StringBuilder sb = new StringBuilder();
 		final String sep = "' '";
 		for (WgetDescriptor.File fd : desc.files) {
-			sb.append('\'').append(
-					fd.url.substring(fd.url.lastIndexOf('/') + 1));
+
+			sb.append('\'');
+			if (fd.dir != null) sb.append(fd.dir);
+			
+            //get the name                                			
+            sb.append(fd.url.substring(fd.url.lastIndexOf('/') + 1));
+		    
 			sb.append(sep).append(fd.url);
 			sb.append(sep).append(fd.chksumType);
 			sb.append(sep).append(fd.chksum).append("'\n");

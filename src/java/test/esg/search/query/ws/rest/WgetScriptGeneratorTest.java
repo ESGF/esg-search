@@ -23,6 +23,7 @@ public class WgetScriptGeneratorTest {
 		desc.addFile(
 				"http://bcccsm.cma.gov.cn/thredds/fileServer/cmip5_data/output/BCC/bcc-csm1-1/abrupt4xCO2/3hr/land/tslsi/r9i1p1/tslsi_3hr_bcc-csm1-1_abrupt4xCO2_r9i1p1_016009010000-016512312100.nc",
 				"TESTid2", "7772", "TESTchksumType2", "TESTchksum2");
+		desc.addMessage("This is a long\n\tMulti-lined\nmessage");
 		return desc;
 	}
 	@BeforeClass
