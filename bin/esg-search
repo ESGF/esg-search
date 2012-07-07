@@ -83,6 +83,8 @@ if $(echo "${esg_dist_url}" | grep "http://198.128.245.140/dist" >& /dev/null); 
 #--------------
 install_prefix=${install_prefix:-"/usr/local"}
 esg_root_dir=${esg_root_dir:-"/esg"}
+esg_config_dir=${esg_config_dir:-"${esg_root_dir}/config"}
+tomcat_install_dir=${tomcat_install_dir:-${CATALINA_HOME:=${install_prefix}/tomcat}
 workdir=${workdir:-~/workbench/esg}
 install_manifest=${install_manifest:-"${esg_root_dir}/esgf-install-manifest"}
 #--------------
@@ -153,6 +155,9 @@ setup_search() {
 
 start_search_services() {
     echo "Starting search services... $@"
+    if [ ! -e $"{esgf_config_dir}/facets.properties" ] && [ -e "${tomcat_install_dir}/esg-search/WEB-INF/classes/esg/search/config/facets.properties" ]; then
+        cp -v ${tomcat_install_dir}/esg-search/WEB-INF/classes/esg/search/config/facets.properties {esgf_config_dir}/facets.properties
+    fi
     #start_zookeeper
     start_solr $@
 }
