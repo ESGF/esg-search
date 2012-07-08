@@ -626,7 +626,7 @@ setup_solr() {
     for ((i=0;i<${#solr_cores[@]};i++)) ; do
         if [ -e ${solr_install_dir}/multicore/core0 ]; then
             cp -R ${solr_install_dir}/multicore/core0 ${solr_install_dir}/multicore/${solr_cores[${i}]}
-            [ $? !=0 ] && echo "Could not install core: ${solr_cores[${i}]} - no exemplar found" && ((err_count++)) && continue
+            [ $? != 0 ] && echo "Could not install core: ${solr_cores[${i}]} - no exemplar found" && ((err_count++)) && continue
         else
             echo "ERROR: Could not locate source exemplar: ${solr_install_dir}/multicore/core0"
             let err_count=err_count+2
