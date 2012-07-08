@@ -622,12 +622,15 @@ setup_solr() {
 
     [ -d ${solr_install_dir} ] && (echo "Backing up previous install... " && (backup ${solr_install_dir} || (mv ${solr_install_dir}{,.bak} || echo "Could not move aside prev install")))
     cp -R ${solr_dist_dir}/example ${solr_install_dir}
-    rm -rf ${solr_install_dir}/multicore/core*
     local err_count=0
     for ((i=0;i<${#solr_cores[@]};i++)) ; do
         if [ -e ${solr_install_dir}/example/multicore/core0 ]; then
             cp -R ${solr_install_dir}/example/multicore/core0 ${solr_install_dir}/multicore/${solr_cores[${i}]}
             [ $? !=0 ] && echo "Could not install core: ${solr_cores[${i}]} - no exemplar found" && ((err_count++)) && continue
+        else
+            echo "ERROR: Could not locate source exemplar: ${solr_install_dir}/example/multicore/core0"
+            let err_count=err_count+2
+            break
         fi
 
         #special files needed to complete the configuration...
@@ -635,6 +638,7 @@ setup_solr() {
         echo "Installed core: ${solr_cores[${i}]} - [OK]"
     done
     rm -rf ${solr_install_dir}/multicore/exampledocs
+    rm -rf ${solr_install_dir}/multicore/core*
     echo "${solr_version}" > ${solr_install_dir}/VERSION
 
 
