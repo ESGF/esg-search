@@ -688,7 +688,7 @@ configure_solr() {
     #------------------------
     #Create the data (index) directories
     #------------------------
-    eval mkdir -p $(echo ${solr_data_dir}/{${solr_cores[@]}} | sed 's/ /,/')
+    eval mkdir -p $(echo ${solr_data_dir}/{${solr_cores[@]}} | sed 's/ /,/g')
     chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_data_dir})
 
     #------------------------
