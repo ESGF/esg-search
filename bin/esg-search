@@ -791,7 +791,7 @@ start_solr() {
         check_solr_process && shift && continue
         echo "Starting solr server on port ${solr_server_port} [${1}] "
 
-        local jetty_java_opts_=${jetty_java_opts:-${JETTY_JAVA_OPTS}}
+        local jetty_java_opts=${jetty_java_opts:-${JETTY_JAVA_OPTS}}
         [ -z "${jetty_java_opts}" ] && get_property jetty_java_opts
         [ -n "${jetty_java_opts}" ] && write_as_property jetty_java_opts
 
