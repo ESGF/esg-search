@@ -544,8 +544,8 @@ solr_init() {
     get_property index_slave_port "8983"
 
     solr_version=3.5.0
-    solr_dist_url=${esg_dist_url}/thirdparty/apache-solr-${solr_version}.tgz
-    #solr_dist_url=http://mirror.metrocast.net/apache//lucene/solr/${solr_version}/apache-solr-${solr_version}.tgz
+    #solr_dist_url=${esg_dist_url}/thirdparty/apache-solr-${solr_version}.tgz
+    solr_dist_url=http://mirror.metrocast.net/apache/lucene/solr/${solr_version}/apache-solr-${solr_version}.tgz
     solr_workdir=${workdir}/solr-${solr_version}
 
     #The install of solr pivots on this variable
