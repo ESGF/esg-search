@@ -128,7 +128,7 @@ setup_search() {
     debug_print "solr_config_types = ${solr_config_types}"
     for config_type in $solr_config_types; do
         echo "Doing setup and configuration for type ${config_type}"
-        setup_solr ${config_type} && echo && setup_solr_cores && configure_solr && echo && write_solr_install_log
+        setup_solr ${config_type} && echo && configure_solr && echo && write_solr_install_log
         [ $? != 0 ] && echo " ERROR: Could not fully install solr :-( " && checked_done 1
     done
 
@@ -544,8 +544,8 @@ solr_init() {
     get_property index_slave_port "8983"
 
     solr_version=3.5.0
-    #solr_dist_url=${esg_dist_url}/thirdparty/apache-solr-${solr_version}.tgz
-    solr_dist_url=http://mirror.metrocast.net/apache/lucene/solr/${solr_version}/apache-solr-${solr_version}.tgz
+    solr_dist_url=${esg_dist_url}/thirdparty/apache-solr-${solr_version}.tgz
+    #solr_dist_url=http://mirror.metrocast.net/apache//lucene/solr/${solr_version}/apache-solr-${solr_version}.tgz
     solr_workdir=${workdir}/solr-${solr_version}
 
     #The install of solr pivots on this variable
@@ -621,23 +621,8 @@ setup_solr() {
     fi
 
     [ -d ${solr_install_dir} ] && (echo "Backing up previous install... " && (backup ${solr_install_dir} || (mv ${solr_install_dir}{,.bak} || echo "Could not move aside prev install")))
-}
-
-#Helper Method to figure out the version of esgf-solr installation
-check_solr_version() {
-    [ "$(cat ${solr_install_dir}/VERSION)" = "${solr_version}" ]
-}
-
-setup_solr_cores() {
-    echo "Setting up cores [ ${solr_cores[@]} ] ${solr_version} ${solr_config_type}..."
-    mkdir -p ${solr_workdir}
-    pushd ${solr_workdir} >& /dev/null
-
-    local solr_dist_file=${solr_dist_url##*/}
-    local solr_dist_dir=$(echo ${solr_dist_file} | awk 'gsub(/('$compress_extensions')/,"")')
-
     cp -R ${solr_dist_dir}/example ${solr_install_dir}
-    [ ! -e ${solr_install_dir}/core0.tgz ] && pushd ${solr_dist_dir}/example/multicore/ >& /dev/null && tar czf ${solr_install_dir}/core0.tgz core0 && popd >& /dev/null
+    pushd ${solr_dist_dir}/example/multicore/ >& /dev/null && tar cvzf ${solr_install_dir}/core0.tgz core0 && popd >& /dev/null || checked_done 1
     local err_count=0
     for ((i=0;i<${#solr_cores[@]};i++)) ; do
         if [ -e ${solr_install_dir}/core0.tgz ] && [ ! -e  ${solr_install_dir}/multicore/${solr_cores[${i}]} ]; then
@@ -648,7 +633,7 @@ setup_solr_cores() {
 
         #special files needed to complete the configuration...
         cp ${solr_workdir}/apache-solr-${solr_version}/example/solr/conf/{stopwords.txt,synonyms.txt,protwords.txt,elevate.xml} ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/
-        echo "core: ${solr_cores[${i}]} - [OK]"
+        echo "Installed core: ${solr_cores[${i}]} - [OK]"
     done
     ((err_count == 0)) && rm -rf ${solr_install_dir}/multicore/exampledocs
     ((err_count == 0)) && rm -rf ${solr_install_dir}/multicore/core*
@@ -664,6 +649,11 @@ setup_solr_cores() {
     (( err_count == 0 )) && echo "[OK]" && return 0
     (( (err_count > 0) && (err_count < ${#solr_cores[@]}) )) && echo "[PARTIAL]" && return 1
     (( err_count == ${#solr_cores[@]} )) && echo "[FAIL]" && return 2
+}
+
+#Helper Method to figure out the version of esgf-solr installation
+check_solr_version() {
+    [ "$(cat ${solr_install_dir}/VERSION)" = "${solr_version}" ]
 }
 
 #TODO: change these curls to either get certs to use ssl or use checked_get
@@ -798,15 +788,11 @@ start_solr() {
         solr_init ${1}
         check_solr_process && shift && continue
         echo "Starting solr server on port ${solr_server_port} [${1}] "
-
-        local solr_java_opts=${solr_java_opts:-${SOLR_JAVA_OPTS}}
-        [ -z "${solr_java_opts}" ] && get_property solr_java_opts
-        [ -n "${solr_java_opts}" ] && write_as_property solr_java_opts
-
+        
         pushd ${solr_install_dir} >& /dev/null
         #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
-        verbose_print "java ${solr_java_opts} -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -D$([ "${solr_config_type}" = "master" ] && echo "slave" || echo "master")=disabled -jar start.jar"
-        java ${solr_java_opts} -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -D$([ "${solr_config_type}" = "master" ] && echo "slave" || echo "master")=disabled -jar start.jar >& /dev/null &
+        verbose_print "java -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -D$([ "${solr_config_type}" = "master" ] && echo "slave" || echo "master")=disabled -jar start.jar"
+        java -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -D$([ "${solr_config_type}" = "master" ] && echo "slave" || echo "master")=disabled -jar start.jar >& /dev/null &
         popd >& /dev/null
         
         pcheck 10 2 1 -- check_solr_process
