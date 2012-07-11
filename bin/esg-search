@@ -633,7 +633,7 @@ setup_solr() {
 
         #special files needed to complete the configuration...
         cp ${solr_workdir}/apache-solr-${solr_version}/example/solr/conf/{stopwords.txt,synonyms.txt,protwords.txt,elevate.xml} ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/
-        echo "Installed core: ${solr_cores[${i}]} - [OK]"
+        echo "core: ${solr_cores[${i}]} - [OK]"
     done
     ((err_count == 0)) && rm -rf ${solr_install_dir}/multicore/exampledocs
     ((err_count == 0)) && rm -rf ${solr_install_dir}/multicore/core*
