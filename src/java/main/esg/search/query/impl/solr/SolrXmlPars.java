@@ -122,6 +122,7 @@ public class SolrXmlPars {
 	    
 	    CORES.put(QueryParameters.TYPE_DATASET, "datasets");
 	    CORES.put(QueryParameters.TYPE_FILE, "files");
+	    CORES.put(QueryParameters.TYPE_AGGREGATION, "aggregations");
 
 	    // Solr must ingest dates in UTC=GMT time zone
         TimeZone gmt = TimeZone.getTimeZone("GMT");

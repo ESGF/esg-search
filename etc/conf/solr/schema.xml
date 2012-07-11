@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="ESGF-v1.6" version="1.2">
+<schema name="ESGF-v1.8" version="1.2">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        Applications should change this to reflect the nature of the search collection.
        version="1.2" is Solr's version number for the schema syntax and semantics.  It should
@@ -53,6 +53,9 @@
        1.0: multiValued attribute did not exist, all fields are multiValued by nature
        1.1: multiValued attribute introduced, false by default 
        1.2: omitTermFreqAndPositions attribute introduced, true by default except for text fields.
+       .....
+       1.7: added field "number_of_aggregations"
+       1.8: removed default="NOW" for record time stamps
      -->
 
   <types>
@@ -468,9 +471,8 @@
    <!-- The host indexing the data  -->
    <field name="index_node" type="string" indexed="true" stored="true" required="true" multiValued="false" />
    
-   <!-- The date the document was last modified 
-        (set by default to the current time, if no better date/time is found) -->
-   <field name="timestamp" type="date" indexed="true" stored="true" default="NOW" multiValued="false"/>
+   <!-- The date the document was created or last modified - if such information is found -->
+   <field name="timestamp" type="date" indexed="true" stored="true" required="false" multiValued="false"/>
 
    <!-- The date/time boundaries -->
    <field name="datetime_start" type="date" indexed="true" stored="true" multiValued="false"/>
@@ -489,6 +491,7 @@
    
    <field name="size" type="long" indexed="true" stored="true" multiValued="false"/>
    <field name="number_of_files" type="int" indexed="true" stored="true" multiValued="false"/>
+   <field name="number_of_aggregations" type="int" indexed="true" stored="true" multiValued="false"/>
    
    <!-- catch-all field, containing all other searchable text fields 
         (implemented via copyField further on in this schema).

@@ -15,7 +15,7 @@
     	<constructor-arg index="1" value="index_node"/>
     	<constructor-arg index="2" ref="esgfProperties"/>
     	<property name="types">
-    		<list><value>Dataset</value><value>File</value></list>
+    		<list><value>Dataset</value><value>File</value><value>Aggregation</value></list>
     	</property>
     </bean> 
 
