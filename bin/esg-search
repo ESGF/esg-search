@@ -622,7 +622,7 @@ setup_solr() {
 
     [ -d ${solr_install_dir} ] && (echo "Backing up previous install... " && (backup ${solr_install_dir} || (mv ${solr_install_dir}{,.bak} || echo "Could not move aside prev install")))
     cp -R ${solr_dist_dir}/example ${solr_install_dir}
-    pushd ${solr_dist_dir}/example/multicore/ >& /dev/null && tar cvzf ${solr_install_dir}/core0.tgz core0 && popd >& /dev/null || checked_done 1
+    pushd ${solr_dist_dir}/example/multicore/ >& /dev/null && tar czf ${solr_install_dir}/core0.tgz core0 && popd >& /dev/null || checked_done 1
     local err_count=0
     for ((i=0;i<${#solr_cores[@]};i++)) ; do
         if [ -e ${solr_install_dir}/core0.tgz ] && [ ! -e  ${solr_install_dir}/multicore/${solr_cores[${i}]} ]; then
