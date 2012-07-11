@@ -561,7 +561,7 @@ solr_init() {
 setup_solr() {
     solr_init ${1}
     echo -n "Checking for solr ${solr_version}... "
-    [ -e ${solr_install_dir}/start.jar ] && check_solr_version
+    (cd ${solr_install_dir}/multicore ; ls ${solr_cores[@]} >& /dev/null) && [ -e ${solr_install_dir}/start.jar ] && check_solr_version
     [ $? == 0 ] && (( ! force_install )) && echo " [OK]" && return 0
 
     echo
