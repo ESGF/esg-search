@@ -238,4 +238,7 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 -- Set default LARGE_LIMIT to 1000 for wget scripts
 
 3.1.0
--- Updated ESGF Solr schema to 1.8
+-- Updated ESGF Solr schema to 1.8 (remove timestamp default of NOW)
+
+3.2.0
+-- Introduced configuration changes to support super-nodes
