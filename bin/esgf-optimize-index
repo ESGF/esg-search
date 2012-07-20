@@ -3,6 +3,7 @@
 lock_dir=/var/lock
 lock_file=${lock_dir}/${0##*/}.lock
 
+
 clear_lock() {
     [ -e "${lock_file}" ] && rm ${lock_file} && ( ((debug)) && echo "cleared lockfile: ${lock_file}" )
     exit 0
@@ -21,27 +22,23 @@ optimize_index() {
 
     local status
 
-    echo -n "optimizing datasets... "
-    status=-1
-    status=$(curl -s http://localhost:8984/solr/datasets/update?commit=true -H "Content-Type:text/xml" --data-binary '<optimize/>' | sed -n 's/.*status">\([0-9]\)<.*/\1/p')
-    if ((status == 0)); then
-        echo "[OK]" 
-    else 
-        ((badcounter++)) 
-        echo "[FAIL]"
-        return ${badcounter}
-    fi
+    local solr_replica_ports=($(sed -n 's/.*localhost:\([0-9]*\).*/\1/p' esgf_shards_static.xml | uniq | xargs))
+    local solr_cores=(${solr_cores[@]:-datasets files aggregations})
 
-    echo -n "optimizing files... "
-    status=-1
-    status=$(curl -s http://localhost:8984/solr/files/update?commit=true -H "Content-Type:text/xml" --data-binary '<optimize/> ' | sed -n 's/.*status">\([0-9]\)<.*/\1/p')
-    if ((status == 0)); then
-        echo "[OK]" 
-    else 
-        ((badcounter++)) 
-        echo "[FAIL]"
-        return ${badcounter}
-    fi
+    for ((i=0;i<${#solr_replica_ports[@]};i++)) ; do
+        for ((j=0;j<${#solr_cores[@]};j++)) ; do
+            echo -n "optimizing ${solr_replica_ports[i]} ->  ${solr_cores[j]}... "
+            status=-1
+            status=$(curl -s http://localhost:${solr_replica_ports[i]}/solr/${solr_cores[j]}/update?commit=true -H "Content-Type:text/xml" --data-binary '<optimize/>' | sed -n 's/.*status">\([0-9]\)<.*/\1/p')
+            if ((status == 0)); then
+                echo "[OK]"
+            else
+                ((badcounter++))
+                echo "[FAIL]"
+                return ${badcounter}
+            fi
+        done
+    done
     
     ((debug)) && echo "returning ${badcounter}"
     return ${badcounter}
