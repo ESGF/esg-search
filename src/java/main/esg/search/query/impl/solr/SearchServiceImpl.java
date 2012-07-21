@@ -125,7 +125,7 @@ public class SearchServiceImpl implements SearchService {
                 
                 if (LOG.isWarnEnabled()) {
                     LOG.warn(e.getMessage());
-                    LOG.warn("Query failed "+n+" times, attempting to recover from search error");
+                    LOG.warn("Query failed "+(n+1)+" times, attempting to recover from search error");
                 }
                 
                 if (n==0) {
