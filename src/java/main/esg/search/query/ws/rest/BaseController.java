@@ -20,7 +20,6 @@ import org.springframework.util.StringUtils;
 
 import esg.search.query.api.FacetProfile;
 import esg.search.query.api.QueryParameters;
-import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchReturnType;
 import esg.search.query.api.SearchService;
 
@@ -51,15 +50,7 @@ public class BaseController {
      * i.e. the set of facets that can be returned to decorate the search results.
      */
     final private FacetProfile facetProfile;
-    
-    /**
-     * Number of query attempts:
-     * 1 - with current shards list
-     * 2 - with pruned shards list
-     * 3 - with local shard only
-     */
-    private int numberOfTries = 3;
-		
+    		
 	private final Log LOG = LogFactory.getLog(this.getClass());
 		
 	@Autowired
@@ -217,24 +208,9 @@ public class BaseController {
         //}
         
         if (!response.isCommitted()) {
-        
-            // attempt query numberOfTries times
-            for (int n=0; n<numberOfTries; n++) {    
-                try {
-                    // invoke back-end search service (HTTP request to Solr), return response document
-                    return searchService.query(command, format);
-                } catch(Exception e) {
-                    LOG.warn(e.getMessage());
-                    if (n<numberOfTries-1) {
-                        if (LOG.isDebugEnabled()) LOG.debug("Query failed "+n+" times, attempting to recover from search error");
-                        // attempt to recover from error
-                        recover(command, n);
-                    } else {
-                        // send error to client
-                        throw e;
-                    }
-                }
-            }
+            
+            // invoke back-end search service (HTTP request to Solr), return response document
+            return searchService.query(command, format);
             
         }
         
@@ -269,47 +245,5 @@ public class BaseController {
         response.sendError(sc, message);
         return "";
 	}
-	
-	/**
-	 * Method to modify the query parameters after a search error, 
-	 * in to attempt a new search.
-	 * 
-	 * @param input : the current search input parameters
-	 * @param n : the current attempt number (0 after the first failure, and so son...)
-	 */
-	void recover(final SearchInput input, int n) {
-	   
-	    if (n==0) {
-	        // ask the node manager to prune the shards list
-	        if (LOG.isInfoEnabled()) LOG.info("Pruning the shards list");
-	        long startTime = System.currentTimeMillis();	        
-	        /*if (ESGConnector.getInstance().setEndpoint().prune()) {
-	            if (LOG.isDebugEnabled()) LOG.debug("Pruned dead peer connections from localhost");
-            } else {
-                if (LOG.isDebugEnabled()) LOG.debug("There were no dead peer connections detected on localhost (or host itself is dead)");
-            }*/
-	        try {
-	            searchService.recover();
-	        } catch(Exception e) {
-	            LOG.warn(e.getMessage());
-	        }
-	        long stopTime = System.currentTimeMillis();
-	        if (LOG.isInfoEnabled()) LOG.info("Pruning Elapsed Time: "+(stopTime-startTime)+" ms");
-	        
-	    } else {
-	        // execute non-distributed query
-	        if (LOG.isDebugEnabled()) LOG.debug("Executing a non-distributed query");
-	        input.setDistrib(false);
-	    }
-	    
-	}
-
-	/**
-	 * Setter method for number of additional query attempts.
-	 * @param numberOfTries
-	 */
-    public void setNumberOfTries(int numberOfTries) {
-        this.numberOfTries = numberOfTries;
-    }
 	
 }
