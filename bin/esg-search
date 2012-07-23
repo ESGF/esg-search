@@ -729,6 +729,14 @@ configure_solr() {
     
 }
 
+add_solr_replicated_index() {
+//zoiks
+}
+
+remove_solr_repicated_index() {
+//zoiks
+}
+
 #-----
 #"private functions"
 #-----
