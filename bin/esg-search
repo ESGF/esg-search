@@ -87,6 +87,7 @@ esg_config_dir=${esg_config_dir:-"${esg_root_dir}/config"}
 tomcat_install_dir=${tomcat_install_dir:-${CATALINA_HOME:=${install_prefix}/tomcat}}
 workdir=${workdir:-~/workbench/esg}
 install_manifest=${install_manifest:-"${esg_root_dir}/esgf-install-manifest"}
+esgf_shards_config_file=${esg_config_dir}/esgf_shards.config
 #--------------
 
 date_format=${date_format:-"+%Y_%m_%d_%H%M%S"}
@@ -175,6 +176,7 @@ _load_shards_config() {
 
 _commit_configuration() {
     #write to esgf_shards.config
+    cat ${solr_config_type}:${solr_server_port} >> ${esgf_shards_config_file}
     #check that not already there
     #check esgf_shards_static.xml for entry if not put one there
     #check esgf_excludes file put entry in for node
