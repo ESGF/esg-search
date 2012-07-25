@@ -173,14 +173,14 @@ _load_shards_config() {
     cat ${esg_config_dir}/esgf_shards.config
 }
 
-commit_configuration() {
+_commit_configuration() {
     #write to esgf_shards.config
     #check that not already there
     #check esgf_shards_static.xml for entry if not put one there
     #check esgf_excludes file put entry in for node
 }
 
-get_next_open_port() {
+_get_next_open_port() {
     #get highest port in esgf_shards.config file
     #if none get the highest index_service_port value
     #add 1 to it, check that it is available
@@ -193,12 +193,12 @@ start_search_services() {
         cp -v ${tomcat_install_dir}/esg-search/WEB-INF/classes/esg/search/config/facets.properties {esgf_config_dir}/facets.properties
     fi
     #start_zookeeper
-    start_solr $@
+    start_solr _load_shards_config
 }
 
 stop_search_services() {
-    echo "Stopping search services... (master/slave)"
-    stop_solr master slave
+    echo "Stopping search services..."
+    stop_solr _load_shards_config
     #stop_zookeeper
 }
 
