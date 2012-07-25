@@ -88,6 +88,8 @@ tomcat_install_dir=${tomcat_install_dir:-${CATALINA_HOME:=${install_prefix}/tomc
 workdir=${workdir:-~/workbench/esg}
 install_manifest=${install_manifest:-"${esg_root_dir}/esgf-install-manifest"}
 esgf_shards_config_file=${esg_config_dir}/esgf_shards.config
+esgf_shards_static_file=${esg_config_dir}/esgf_shards_static.xml
+esgf_excludes_file=${esg_config_dir}/esgf_excludes.txt
 #--------------
 
 date_format=${date_format:-"+%Y_%m_%d_%H%M%S"}
@@ -171,15 +173,23 @@ check_shards() {
 }
 
 _load_shards_config() {
-    cat ${esg_config_dir}/esgf_shards.config
+    _dedup_shards_config
+    cat ${esgf_shards_config_file} | xargs
 }
 
 _commit_configuration() {
-    #write to esgf_shards.config
-    cat ${solr_config_type}:${solr_server_port} >> ${esgf_shards_config_file}
-    #check that not already there
-    #check esgf_shards_static.xml for entry if not put one there
-    #check esgf_excludes file put entry in for node
+
+    #Put the entry in the shards configuration file, if not already there
+    #note: grep returns true [0] if it can make a match
+    grep -q ${solr_config_type}:${solr_server_port} ${esgf_shards_config_file} && echo "${esgf_shards_config_file}: entry already present" || \
+        cat ${solr_config_type}:${solr_server_port} >> ${esgf_shards_config_file}
+
+    #Check the static shards file (esgf_shards_static.xml)
+    [ -n "$(sed -n 's/localhost:'${solr_server_port}'/&/p' ${esgf_shards_static_file})" ] && echo "${esgf_shards_static_file}: entry is already present" || \
+        sed -i '/<[/]shards>/i \ <value>localhost:'${solr_server_port}'/solr</value>' ${esgf_shards_static_file}
+
+    #Check the esgf_excludes.txt file to see if entry is already there
+    grep -q ${solr_config_type} ${esgf_excludes_file} && echo "${esgf_excludes_file}: entry already present" || cat "${solr_config_type} INDEX" >> ${esgf_excludes_file}
 }
 
 _get_next_open_port() {
@@ -795,6 +805,14 @@ _dedup_solr_realm() {
     [ ! -e "${infile}" ] && echo "WARNING: dedup_solr_realm() - unable to locate ${infile} does it exist?" && return 1
     [ ! -w "${infile}" ] && echo "WARNING: dedup_solr_realm() - unable to write to ${infile}" && return 1
     local tmp=$(tac ${infile} | awk 'BEGIN {FS="[ :]"} !($1 in a) {a[$1];print $0}' | sort -k1,1)
+    echo "$tmp" > ${infile}
+}
+
+_dedup_shards_config() {
+    local infile=${1:-${esgf_shards_config_file}}
+    [ ! -e "${infile}" ] && echo "WARNING: dedup_shards_config() - unable to locate ${infile} does it exist?" && return 1
+    [ ! -w "${infile}" ] && echo "WARNING: dedup_shards_config() - unable to write to ${infile}" && return 1
+    local tmp=$(tac ${infile} | awk 'BEGIN {FS="[ :]"} !($2 in a) {a[$2];print $0}' | sort -t ':' -k2,2)
     echo "$tmp" > ${infile}
 }
 
