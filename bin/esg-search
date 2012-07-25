@@ -111,6 +111,7 @@ esgf_index_optimization_launcher="esgf-optimize-index"
 #---------------------------------------------------------
 #arg (1) - install = 0 [default]
 #          upgrade = 1 
+# The other args are a list of <hostname>:<port> of all the replica indexes you wish to create
 setup_search() {
     echo
     echo "*******************************"
@@ -128,8 +129,8 @@ setup_search() {
     debug_print "solr_config_types = ${solr_config_types}"
     load_shards_config
     for config_type in $solr_config_types; do
-        echo "Doing setup and configuration for type ${config_type}"
-        setup_solr ${config_type} && echo && configure_solr ${config_type} && echo && write_solr_install_log && commit_configuration
+        echo "Doing setup and configuration for ${config_type}"
+        add_shard ${config_type}
         [ $? != 0 ] && echo " ERROR: Could not fully install solr :-( " && checked_done 1
     done
 
@@ -154,7 +155,21 @@ setup_search() {
     return 0
 }
 
-load_shards_config() {
+add_shard() {
+    local config_type=${1:?"Must specify shard host or type"}
+    setup_solr ${config_type} && echo && configure_solr ${config_type} && echo && write_solr_install_log && commit_configuration
+}
+
+remove_shard() {
+    local config_type=${1:?"Must specify shard host or type"}
+    echo "Removing Shard: ${config_type"}
+}
+
+check_shards() {
+    echo "Checking configuration of shards..."
+}
+
+_load_shards_config() {
     cat ${esg_config_dir}/esgf_shards.config
 }
 
@@ -558,6 +573,7 @@ remove_zookeeper() {
 # Solr/Lucene Setup and Configuration
 #---------------------------------------------------------
 
+#Input param <hostname>[:<port>]
 solr_init() {
     get_property index_master_port "8984"
     get_property index_slave_port "8983"
@@ -575,11 +591,12 @@ solr_init() {
     [ -z "${solr_server_port}" ] && echo "ERROR: You Must specify the port when configuring a solr core that is not master nor slave" && checked_done 1
 
     solr_install_dir=${install_prefix}/esgf-solr-${solr_version}/${solr_config_type}-${solr_server_port}
-    solr_data_dir=${esg_root_dir}/solr-index/${solr_config_type}-${port}
+    solr_data_dir=${esg_root_dir}/solr-index/${solr_config_type}-${solr_server_port}
     solr_cores=(datasets files aggregations)
     echo "init: ${solr_config_type} [${solr_server_port}]"
 }
 
+#Input param <hostname>[:<port>]
 setup_solr() {
     solr_init ${1}
     echo -n "Checking for solr ${solr_version}... "
@@ -679,20 +696,32 @@ check_solr_version() {
 }
 
 #TODO: change these curls to either get certs to use ssl or use checked_get
+#Input param <hostname>[:<port>]
 configure_solr() {
     solr_init ${1}
     echo -n "Configuring solr... ${solr_config_type} port[${solr_server_port}]"
     pushd ${solr_install_dir}/solr/conf >& /dev/null
     [ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
 
+    local suffix
+    if [ "${solr_config_type}" = "master" ] || [ "${solr_config_type}" = "slave" ]; then
+        suffix="${solr_config_type}"
+    else
+        suffix="replica"
+    fi
+
     #------------------------
     #Setting up solrconfig.xml file for all cores
     #------------------------
+    # Modify the solrconfig.xml file in *each* of the cores' dir tree to reflect remote.
     for ((i=0;i<${#solr_cores[@]};i++)); do
-        verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml"
-        curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
+        verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml$([ "${suffix}" = "replica" ] && echo "-${suffix}" || echo "") > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml"
+        curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml$([ "${suffix}" = "replica" ] && echo "-${suffix}" || echo "") > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
         [ $? != 0 ] && echo && echo "Problem configuring (config) solr for ${solr_cores[${i}]} (2)" && return 3
         chmod 755 ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
+        if [ "${suffix}" = "replica" ]; then
+            sed -i 's#\(.*masterUrl.*http://\)\(.*\)\(:8983.*\)#\1'${solr_config_type}'\3#' ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
+        fi
     done
 
     #------------------------
@@ -740,9 +769,14 @@ configure_solr() {
         #_add_myself_to_distrib_shards_list ${solr_install_dir}/solr/conf/solrconfig.xml
     fi
 
-    verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solr.xml-${solr_config_type} > ${solr_install_dir}/multicore/solr.xml"
-    curl -s -L --insecure ${esg_dist_url}/esg-search/solr.xml-${solr_config_type} > ${solr_install_dir}/multicore/solr.xml
-    [ $? != 0 ] && echo && echo "Problem configuring (solr.xml) solr for ${solr_config_type} (2)" && return 3
+    verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solr.xml-${suffix} > ${solr_install_dir}/multicore/solr.xml"
+    curl -s -L --insecure ${esg_dist_url}/esg-search/solr.xml-${suffix} > ${solr_install_dir}/multicore/solr.xml
+    
+    #Just editing the single file solr.xml but multiple times (one for each core)
+    for ((i=0;i<${#solr_cores[@]};i++)) ; do
+        sed -i 's#\(.*<core.*dataDir="\)\([a-zA-Z/-]*\)\(\/\('${solr_cores[i]}'\).*\)#\1'${solr_data_dir}'\3#' ${solr_install_dir}/multicore/solr.xml
+        [ $? != 0 ] && echo && echo "Problem configuring (solr.xml) solr for ${solr_config_type} wth core = [${solr_cores[i]}]  (2)" && return 3
+    done
     chmod 755 ${solr_install_dir}/multicore/solr.xml
 
     popd >& /dev/null
@@ -797,10 +831,13 @@ test_solr() {
 	#    java -Dlog4j.configuration=./WEB-INF/classes/log4j.xml -Djava.ext.dirs=./WEB-INF/lib esg.search.publish.impl.PublishingServiceMain file://$ESGF_TESTDATA_DIR/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml THREDDS true
 #}
 
+#NOTE: Only write entries to the install log that refer to "resident"/"local" indexes (master and slave)
 write_solr_install_log() {
-    local entry="$(date ${date_format}) esg-search:solr-${solr_config_type}=${solr_version} ${solr_install_dir}"
-    echo ${entry} >> ${install_manifest}
-    dedup ${install_manifest}
+    if [ "${solr_config_type}" = "master" ] || [ "${solr_config_type}" = "slave" ]; then
+        local entry="$(date ${date_format}) esg-search:solr-${solr_config_type}=${solr_version} ${solr_install_dir}"
+        echo ${entry} >> ${install_manifest}
+        dedup ${install_manifest}
+    fi
     return 0
 }
 
