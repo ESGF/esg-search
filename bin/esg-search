@@ -170,6 +170,7 @@ remove_shard() {
 
 check_shards() {
     echo "Checking configuration of shards..."
+    #zoiks do me!
 }
 
 _load_shards_config() {
@@ -192,7 +193,17 @@ _commit_configuration() {
     grep -q ${solr_config_type} ${esgf_excludes_file} && echo "${esgf_excludes_file}: entry already present" || cat "${solr_config_type} INDEX" >> ${esgf_excludes_file}
 }
 
+_remove_replica_shard_configuration() {
+    if [ "${solr_config_type}" = "master" ] || [ "${solr_config_type}" = "slave" ]; then
+        return 0
+    fi
+    echo "Removing replica shard configuration for ${solr_config_type}... "
+    #zoiks: code me up!
+    echo "[REMOVED]"
+}
+
 _get_next_open_port() {
+    local start_port=$1
     #get highest port in esgf_shards.config file
     #if none get the highest index_service_port value
     #add 1 to it, check that it is available
