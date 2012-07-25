@@ -242,3 +242,4 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 
 3.2.0
 -- Introduced configuration changes to support super-nodes
+-- Pushed search recovery code from web controller down to service layer so it can be shared by RSS feedsCHA

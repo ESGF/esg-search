@@ -44,6 +44,9 @@ import esg.security.registry.service.api.RegistryService;
  * 
  * An optional {@link RegistryService} can be used to provide a list of query endpoints for distributed searches.
  * 
+ * In case of failed query, this search service implementation attempts to execute the query two more times,
+ * first with a trimmed down shards list, finally versus the localhost Solr engine only.
+ * 
  */
 @Service("searchService")
 public class SearchServiceImpl implements SearchService {
@@ -67,6 +70,15 @@ public class SearchServiceImpl implements SearchService {
 	 * Optional registry service providing list of query endpoints for distributed search.
 	 */
 	private RegistryService registryService = null;
+	
+    /**
+     * Number of query attempts:
+     * 1 - with current shards list
+     * 2 - with pruned shards list
+     * 3 - with local shard only
+     */
+    private static final int NUMBER_OF_TRIES = 3;
+
 
 	private static final Log LOG = LogFactory.getLog(SearchServiceImpl.class);
 
@@ -98,30 +110,82 @@ public class SearchServiceImpl implements SearchService {
 	}
 	
 	/**
-	 * {@inheritDoc}
+	 * Self-recovering implementation of query() method.
 	 */
 	public String query(final SearchInput input, final SearchReturnType returnType) throws Exception {
 		
-	    if (LOG.isInfoEnabled()) LOG.info("Query Input:\n"+input.toString());
-	    
-		// formulate HTTP request
-		final SolrUrlBuilder builder = new SolrUrlBuilder(url);
-		builder.setSearchInput(input);
-		builder.setFacets(input.getFacets());
-		if (registryService!=null) builder.setDefaultShards( registryService.getShards() );
-		
-		// execute HTTP/GET request, return response as Solr/XML or Solr/JSON
-		//String output = httpClient.doGet( new URL(builder.buildSelectUrl() + "?" + builder.buildSelectQueryString()) );
-		
-	    // execute HTTP/POST request, return response as Solr/XML or Solr/JSON    
-        String output = httpClient.doPost(new URL(builder.buildSelectUrl()), builder.buildSelectQueryString(), false);
-		
-		// transform to requested format
-		final String response = this.transform(output, returnType);
-		
-		return response;
+        // attempt query numberOfTries times
+        for (int n=0; n<NUMBER_OF_TRIES; n++) {    
+            
+            try {
+                // execute HTTP request to Solr, return response document
+                return _query(input, returnType);
+                
+            } catch(Exception e) {
+                
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(e.getMessage());
+                    LOG.warn("Query failed "+(n+1)+" times, attempting to recover from search error");
+                }
+                
+                if (n==0) {
+                    
+                    // prune the shards list
+                    if (LOG.isInfoEnabled()) LOG.info("Pruning the shards list");
+                    long startTime = System.currentTimeMillis();            
+                    /*if (ESGConnector.getInstance().setEndpoint().prune()) {
+                        if (LOG.isDebugEnabled()) LOG.debug("Pruned dead peer connections from localhost");
+                    } else {
+                        if (LOG.isDebugEnabled()) LOG.debug("There were no dead peer connections detected on localhost (or host itself is dead)");
+                    }*/
+                    this.recover();
+                    long stopTime = System.currentTimeMillis();
+                    if (LOG.isInfoEnabled()) LOG.info("Pruning Elapsed Time: "+(stopTime-startTime)+" ms");
+                    
+                } else if (n==1) {
+                    
+                    // execute non-distributed query
+                    if (LOG.isDebugEnabled()) LOG.debug("Executing a non-distributed query");
+                    input.setDistrib(false);
+
+                } else {
+                    // send error to client
+                    throw e;
+                }
+                
+            }
+        }
+        
+        // response error, return empty body content
+        return "";
 		
 	}
+	
+	/**
+     *  Private method containin the business logic implementation of the public query method.
+     */
+    private String _query(final SearchInput input, final SearchReturnType returnType) throws Exception {
+        
+        if (LOG.isInfoEnabled()) LOG.info("Query Input:\n"+input.toString());
+        
+        // formulate HTTP request
+        final SolrUrlBuilder builder = new SolrUrlBuilder(url);
+        builder.setSearchInput(input);
+        builder.setFacets(input.getFacets());
+        if (registryService!=null) builder.setDefaultShards( registryService.getShards() );
+        
+        // execute HTTP/GET request, return response as Solr/XML or Solr/JSON
+        //String output = httpClient.doGet( new URL(builder.buildSelectUrl() + "?" + builder.buildSelectQueryString()) );
+        
+        // execute HTTP/POST request, return response as Solr/XML or Solr/JSON    
+        String output = httpClient.doPost(new URL(builder.buildSelectUrl()), builder.buildSelectQueryString(), false);
+        
+        // transform to requested format
+        final String response = this.transform(output, returnType);
+        
+        return response;
+        
+    }
 	
 	
 	/**
