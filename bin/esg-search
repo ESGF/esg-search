@@ -126,9 +126,10 @@ setup_search() {
     #[ $? != 0 ] && echo " ERROR: Could not fully install zookeeper :-( " && checked_done 1
 
     debug_print "solr_config_types = ${solr_config_types}"
+    load_shards_config
     for config_type in $solr_config_types; do
         echo "Doing setup and configuration for type ${config_type}"
-        setup_solr ${config_type} && echo && configure_solr && echo && write_solr_install_log
+        setup_solr ${config_type} && echo && configure_solr ${config_type} && echo && write_solr_install_log && commit_configuration
         [ $? != 0 ] && echo " ERROR: Could not fully install solr :-( " && checked_done 1
     done
 
@@ -151,6 +152,10 @@ setup_search() {
     echo "done"
     echo
     return 0
+}
+
+load_shards_config() {
+    cat ${esg_config_dir}/esgf_shards.config
 }
 
 start_search_services() {
@@ -550,12 +555,15 @@ solr_init() {
 
     #The install of solr pivots on this variable
     #make this config type "sticky"
-    solr_config_type=${1:-${solr_config_type:-"master"}} 
+    read solr_config_type solr_server_port <<< $(awk -F : '{print $1" "$2}' <<< ${1})
+    [ "${solr_config_type}" ="master" ] && [ -z ${solr_server_port} ] && solr_server_port=${index_master_port}
+    [ "${solr_config_type}" ="slave" ]  && [ -z ${solr_server_port} ] && solr_server_port=${index_slave_port}
+    [ -z "${solr_server_port}" ] && echo "ERROR: You Must specify the port when configuring a solr core that is not master nor slave" && checked_done 1
 
-    solr_install_dir=${install_prefix}/esgf-solr-${solr_version}-${solr_config_type}
-    solr_data_dir=${esg_root_dir}/solr-index-${solr_config_type}
-    solr_server_port=$([ "${solr_config_type}" = "master" ] && echo "${index_master_port}" || echo "${index_slave_port}")
+    solr_install_dir=${install_prefix}/esgf-solr-${solr_version}/${solr_config_type}-${solr_server_port}
+    solr_data_dir=${esg_root_dir}/solr-index/${solr_config_type}-${port}
     solr_cores=(datasets files aggregations)
+    echo "init: ${solr_config_type} [${solr_server_port}]"
 }
 
 setup_solr() {
@@ -581,7 +589,7 @@ setup_solr() {
         echo
     fi
     
-    echo "Installing esgf-solr ${solr_version} ${solr_config_type}..."
+    echo "Installing esgf-solr ${solr_version} ${solr_config_type} port[${solr_server_port}]..."
     mkdir -p ${solr_workdir}
     pushd ${solr_workdir} >& /dev/null
 
@@ -659,7 +667,7 @@ check_solr_version() {
 #TODO: change these curls to either get certs to use ssl or use checked_get
 configure_solr() {
     solr_init ${1}
-    echo -n "Configuring solr... ${solr_config_type}"
+    echo -n "Configuring solr... ${solr_config_type} port[${solr_server_port}]"
     pushd ${solr_install_dir}/solr/conf >& /dev/null
     [ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
 
@@ -729,14 +737,6 @@ configure_solr() {
     
 }
 
-add_solr_replicated_index() {
-//zoiks
-}
-
-remove_solr_repicated_index() {
-//zoiks
-}
-
 #-----
 #"private functions"
 #-----
@@ -791,16 +791,16 @@ write_solr_install_log() {
 }
 
 # start Solr server on port ${index_slave_port} connecting to Zookeeper on port 2181
-start_solr() {  
+start_solr() {
     while [ -n "$1" ]; do 
         solr_init ${1}
         check_solr_process && shift && continue
-        echo "Starting solr server on port ${solr_server_port} [${1}] "
+        echo "Starting solr server for ${solr_config_type} on port [${solr_server_port}]"
         
         pushd ${solr_install_dir} >& /dev/null
         #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
-        verbose_print "java -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -D$([ "${solr_config_type}" = "master" ] && echo "slave" || echo "master")=disabled -jar start.jar"
-        java -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -D$([ "${solr_config_type}" = "master" ] && echo "slave" || echo "master")=disabled -jar start.jar >& /dev/null &
+        verbose_print "java -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar"
+        java -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar >& /dev/null &
         popd >& /dev/null
         
         pcheck 10 2 1 -- check_solr_process
@@ -815,7 +815,7 @@ start_solr() {
 stop_solr() {
     while [ -n "$1" ]; do 
         solr_init ${1}
-        echo "Stopping Solr on port ${solr_server_port} [${1}]"
+        echo "Stopping Solr for ${solr_config_type} on port [${solr_server_port}]"
         local pid=`lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
         [ -n "${pid}" ] && kill -9 $pid
         check_solr_process
@@ -827,7 +827,7 @@ stop_solr() {
 #status
 check_solr_process() {
     local pid=`lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
-    [ -n "$pid" ] && echo " Solr process running on port [${solr_server_port}] - (${solr_config_type}) ... " && return 0
+    [ -n "$pid" ] && echo " Solr process for ${solr_config_type} running on port [${solr_server_port}]... " && return 0
 }
 
 remove_solr() {
