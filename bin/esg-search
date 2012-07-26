@@ -210,6 +210,12 @@ list_local_shards() {
     cat ${esgf_shards_config_file}
 }
 
+init_all_shards() {
+    for shard_spec in $(list_local_shards); do
+        add_shard $shard_spec
+    done
+}
+
 #--------------------
 # Private utility functions
 #--------------------
