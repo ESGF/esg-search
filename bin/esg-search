@@ -204,14 +204,14 @@ _commit_configuration() {
     #Put the entry in the shards configuration file, if not already there
     #note: grep returns true [0] if it can make a match
     grep -q ${solr_config_type}:${solr_server_port} ${esgf_shards_config_file} && echo "${esgf_shards_config_file}: entry already present" || \
-        cat ${solr_config_type}:${solr_server_port} >> ${esgf_shards_config_file}
+        echo "${solr_config_type}:${solr_server_port}" >> ${esgf_shards_config_file}
 
     #Check the static shards file (esgf_shards_static.xml)
     [ -n "$(sed -n 's/localhost:'${solr_server_port}'/&/p' ${esgf_shards_static_file})" ] && echo "${esgf_shards_static_file}: entry is already present" || \
         sed -i '/<[/]shards>/i \ <value>localhost:'${solr_server_port}'/solr</value>' ${esgf_shards_static_file}
 
     #Check the esgf_excludes.txt file to see if entry is already there
-    grep -q ${solr_config_type} ${esgf_excludes_file} && echo "${esgf_excludes_file}: entry already present" || cat "${solr_config_type} INDEX" >> ${esgf_excludes_file}
+    grep -q ${solr_config_type} ${esgf_excludes_file} && echo "${esgf_excludes_file}: entry already present" || echo "${solr_config_type} INDEX" >> ${esgf_excludes_file}
 }
 
 _remove_replica_shard_configuration() {
@@ -772,7 +772,7 @@ check_solr_version() {
 #Input param <hostname>[:<port>]
 configure_solr() {
     solr_init ${1}
-    echo -n "Configuring solr... ${solr_config_type} port[${solr_server_port}]"
+    echo -n "Configuring solr... ${solr_config_type} port[${solr_server_port}] "
     pushd ${solr_install_dir}/solr/conf >& /dev/null
     [ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
 
@@ -788,7 +788,8 @@ configure_solr() {
     #------------------------
     # Modify the solrconfig.xml file in *each* of the cores' dir tree to reflect remote.
     for ((i=0;i<${#solr_cores[@]};i++)); do
-        echo "curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml-${suffix} > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml"
+        echo -n "*"
+        verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml-${suffix} > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml"
         curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml-${suffix} > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
         [ $? != 0 ] && echo && echo "Problem configuring (config) solr for ${solr_cores[${i}]} (2)" && return 3
         chmod 755 ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
