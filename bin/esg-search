@@ -163,7 +163,7 @@ setup_search() {
 #--------------------
 check_shards() {
     echo "Checking configuration of shards..."
-    local shards=(_load_shards_config)
+    local shards=( $(_load_shards_config) )
     for ((i=0; i < ${#shards[@]}; i++)); do
         solr_init ${shards[i]}
         echo -n "${solr_config_type} @ ${solr_server_port}: "
@@ -195,6 +195,7 @@ list_local_shards() {
 # Private utility functions
 #--------------------
 _load_shards_config() {
+    [ ! -e "${esgf_shards_config_file}" ] && echo "Sorry no esgf shards configuration file found: ${esgf_shards_config_file}" && return 0
     _dedup_shards_config
     cat ${esgf_shards_config_file} | xargs
 }
@@ -658,8 +659,8 @@ solr_init() {
     #The install of solr pivots on this variable
     #make this config type "sticky"
     read solr_config_type solr_server_port <<< $(awk -F : '{print $1" "$2}' <<< ${1})
-    [ "${solr_config_type}" ="master" ] && [ -z ${solr_server_port} ] && solr_server_port=${index_master_port}
-    [ "${solr_config_type}" ="slave" ]  && [ -z ${solr_server_port} ] && solr_server_port=${index_slave_port}
+    [ "${solr_config_type}" = "master" ] && [ -z "${solr_server_port}" ] && solr_server_port=${index_master_port}
+    [ "${solr_config_type}" = "slave" ]  && [ -z "${solr_server_port}" ] && solr_server_port=${index_slave_port}
     [ -z "${solr_server_port}" ] && echo "ERROR: You Must specify the port when configuring a solr core that is not master nor slave" && checked_done 1
 
     solr_install_dir=${install_prefix}/esgf-solr-${solr_version}/${solr_config_type}-${solr_server_port}
@@ -677,7 +678,7 @@ setup_solr() {
 
     echo
     echo "*******************************"
-    echo "Setting up (ESGF) Solr... ${solr_version} ${solr_config_type}"
+    echo "Setting up (ESGF) Solr... ${solr_version} ${solr_config_type} on port ${solr_server_port}"
     echo "*******************************"
     echo
 
