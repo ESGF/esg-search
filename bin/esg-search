@@ -789,8 +789,8 @@ configure_solr() {
     # Modify the solrconfig.xml file in *each* of the cores' dir tree to reflect remote.
     for ((i=0;i<${#solr_cores[@]};i++)); do
         echo -n "*"
-        verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml-${suffix} > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml"
-        curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml-${suffix} > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
+        verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml$([ "${suffix}" = "replica" ] && echo "-${suffix}" || echo "") > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml"
+        curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml$([ "${suffix}" = "replica" ] && echo "-${suffix}" || echo "") > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
         [ $? != 0 ] && echo && echo "Problem configuring (config) solr for ${solr_cores[${i}]} (2)" && return 3
         chmod 755 ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
         if [ "${suffix}" = "replica" ]; then
