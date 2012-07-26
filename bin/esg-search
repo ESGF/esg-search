@@ -164,15 +164,35 @@ check_shards() {
     echo "Checking configuration of shards..."
     local shards=( $(_load_shards_config) )
     for ((i=0; i < ${#shards[@]}; i++)); do
+        local bad=0
         solr_init ${shards[i]}
         echo -n "${solr_config_type} @ ${solr_server_port}: "
         [ -n "$(sed -n 's/.*'${solr_config_type}':'${solr_server_port}'.*/&/p' ${esgf_shards_config_file})" ] && echo -n "*" || echo -n "X"
-        [ -n "$(sed -n 's/.*localhost:'${solr_server_port}'.*/&/p' ${esgf_shards_static_file})" ] && echo -n "*" || echo -n "X"
-        [ -n "$(sed -n 's/.*'${solr_config_type}'.*index.*/&/p' ${esgf_excludes_file})" ] && echo -n "*" || echo -n "X"
-        [ -e "${solr_install_dir}" ] && echo -n "*" || echo -n "X"
-        [ -e "${solr_data_dir}" ] && echo -n "*" || echo -n "X"
-        echo
+        if [ "${solr_config_type}" != "master" ]; then
+            [ -n "$(sed -n 's/.*localhost:'${solr_server_port}'.*/&/p' ${esgf_shards_static_file})" ] && echo -n "*" || echo -n "X"
+        else
+            echo -n "-"
+        fi
+        if [ "${solr_config_type}" != "master" ] && [ "${solr_config_type}" != "slave" ]; then
+            [ -n "$(sed -n 's/.*'${solr_config_type}'.*INDEX.*/&/pI' ${esgf_excludes_file})" ] && echo -n "*" || echo -n "X"
+        else
+            echo -n "-"
+        fi
+        if [ -e "${solr_install_dir}" ]; then
+            echo -n "*" 
+        else 
+            echo -n "X"
+            ((bad++))
+        fi
+        if [ -e "${solr_data_dir}" ]; then
+            echo -n "*" 
+        else 
+            echo -n "X"
+            ((bad++))
+        fi
+        (( bad == 0 )) && echo " [PASS]" || echo " [FAIL]"
     done
+    echo
 }
 
 add_shard() {
