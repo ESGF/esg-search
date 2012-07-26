@@ -260,7 +260,7 @@ _remove_replica_shard_configuration() {
     read -p "Are you sure you wish to remove replica index for ${solr_config_type}:${solr_server_port}? [y/N] " answer
     [ -z "${answer}" ] || [ "${answer}" = "n" ] && return 1
 
-    echo "Removing replica shard configuration for ${solr_config_type}:${esg}... "
+    echo "Removing replica shard configuration for ${solr_config_type} on port ${solr_server_port}... "
     #Remove the entries in the config files
     #esgf_shards.config
     debug_print "Removing entry from: ${esgf_shards_config_file}"
@@ -271,7 +271,7 @@ _remove_replica_shard_configuration() {
     sed -i.bak '/.*localhost:'${solr_server_port}'.*/d' ${esgf_shards_static_file}
 
     #esgf_excludes.txt
-    sed -i.bak '/.*'${solr_config_type}'.*index.*/d' ${esgf_excludes_file}
+    sed -i.bak -e '/.*'${solr_config_type}'.*index.*/Id' ${esgf_excludes_file}
 
     #Remove the configuration directory
     debug_print "rm -rf ${solr_install_dir}"
