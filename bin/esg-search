@@ -207,11 +207,21 @@ _commit_configuration() {
         echo "${solr_config_type}:${solr_server_port}" >> ${esgf_shards_config_file}
 
     #Check the static shards file (esgf_shards_static.xml)
-    [ -n "$(sed -n 's/localhost:'${solr_server_port}'/&/p' ${esgf_shards_static_file})" ] && echo "${esgf_shards_static_file}: entry is already present" || \
-        sed -i '/<[/]shards>/i \ <value>localhost:'${solr_server_port}'/solr</value>' ${esgf_shards_static_file}
+    #First, if it is not there, go fetch it...
+    if [ ! -e "${esgf_shards_static_file}" ]; then
+        _curl "${esg_dist_url}/esg-search/${esgf_shards_static_file##*/}" "${esgf_shards_static_file}"
+    fi
+    #Do NOT need to write an entry into the static shards file in am the master index
+    if [ "${solr_config_type}" != "master" ]; then
+        [ -n "$(sed -n 's/localhost:'${solr_server_port}'/&/p' ${esgf_shards_static_file})" ] && echo "${esgf_shards_static_file}: entry is already present" || \
+            sed -i '/<[/]shards>/i \ <value>localhost:'${solr_server_port}'/solr</value>' ${esgf_shards_static_file}
+    fi
 
     #Check the esgf_excludes.txt file to see if entry is already there
-    grep -q ${solr_config_type} ${esgf_excludes_file} && echo "${esgf_excludes_file}: entry already present" || echo "${solr_config_type} INDEX" >> ${esgf_excludes_file}
+    #Do NOT need entries if are your own shards (master or slave)
+    if [ "${solr_config_type}" != "master" ] && [ "${solr_config_type}" != "slave" ]; then
+        grep -q ${solr_config_type} ${esgf_excludes_file} && echo "${esgf_excludes_file}: entry already present" || echo "${solr_config_type} INDEX" >> ${esgf_excludes_file}
+    fi
 }
 
 _remove_replica_shard_configuration() {
@@ -672,7 +682,7 @@ solr_init() {
 setup_solr() {
     solr_init ${1}
     echo -n "Checking for solr ${solr_version}... "
-    (cd ${solr_install_dir}/multicore ; ls ${solr_cores[@]} >& /dev/null) && [ -e ${solr_install_dir}/start.jar ] && check_solr_version
+    (cd ${solr_install_dir}/multicore >& /dev/null; ls ${solr_cores[@]} >& /dev/null) && [ -e ${solr_install_dir}/start.jar ] && check_solr_version
     [ $? == 0 ] && (( ! force_install )) && echo " [OK]" && return 0
 
     echo
@@ -843,8 +853,7 @@ configure_solr() {
         #_add_myself_to_distrib_shards_list ${solr_install_dir}/solr/conf/solrconfig.xml
     fi
 
-    verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solr.xml-${suffix} > ${solr_install_dir}/multicore/solr.xml"
-    curl -s -L --insecure ${esg_dist_url}/esg-search/solr.xml-${suffix} > ${solr_install_dir}/multicore/solr.xml
+    _curl "${esg_dist_url}/esg-search/solr.xml-${suffix}" "${solr_install_dir}/multicore/solr.xml" || checked_done 1
     
     #Just editing the single file solr.xml but multiple times (one for each core)
     for ((i=0;i<${#solr_cores[@]};i++)) ; do
@@ -862,6 +871,18 @@ configure_solr() {
 #-----
 #"private functions"
 #-----
+
+#Using curl straight up won't give you any signal that you are not
+#getting the file... so we have to buffer and inspect it manually
+#first.
+_curl() {
+    verbose_print "${1} > ${2}"
+    local content=$(curl -s -L --insecure ${1})
+    grep -q 404 <<< $content && echo "ERROR: [404] could not download ${esg_dist_url}/esg-search/solr.xml-${suffix}" && return 1
+    echo "$content" > ${2}
+    return 0
+}
+
 _dedup_solr_realm() {
     local infile=${1:-${envfile}}
     [ ! -e "${infile}" ] && echo "WARNING: dedup_solr_realm() - unable to locate ${infile} does it exist?" && return 1
