@@ -158,21 +158,42 @@ setup_search() {
     return 0
 }
 
+#--------------------
+# ONE SHOT FUNCTIONS (called from outside this script [see esg-node's options])
+#--------------------
+check_shards() {
+    echo "Checking configuration of shards..."
+    local shards=(_load_shards_config)
+    for ((i=0; i < ${#shards[@]}; i++)); do
+        solr_init ${shards[i]}
+        echo -n "${solr_config_type} @ ${solr_server_port}: "
+        [ -n "$(sed -n 's/.*'${solr_config_type}':'${solr_server_port}'.*/&/p' ${esgf_shards_config_file})" ] && echo -n "*" || echo -n "X"
+        [ -n "$(sed -n 's/.*localhost:'${solr_server_port}'.*/&/p' ${esgf_shards_static_file})" ] && echo -n "*" || echo -n "X"
+        [ -n "$(sed -n 's/.*'${solr_config_type}'.*index.*/&/p' ${esgf_excludes_file})" ] && echo -n "*" || echo -n "X"
+        [ -e "${solr_install_dir}" ] && echo -n "*" || echo -n "X"
+        [ -e "${solr_data_dir}" ] && echo -n "*" || echo -n "X"
+        echo
+    done
+}
+
 add_shard() {
     local config_type=${1:?"Must specify shard host or type"}
     setup_solr ${config_type} && echo && configure_solr ${config_type} && echo && write_solr_install_log && commit_configuration
 }
 
 remove_shard() {
-    local config_type=${1:?"Must specify shard host or type"}
-    echo "Removing Shard: ${config_type"}
+    [ -z "${1}" ] && echo "no shard specified" && return 1
+    _remove_replica_shard_configuration ${1}
 }
 
-check_shards() {
-    echo "Checking configuration of shards..."
-    #zoiks do me!
+list_local_shards() {
+    _dedup_shards_config
+    cat ${esgf_shards_config_file}
 }
 
+#--------------------
+# Private utility functions
+#--------------------
 _load_shards_config() {
     _dedup_shards_config
     cat ${esgf_shards_config_file} | xargs
@@ -194,11 +215,35 @@ _commit_configuration() {
 }
 
 _remove_replica_shard_configuration() {
+    solr_init ${1}
     if [ "${solr_config_type}" = "master" ] || [ "${solr_config_type}" = "slave" ]; then
+        echo "WARNING: You may not remove master or slave indexes with this method"
         return 0
     fi
-    echo "Removing replica shard configuration for ${solr_config_type}... "
-    #zoiks: code me up!
+    local answer="n"
+    read -p "Are you sure you wish to remove replica index for ${solr_config_type}:${solr_server_port}? [y/N] " answer
+    [ -z "${answer}" ] || [ "${answer}" = "n" ] && return 1
+
+    echo "Removing replica shard configuration for ${solr_config_type}:${esg}... "
+    #Remove the entries in the config files
+    #esgf_shards.config
+    debug_print "Removing entry from: ${esgf_shards_config_file}"
+    sed -i.bak '/.*'${solr_config_type}':'${solr_server_port}'.*/d' ${esgf_shards_config_file}
+
+    #esgf_shards_static.xml
+    debug_print "Removing entry from: ${esgf_shards_static_file}"
+    sed -i.bak '/.*localhost:'${solr_server_port}'.*/d' ${esgf_shards_static_file}
+
+    #esgf_excludes.txt
+    sed -i.bak '/.*'${solr_config_type}'.*index.*/d' ${esgf_excludes_file}
+
+    #Remove the configuration directory
+    debug_print "rm -rf ${solr_install_dir}"
+    rm -rf ${solr_install_dir}
+
+    #Remove the data (index) itself w/ cores
+    debug_print "rm -rf ${solr_data_dir}"
+    rm -rf ${solr_data_dir}
     echo "[REMOVED]"
 }
 
@@ -209,6 +254,10 @@ _get_next_open_port() {
     #add 1 to it, check that it is available
     #echo it out.
 }
+
+#--------------------
+# Lifecycle functions
+#--------------------
 
 start_search_services() {
     echo "Starting search services... $@"
@@ -616,7 +665,7 @@ solr_init() {
     solr_install_dir=${install_prefix}/esgf-solr-${solr_version}/${solr_config_type}-${solr_server_port}
     solr_data_dir=${esg_root_dir}/solr-index/${solr_config_type}-${solr_server_port}
     solr_cores=(datasets files aggregations)
-    echo "init: ${solr_config_type} [${solr_server_port}]"
+    debug_print "init: ${solr_config_type} [${solr_server_port}]"
 }
 
 #Input param <hostname>[:<port>]
