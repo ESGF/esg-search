@@ -160,6 +160,8 @@ setup_search() {
 #--------------------
 # ONE SHOT FUNCTIONS (called from outside this script [see esg-node's options])
 #--------------------
+
+#Does a full sanity check of the configuration
 check_shards() {
     echo "Checking configuration of shards..."
     local shards=( $(_load_shards_config) )
@@ -180,6 +182,25 @@ check_shards() {
         fi
         if [ -e "${solr_install_dir}" ]; then
             echo -n "*" 
+            if [ "${solr_config_type}" != "master" ] && [ "${solr_config_type}" != "slave" ]; then
+                if (( $(sed -n 's/.*masterUrl.*'${solr_config_type}':8983.*/&/p' ${solr_install_dir}/multicore/*/conf/solrconfig.xml | wc -l) == ${#solr_cores[@]} )); then
+                    echo -n "*"
+                else
+                    echo -n "X"
+                    debug_print "check the files: ${solr_install_dir}/multicore/*/conf/solrconfig.xml"
+                    ((bad++))
+                fi
+                if (( $(sed -n 's/.*'${solr_config_type}'-'${solr_server_port}'.*/&/p' ${solr_install_dir}/multicore/solr.xml | wc -l)  == ${#solr_cores[@]} )); then
+                    echo -n "*"
+                else
+                    echo -n "X"
+                    debug_print "check the file: ${solr_install_dir}/multicore/solr.xml"
+                    ((bad++))
+                fi
+            else
+                echo -n "-"
+                echo -n "-"
+            fi
         else 
             echo -n "X"
             ((bad++))
