@@ -161,7 +161,42 @@ setup_search() {
 # ONE SHOT FUNCTIONS (called from outside this script [see esg-node's options])
 #--------------------
 
+#--------------------
 #Does a full sanity check of the configuration
+# Here are the checks (7 points)
+# - That it is in the esgf_shards.config file [<hostname>:<port>] (it always is)
+#
+# (next does not apply to master)
+# - That the corresponding entry is in the esgf_shards_static.xml file ["localhost":<port>] (all but the master needs to be listed here)
+#
+# (next does not apply to slave nor master)
+# - That the corresponding entry is in the esgf_excludes.txt file [<hostname> INDEX] (this is so that replicated shards are not dyn added)
+#
+# (all)
+# - That there is a corresponding installation directory /usr/local/solr<version>/<hostname>-<port>
+#
+# (next two not needed for local slave and master)
+# - That within that diectory the entry is present and correct in EACH of the multicore solrconfig.xml files <hostname>:8983 (where the remote master is)
+# - That within that directory under "multicore" the entry for cores are present and configured in the solr.xml <hostname>-<port> inserted in xml.
+#
+# (all)
+# - That there is data directory for physically storing the index in /esg/solr-index/<hostname-<port>
+#----------------------
+# These critera map to the "*"|"-" values listed.  If anything is incorrect then there is an "X" displayed.
+# "*" = present and accounted for
+# "-" = not applicable
+# "X" = problem
+#
+# Ex: (Everything all good)
+#
+# %> esg-node --check-shards
+#      Checking configuration of shards...
+#      slave @ 8983: **-*--* [PASS]
+#      master @ 8984: *--*--* [PASS]
+#      esg-datanode.jpl.nasa.gov @ 8985: ******* [PASS]
+#      pcmdi11.llnl.gov @ 8986: ******* [PASS]
+#      pcmdi9.llnl.gov @ 8987: ******* [PASS]
+#--------------------
 check_shards() {
     echo "Checking configuration of shards..."
     local shards=( $(_load_shards_config) )
