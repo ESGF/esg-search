@@ -1060,7 +1060,7 @@ start_solr() {
 stop_solr() {
     while [ -n "$1" ]; do 
         solr_init ${1}
-        echo "Stopping Solr for ${solr_config_type} on port [${solr_server_port}]"
+        echo -n "Stopping Solr for ${solr_config_type} on port [${solr_server_port}]"
         local pid=`lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
         [ -n "${pid}" ] && kill -9 $pid
         check_solr_process
