@@ -22,7 +22,7 @@ optimize_index() {
 
     local status
 
-    local solr_replica_ports=($(sed -n 's/.*localhost:\([0-9]*\).*/\1/p' esgf_shards_static.xml | uniq | xargs))
+    local solr_replica_ports=($(sed -n 's/.*:\([0-9]*\).*/\1/p' ${esg_config_dir:-/esg/config}/esgf_shards.config | uniq | xargs))
     local solr_cores=(${solr_cores[@]:-datasets files aggregations})
 
     for ((i=0;i<${#solr_replica_ports[@]};i++)) ; do
