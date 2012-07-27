@@ -222,7 +222,7 @@ init_all_shards() {
 _load_shards_config() {
     [ ! -e "${esgf_shards_config_file}" ] && echo "Sorry no esgf shards configuration file found: ${esgf_shards_config_file}" && return 0
     _dedup_shards_config
-    cat ${esgf_shards_config_file} | xargs
+    cat ${esgf_shards_config_file} | sed '/^#.*/d' | xargs
 }
 
 _commit_configuration() {
@@ -284,11 +284,16 @@ _remove_replica_shard_configuration() {
 }
 
 _get_next_open_port() {
-    local start_port=$1
-    #get highest port in esgf_shards.config file
-    #if none get the highest index_service_port value
-    #add 1 to it, check that it is available
-    #echo it out.
+    local start_port=${1:-$(sort -t ':' -u -k2,2 ${esgf_shards_config_file} | tail -1 | awk -F ':' '{print $2}')}
+    local suggested_port=${start_port}
+    for ((i=0; i < 100; i++)); do
+        if [ $(netstat -ant | grep LISTEN | awk '{print $4}' | sed -n 's/.*:\(.*\)/\1/p' | sort -n -u | grep  ^${suggested_port}$) ]; then
+            ((suggested_port++))
+        else
+            break
+        fi
+    done
+    echo ${suggested_port}
 }
 
 #--------------------
@@ -696,8 +701,12 @@ solr_init() {
     read solr_config_type solr_server_port <<< $(awk -F : '{print $1" "$2}' <<< ${1})
     [ "${solr_config_type}" = "master" ] && [ -z "${solr_server_port}" ] && solr_server_port=${index_master_port}
     [ "${solr_config_type}" = "slave" ]  && [ -z "${solr_server_port}" ] && solr_server_port=${index_slave_port}
-    [ -z "${solr_server_port}" ] && echo "ERROR: You Must specify the port when configuring a solr core that is not master nor slave" && checked_done 1
-
+    if [ -z "${solr_server_port}" ]; then
+        local suggested_port=$(_get_next_open_port)
+        echo "[INFO] - You have not selected a local port value for the index serving the ${solr_config_type} replica..."
+        echo "         Will use ${suggested_port}"
+        solr_server_port=${suggested_port}
+    fi
     solr_install_dir=${install_prefix}/esgf-solr-${solr_version}/${solr_config_type}-${solr_server_port}
     solr_data_dir=${esg_root_dir}/solr-index/${solr_config_type}-${solr_server_port}
     solr_cores=(datasets files aggregations)
@@ -883,7 +892,7 @@ configure_solr() {
     
     #Just editing the single file solr.xml but multiple times (one for each core)
     for ((i=0;i<${#solr_cores[@]};i++)) ; do
-        sed -i 's#\(.*<core.*dataDir="\)\([a-zA-Z/-]*\)\(\/\('${solr_cores[i]}'\).*\)#\1'${solr_data_dir}'\3#' ${solr_install_dir}/multicore/solr.xml
+        sed -i 's#\(.*<core.*dataDir="\)\([a-zA-Z@/-]*\)\(\/\('${solr_cores[i]}'\).*\)#\1'${solr_data_dir}'\3#' ${solr_install_dir}/multicore/solr.xml
         [ $? != 0 ] && echo && echo "Problem configuring (solr.xml) solr for ${solr_config_type} wth core = [${solr_cores[i]}]  (2)" && return 3
     done
     chmod 755 ${solr_install_dir}/multicore/solr.xml
