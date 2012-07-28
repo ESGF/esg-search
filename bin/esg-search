@@ -339,6 +339,18 @@ _remove_replica_shard_configuration() {
     echo "[REMOVED]"
 }
 
+_is_port_taken() {
+    local suggested_port=${1:?"Requires <port> as argument"}
+    local no_use_ports=($(cat <(netstat -ant | grep LISTEN | awk '{print $4}' | sed -n 's/.*:\(.*\)/\1/p' | sort -n -u) <(awk -F ':' '{print $2}' ${esgf_shards_config_file}) | sort -n -u ))
+    if [ -n "$(echo ${no_use_ports[@]} | sed -n 's/\b'${suggested_port}'\b/&/p')" ]; then
+        #true (yes, it is taken)
+        return 0
+    else
+        #false (no the port is NOT taken, available)
+        return 1
+    fi
+}
+
 _get_next_open_port() {
     local start_port=${1:-$(sort -t ':' -u -k2,2 ${esgf_shards_config_file} | tail -1 | awk -F ':' '{print $2}')}
     local suggested_port=${start_port}
@@ -762,8 +774,6 @@ solr_init() {
         local suggested_port=$(_get_next_open_port)
         echo "[INFO] - You have not selected a local port value for the index serving the ${solr_config_type} replica..."
         echo "         Will use ${suggested_port}"
-    else
-        solr_server_port=$(_get_next_open_port ${solr_server_port})
     fi
 
     solr_install_dir=${install_prefix}/esgf-solr-${solr_version}/${solr_config_type}-${solr_server_port}
