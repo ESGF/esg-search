@@ -774,6 +774,7 @@ solr_init() {
         local suggested_port=$(_get_next_open_port)
         echo "[INFO] - You have not selected a local port value for the index serving the ${solr_config_type} replica..."
         echo "         Will use ${suggested_port}"
+        solr_server_port=${suggested_port}
     fi
 
     solr_install_dir=${install_prefix}/esgf-solr-${solr_version}/${solr_config_type}-${solr_server_port}
