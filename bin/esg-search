@@ -983,9 +983,8 @@ configure_solr() {
 _curl() {
     verbose_print "${1} > ${2}"
     local content=$(curl -s -L --insecure ${1})
-    grep -q 404 <<< $content && echo "ERROR: [404] could not download ${esg_dist_url}/esg-search/solr.xml-${suffix}" && return 1
+    grep -q 404 <<< $content && echo "ERROR: [404] could not download ${1}" && return 1
     echo "$content" > ${2}
-    return 0
 }
 
 _dedup_solr_realm() {
