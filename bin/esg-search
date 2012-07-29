@@ -241,7 +241,8 @@ check_shards() {
             ((bad++))
         fi
         if [ -e "${solr_data_dir}" ]; then
-            echo -n "*" 
+            echo -n "*"
+            echo -n " $(du -sh ${solr_data_dir} | awk '{print $1}')"
         else 
             echo -n "X"
             ((bad++))
