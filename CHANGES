@@ -250,5 +250,5 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 3.2.1
 -- Adding minimal esgf_shards_static.xml file
 
-3.2.2
+3.2.3
 -- Increased shards replica polling time to 10 minutes
