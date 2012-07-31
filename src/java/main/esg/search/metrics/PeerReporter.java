@@ -57,10 +57,7 @@ public class PeerReporter extends AbstractReporter {
                 
             }
         }
-        
-        // add local host name, number of other peers
-        map.put(localhost, map.size());
-                
+                        
         return map;
         
     }
