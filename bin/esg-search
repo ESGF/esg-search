@@ -254,14 +254,27 @@ check_shards() {
 
 add_shard() {
     local config_type=${1:?"Must specify shard host or type"}
-    if ! ping -c 1 ${config_type%:*} >& /dev/null ; then
-        local answer="n"
-        echo "WARNING the shard source entered [${config_type%:*}] is not currently reachable"
-        read -p "Would you like to continue anyway [y/N]? " answer
-        [ -z "${answer}" ] || [ "$(tr A-Z a-z <<< ${answer})" = "n" ] && return 1
+    if [ "${config_type%:*}" != "master" ] && [ "${config_type%:*}" != "slave" ]; then
+        if ! ping -c 1 ${config_type%:*} >& /dev/null ; then
+            local answer="n"
+            echo "WARNING the shard source entered [${config_type%:*}] is not currently reachable"
+            read -p "Would you like to continue anyway [y/N]? " answer
+            [ -z "${answer}" ] || [ "$(tr A-Z a-z <<< ${answer})" = "n" ] && return 1
+        fi
+        nc -w 3 -z ${config_type%:*} 8983 2> /dev/null || echo "[INFO] - The search port [8983] is not available on ${config_type%:*}"
+    else
+        if [ "${config_type%:*}" == "master" ] && [ -e "${esg_root_dir}/solr-index-master" ] ; then
+            backup ${esg_root_dir}/solr-index-master
+            mkdir -p ${esg_root_dir}/solr-index/master-${config_type##*:}
+            mv ${esg_root_dir}/solr-index-master/* ${esg_root_dir}/solr-index/master-${config_type##*:} && rmdir ${esg_root_dir}/solr-index-master
+        fi
+        if [ "${config_type%:*}" == "slave" ] && [ -e "${esg_root_dir}/solr-index-slave" ] ; then
+            backup ${esg_root_dir}/solr-index-slave
+            mkdir -p ${esg_root_dir}/solr-index/slave-${config_type##*:}
+            mv ${esg_root_dir}/solr-index-slave/* ${esg_root_dir}/solr-index/slave-${config_type##*:} && rmdir ${esg_root_dir}/solr-index-slave
+        fi
     fi
-    nc -z ${config_type%:*} 8983 2> /dev/null || echo "[INFO] - The search port [8983] is not available on ${config_type%:*}"
-    setup_solr ${config_type} && echo && configure_solr ${config_type} && echo && write_solr_install_log && _commit_configuration
+    setup_solr ${config_type} && configure_solr ${config_type} && echo && write_solr_install_log && _commit_configuration
 }
 
 remove_shard() {
@@ -976,7 +989,7 @@ configure_solr() {
 
 
     if [ "${solr_config_type}" != "master" ]; then
-        echo -n " - Peforming additonal configuration for ${solr_config_type} type "
+        echo -n " - Peforming additional configuration for ${solr_config_type} "
         pushd ${solr_install_dir}/etc >& /dev/null
         curl -s -L --insecure ${esg_dist_url}/esg-search/jetty.xml-auth > ${solr_install_dir}/etc/jetty.xml && echo -n ":"
         curl -s -L --insecure ${esg_dist_url}/esg-search/webdefault.xml-auth > ${solr_install_dir}/etc/webdefault.xml && echo -n "-"
