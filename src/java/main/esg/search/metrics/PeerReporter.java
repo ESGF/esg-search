@@ -6,12 +6,12 @@ import java.util.Map;
 
 public class PeerReporter extends AbstractReporter {
     
-    private final static String COMMAND = "/usr/local/bin/esgf-spotcheck localhost";
-    //private final static String COMMAND = "cat /Users/cinquini/myApplications/spotcheck.txt";
+    //private final static String COMMAND = "/usr/local/bin/esgf-spotcheck localhost";
+    private final static String COMMAND = "cat /Users/cinquini/myApplications/spotcheck.txt";
     
-    private final static String OUTPUT_CSV = "/esg/content/metrics_spotcheck.csv";
-    private final static String OUTPUT_XML = "/esg/content/metrics_spotcheck.xml";
-    private final static String TYPE = "Peer Nodes";
+    private final static String CSV_FILE_PATH = "/esg/content/metrics_spotcheck.csv";
+    private final static String XML_FILE_PATH = "/esg/content/metrics_spotcheck.xml";
+    private final static String REPORT_TYPE = "Peer Nodes";
     
     // server where this program is run
     String reporter = null;
@@ -22,7 +22,7 @@ public class PeerReporter extends AbstractReporter {
     public static void main(String[] args) throws Exception {
         
         PeerReporter self = new PeerReporter();
-        self.run(OUTPUT_CSV, OUTPUT_XML, TYPE);
+        self.run();
 
     }
 
@@ -62,4 +62,21 @@ public class PeerReporter extends AbstractReporter {
         
     }
 
+    @Override
+    public String getCsvFilePath() {
+        return CSV_FILE_PATH;
+    }
+
+    @Override
+    public String getXmlFilePath() {
+        return XML_FILE_PATH;
+    }
+
+    @Override
+    public String getReportType() {
+        return REPORT_TYPE;
+    }
+
+    
+    
 }

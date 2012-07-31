@@ -25,10 +25,10 @@ public class SearchReporter extends AbstractReporter {
     public final static String XPATH3 = "/response/lst[@name='facet_counts']/lst[@name='facet_fields']/lst[@name='project']";
     private final XPath xpath3;
     
-    private final static String OUTPUT_CSV = "/esg/content/metrics_search.csv";
-    private final static String OUTPUT_XML = "/esg/content/metrics_search.xml";
+    private final static String CSV_FILE_PATH = "/esg/content/metrics_search.csv";
+    private final static String XML_FILE_PATH = "/esg/content/metrics_search.xml";
     
-    private final static String TYPE = "Search Results";
+    private final static String REPORT_TYPE = "Search Results";
     
     public SearchReporter() throws Exception {
         
@@ -44,7 +44,7 @@ public class SearchReporter extends AbstractReporter {
     public static void main(String[] args) throws Exception {
         
         SearchReporter self = new SearchReporter();
-        self.run(OUTPUT_CSV, OUTPUT_XML, TYPE);
+        self.run();
 
     }
     
@@ -90,6 +90,21 @@ public class SearchReporter extends AbstractReporter {
 
         return map;
 
+    }
+    
+    @Override
+    public String getCsvFilePath() {
+        return CSV_FILE_PATH;
+    }
+
+    @Override
+    public String getXmlFilePath() {
+        return XML_FILE_PATH;
+    }
+
+    @Override
+    public String getReportType() {
+        return REPORT_TYPE;
     }
 
 }

@@ -22,48 +22,54 @@ import org.apache.commons.lang.StringUtils;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
-import org.jdom.output.Format;
-import org.jdom.output.XMLOutputter;
+
+import esg.security.utils.xml.Serializer;
 
 /**
- * Abstract superclass or node metrics reporters.
+ * Abstract superclass of node metrics reporters.
+ * This class contains most of the functionality needed to report metrics.
  * 
  * @author Luca Cinquini
  *
  */
 public abstract class AbstractReporter implements Reporter {
     
-    private static String COMMAND = "hostname";
-    
+    // parameters
     protected final static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss Z");
     protected final static Namespace NAMESPACE_ESGF = Namespace.getNamespace("esgf","http://www.esgf.org/");
     protected final static String NEWLINE = System.getProperty("line.separator");
+    private static String REPORTER_COMMAND = "hostname";
     
-    protected String reporter;
-    protected Date date;
+    // the agent collecting the metrics
+    private String reporter;
+    
+    // the date when the metrics were collected
+    private Date date;
     
     static {
+        // use GMT to merge metrics across nodes
         DATE_FORMAT.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
 
-    // global ordered list of keys
+    // global ordered list of dynamic keys
     Set<String> keys = new TreeSet<String>();
 
     // map of records ordered by time
     Map<Date, Map<String, Integer>> records = new LinkedHashMap<Date, Map<String, Integer>>();
     
     /**
-     * Driver method
+     * Method that drives the collection of metrics.
+     * 
      * @throws Exception
      */
-    public void run(String csvFile, String xmlFile, String type) throws Exception {
-               
-        // read current CSV
-        read_csv(csvFile);
-        
+    public void run() throws Exception {
+                    
         // metrics parameters
         this.date = new Date();
-        this.reporter = getHostName();
+        this.reporter = getReporter();
+        
+        // read current CSV
+        read_csv();
         
         // collect metrics
         Map<String, Integer> map = this.report();
@@ -71,16 +77,16 @@ public abstract class AbstractReporter implements Reporter {
         // store this record
         records.put(this.date, map);
         
-        // update global keys
+        // update global keys with new values ?
         for (String key : map.keySet()) {
             this.keys.add(key);
         }
         
         // write out CSV file
-        write_csv(csvFile);
+        write_csv();
         
         // write out newest record
-        write_xml(xmlFile, this.date, this.reporter, type, map);
+        write_xml(this.date, this.reporter, this.getReportType(), map);
         
     }
 
@@ -129,13 +135,14 @@ public abstract class AbstractReporter implements Reporter {
     }
     
     /**
-     * Method to return the host name where the program is running.
+     * Method to return the name of the agent reporting the metrics.
+     * 
      * @return
      * @throws Exception
      */
-    protected String getHostName() throws Exception {
+    protected String getReporter() throws Exception {
         
-        List<String> output = runSystemCommand(COMMAND);
+        List<String> output = runSystemCommand(REPORTER_COMMAND);
         if (output.size()==1) {
             return output.get(0);
         } else {
@@ -144,18 +151,22 @@ public abstract class AbstractReporter implements Reporter {
         
     }
     
-    protected void print(List<String> output) {
-        for (String s : output) {
-            System.out.println(s);
-        }
-    }
-    
-    protected void write_xml(String path, Date date, String hostname, String type, Map<String, Integer> data) throws Exception {
+    /**
+     * Method to write the latest metrics to the XML file.
+     * 
+     * @param path
+     * @param date
+     * @param hostname
+     * @param type
+     * @param data
+     * @throws Exception
+     */
+    protected void write_xml(Date date, String reporter, String type, Map<String, Integer> data) throws Exception {
         
         // root element
         final Element root = new Element("data", NAMESPACE_ESGF);
         root.setAttribute("time", DATE_FORMAT.format(date));
-        root.setAttribute("reporter", hostname);
+        root.setAttribute("reporter", reporter);
         root.setAttribute("type", type);
         
         // data elements
@@ -167,24 +178,25 @@ public abstract class AbstractReporter implements Reporter {
         }
                
         // write out to file
-        File file = new File(path);
-        XMLOutputter outputter = getXMLOutputter();
-        FileWriter writer = new FileWriter(file);
-        outputter.output(new Document(root), writer);
-        writer.close();
-        
+        Serializer.JDOMtoFile(new Document(root), this.getXmlFilePath());        
         
     }
     
-    protected void read_csv(final String filepath) throws IOException, ParseException {
+    /**
+     * Method to read the current data from the CVS file.
+     * 
+     * @throws IOException
+     * @throws ParseException
+     */
+    protected void read_csv() throws IOException, ParseException {
         
-        File f = new File(filepath);
+        File f = new File(this.getCsvFilePath());
         if (f.exists()) {
             
             BufferedReader input = new BufferedReader(new FileReader(f));
             String line = null;
             boolean first = true;
-            List<String> _lkeys = new ArrayList<String>(); // list of keys in the order they are stored in the file
+            List<String> mykeys = new ArrayList<String>(); // list of keys in the order they are stored in the file
             while ((line = input.readLine()) != null) {
                 
                 String[] parts = line.split(",");
@@ -194,7 +206,7 @@ public abstract class AbstractReporter implements Reporter {
                     for (int i=1; i<parts.length; i++) {
                         String peer = parts[i].trim();
                         keys.add(peer);
-                        _lkeys.add(peer);
+                        mykeys.add(peer);
                     }
                     first = false;
                     
@@ -203,7 +215,7 @@ public abstract class AbstractReporter implements Reporter {
                     Map<String, Integer> map = new HashMap<String, Integer>();
                     Date date = DATE_FORMAT.parse(parts[0]);
                     for (int i=1; i<parts.length; i++) {
-                        map.put(_lkeys.get(i-1), Integer.parseInt(parts[i].trim()));
+                        map.put(mykeys.get(i-1), Integer.parseInt(parts[i].trim()));
                     }
                     records.put(date, map);
                 }
@@ -214,9 +226,14 @@ public abstract class AbstractReporter implements Reporter {
         
     }
     
-    protected void write_csv(final String filepath) throws IOException {
+    /**
+     * Method to write all data to the CSV file.
+     * 
+     * @throws IOException
+     */
+    protected void write_csv() throws IOException {
         
-        FileWriter fw = new FileWriter(filepath+".tmp", false); // append=false
+        FileWriter fw = new FileWriter(this.getCsvFilePath()+".tmp", false); // append=false
         
         // header line
         fw.write("Time, "+StringUtils.join(keys, ", ") + NEWLINE);
@@ -240,18 +257,10 @@ public abstract class AbstractReporter implements Reporter {
         fw.close();
         
         // rename files
-        File f1 = new File(filepath+".tmp");
-        File f2 = new File(filepath);
+        File f1 = new File(this.getCsvFilePath()+".tmp");
+        File f2 = new File(this.getCsvFilePath());
         f1.renameTo(f2);
     }
-    
-    private static org.jdom.output.XMLOutputter getXMLOutputter() {
-        
-        Format format = Format.getPrettyFormat();
-        format.setLineSeparator(NEWLINE);
-        org.jdom.output.XMLOutputter outputter = new org.jdom.output.XMLOutputter(format);
-        return outputter;
-        
-    }
+
 
 }
