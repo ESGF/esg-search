@@ -163,7 +163,7 @@ public abstract class AbstractReporter implements Reporter {
      */
     protected void write_xml(Date date, String reporter, String type, Map<String, Integer> data) throws Exception {
         
-        
+        // create directory if not existing already
         File f = new File(this.getXmlFilePath());
         if (!f.getParentFile().exists()) f.getParentFile().mkdirs();
         

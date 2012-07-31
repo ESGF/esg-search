@@ -12,8 +12,8 @@ import java.util.Map;
  */
 public class PeerReporter extends AbstractReporter {
     
-    //private final static String COMMAND = "/usr/local/bin/esgf-spotcheck localhost";
-    private final static String COMMAND = "cat /Users/cinquini/myApplications/spotcheck.txt";
+    private final static String COMMAND = "/usr/local/bin/esgf-spotcheck localhost";
+    //private final static String COMMAND = "cat /Users/cinquini/myApplications/spotcheck.txt";
     
     private final static String CSV_FILE_PATH = "/esg/content/metrics/spotcheck.csv";
     private final static String XML_FILE_PATH = "/esg/content/metrics/spotcheck.xml";

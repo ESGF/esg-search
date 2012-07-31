@@ -13,8 +13,8 @@ import esg.search.utils.XmlParser;
 
 public class SearchReporter extends AbstractReporter {
     
-    // FIXME
-    private final static String URL = "http://esg-datanode.jpl.nasa.gov/esg-search/search?latest=true&replica=false&facets=model,project&distrib=false";
+    //private final static String URL = "http://esg-datanode.jpl.nasa.gov/esg-search/search?latest=true&replica=false&facets=model,project&distrib=false";
+    private final static String URL = "http://localhost/esg-search/search?latest=true&replica=false&facets=model,project&distrib=false";
     
     public final static String XPATH1 = "/response/result";
     private final XPath xpath1;
@@ -25,8 +25,8 @@ public class SearchReporter extends AbstractReporter {
     public final static String XPATH3 = "/response/lst[@name='facet_counts']/lst[@name='facet_fields']/lst[@name='project']";
     private final XPath xpath3;
     
-    private final static String CSV_FILE_PATH = "/esg/content/metrics_search.csv";
-    private final static String XML_FILE_PATH = "/esg/content/metrics_search.xml";
+    private final static String CSV_FILE_PATH = "/esg/content/metrics/search.csv";
+    private final static String XML_FILE_PATH = "/esg/content/metrics/search.xml";
     
     private final static String REPORT_TYPE = "Search Results";
     
@@ -86,7 +86,6 @@ public class SearchReporter extends AbstractReporter {
             int counts = Integer.parseInt(elem.getTextNormalize());
             map.put("project="+name, counts);
         }
-
 
         return map;
 
