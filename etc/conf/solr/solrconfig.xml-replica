@@ -538,7 +538,7 @@
     </lst>
     <lst name="${slave:slave}">
       <str name="masterUrl">http://@@hostname@@:8983/solr/${solr.core.name}/replication</str>
-      <str name="pollInterval">00:00:60</str>
+      <str name="pollInterval">00:10:00</str>
     </lst>
 </requestHandler>
 
