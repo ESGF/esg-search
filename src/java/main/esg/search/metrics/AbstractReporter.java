@@ -163,6 +163,10 @@ public abstract class AbstractReporter implements Reporter {
      */
     protected void write_xml(Date date, String reporter, String type, Map<String, Integer> data) throws Exception {
         
+        
+        File f = new File(this.getXmlFilePath());
+        if (!f.getParentFile().exists()) f.getParentFile().mkdirs();
+        
         // root element
         final Element root = new Element("data", NAMESPACE_ESGF);
         root.setAttribute("time", DATE_FORMAT.format(date));
@@ -233,7 +237,13 @@ public abstract class AbstractReporter implements Reporter {
      */
     protected void write_csv() throws IOException {
         
-        FileWriter fw = new FileWriter(this.getCsvFilePath()+".tmp", false); // append=false
+        
+        File f1 = new File(this.getCsvFilePath()+".tmp");
+        
+        // create parent directory directory if not existing already
+        if (!f1.getParentFile().exists()) f1.getParentFile().mkdirs();
+        
+        FileWriter fw = new FileWriter(f1, false); // append=false
         
         // header line
         fw.write("Time, "+StringUtils.join(keys, ", ") + NEWLINE);
@@ -257,7 +267,6 @@ public abstract class AbstractReporter implements Reporter {
         fw.close();
         
         // rename files
-        File f1 = new File(this.getCsvFilePath()+".tmp");
         File f2 = new File(this.getCsvFilePath());
         f1.renameTo(f2);
     }
