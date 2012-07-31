@@ -252,3 +252,6 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 
 3.2.3
 -- Increased shards replica polling time to 10 minutes
+
+3.2.4
+-- Inserted updated facets.properties example file
