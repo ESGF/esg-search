@@ -13,8 +13,8 @@ import esg.search.utils.XmlParser;
 
 public class SearchReporter extends AbstractReporter {
     
-    //private final static String URL = "http://esg-datanode.jpl.nasa.gov/esg-search/search?latest=true&replica=false&facets=model,project&distrib=false";
-    private final static String URL = "http://localhost/esg-search/search?latest=true&replica=false&facets=model,project&distrib=false";
+    //private final static String URL = "http://esg-datanode.jpl.nasa.gov/esg-search/search?latest=true&replica=false&facets=model,project";
+    private final static String URL = "http://localhost/esg-search/search?latest=true&replica=false&facets=model,project";
     
     public final static String XPATH1 = "/response/result";
     private final XPath xpath1;
