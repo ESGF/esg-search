@@ -218,7 +218,7 @@ check_shards() {
         if [ -e "${solr_install_dir}" ]; then
             echo -n "*" 
             if [ "${solr_config_type}" != "master" ] && [ "${solr_config_type}" != "slave" ]; then
-                if (( $(sed -n 's/.*masterUrl.*'${solr_config_type}':8983.*/&/p' ${solr_install_dir}/multicore/*/conf/solrconfig.xml | wc -l) == ${#solr_cores[@]} )); then
+                if (( $(sed -n 's/.*masterUrl.*'${solr_config_type}':'${index_slave_port}'.*/&/p' ${solr_install_dir}/multicore/*/conf/solrconfig.xml | wc -l) == ${#solr_cores[@]} )); then
                     echo -n "*"
                 else
                     echo -n "X"
@@ -274,7 +274,7 @@ add_shard() {
             mv ${esg_root_dir}/solr-index-slave/* ${esg_root_dir}/solr-index/slave-${config_type##*:} && rmdir ${esg_root_dir}/solr-index-slave
         fi
     fi
-    setup_solr ${config_type} && configure_solr ${config_type} && echo && write_solr_install_log && _commit_configuration
+    setup_solr ${config_type} && configure_solr ${config_type} && write_solr_install_log && _commit_configuration
 }
 
 remove_shard() {
@@ -831,6 +831,7 @@ solr_init() {
 #Input param <hostname>[:<port>]
 setup_solr() {
     solr_init ${1}
+    echo
     echo -n "Checking for solr ${solr_version}... "
     (cd ${solr_install_dir}/multicore >& /dev/null; ls ${solr_cores[@]} >& /dev/null) && [ -e ${solr_install_dir}/start.jar ] && check_solr_version
     [ $? == 0 ] && (( ! force_install )) && echo " [OK]" && return 0
@@ -954,7 +955,7 @@ configure_solr() {
         [ $? != 0 ] && echo && echo "Problem configuring (config) solr for ${solr_cores[${i}]} (2)" && return 3
         chmod 755 ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
         if [ "${suffix}" = "replica" ]; then
-            sed -i 's#\(.*masterUrl.*http://\)\(.*\)\(:8983.*\)#\1'${solr_config_type}'\3#' ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
+            sed -i 's#\(.*masterUrl.*http://\)\(.*\)\(:'${index_slave_port}'.*\)#\1'${solr_config_type}'\3#' ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
         fi
     done
 
