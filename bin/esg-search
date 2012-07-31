@@ -260,7 +260,7 @@ add_shard() {
         read -p "Would you like to continue anyway [y/N]? " answer
         [ -z "${answer}" ] || [ "$(tr A-Z a-z <<< ${answer})" = "n" ] && return 1
     fi
-    nc -z ${config_type%:*} 8983 || echo "[INFO] - The search port [8983] is not available on ${config_type%:*}"
+    nc -z ${config_type%:*} 8983 2> /dev/null || echo "[INFO] - The search port [8983] is not available on ${config_type%:*}"
     setup_solr ${config_type} && echo && configure_solr ${config_type} && echo && write_solr_install_log && _commit_configuration
 }
 
@@ -340,7 +340,7 @@ _remove_replica_shard_configuration() {
 
     ! grep -q "${remote_host}:${local_port}" ${esgf_shards_config_file} && echo "Must select one of the configured port(s): [${configured_ports[@]}]" && return 1
 
-    solr_init "${remote_host}:${configured_ports[0]}"
+    solr_init "${remote_host}:${local_port}"
     if [ "${solr_config_type}" = "master" ] || [ "${solr_config_type}" = "slave" ]; then
         echo "WARNING: You may not remove master or slave indexes with this method."
         return 0
@@ -975,7 +975,7 @@ configure_solr() {
     #/esg/config/esgf.properties
 
 
-    if [ "${solr_config_type}" = "slave" ]; then
+    if [ "${solr_config_type}" != "master" ]; then
         echo -n " - Peforming additonal configuration for ${solr_config_type} type "
         pushd ${solr_install_dir}/etc >& /dev/null
         curl -s -L --insecure ${esg_dist_url}/esg-search/jetty.xml-auth > ${solr_install_dir}/etc/jetty.xml && echo -n ":"
