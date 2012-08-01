@@ -429,7 +429,7 @@ _get_next_open_port() {
 
 start_search_services() {
     echo "Starting search services... $@"
-    if [ ! -e $"{esgf_config_dir}/facets.properties" ] && [ -e "${tomcat_install_dir}/esg-search/WEB-INF/classes/esg/search/config/facets.properties" ]; then
+    if [ ! -e "${esgf_config_dir}/facets.properties" ] && [ -e "${tomcat_install_dir}/esg-search/WEB-INF/classes/esg/search/config/facets.properties" ]; then
         cp -v ${tomcat_install_dir}/esg-search/WEB-INF/classes/esg/search/config/facets.properties ${esgf_config_dir}/facets.properties
     fi
     #start_zookeeper
