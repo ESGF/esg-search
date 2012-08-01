@@ -40,24 +40,41 @@ public class WgetScriptGenerator {
 		 *
 		 */
 		private class File {
+		    String name;
 			String url;
 			String dir;		//future use, to allow the user to define a directory structure
 			String size;	//unused
 			String chksumType;
 			String chksum;
 	        public String toString() {
-	            return String.format("Url:%s, Dir:%s, size:%s, chksum:%s (%s)\n", 
-	                                 url, dir, size, chksum, chksumType);
+	            return String.format("name:%s, Url:%s, Dir:%s, size:%s, chksum:%s (%s)\n", 
+	                                 name, url, dir, size, chksum, chksumType);
 	        }
 		}
 
-		String userOpenId;	//
+		String userOpenId;	
 		String hostName;
 		String searchUrl;
 		String message;
-		List<File> files = new LinkedList<File>();
 		
-
+		private StringBuffer sb = new StringBuffer();
+		List<File> files = new LinkedList<File>();
+		Map<String, String> checksums = new HashMap<String, String>();
+		
+		
+        private final String MSG_FILE_COLLISION = "There were files with the "
+            + "same name which were requested to be download to the same "
+            + "directory. To avoid overwritting the previous downloaded "
+            + "one they were skipped.\nPlease use the parameter "
+            + "'download_structure' to set up unique directories for them.";
+		private boolean collision_msg_sent = false;
+		private int no_url_count = 0;
+		
+		/**
+		 * @param hostName hostname where this wget script got generated
+		 * @param userOpenId OpenId of the user (if known, it can be null)
+		 * @param searchUrl searchUrl that produced this results.
+		 */
 		public WgetDescriptor(String hostName, String userOpenId,
 				String searchUrl) {
 			this.hostName = hostName;
@@ -65,10 +82,37 @@ public class WgetScriptGenerator {
 			this.searchUrl = searchUrl;
 		}
 
+        /**
+         * Adds a file description to the files used in the wget script. There
+         * are some checks taking place, so it's not guaranteed that the file is
+         * really stored (e.g. if the url is empty it will be skipped, if
+         * there's already a file with the same checksum and the same
+         * destination it will also be silently skipped; if two files with the
+         * same name but different checksums are found, then only the first will
+         * be written and a warning will be given to the user about this issue.
+         * 
+         * @param url
+         *            Url where the file is to be found (required or the file
+         *            will just be skipped)
+         * @param dir_structure
+         *            directory structure generated for the file (can be null)
+         * @param size
+         *            file size
+         * @param chksumType
+         *            checksum type
+         * @param chksum
+         *            checksum value
+         */
 		public void addFile(String url, String dir_structure, String size,
 				String chksumType, String chksum) {
 			File fd = new File();
+			if (url == null || url.length() == 0) {
+			    //we can't do anything with this! just skip it...
+			    no_url_count++;
+			    return;
+			}
 			fd.url = url;
+			fd.name = url.substring(fd.url.lastIndexOf('/') + 1);
 			fd.dir = dir_structure;
 			//assure it ends in a slash if defined
 			if (fd.dir != null && fd.dir.length() > 0 && fd.dir.charAt(fd.dir.length()-1) != '/') 
@@ -76,17 +120,50 @@ public class WgetScriptGenerator {
 			fd.size = size;
 			fd.chksum = chksum;
 			fd.chksumType = chksumType;
-			files.add(fd);
+			
+			if (this.checksums.containsKey(fd.dir + fd.name)) {
+			    //this file would overwrite a file already downloaded.
+			    //we won't be adding it.
+			    if (!collision_msg_sent && fd.chksum != null &&
+			            fd.chksum.equals(this.checksums.get(fd.dir + fd.name))){
+			        //ouch! we have a file with a different checksum going
+			        //to the same location. We need to inform the user about this.
+                    this.addMessage(MSG_FILE_COLLISION);
+			        collision_msg_sent = true;
+			    }
+			} else {
+			    //everything is fine proceed as usual
+			    files.add(fd);
+			    this.checksums.put(fd.dir + fd.name, fd.chksum);
+			}
 		}
 		
+		/**
+		 * Adds a string that will be shown to the user
+		 * @param message message to be displayed to the user
+		 */
 		public void addMessage(String message) {
-		    this.message = message;
+		    this.sb.append(message).append('\n');
+		}
+		
+		/**
+		 * @return the number of files that will be displayed in the wget script.
+		 */
+		public int getFileCount() {
+		    return files.size();
+		}
+		
+		/**
+		 * @return the number of files that where skipped because they had no url.
+		 */
+		public int getNoUrlCount() {
+		    return no_url_count;
 		}
 		
 		public String toString() {
 		    StringBuilder sb = new StringBuilder();
 		    sb.append(String.format("OpenID:%s\nhostanme:%s\nsearchUrl:%s\nmessage:%s\n",
-		                            userOpenId,hostName,searchUrl,message));
+		                            userOpenId,hostName,searchUrl,message.toString()));
 		    sb.append("Files:\n");
 		    for (File f : files) {
 		        sb.append('\t').append(f);
@@ -94,6 +171,15 @@ public class WgetScriptGenerator {
 		    
 		    return sb.toString();
 		}
+
+        /**
+         * Assure everything is ready for script generation.
+         */
+        public void flush() {
+            //set the message
+            this.message = this.sb.toString();
+            
+        }
 	}
 
 	/**
@@ -118,12 +204,14 @@ public class WgetScriptGenerator {
 	}
 
 	/**
+	 * Returns the Wget bash script as a string.
 	 * @param desc descriptor to fill into the script
 	 * @return the string containing the whole script
 	 */
 	static public String getWgetScript(WgetDescriptor desc) {
 		String template = getTemplate(null);
-
+		desc.flush();
+		
 		Map<String, String> tags = new HashMap<String, String>();
 		// extract using reflections all string from the description
 		try {
@@ -149,14 +237,14 @@ public class WgetScriptGenerator {
 			if (fd.dir != null) sb.append(fd.dir);
 			
             //get the name                                			
-            sb.append(fd.url.substring(fd.url.lastIndexOf('/') + 1));
+            sb.append(fd.name);
 		    
 			sb.append(sep).append(fd.url);
 			sb.append(sep).append(fd.chksumType);
 			sb.append(sep).append(fd.chksum).append("'\n");
 		}
 		// correct last line break
-		sb.setLength(sb.length() - 1);
+		if (sb.length() >0) sb.setLength(sb.length() - 1);
 
 		// add missing general fields
 		tags.put("files", sb.toString());
@@ -173,6 +261,11 @@ public class WgetScriptGenerator {
 	static private final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
 			"yyyy/MM/dd HH:mm:ss");
 
+	/**
+	 * Finds and caches the template into memory.
+	 * @param servletContext
+	 * @return the template
+	 */
 	static private String getTemplate(ServletContext servletContext) {
 		if (TEMPLATE == null && servletContext != null) {
 			
@@ -192,13 +285,18 @@ public class WgetScriptGenerator {
 				TEMPLATE = sb.toString();
 
 			} catch (IOException e) {
-				System.out.println("Can't get template at " + TEMPLATE_LOC);
-				e.printStackTrace();
+			    //would we actually want to let the servlet load?
+			    LOG.error("Can't get template at " + TEMPLATE_LOC, e);
+				throw new Error("Can't get the wget Template. Aborting servlet load.");
 			}
 		}
 		return TEMPLATE;
 	}
 	
+	/**
+	 * Initializes this servlet which checks the template is loadable.
+	 * @param servletContext
+	 */
 	static public void init(ServletContext servletContext) {
 		
 		getTemplate(servletContext);

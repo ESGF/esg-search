@@ -86,6 +86,7 @@ public class WgetController {
                 }
                 return list.elements();
             }
+            
             @Override
             public Map<String, String> getParameterMap() {
                 @SuppressWarnings("unchecked")
@@ -101,6 +102,17 @@ public class WgetController {
                 if (LOCAL_FIELDS.contains(name)) return null;
                 return getRequest().getParameter(name);
             }
+
+            /* (non-Javadoc)
+             * @see javax.servlet.ServletRequestWrapper#getParameterValues(java.lang.String)
+             */
+            @Override
+            public String[] getParameterValues(String name) {
+                if (LOCAL_FIELDS.contains(name)) return null;
+                return super.getParameterValues(name);
+            }
+            
+            
         };
         
         WgetScriptGenerator.init(request.getSession().getServletContext());
@@ -137,14 +149,13 @@ public class WgetController {
         
         // process request, obtain Solr/XML output
         String xml = baseController.process(new_req, command, response);
+        if (xml == null || xml.length() == 0) return;
         
         // parse the Solr/XML document
         // build list of HTTPServer urls
         final XmlParser xmlParser = new XmlParser(false);
         final Document doc = xmlParser.parseString(xml);
         XPath xpath = XPath.newInstance("/response/result/doc");
-        LOG.warn("***");
-        LOG.warn(xml);
 
         
         // write out the URL + GET/POST parameters to the wget script
@@ -164,6 +175,10 @@ public class WgetController {
                 request.getRequestURL().toString() + parameters.toString());
         
         //check we got all
+        int offset = 0;
+        if (request.getParameter(QueryParameters.OFFSET) != null) {
+            offset = Integer.parseInt(request.getParameter(QueryParameters.OFFSET));
+        }
         int res_count = ((Element) XPath.newInstance("/response/result").selectSingleNode(doc)
                 ).getAttribute("numFound").getIntValue();
         int ret_count = xpath.selectNodes(doc).size();
@@ -171,9 +186,7 @@ public class WgetController {
         if (res_count> ret_count) {
             //this is just apart!
             desc.addMessage(String.format("Warning! The total number of files was " +
-                    "%s but this script will only retrieve %s.", res_count, ret_count));                                    
-        } else {
-            desc.addMessage(String.format("Downloading %s files...\n", res_count));
+                    "%s but this script will only process %s.", res_count, ret_count));                                    
         }
         
         // loop over records
@@ -220,7 +233,6 @@ public class WgetController {
                 }
             }
             
-            
             for (String facet : path) {
                 //prevent strange values while generating names as well as too long names
                 String value = attrib.get(facet).replaceAll("['<>?*\"\n\t\r\0]", "").replaceAll("[ /\\\\|:;]+", "_");
@@ -234,7 +246,7 @@ public class WgetController {
                          attrib.get(QueryParameters.FIELD_CHECKSUM_TYPE),
                          attrib.get(QueryParameters.FIELD_CHECKSUM));
             
-        }       
+        }
         
         if (!response.isCommitted()) {
             
@@ -246,7 +258,24 @@ public class WgetController {
                 
               
             // generate the wget script
+            } else if (desc.getFileCount() == 0) {
+                response.setContentType("text/plain");
+                response.getWriter().print(String.format("No files to download.\n"
+                     + "%d file(s) where found.\n%d file(s) skipped because of the offset param.\n"
+                     + "%d file(s) where skipped because of missing valid Url endpoints.\n"
+                     + "\t(i.e. they can't be downloaded with this wget script)",
+                     res_count, offset, desc.getNoUrlCount()));                
             } else {
+                if (desc.getNoUrlCount() > 0) {
+                    desc.addMessage(String.format(
+                          "INFO: There where %d files that can't be" +
+                          " downloaded because they have no HTTP Access.", 
+                          desc.getNoUrlCount()));
+                }
+                
+                //last message
+                desc.addMessage(String.format("Downloading %s file(s)...\n", desc.getFileCount()));
+                
                 // generate wget script
                 final String wgetScript = WgetScriptGenerator.getWgetScript(desc);
                 

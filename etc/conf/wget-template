@@ -18,7 +18,7 @@ if [ $BASH ] && [ `basename $BASH` != bash ]; then
     exit $?
 fi
 
-version=1.0
+version=1.2.1
 CACHE_FILE=.$(basename $0).status
 openId={{userOpenId}}
 search_url='{{searchUrl}}'
@@ -113,6 +113,7 @@ usage() {
     sed -n '/^while getopts/,/^done/  s/^\([^)]*\)[^#]*#\(.*$\)/\1 \2/p' $0
     echo
     echo "This command stores the states of the downloads in .$0.status"
+    echo "For more information check the website: http://esgf.org/wiki/ESGF_wget"
 }
 
 #defaults
