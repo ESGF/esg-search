@@ -82,6 +82,7 @@ if $(echo "${esg_dist_url}" | grep "http://198.128.245.140/dist" >& /dev/null); 
 #User Defined / Settable (public)
 #--------------
 install_prefix=${install_prefix:-"/usr/local"}
+esg_functions_file=${install_prefix}/bin/esg-functions
 esg_root_dir=${esg_root_dir:-"/esg"}
 esg_config_dir=${esg_config_dir:-"${esg_root_dir}/config"}
 tomcat_install_dir=${tomcat_install_dir:-${CATALINA_HOME:=${install_prefix}/tomcat}}
@@ -107,6 +108,17 @@ search_install_dir=${ESGF_INSTALL_DIR:-"${install_prefix}/esgf_search"}
 seach_data_dir=${ESGF_DATA_DIR:="${esg_root_dir}/search_data"}
 esgf_crawl_launcher="esgf-crawl"
 esgf_index_optimization_launcher="esgf-optimize-index"
+
+if [ ! -e ${esg_functions_file} ]; then
+    checked_get ${esg_functions_file} ${esg_dist_url}$( ((devel == 1)) && echo "/devel" || echo "")/esgf-installer/${esg_functions_file##*/} $((force_install))
+    [ ! -s "${esg_functions_file}" ] && rm ${esg_functions_file}
+fi
+[ -e ${esg_functions_file} ] && source ${esg_functions_file} && ((VERBOSE)) && printf "sourcing from: ${esg_functions_file} \n"
+
+if [ -e /etc/esg.install_log ] && [ ! -e "${install_manifest}" ]; then
+    echo "migrating install manifest to new location"
+    mv -v /etc/esg.install_log  ${install_manifest}
+fi
 
 
 #---------------------------------------------------------
@@ -1159,119 +1171,13 @@ remove_search_rss_properties() {
 # General - Utility Functions
 ############################################
 
-#Get (or generate) the id suitable for use in the context of zookeeper
-#and thus the sharded solr install.  If this variable is not set then
-#an ID is generated, unique to this host.  
-#NOTE: A lot of things rely on this ID so at the moment it is okay to
-#provide a simple way to be able to determine an id externally... but
-#this is only something for the testing phase for the most part.
-get_node_id() {
-    esgf_node_id=${esgf_node_id:-$(sha1sum <(echo esgf$(hostname -i)) | awk '{print $1}')}
-    echo ${esgf_node_id}
-}
-
-#These functions are identical to the ones in the esg-node script they are
-#being copied here in the case where we are not running this script as
-#a sub process of esg-node.  In other words, this allows this script
-#to be stand-alone.
-checked_done() {
-    if (($1)); then
-        echo ""
-        echo "Sorry..."
-        echo "This action did not complete successfully"
-        echo "Please re-run this task until successful before continuing further"
-        echo ""
-        exit 1
-    fi
-    return 0
-}
-
-dedup() {
-    local infile=${1:-${envfile}}
-    [ ! -w "${infile}" ] && echo "WARNING: dedup() - unable to write to ${infile}" && return 1
-    local tmp=$(tac ${infile} | awk 'BEGIN {FS="[ =]"} !($2 in a) {a[$2];print $0}' | sort -k2,2)
-    echo "$tmp" > ${infile}
-}
-
-verbose_print() { ((VERBOSE)) && echo $@; return 0; }
-debug_print() { ((DEBUG)) && echo $@; return 0; }
-
-pcheck() {
-    debug_print "pcheck $@"
-    #initial default values
-    local iterations=5
-    local wait_time=1
-    local return_on_true=1
-    local task_function=""
-
-    local_vars=(iterations wait_time return_on_true)
-    local i=0
-    while [[ -n "$1" ]]; do
-	if [ "$1" == "--" ] ; then
-	    shift
-	    task_function=$1
-	    shift
-	    break
-	fi
-	eval local ${local_vars[((i++))]}=$1
-	shift
-    done
-    debug_print "iterations = ${iterations}"
-    debug_print "wait_time = ${wait_time}"
-    debug_print "return_on_true = ${return_on_true}"
-    debug_print "task_function = ${task_function}"
-    debug_print "args = [$@]"
-
-    local ret=1
-    while [[ $iterations > 0 ]]; do
-	echo -n "."
-	eval ${task_function} $@
-	ret=$?
-	((return_on_true)) && [ $ret == 0 ] && break
-	((iterations != 1)) && sleep ${wait_time}
-	: $((iterations--))
-    done
-    [ $ret == 0 ] && printf "\n${task_function} [OK]\n" || printf "\n${task_function} [FAIL]\n"
-    return $ret
-}
-
-backup() {
-    [ -z "$1" ] && echo "backup - source must be provided as arg1" && return 1
-    [ ! -d "$1" ] && echo "backup - must take a directory! $1 not a directory" && return 1
-    local source="$(readlink -f $1)"
-    echo "Backup - Creating a backup archive of ${source}"
-    pushd ${source%/*} >& /dev/null
-    mkdir -p ${esg_backup_dir} >& /dev/null
-    local backup_filename=$(readlink -f ${esg_backup_dir})/${source##*/}.$(date ${date_format}).tgz
-    tar czf ${backup_filename} ${source##*/}
-    [ $? != 0 ] && echo " ERROR: Problem with creating backup archive: ${backup_filename}" && popd >& /dev/null && return 1
-    if [ -e ${backup_filename} ]; then 
-	echo "Created backup: ${backup_filename}" 
-    else
-	echo "Could not locate backup file ${backup_filename}"
-	popd >& /dev/null
-	return 1
-    fi
-    
-
-    #-------------
-    #keep only the last num_backups_to_keep files
-    num_backups_to_keep=${num_backups_to_keep:-7}
-    pushd ${esg_backup_dir} >& /dev/null
-    files=(`ls -t | grep ${source##*/}.\*.tgz | tail -n +$((${num_backups_to_keep}+1)) | xargs`)
-    if (( ${#files[@]} > 0 )); then
-	echo "Tidying up a bit..."
-	echo "${#files[@]} old backup files to remove: ${files[@]}"
-	rm -v ${files[@]}
-    fi
-    popd >& /dev/null
-    #-------------
-
-    popd >& /dev/null
-    return 0
-
-    
-}
+#get_node_id() { #See esg-functions-file }
+#checked_done() { #See esg-functions-file }
+#dedup() { #See esg-functions-file }
+#verbose_print() { #See esg-functions-file }
+#debug_print() { #See esg-functions-file }
+#pcheck() { #See esg-functions-file }
+#backup() { #See esg-functions file }
 
 fetch_crawl_launcher() {
     pushd ${scripts_dir} >& /dev/null
