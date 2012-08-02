@@ -338,7 +338,16 @@ _commit_configuration() {
             echo "${esgf_shards_static_file}: entry is already present"
         else
             if [ -n "$(sed -n 's/'${solr_config_type}':'${solr_server_port}'/&/p' ${esgf_shards_static_file})" ]; then
+                #-------------------------------------------------------
+                #TODO: This should be done as single compound sed statement not 3 separate edits
+                #-------------------------------------------------------
+                #remove myself from the static shards list...
+                sed -i '/'${esgf_host}':'${solr_server_port}'/Id' ${esgf_shards_static_file}
+
+                #remove the replicated shard's hostname:port entry from STATIC shards file...
                 sed -i '/'${solr_config_type}':'${solr_server_port}'/Id' ${esgf_shards_static_file}
+
+                #remove the replicated shard's hostname:port entry from DYNAMIC shards file...
                 sed -i '/'${solr_config_type}':'${solr_server_port}'/Id' ${esgf_shards_static_file%_*}.xml
             fi
             sed -i '/<[/]shards>/i \ <value>localhost:'${solr_server_port}'/solr</value>' ${esgf_shards_static_file}
