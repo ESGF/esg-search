@@ -345,10 +345,10 @@ _commit_configuration() {
                 sed -i '/'${esgf_host:-$(hostname --fqdn)}':8983/Id' ${esgf_shards_static_file}
 
                 #remove the replicated shard's hostname:port entry from STATIC shards file...
-                sed -i '/'${solr_config_type}':'${solr_server_port}'/Id' ${esgf_shards_static_file}
+                sed -i '/'${solr_config_type}':8983/Id' ${esgf_shards_static_file}
 
                 #remove the replicated shard's hostname:port entry from DYNAMIC shards file...
-                sed -i '/'${solr_config_type}':'${solr_server_port}'/Id' ${esgf_shards_static_file%_*}.xml
+                sed -i '/'${solr_config_type}':8983/Id' ${esgf_shards_static_file%_*}.xml
             fi
             sed -i '/<[/]shards>/i \ <value>localhost:'${solr_server_port}'/solr</value>' ${esgf_shards_static_file}
         fi
