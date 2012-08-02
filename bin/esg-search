@@ -337,7 +337,7 @@ _commit_configuration() {
         if [ -n "$(sed -n 's/localhost:'${solr_server_port}'/&/p' ${esgf_shards_static_file})" ]; then
             echo "${esgf_shards_static_file}: entry is already present"
         else
-            if [ -n "$(sed -n 's/'${solr_config_type}':'${solr_server_port}'/&/p' ${esgf_shards_static_file})" ]; then
+            if [ -n "$(sed -n 's/localhost:'${solr_server_port}'/&/p' ${esgf_shards_static_file})" ]; then
                 #-------------------------------------------------------
                 #TODO: This should be done as single compound sed statement not 3 separate edits
                 #-------------------------------------------------------
