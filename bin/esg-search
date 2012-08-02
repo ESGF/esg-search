@@ -342,7 +342,7 @@ _commit_configuration() {
                 #TODO: This should be done as single compound sed statement not 3 separate edits
                 #-------------------------------------------------------
                 #remove myself from the static shards list...
-                sed -i '/'${esgf_host}':'${solr_server_port}'/Id' ${esgf_shards_static_file}
+                sed -i '/'${esgf_host:-$(hostname --fqdn)}':'${solr_server_port}'/Id' ${esgf_shards_static_file}
 
                 #remove the replicated shard's hostname:port entry from STATIC shards file...
                 sed -i '/'${solr_config_type}':'${solr_server_port}'/Id' ${esgf_shards_static_file}
