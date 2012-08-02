@@ -334,8 +334,15 @@ _commit_configuration() {
     fi
     #Do NOT need to write an entry into the static shards file in am the master index
     if [ "${solr_config_type}" != "master" ]; then
-        [ -n "$(sed -n 's/localhost:'${solr_server_port}'/&/p' ${esgf_shards_static_file})" ] && echo "${esgf_shards_static_file}: entry is already present" || \
+        if [ -n "$(sed -n 's/localhost:'${solr_server_port}'/&/p' ${esgf_shards_static_file})" ]; then
+            echo "${esgf_shards_static_file}: entry is already present"
+        else
+            if [ -n "$(sed -n 's/'${solr_config_type}':'${solr_server_port}'/&/p' ${esgf_shards_static_file})" ]; then
+                sed -i '/'${solr_config_type}':'${solr_server_port}'/Id' ${esgf_shards_static_file}
+                sed -i '/'${solr_config_type}':'${solr_server_port}'/Id' ${esgf_shards_static_file%_*}.xml
+            fi
             sed -i '/<[/]shards>/i \ <value>localhost:'${solr_server_port}'/solr</value>' ${esgf_shards_static_file}
+        fi
     fi
 
     #Check the esgf_excludes.txt file to see if entry is already there
