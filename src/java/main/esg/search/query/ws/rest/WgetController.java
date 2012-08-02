@@ -46,7 +46,8 @@ public class WgetController {
     @SuppressWarnings("unchecked")
     private static final Set<String> LOCAL_FIELDS = new HashSet<String>(Arrays.asList(new String[] {
             QueryParameters.FIELD_WGET_PATH,
-            QueryParameters.FIELD_WGET_EMPTYPATH
+            QueryParameters.FIELD_WGET_EMPTYPATH,
+            QueryParameters.FIELD_TYPE
     }));
     //to prevent facets values for extending too much
     private static final int MAX_DIR_LEGTH = 50; 
@@ -119,9 +120,9 @@ public class WgetController {
         
         // check type=... is not specified or properly specified to File
         if (request.getParameter(QueryParameters.FIELD_TYPE) != null &&
-                request.getParameter(QueryParameters.FIELD_TYPE) != QueryParameters.TYPE_FILE) {
-            baseController.sendError(HttpServletResponse.SC_BAD_REQUEST, "HTTP parameter type is fixed to value: 'File'" 
-                                     + request.getParameter(QueryParameters.FIELD_TYPE) + "'" +QueryParameters.TYPE_FILE , response);
+                !request.getParameter(QueryParameters.FIELD_TYPE).equalsIgnoreCase(QueryParameters.TYPE_FILE)) {
+            baseController.sendError(HttpServletResponse.SC_BAD_REQUEST, "HTTP parameter type should be fixed to value: '" 
+                                     + QueryParameters.TYPE_FILE + "'" , response);
             return;
         } else {
             command.setConstraint(QueryParameters.FIELD_TYPE, QueryParameters.TYPE_FILE);
@@ -261,8 +262,8 @@ public class WgetController {
             } else if (desc.getFileCount() == 0) {
                 response.setContentType("text/plain");
                 response.getWriter().print(String.format("No files to download.\n"
-                     + "%d file(s) where found.\n%d file(s) skipped because of the offset param.\n"
-                     + "%d file(s) where skipped because of missing valid Url endpoints.\n"
+                     + "%d file(s) were found.\n%d file(s) skipped because of the offset param.\n"
+                     + "%d file(s) were skipped because of missing valid Url endpoints.\n"
                      + "\t(i.e. they can't be downloaded with this wget script)",
                      res_count, offset, desc.getNoUrlCount()));                
             } else {
