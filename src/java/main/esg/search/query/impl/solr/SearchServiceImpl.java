@@ -27,6 +27,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import esg.search.main.MonitorManager;
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchOutput;
 import esg.search.query.api.SearchReturnType;
@@ -59,7 +60,7 @@ public class SearchServiceImpl implements SearchService {
 	/**
 	 * The client used to communicate with the Solr server via its REST API.
 	 */
-	private final HttpClient httpClient = new HttpClient();
+	private final HttpClient httpClient;
 
 	/**
 	 * The parser used to parse the XML output from the server.
@@ -70,6 +71,9 @@ public class SearchServiceImpl implements SearchService {
 	 * Optional registry service providing list of query endpoints for distributed search.
 	 */
 	private RegistryService registryService = null;
+	
+    public final static int CONNECTION_TIMEOUT = 5000;
+    public final static int READ_TIMEOUT = 50000;
 	
     /**
      * Number of query attempts:
@@ -92,6 +96,11 @@ public class SearchServiceImpl implements SearchService {
 	//public SearchServiceImpl(final @Value("${esg.search.solr.query.url}") URL url) throws MalformedURLException {
 	public SearchServiceImpl(final URL url) throws MalformedURLException {
 		this.url = url;
+		
+		httpClient = new HttpClient();
+        httpClient.setConnectionTimeout(MonitorManager.CONNECTION_TIMEOUT);
+        httpClient.setReadTimeout(MonitorManager.READ_TIMEOUT);
+
 	}
 
 	/**
