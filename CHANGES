@@ -255,3 +255,6 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 
 3.3.0
 -- Inserted connection/reading timeout for querying shards.
+
+3.3.1
+-- Made the timeout parameters configurable from esgf.properties

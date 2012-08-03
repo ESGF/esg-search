@@ -27,7 +27,8 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import esg.search.main.MonitorManager;
+import esg.common.util.ESGFProperties;
+import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
 import esg.search.query.api.SearchOutput;
 import esg.search.query.api.SearchReturnType;
@@ -72,8 +73,8 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	private RegistryService registryService = null;
 	
-    public final static int CONNECTION_TIMEOUT = 1000;
-    public final static int READ_TIMEOUT = 5000;
+    public final static String DEFAULT_CONNECTION_TIMEOUT = "1000";
+    public final static String DEFAULT_READ_TIMEOUT = "5000";
 	
     /**
      * Number of query attempts:
@@ -94,12 +95,20 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	//@Autowired
 	//public SearchServiceImpl(final @Value("${esg.search.solr.query.url}") URL url) throws MalformedURLException {
-	public SearchServiceImpl(final URL url) throws MalformedURLException {
-		this.url = url;
+	public SearchServiceImpl(final URL url, ESGFProperties props) throws MalformedURLException {
+		
+	    this.url = url;
 		
 		httpClient = new HttpClient();
-        httpClient.setConnectionTimeout(MonitorManager.CONNECTION_TIMEOUT);
-        httpClient.setReadTimeout(MonitorManager.READ_TIMEOUT);
+		
+		int connectionTimeOut = Integer.parseInt( 
+		        props.getProperty(QueryParameters.CONNECTION_TIMEOUT_PROPERTY, DEFAULT_CONNECTION_TIMEOUT));
+		int readTimeOut = Integer.parseInt( 
+                props.getProperty(QueryParameters.READ_TIMEOUT_PROPERTY, DEFAULT_READ_TIMEOUT));
+        httpClient.setConnectionTimeout( connectionTimeOut );
+        httpClient.setReadTimeout( readTimeOut );
+        
+        LOG.info("Using connection timeout="+connectionTimeOut+" read timeout="+readTimeOut);
 
 	}
 
