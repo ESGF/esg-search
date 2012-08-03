@@ -120,7 +120,6 @@ if [ -e /etc/esg.install_log ] && [ ! -e "${install_manifest}" ]; then
     mv -v /etc/esg.install_log  ${install_manifest}
 fi
 
-
 #---------------------------------------------------------
 # The "main" method for this script
 #---------------------------------------------------------
@@ -1143,10 +1142,14 @@ start_solr() {
         check_solr_process && shift && continue
         echo "Starting solr server for ${solr_config_type} on port [${solr_server_port}]"
         
+        #Gotta love pointers in bash ;-)
+        local solr_java_opts="SOLR_JAVA_OPTS_${solr_server_port}"
+        solr_java_opts=${!solr_java_opts:-${SOLR_JAVA_OPTS}}
+
         pushd ${solr_install_dir} >& /dev/null
         #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
         verbose_print "java -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar"
-        java -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar >& /dev/null &
+        java ${solr_java_opts} -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar >& /dev/null &
         popd >& /dev/null
         
         pcheck 10 2 1 -- check_solr_process
