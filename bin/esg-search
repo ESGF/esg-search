@@ -260,7 +260,8 @@ check_shards() {
             echo -n "X"
             ((bad++))
         fi
-        (( bad == 0 )) && echo " [PASS]" || echo " [FAIL]"
+        (( bad == 0 )) && echo -n " [PASS]" || echo -n " [FAIL]"
+        nc -zi 1 localhost ${solr_server_port} >& /dev/null && echo " [RUNNING]" || echo "[NOT RUNNING]"
     done
     echo
 }
@@ -1152,7 +1153,7 @@ start_solr() {
         java ${solr_java_opts} -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar >& /dev/null &
         popd >& /dev/null
         
-        pcheck 10 2 1 -- check_solr_process
+        pcheck 15 2 1 -- check_solr_process
         ret=$?
         [ $ret == 0 ] && echo " [OK]" || echo " [FAIL]"
         shift
