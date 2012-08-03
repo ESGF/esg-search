@@ -73,7 +73,7 @@ public class SearchServiceImpl implements SearchService {
 	private RegistryService registryService = null;
 	
     public final static int CONNECTION_TIMEOUT = 5000;
-    public final static int READ_TIMEOUT = 50000;
+    public final static int READ_TIMEOUT = 10000;
 	
     /**
      * Number of query attempts:
