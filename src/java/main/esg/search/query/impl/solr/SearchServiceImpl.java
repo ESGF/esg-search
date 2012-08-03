@@ -132,9 +132,9 @@ public class SearchServiceImpl implements SearchService {
                 
             } catch(Exception e) {
                 
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(e.getMessage());
+                if (LOG.isWarnEnabled()) {                   
                     LOG.warn("Query failed "+(n+1)+" times, attempting to recover from search error");
+                    LOG.warn(e.getMessage());
                 }
                 
                 if (n==0) {
@@ -186,8 +186,11 @@ public class SearchServiceImpl implements SearchService {
         // execute HTTP/GET request, return response as Solr/XML or Solr/JSON
         //String output = httpClient.doGet( new URL(builder.buildSelectUrl() + "?" + builder.buildSelectQueryString()) );
         
-        // execute HTTP/POST request, return response as Solr/XML or Solr/JSON    
+        // execute HTTP/POST request, return response as Solr/XML or Solr/JSON   
+        long startTime = System.currentTimeMillis();
         String output = httpClient.doPost(new URL(builder.buildSelectUrl()), builder.buildSelectQueryString(), false);
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        if (LOG.isInfoEnabled()) LOG.info("Query Elapsed Time="+elapsedTime+" msecs");
         
         // transform to requested format
         final String response = this.transform(output, returnType);
