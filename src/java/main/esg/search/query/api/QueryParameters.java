@@ -144,8 +144,8 @@ public class QueryParameters {
     /*
      * Timeout properties
      */
-    public final static String READ_TIMEOUT_PROPERTY = "esg.search.timeout.read";
-    public final static String CONNECTION_TIMEOUT_PROPERTY = "esg.search.timeout.connection";
+    public final static String READ_TIMEOUT_PROPERTY = "index.timeout.read";
+    public final static String CONNECTION_TIMEOUT_PROPERTY = "index.timeout.connection";
     
     private QueryParameters() {};
 
