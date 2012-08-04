@@ -73,7 +73,7 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	private RegistryService registryService = null;
 	
-    public final static String DEFAULT_CONNECTION_TIMEOUT = "2000";
+    public final static String DEFAULT_CONNECTION_TIMEOUT = "1000";
     public final static String DEFAULT_READ_TIMEOUT = "10000";
 	
     /**

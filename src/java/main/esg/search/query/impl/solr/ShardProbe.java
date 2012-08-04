@@ -27,7 +27,8 @@ public class ShardProbe extends Thread {
     private final static String XPATH2 = "/response/result";
     private final static int CONNECTION_TIMEOUT = 1000;
     private final static int READ_TIMEOUT = 5000;
-    private final static String QUERY = "q=*&replica=false&latest=true";
+    // encoded q=*&fq=latest:true&fq=replica:false
+    private final static String QUERY = "q=*&fq=latest%3Atrue&fq=replica%3Afalse";
     
     private final Log LOG = LogFactory.getLog(this.getClass());
 
