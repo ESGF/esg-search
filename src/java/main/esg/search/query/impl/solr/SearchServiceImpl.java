@@ -135,14 +135,22 @@ public class SearchServiceImpl implements SearchService {
         // attempt query numberOfTries times
         for (int n=0; n<NUMBER_OF_TRIES; n++) {    
             
+            long startTime = System.currentTimeMillis();
+            
             try {
                 // execute HTTP request to Solr, return response document
-                return _query(input, returnType);
+                String response = _query(input, returnType);
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                if (LOG.isInfoEnabled()) LOG.info("Query Elapsed Time="+elapsedTime+" msecs");
+                return response;
+                
                 
             } catch(Exception e) {
                 
+                long elapsedTime = System.currentTimeMillis() - startTime;
                 if (LOG.isWarnEnabled()) {                   
                     LOG.warn("Query failed "+(n+1)+" times, attempting to recover from search error");
+                    LOG.warn("Query Elapsed Time="+elapsedTime+" msecs");
                     LOG.warn(e.getMessage());
                 }
                 
@@ -150,15 +158,10 @@ public class SearchServiceImpl implements SearchService {
                     
                     // prune the shards list
                     if (LOG.isInfoEnabled()) LOG.info("Pruning the shards list");
-                    long startTime = System.currentTimeMillis();            
-                    /*if (ESGConnector.getInstance().setEndpoint().prune()) {
-                        if (LOG.isDebugEnabled()) LOG.debug("Pruned dead peer connections from localhost");
-                    } else {
-                        if (LOG.isDebugEnabled()) LOG.debug("There were no dead peer connections detected on localhost (or host itself is dead)");
-                    }*/
-                    this.recover();
-                    long stopTime = System.currentTimeMillis();
-                    if (LOG.isInfoEnabled()) LOG.info("Pruning Elapsed Time: "+(stopTime-startTime)+" ms");
+                    long startTime2 = System.currentTimeMillis();            
+                    this.recover(input);
+                    long stopTime2 = System.currentTimeMillis();
+                    if (LOG.isInfoEnabled()) LOG.info("Pruning Elapsed Time: "+(stopTime2-startTime2)+" ms");
                     
                 } else if (n==1) {
                     
@@ -196,10 +199,7 @@ public class SearchServiceImpl implements SearchService {
         //String output = httpClient.doGet( new URL(builder.buildSelectUrl() + "?" + builder.buildSelectQueryString()) );
         
         // execute HTTP/POST request, return response as Solr/XML or Solr/JSON   
-        long startTime = System.currentTimeMillis();
         String output = httpClient.doPost(new URL(builder.buildSelectUrl()), builder.buildSelectQueryString(), false);
-        long elapsedTime = System.currentTimeMillis() - startTime;
-        if (LOG.isInfoEnabled()) LOG.info("Query Elapsed Time="+elapsedTime+" msecs");
         
         // transform to requested format
         final String response = this.transform(output, returnType);
@@ -213,9 +213,15 @@ public class SearchServiceImpl implements SearchService {
 	 * {@inheritDoc}
 	 */
 	@Override
-    public void recover() throws Exception {
+    public void recover(final SearchInput input) throws Exception {
+	    
+	    // reconstruct query string that caused the error (except request output as XML)
+        final SolrUrlBuilder builder = new SolrUrlBuilder(url);
+        input.setFormat(SearchReturnType.SOLR_XML.getMimeType());
+        builder.setSearchInput(input);
+        String query = builder.buildSelectQueryString();
         
-	    LinkedHashSet<String> newShards = ShardMonitor.monitor(registryService.getShards());
+	    LinkedHashSet<String> newShards = ShardMonitor.monitor(registryService.getShards(), query);
 	    registryService.setShards(newShards);
         
     }

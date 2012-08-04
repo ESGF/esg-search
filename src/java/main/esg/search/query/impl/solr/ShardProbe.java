@@ -19,6 +19,7 @@ import esg.search.utils.XmlParser;
 public class ShardProbe extends Thread {
     
     private String shard = null;
+    private String query = null;
     private long elapsedTime = -1;
     private long queryTime = -1;
     private int numFound = -1;
@@ -32,8 +33,9 @@ public class ShardProbe extends Thread {
     
     private final Log LOG = LogFactory.getLog(this.getClass());
 
-    public ShardProbe(String shard) {
+    public ShardProbe(String shard, String query) {
         this.shard = shard;
+        this.query = query;
     }
     
     /**
@@ -80,7 +82,8 @@ public class ShardProbe extends Thread {
      * @return
      */
     private String buildUrl() {
-        return "http://"+ this.shard + "/datasets/select/?"+QUERY;
+        //return "http://"+ this.shard + "/datasets/select/?"+QUERY;
+        return "http://"+ this.shard + "/datasets/select/?"+query;
     }
 
     public String getShard() {

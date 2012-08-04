@@ -47,9 +47,11 @@ public interface SearchService {
 	
 	/**
 	 * Hook to run recovery procedures in case the query results in an error.
+	 * 
+	 * @param input : search specification that caused the error
 	 * @throws Exception
 	 */
-	public void recover() throws Exception;
+	public void recover(final SearchInput input) throws Exception;
 		
 
 }

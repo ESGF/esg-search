@@ -11,13 +11,13 @@ import java.util.List;
  */
 public class ShardMonitor {
     
-    public static LinkedHashSet<String> monitor(final LinkedHashSet<String> shards) {
+    public static LinkedHashSet<String> monitor(final LinkedHashSet<String> shards, String query) {
         
         // probe each shard in a separate thread
         List<ShardProbe> probes = new ArrayList<ShardProbe>();
         for (final String shard : shards) {
 
-            final ShardProbe probe = new ShardProbe(shard);
+            final ShardProbe probe = new ShardProbe(shard, query);
             probe.start();
             probes.add(probe);
 
