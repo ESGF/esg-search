@@ -26,6 +26,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import esg.common.util.ESGFProperties;
 import esg.search.query.api.QueryParameters;
@@ -68,17 +69,12 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	private RegistryService registryService = null;
 	
-	// default timeouts
-    public final static String DEFAULT_CONNECTION_TIMEOUT = "1000";
-    
-    // 10 seconds read timeout for datasets
-    public final static String DEFAULT_DATASET_READ_TIMEOUT = "10000";
-    
-    // 1 minute read timeout for files
-    public final static String DEFAULT_FILE_READ_TIMEOUT = "3600000";
-    
-    int datasetConnectionTimeout = 0;
-    int datasetReadTimeout = 0;
+	/**
+	 * Timeouts.
+	 */
+    private int connectionTimeout = QueryParameters.DEFAULT_CONNECTION_TIMEOUT;
+    private int datasetsReadTimeout = QueryParameters.DEFAULT_DATASETS_READ_TIMEOUT;
+    private int filesReadTimeout = QueryParameters.DEFAULT_FILES_READ_TIMEOUT;
 	
     /**
      * Number of query attempts:
@@ -94,20 +90,27 @@ public class SearchServiceImpl implements SearchService {
 	/**
 	 * Constructor with mandatory arguments.
 	 * 
-	 * @param url
+	 * @param url : back-end search engine URL
+	 * @param props : properties file to set configurable timeouts
 	 * @throws MalformedURLException
 	 */
-	//@Autowired
-	//public SearchServiceImpl(final @Value("${esg.search.solr.query.url}") URL url) throws MalformedURLException {
 	public SearchServiceImpl(final URL url, ESGFProperties props) throws MalformedURLException {
 		
 	    this.url = url;
-		
-	    // set dataset timeouts
-		this.datasetConnectionTimeout = Integer.parseInt( 
-		        props.getProperty(QueryParameters.CONNECTION_TIMEOUT_PROPERTY, DEFAULT_CONNECTION_TIMEOUT));
-		this.datasetReadTimeout = Integer.parseInt( 
-                props.getProperty(QueryParameters.READ_TIMEOUT_PROPERTY, DEFAULT_DATASET_READ_TIMEOUT));
+	    
+	    // set configurable timeouts
+	    if (StringUtils.hasText(props.getProperty(QueryParameters.PROPERTY_CONNECTION_TIMEOUT)))
+	        this.connectionTimeout = Integer.parseInt(props.getProperty(QueryParameters.PROPERTY_CONNECTION_TIMEOUT));
+        if (StringUtils.hasText(props.getProperty(QueryParameters.PROPERTY_DATASETS_READ_TIMEOUT)))
+            this.datasetsReadTimeout = Integer.parseInt(props.getProperty(QueryParameters.PROPERTY_DATASETS_READ_TIMEOUT));
+        if (StringUtils.hasText(props.getProperty(QueryParameters.PROPERTY_FILES_READ_TIMEOUT)))
+            this.filesReadTimeout = Integer.parseInt(props.getProperty(QueryParameters.PROPERTY_FILES_READ_TIMEOUT));
+        
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Search Service connection timeout="+this.connectionTimeout);
+            LOG.info("Search Service datasets read timeout="+this.datasetsReadTimeout);
+            LOG.info("Search Service files read timeout="+this.filesReadTimeout);
+        }
 
 	}
 
@@ -194,18 +197,17 @@ public class SearchServiceImpl implements SearchService {
         builder.setFacets(input.getFacets());
         if (registryService!=null) builder.setDefaultShards( registryService.getShards() );
         
+        // instantiate HTTP client
+        final HttpClient httpClient = new HttpClient();
         
-        HttpClient httpClient = new HttpClient();
         // choose timeouts
+        if (this.connectionTimeout>0) httpClient.setConnectionTimeout(this.connectionTimeout);
         final String type = input.getConstraint(QueryParameters.FIELD_TYPE);
         if (type.equals(QueryParameters.TYPE_FILE)) {
-            httpClient.setConnectionTimeout( Integer.parseInt(DEFAULT_CONNECTION_TIMEOUT) );
-            httpClient.setReadTimeout( Integer.parseInt(DEFAULT_FILE_READ_TIMEOUT) );
+            if (this.filesReadTimeout>0) httpClient.setConnectionTimeout(this.filesReadTimeout);
         } else {
-            httpClient.setConnectionTimeout( this.datasetConnectionTimeout );
-            httpClient.setReadTimeout( this.datasetReadTimeout );
+            if (this.datasetsReadTimeout>0) httpClient.setConnectionTimeout(this.datasetsReadTimeout);
         }
-
         
         // execute HTTP/GET request, return response as Solr/XML or Solr/JSON
         //String output = httpClient.doGet( new URL(builder.buildSelectUrl() + "?" + builder.buildSelectQueryString()) );

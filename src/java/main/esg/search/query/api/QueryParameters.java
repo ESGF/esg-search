@@ -142,10 +142,17 @@ public class QueryParameters {
     public final static String ALL = "ALL";
     
     /*
-     * Timeout properties
+     * Timeout default values (in milliseconds) and properties for changing them.
      */
-    public final static String READ_TIMEOUT_PROPERTY = "index.timeout.read";
-    public final static String CONNECTION_TIMEOUT_PROPERTY = "index.timeout.connection";
+    // 1 second connection timeout
+    public final static int DEFAULT_CONNECTION_TIMEOUT = 1000;    
+    public final static String PROPERTY_CONNECTION_TIMEOUT = "index.timeout.connection";
+    // 10 seconds read timeout for datasets
+    public final static int DEFAULT_DATASETS_READ_TIMEOUT = 10000;
+    public final static String PROPERTY_DATASETS_READ_TIMEOUT = "index.timeout.read.datasets";
+    // 1 minute read timeout for files
+    public final static int DEFAULT_FILES_READ_TIMEOUT = 3600000;
+    public final static String PROPERTY_FILES_READ_TIMEOUT = "index.timeout.read.files";
     
     private QueryParameters() {};
 
