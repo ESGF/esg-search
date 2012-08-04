@@ -59,11 +59,6 @@ public class SearchServiceImpl implements SearchService {
 	private final URL url;
 
 	/**
-	 * The client used to communicate with the Solr server via its REST API.
-	 */
-	private final HttpClient httpClient;
-
-	/**
 	 * The parser used to parse the XML output from the server.
 	 */
 	final SolrXmlParser xmlParser = new SolrXmlParser();
@@ -73,8 +68,17 @@ public class SearchServiceImpl implements SearchService {
 	 */
 	private RegistryService registryService = null;
 	
+	// default timeouts
     public final static String DEFAULT_CONNECTION_TIMEOUT = "1000";
-    public final static String DEFAULT_READ_TIMEOUT = "10000";
+    
+    // 10 seconds read timeout for datasets
+    public final static String DEFAULT_DATASET_READ_TIMEOUT = "10000";
+    
+    // 1 minute read timeout for files
+    public final static String DEFAULT_FILE_READ_TIMEOUT = "3600000";
+    
+    int datasetConnectionTimeout = 0;
+    int datasetReadTimeout = 0;
 	
     /**
      * Number of query attempts:
@@ -99,16 +103,11 @@ public class SearchServiceImpl implements SearchService {
 		
 	    this.url = url;
 		
-		httpClient = new HttpClient();
-		
-		int connectionTimeOut = Integer.parseInt( 
+	    // set dataset timeouts
+		this.datasetConnectionTimeout = Integer.parseInt( 
 		        props.getProperty(QueryParameters.CONNECTION_TIMEOUT_PROPERTY, DEFAULT_CONNECTION_TIMEOUT));
-		int readTimeOut = Integer.parseInt( 
-                props.getProperty(QueryParameters.READ_TIMEOUT_PROPERTY, DEFAULT_READ_TIMEOUT));
-        httpClient.setConnectionTimeout( connectionTimeOut );
-        httpClient.setReadTimeout( readTimeOut );
-        
-        LOG.info("Using connection timeout="+connectionTimeOut+" read timeout="+readTimeOut);
+		this.datasetReadTimeout = Integer.parseInt( 
+                props.getProperty(QueryParameters.READ_TIMEOUT_PROPERTY, DEFAULT_DATASET_READ_TIMEOUT));
 
 	}
 
@@ -194,6 +193,19 @@ public class SearchServiceImpl implements SearchService {
         builder.setSearchInput(input);
         builder.setFacets(input.getFacets());
         if (registryService!=null) builder.setDefaultShards( registryService.getShards() );
+        
+        
+        HttpClient httpClient = new HttpClient();
+        // choose timeouts
+        final String type = input.getConstraint(QueryParameters.FIELD_TYPE);
+        if (type.equals(QueryParameters.TYPE_FILE)) {
+            httpClient.setConnectionTimeout( Integer.parseInt(DEFAULT_CONNECTION_TIMEOUT) );
+            httpClient.setReadTimeout( Integer.parseInt(DEFAULT_FILE_READ_TIMEOUT) );
+        } else {
+            httpClient.setConnectionTimeout( this.datasetConnectionTimeout );
+            httpClient.setReadTimeout( this.datasetReadTimeout );
+        }
+
         
         // execute HTTP/GET request, return response as Solr/XML or Solr/JSON
         //String output = httpClient.doGet( new URL(builder.buildSelectUrl() + "?" + builder.buildSelectQueryString()) );
