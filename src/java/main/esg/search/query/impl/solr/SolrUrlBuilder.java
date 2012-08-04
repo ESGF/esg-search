@@ -153,7 +153,7 @@ public class SolrUrlBuilder {
 	    	    
 		// search input query --> q=....
 		if (StringUtils.hasText(input.getQuery())) {
-			qs.add( URLEncoder.encode(input.getQuery(), "UTF-8") );
+			qs.add( URLEncoder.encode(input.getQuery().trim(), "UTF-8") );
 		}
 		
 		// from,to --> q="timestamp:[2010-10-19T22:00:00Z TO NOW]"
