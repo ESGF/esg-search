@@ -29,13 +29,16 @@ public class WgetScriptGenerator {
 	private static final Log LOG = LogFactory.getLog(WgetScriptGenerator.class);
 
 	/**
-	 * Description required for generating the script
+	 * Description required for generating the script. It must contain all fields
+	 * That are requested for in the template. These fields must be simple
+	 * Strings and not private nor inherited.
 	 * @author egonzalez
 	 *
 	 */
 	static public class WgetDescriptor {
 		/**
-		 * File representation
+		 * File representation used for generating the file listing within the
+		 * wget script.
 		 * @author egonzalez
 		 *
 		 */
@@ -52,13 +55,16 @@ public class WgetScriptGenerator {
 	        }
 		}
 
+		//All public strings are going to get extracted automatically for 
+		//filling out the template.
 		String userOpenId;	
 		String hostName;
 		String searchUrl;
+		String files;
 		String message;
 		
-		private StringBuffer sb = new StringBuffer();
-		List<File> files = new LinkedList<File>();
+		private StringBuffer messg_sb = new StringBuffer();
+		List<File> all_files = new LinkedList<File>();
 		Map<String, String> checksums = new HashMap<String, String>();
 		
 		
@@ -133,7 +139,7 @@ public class WgetScriptGenerator {
 			    }
 			} else {
 			    //everything is fine proceed as usual
-			    files.add(fd);
+			    all_files.add(fd);
 			    this.checksums.put(fd.dir + fd.name, fd.chksum);
 			}
 		}
@@ -143,14 +149,14 @@ public class WgetScriptGenerator {
 		 * @param message message to be displayed to the user
 		 */
 		public void addMessage(String message) {
-		    this.sb.append(message).append('\n');
+		    this.messg_sb.append(message).append('\n');
 		}
 		
 		/**
 		 * @return the number of files that will be displayed in the wget script.
 		 */
 		public int getFileCount() {
-		    return files.size();
+		    return all_files.size();
 		}
 		
 		/**
@@ -165,7 +171,7 @@ public class WgetScriptGenerator {
 		    sb.append(String.format("OpenID:%s\nhostanme:%s\nsearchUrl:%s\nmessage:%s\n",
 		                            userOpenId,hostName,searchUrl,message.toString()));
 		    sb.append("Files:\n");
-		    for (File f : files) {
+		    for (File f : all_files) {
 		        sb.append('\t').append(f);
             }
 		    
@@ -174,10 +180,31 @@ public class WgetScriptGenerator {
 
         /**
          * Assure everything is ready for script generation.
+         * After this call all non private Strings with names matched in the
+         * template must be contain the required information.
          */
         public void flush() {
             //set the message
-            this.message = this.sb.toString();
+            this.message = this.messg_sb.toString();
+            
+            // add files
+            StringBuilder sb = new StringBuilder();
+            final String sep = "' '";
+            for (WgetDescriptor.File fd : this.all_files) {
+
+                sb.append('\'');
+                if (fd.dir != null) sb.append(fd.dir);
+                
+                //get the name                                          
+                sb.append(fd.name);
+                
+                sb.append(sep).append(fd.url);
+                sb.append(sep).append(fd.chksumType);
+                sb.append(sep).append(fd.chksum).append("'\n");
+            }
+            // correct last line break
+            if (sb.length() >0) sb.setLength(sb.length() - 1);
+            this.files = sb.toString();
             
         }
 	}
@@ -216,38 +243,20 @@ public class WgetScriptGenerator {
 		// extract using reflections all string from the description
 		try {
 			for (Field f : desc.getClass().getDeclaredFields()) {
-				Object val = f.get(desc);
-				//null is "" for bash
-				if (val instanceof String)
-					tags.put(f.getName(), (String) val);
-				else if (val==null)
-					tags.put(f.getName(), "");
+			    //don't even care to check what's not public
+			    if(!java.lang.reflect.Modifier.isPrivate(f.getModifiers())) {
+    				Object val = f.get(desc);
+    				//null is "" for bash
+    				if (val instanceof String)
+    					tags.put(f.getName(), (String) val);
+    				else if (val==null)
+    					tags.put(f.getName(), "");
+    			    }
 			}
 		} catch (Exception e) {
 			// not expected unless bug in source code
 			e.printStackTrace();
 		}
-
-		// add files
-		StringBuilder sb = new StringBuilder();
-		final String sep = "' '";
-		for (WgetDescriptor.File fd : desc.files) {
-
-			sb.append('\'');
-			if (fd.dir != null) sb.append(fd.dir);
-			
-            //get the name                                			
-            sb.append(fd.name);
-		    
-			sb.append(sep).append(fd.url);
-			sb.append(sep).append(fd.chksumType);
-			sb.append(sep).append(fd.chksum).append("'\n");
-		}
-		// correct last line break
-		if (sb.length() >0) sb.setLength(sb.length() - 1);
-
-		// add missing general fields
-		tags.put("files", sb.toString());
 		tags.put("date", DATE_FORMAT.format(new Date()));
 
 		template = replace(template, tags);
