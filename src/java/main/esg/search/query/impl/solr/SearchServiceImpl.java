@@ -231,11 +231,14 @@ public class SearchServiceImpl implements SearchService {
 	    
 	    // reconstruct query string that caused the error (except request output as XML)
         final SolrUrlBuilder builder = new SolrUrlBuilder(url);
+        String format = input.getFormat();
+        // must use XML format when recovering from error
         input.setFormat(SearchReturnType.SOLR_XML.getMimeType());
         builder.setSearchInput(input);
         String query = builder.buildSelectQueryString();
-        
 	    LinkedHashSet<String> newShards = ShardMonitor.monitor(registryService.getShards(), query);
+	    // restore original format
+	    input.setFormat(format);
 	    registryService.setShards(newShards);
         
     }
