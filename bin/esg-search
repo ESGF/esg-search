@@ -153,8 +153,9 @@ setup_search() {
     write_as_property index_service_app_home ${search_web_service_dir}
     write_as_property index_master_port
     write_as_property index_slave_port
-    write_as_property index_timeout_read 10000
     write_as_property index_timeout_connection 2000
+    write_as_property index_timeout_read_datasets 10000
+    write_as_property index_timeout_read_files 60000
     
     write_as_property publishing_service_endpoint "https://${esgf_host:-$(hostname --fqdn)}/esg-search/remote/secure/client-cert/hessian/publishingService"
     write_as_property publishing_service_app_home ${search_web_service_dir}
