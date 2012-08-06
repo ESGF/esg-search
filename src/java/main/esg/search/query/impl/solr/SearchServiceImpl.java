@@ -204,9 +204,9 @@ public class SearchServiceImpl implements SearchService {
         if (this.connectionTimeout>0) httpClient.setConnectionTimeout(this.connectionTimeout);
         final String type = input.getConstraint(QueryParameters.FIELD_TYPE);
         if (type.equals(QueryParameters.TYPE_FILE)) {
-            if (this.filesReadTimeout>0) httpClient.setConnectionTimeout(this.filesReadTimeout);
+            if (this.filesReadTimeout>0) httpClient.setReadTimeout(this.filesReadTimeout);
         } else {
-            if (this.datasetsReadTimeout>0) httpClient.setConnectionTimeout(this.datasetsReadTimeout);
+            if (this.datasetsReadTimeout>0) httpClient.setReadTimeout(this.datasetsReadTimeout);
         }
         
         // execute HTTP/GET request, return response as Solr/XML or Solr/JSON
