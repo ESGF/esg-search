@@ -1211,19 +1211,25 @@ remove_search_rss_properties() {
 #Utility function to time the index response times from the various
 #index nodes discovered/confgured in the federation. Thanks Estani!!!
 time_shards() {
-    local query='q=*&fq=type%3ADataset&facet=true&facet.field=project&facet.field=institute&facet.field=model&facet.field=source_id&facet.field=experiment_family&facet.f\
-ield=experiment&start=0&rows=100'
-    local nodes="$(sed -n '/localhost/! {s/^.*<value>\([^<]*\):[0-9]*.*/\1/ p}' ${esgf_shards_static_file}) $(sed -n '/slave\|master/! {s/:[0-9]*//p}' ${esgf_shards_conf\
-ig_file})"
+    echo
+    echo "Timing queries against configured index shards... "
+    local query='q=*&fq=type%3ADataset&facet=true&facet.field=project&facet.field=institute&facet.field=model&facet.field=source_id&facet.field=experiment_family&facet.field=experiment&start=0&rows=100'
+    local nodes="$(sed -n '/localhost/! {s/^.*<value>\([^<]*\):[0-9]*.*/\1/ p}' ${esgf_shards_static_file}) $(sed -n '/slave\|master/! {s/:[0-9]*//p}' ${esgf_shards_config_file})"
     local port=8983
     local time=/usr/bin/time
+    local sum=0
     for node in $nodes; do
-        echo -n "Checking $node ..."
+        echo -n "  Checking $node ..."
         url="http://$node:$port/solr/datasets/select?$query"
-        $time -o >(read et; [[ "$et" =~ "^[0-9.]+$" ]] && echo " ${et}s") -f %e curl -Ssm 10 $url > /dev/null
-        sleep 0.1 #let stdout flush                                                                                                                                       
+        debug_print $url
+        unset count
+        local count="$($time -o >(read et; [[ "$et" =~ "^[0-9.]+$" ]] && echo -n " ${et}s " >&2) -f %e curl -Ssm 10 $url | sed -n '/numFound/ s/.*numFound="\([0-9]*\)".*/\1/p')"
+            sleep 0.1 #let stdout flush
+            [[ "$count" ]] && echo " ($count datasets) "
+            ((sum+=count))
     done
-    return 0
+    echo "total datasets [${sum}]"
+    echo
 }
 
 ############################################
