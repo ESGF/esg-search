@@ -896,6 +896,13 @@ setup_solr() {
         echo
     fi
     
+    if [ -n "$(awk -F ':' '{print $2}' ${esgf_shards_config_file} | sort -u | sed -n 's/'${solr_server_port}'/&/p')" ]; then
+        local answer="n"
+        echo " A replica shard entry for port [${solr_server_port}] is already present!"
+        read -p " Are you sure you wish to add a NEW replica index for ${solr_config_type%:*} on port [${solr_server_port}]? [y/N] " answer
+        [ -z "${answer}" ] || [ "$(tr A-Z a-z <<< ${answer})" = "n" ] && return 1
+    fi
+
     echo "Installing esgf-solr ${solr_version} ${solr_config_type} on port[${solr_server_port}]..."
     mkdir -p ${solr_workdir}
     pushd ${solr_workdir} >& /dev/null
