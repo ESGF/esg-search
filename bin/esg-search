@@ -1208,6 +1208,21 @@ remove_search_rss_properties() {
     remove_property esg_feed_datasets_link
 }
 
+#Utility function to time the index response times from the various
+#index nodes discovered/confgured in the federation. Thanks Estani!!!
+time_shards() {
+    echo "Running query timing tests on confgured shards..."
+    local query='q=*&fq=type%3ADataset&facet=true&facet.field=project&facet.field=institute&facet.field=model&facet.field=source_id&facet.field=experiment_family&facet.f\
+ield=experiment&start=0&rows=100'
+    local port=8983
+    local nodes="$(sed -n '/localhost/! {s/^.*<value>\([^<]*\):[0-9]*.*/\1/ p}' ${esgf_shards_static_file})"
+    local time=/usr/bin/time
+    for node in $nodes; do
+        url="http://$node:$port/solr/datasets/select?$query"
+        $time -o >(read et; echo $node - ${et}) -f %e wget $url -q -O /dev/null
+    done
+    return 0
+}
 
 ############################################
 # General - Utility Functions
