@@ -265,7 +265,11 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 -- Improved algorithm for pruning, uses specific query that caused error versus each shard.
 
 3.3.4
--- Fixed problem with wget script accesing fields by reflection
+-- Fixed problem with wget script accessing fields by reflection
 
 3.3.5
 -- Fixed bug related to changing output format when purging unresponsive shards.
+
+3.3.?
+-- Fix wget script cache to clean entries for missing files (when intentionally removed by user)
+-- Added -U option to wget script to upgrade files detected as different

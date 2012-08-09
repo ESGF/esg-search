@@ -18,7 +18,7 @@ if [ $BASH ] && [ `basename $BASH` != bash ]; then
     exit $?
 fi
 
-version=1.2.1
+version=1.2.2
 CACHE_FILE=.$(basename $0).status
 openId={{userOpenId}}
 search_url='{{searchUrl}}'
@@ -121,7 +121,7 @@ debug=0
 clean_work=1
 
 #parse flags
-while getopts ':c:pdvqfo:w:iuh' OPT; do
+while getopts ':c:pdvqfo:w:iuUh' OPT; do
     case $OPT in
         c) ESG_CREDENTIALS="$OPTARG";;  #<cert> : use this certificate for authentication.
         p) clean_work=0;;               #       : preserve data that failed checksum
@@ -130,6 +130,7 @@ while getopts ':c:pdvqfo:w:iuh' OPT; do
         w) output="$OPTARG";;           #<file> : Write output for DML in the given file (simple list of endpoints)
         i) insecure=1;;                 #       : set insecure mode, i.e. don't check server certificate
         u) update=1;;                   #       : Issue the search again and see if something has changed.
+        U) update_files=1;;             #       : Update files from server overwritting local ones (detect with -u)
         d) verbose=1;debug=1;;          #       : display debug information
         v) verbose=1;;                  #       : be more verbose
         q) quiet=1;;                    #       : be less verbose
@@ -380,6 +381,13 @@ get_mod_time_() {
     return 0;
 }
 
+remove_from_cache() {
+    local entry="$1"
+    local tmp_file="$(grep -ve "^$entry" "$CACHE_FILE")"
+    echo "$tmp_file" > "$CACHE_FILE"
+    unset cached
+}
+
 download() {
     wget="wget ${insecure:+--no-check-certificate} ${quiet:+-q} ${quiet:--v} -c $PKI_WGET_OPTS"
     
@@ -398,16 +406,31 @@ download() {
             continue
         fi
 
-        #if we have the file, check if it's already processed.
-        [[ -f $file ]] && cached="$(grep -e "^$file" "$CACHE_FILE")" || unset cached
+        #get the cached entry if any.
+        cached="$(grep -e "^$file" "$CACHE_FILE")"
+        
+        #if we have the cache entry but no file, clean it.
+        if [[ ! -f $file && "$cached" ]]; then
+            #the file was removed, clean the cache
+            remove_from_cache "$file"
+            unset cached
+        fi
+        
         #check it wasn't modified
         if [[ -n "$cached" && "$(get_mod_time_ $file)" == $(echo "$cached" | cut -d ' ' -f2) ]]; then
-            if [[ "$chksum" == "$(echo "$cached" | cut -d ' ' -f3)" ]]; then
+                    if [[ "$chksum" == "$(echo "$cached" | cut -d ' ' -f3)" ]]; then
                 echo "Already downloaded and verified"
+                continue
+            elif ((update_files)); then
+                #user want's to overwrite newer files
+                rm $file
+                remove_from_cache "$file"
+                unset cached
             else
-                echo "WARNING: The remote file $file was changed (probably a new version is available). Remove/rename manually to force re-download."
+                #file on server is different from what we have. 
+                echo "WARNING: The remote file was changed (probably a new version is available). Use -U to Update/overwrite"
+                continue
             fi
-            continue
         fi
         unset chksum_err_value chksum_err_count
         
