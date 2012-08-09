@@ -169,7 +169,7 @@ public class WgetScriptGenerator {
 		public String toString() {
 		    StringBuilder sb = new StringBuilder();
 		    sb.append(String.format("OpenID:%s\nhostanme:%s\nsearchUrl:%s\nmessage:%s\n",
-		                            userOpenId,hostName,searchUrl,message.toString()));
+		                            userOpenId,hostName,searchUrl,message));
 		    sb.append("Files:\n");
 		    for (File f : all_files) {
 		        sb.append('\t').append(f);

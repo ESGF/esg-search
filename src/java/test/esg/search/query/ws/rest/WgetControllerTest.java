@@ -72,7 +72,7 @@ public class WgetControllerTest extends P2PSolrTestCase {
 
     public void setupSolr() throws Exception {
         //get three local cmip5 files from the default server
-        defaultService = "http://esgf-dev.dkrz.de/esg-search/search?";
+        defaultService = "http://esgf-data.dkrz.de/esg-search/search?";
         ingest("type=File&project=CMIP5&limit=3&distrib=false");
         
         //make sure we only have these three

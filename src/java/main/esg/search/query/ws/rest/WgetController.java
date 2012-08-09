@@ -36,7 +36,17 @@ import esg.search.utils.XmlParser;
  * The allowed HTTP parameters are specified by the ESGF Search API, except for the fixed constraint "type=File".
  * 
  * @author Luca Cinquini
+ */ 
+ /* (estani) Note there's no dataset version on the file in Solr. The version we store is just that of the file,
+ * which is not used at all (at least I couldn't find any catalog with a value different from 1).
+ * 
+ * We could have a work around for that in here that does some String magic with master_id -instance_id, but
+ * it's a nasty workaround... This is the the handling of the strings:
+ * org.apache.commons.lang.StringUtils.difference(
+ *   ((Element)XPath.newInstance("/response/result/doc/arr[@name='master_id']").selectSingleNode(doc)).getValue(),
+ *   ((Element)XPath.newInstance("/response/result/doc/arr[@name='instance_id']").selectSingleNode(doc)).getValue()).split("\\.")[0]
  *
+ *And you'll need to add something like "dataset_version" to LOCAL_FIELDS so it's escaped from Solr... very nasty indeed...
  */
 @Controller("wgetController")
 public class WgetController {
