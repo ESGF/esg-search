@@ -1219,7 +1219,7 @@ time_shards() {
     local time=/usr/bin/time
     local sum=0
     for node in $nodes; do
-        echo -n "  Checking $node ..."
+        echo -n "   Checking $node ..."
         url="http://$node:$port/solr/datasets/select?$query"
         debug_print $url
         unset count
