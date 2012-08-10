@@ -109,7 +109,7 @@ Builds the project via ant (obviously).
   </exec>
   <exec executable="bash" dir="${basedir}" outputproperty="release_name">
     <arg value="-c"/>
-    <arg value="git tag | sed -ne 's/\(v[0-9]*\.[0-9]*\.[0-9]*\)-\([a-zA-Z0-9_-]*\)-release.*$/\2/p' | sort -k1,1 | tail -n 1"/>
+    <arg value="git tag | sed 's/^v//' | sort -s -t. -k1,1n -k2,2n -k3,3n  | sed -ne 's/\([0-9]*\.[0-9]*\.[0-9]*\)-\([a-zA-Z0-9_-]*\)-release.*$/\2/p'| tail -n 1"/>
   </exec>
 
   <property name="filter" value="false"/>
