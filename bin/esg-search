@@ -1224,7 +1224,7 @@ time_shards() {
         url="http://$node:$port/solr/datasets/select?$query"
         debug_print $url
         unset count
-        local count="$($time -o >(read et; echo -n " ${et}s " >&2) -f %e curl -Ssm 10 $url | sed -n '/numFound/ s/.*numFound="\([0-9]*\)".*/\1/p')"
+        local count="$($time -o >(read et; [[ "$et" =~ ^[0-9.]+$ ]] && echo -n " ${et}s " >&2) -f %e curl -Ssm 10 $url | sed -n '/numFound/ s/.*numFound="\([0-9]*\)".*/\1/p')"
             sleep 0.1 #let stdout flush
             [[ "$count" ]] && echo " ($count datasets) " || echo " (no response) "
             ((sum+=count))
