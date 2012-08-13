@@ -90,6 +90,7 @@ workdir=${workdir:-~/workbench/esg}
 install_manifest=${install_manifest:-"${esg_root_dir}/esgf-install-manifest"}
 esgf_shards_config_file=${esg_config_dir}/esgf_shards.config
 esgf_shards_static_file=${esg_config_dir}/esgf_shards_static.xml
+esgf_shards_dynamic_file=${esg_config_dir}/esgf_shards.xml
 esgf_excludes_file=${esg_config_dir}/esgf_excludes.txt
 #--------------
 
