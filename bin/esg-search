@@ -1212,10 +1212,16 @@ remove_search_rss_properties() {
 #Utility function to time the index response times from the various
 #index nodes discovered/confgured in the federation. Thanks Estani!!!
 time_shards() {
+    local show_local=0
+    local connect_timeout=10
     while [ -n "$1" ]; do
         case $1 in
-            show-local)
+            -show-local)
                 show_local=1;
+                ;;
+            -timeout)
+                shift
+                connect_timeout=$1
                 ;;
             *)
                 ;;
@@ -1235,12 +1241,12 @@ time_shards() {
     local et
     for node in $nodes; do
         echo -n "   Checking $node ..."
-        _time_shard $node $query_svc
+        _time_shard $node $query_svc 80 ${connect_timeout}
         local local_shard_port=$(sed -n 's/'${node}':\([0-9]\+\).*/\1/p' ${esgf_shards_config_file}) 2> /dev/null
         ((show_local)) && [ -z "${local_shard_port}" ] && [ "${node}" = "${esgf_host}" ] && local_shard_port=$(sed -n 's/slave:\([0-9]\+\).*/\1/p' ${esgf_shards_config_file}) 2> /dev/null
         if (( show_local )) && [ -n "${local_shard_port}" ]; then
             echo -n " -- local "
-            _time_shard localhost $query_solr ${local_shard_port}
+            _time_shard localhost $query_solr ${local_shard_port} ${connect_timeout}
         fi
         echo
     done
@@ -1254,12 +1260,13 @@ _time_shard() {
     local node=${1:?"Sorry _time_shard requires at least a node value"}
     local query=${2:-"esg-search/search?format=application%2Fsolr%2Bxml&facets=project,institute,model,source_id,experiment_family,experiment,time_frequency,product,realm,variable,variable_long_name,cmor_table,cf_standard_name,ensemble&offset=0&type=Dataset&query=*&latest=true&replica=false&distrib=false&limit=10"}
     local port=${3:-80}
+    local connect_timeout=${4:-10}
 
     local url="http://$node:$port/$query"
     debug_print $url
     local time=/usr/bin/time
     unset count
-    local count="$($time -o >(read et; [[ "$et" =~ ^[0-9.]+$ ]] && echo -n " ${et}s " >&2) -f %e curl -Ssm 10 $url | sed -n '/numFound/ s/.*numFound="\([0-9]*\)".*/\1/p')"
+    local count="$($time -o >(read et; [[ "$et" =~ ^[0-9.]+$ ]] && echo -n " ${et}s " >&2) -f %e curl -Ssm ${connect_timeout} ${url} | sed -n '/numFound/ s/.*numFound="\([0-9]*\)".*/\1/p')"
         sleep 0.1 #let stdout flush
         [[ "$count" ]] && echo -n " ($count datasets) " || echo -n " (no response) "
         (( port == 80 )) && ((sum+=count)) || ((sum_local+=count))
