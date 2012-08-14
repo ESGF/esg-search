@@ -1212,30 +1212,56 @@ remove_search_rss_properties() {
 #Utility function to time the index response times from the various
 #index nodes discovered/confgured in the federation. Thanks Estani!!!
 time_shards() {
+    while [ -n "$1" ]; do
+        case $1 in
+            show-local)
+                show_local=1;
+                ;;
+            *)
+                ;;
+        esac
+        shift
+    done
+
     echo
     echo "Timing queries against configured, remote, index shards... "
     local query_svc="esg-search/search?format=application%2Fsolr%2Bxml&facets=project,institute,model,source_id,experiment_family,experiment,time_frequency,product,realm,variable,variable_long_name,cmor_table,cf_standard_name,ensemble&offset=0&type=Dataset&query=*&latest=true&replica=false&distrib=false&limit=10"
     get_property esgf_host
-    local query_solr='q=*&fq=type%3ADataset&facet=true&facet.field=project&facet.field=institute&facet.field=model&facet.field=source_id&facet.field=experiment_family&facet.field=experiment&start=0&rows=100'
+    local query_solr='solr/datasets/select?q=*&fq=type%3ADataset&facet=true&facet.field=project&facet.field=institute&facet.field=model&facet.field=source_id&facet.field=experiment_family&facet.field=experiment&start=0&rows=100'
     local nodes="$(sed -n '/localhost/! {s/^.*<value>\([^<]*\):[0-9]*.*/\1/ p}' ${esgf_shards_static_file}) $(sed -n '/slave\|master/! {s/:[0-9]*//p}' ${esgf_shards_config_file})  ${esgf_host}"
     local port=8983
-    local time=/usr/bin/time
     local sum=0
+    local sum_local=0
     local et
     for node in $nodes; do
         echo -n "   Checking $node ..."
-        local url_svc="http://$node/$query_svc"
-        local url_solr="http://$node:$port/solr/datasets/select?$query"
-        local url=${url_svc}
-        debug_print $url
-        unset count
-        local count="$($time -o >(read et; [[ "$et" =~ ^[0-9.]+$ ]] && echo -n " ${et}s " >&2) -f %e curl -Ssm 10 $url | sed -n '/numFound/ s/.*numFound="\([0-9]*\)".*/\1/p')"
-            sleep 0.1 #let stdout flush
-            [[ "$count" ]] && echo " ($count datasets) " || echo " (no response) "
-            ((sum+=count))
+        _time_shard $node $query_svc
+        local local_shard_port=$(sed -n 's/'${node}':\([0-9]\+\).*/\1/p' ${esgf_shards_config_file}) 2> /dev/null
+        if (( show_local )) && [ -n "${local_shard_port}" ]; then
+            echo -n " -- local "
+            _time_shard localhost $query_solr ${local_shard_port}
+        fi
+        echo
     done
-    echo "total datasets [${sum}]"
+    echo -n "total: datasets [${sum}] "
+    ((show_local)) && echo -n "local datasets [${sum_local}]"
     echo
+    echo
+}
+
+_time_shard() {
+    local node=${1:?"Sorry _time_shard requires at least a node value"}
+    local query=${2:-"esg-search/search?format=application%2Fsolr%2Bxml&facets=project,institute,model,source_id,experiment_family,experiment,time_frequency,product,realm,variable,variable_long_name,cmor_table,cf_standard_name,ensemble&offset=0&type=Dataset&query=*&latest=true&replica=false&distrib=false&limit=10"}
+    local port=${3:-80}
+
+    local url="http://$node:$port/$query"
+    debug_print $url
+    local time=/usr/bin/time
+    unset count
+    local count="$($time -o >(read et; [[ "$et" =~ ^[0-9.]+$ ]] && echo -n " ${et}s " >&2) -f %e curl -Ssm 10 $url | sed -n '/numFound/ s/.*numFound="\([0-9]*\)".*/\1/p')"
+        sleep 0.1 #let stdout flush
+        [[ "$count" ]] && echo -n " ($count datasets) " || echo -n " (no response) "
+        (( port == 80 )) && ((sum+=count)) || ((sum_local+=count))
 }
 
 ############################################
