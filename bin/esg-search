@@ -1227,7 +1227,7 @@ time_shards() {
     echo "Timing queries against configured, remote, index shards... "
     local query_svc="esg-search/search?format=application%2Fsolr%2Bxml&facets=project,institute,model,source_id,experiment_family,experiment,time_frequency,product,realm,variable,variable_long_name,cmor_table,cf_standard_name,ensemble&offset=0&type=Dataset&query=*&latest=true&replica=false&distrib=false&limit=10"
     get_property esgf_host
-    local query_solr='solr/datasets/select?q=*&fq=type%3ADataset&facet=true&facet.field=project&facet.field=institute&facet.field=model&facet.field=source_id&facet.field=experiment_family&facet.field=experiment&start=0&rows=100'
+    local query_solr='solr/datasets/select?q=*&fq=type%3ADataset%20AND%20latest%3Atrue%20AND%20replica%3Afalse&facet=true&start=0&rows=10&&facet.field=project&facet.field=institute&facet.field=model&facet.field=source_id&facet.field=experiment_family&facet.field=experiment&facet.field=time_frequency&facet.field=product&facet.field=realm&facet.field=variable&facet.field=variable_long_name&facet.field=cmor_table&facet.field=cf_standard_name&facet.field=ensemble'
     local nodes="$(sed -n '/localhost/! {s/^.*<value>\([^<]*\):[0-9]*.*/\1/ p}' ${esgf_shards_static_file}) $(sed -n '/slave\|master/! {s/:[0-9]*//p}' ${esgf_shards_config_file})  ${esgf_host}"
     local port=8983
     local sum=0
@@ -1237,6 +1237,7 @@ time_shards() {
         echo -n "   Checking $node ..."
         _time_shard $node $query_svc
         local local_shard_port=$(sed -n 's/'${node}':\([0-9]\+\).*/\1/p' ${esgf_shards_config_file}) 2> /dev/null
+        ((show_local)) && [ -z "${local_shard_port}" ] && [ "${node}" = "${esgf_host}" ] && local_shard_port=$(sed -n 's/slave:\([0-9]\+\).*/\1/p' ${esgf_shards_config_file}) 2> /dev/null
         if (( show_local )) && [ -n "${local_shard_port}" ]; then
             echo -n " -- local "
             _time_shard localhost $query_solr ${local_shard_port}
