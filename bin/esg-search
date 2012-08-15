@@ -419,6 +419,15 @@ _remove_replica_shard_configuration() {
     #esgf_excludes.txt
     (( ${#configured_ports[@]} > 1 )) || sed -i.bak -e '/.*'${solr_config_type}'.*index.*/Id' ${esgf_excludes_file}
 
+    local pid
+    if pid=$(pgrep -f jetty.port=${solr_server_port}); then
+        echo -n "Stopping index procees for this shard ${remote_host} [pid = ${pid}] "
+        kill -9 ${pid}
+        pgrep -f jetty.port=${solr_server_port} >& /dev/null && echo "[FAIL] - unable to kill index proecess on port ${solr_server_port}" || echo "[OK] "
+    else
+        echo "no process found for [pid = ${pid}] "
+    fi
+
     #Remove the configuration directory
     debug_print "rm -rf ${solr_install_dir}"
     rm -rf ${solr_install_dir}
