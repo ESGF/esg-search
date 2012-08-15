@@ -43,12 +43,12 @@ public class WgetScriptGenerator {
 		 *
 		 */
 		private class File {
-		    String name;
-			String url;
-			String dir;		//future use, to allow the user to define a directory structure
-			String size;	//unused
-			String chksumType;
-			String chksum;
+		    String name = "";
+			String url = "";
+			String dir = "";	//to allow the user to define a directory structure
+			String size = "";	//presently unused
+			String chksumType = "";
+			String chksum = "";
 	        public String toString() {
 	            return String.format("name:%s, Url:%s, Dir:%s, size:%s, chksum:%s (%s)\n", 
 	                                 name, url, dir, size, chksum, chksumType);
@@ -124,8 +124,10 @@ public class WgetScriptGenerator {
 			if (fd.dir != null && fd.dir.length() > 0 && fd.dir.charAt(fd.dir.length()-1) != '/') 
 			    fd.dir = dir_structure + '/';
 			fd.size = size;
-			fd.chksum = chksum;
-			fd.chksumType = chksumType;
+			
+			//Don't store null values
+			if (chksum != null) fd.chksum = chksum;
+			if (chksumType != null) fd.chksumType = chksumType;
 			
 			if (this.checksums.containsKey(fd.dir + fd.name)) {
 			    //this file would overwrite a file already downloaded.
