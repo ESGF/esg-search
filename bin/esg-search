@@ -1280,11 +1280,14 @@ _time_shard() {
     local url="http://$node:$port/$query"
     debug_print $url
     local time=/usr/bin/time
+    local et
+    unset et
     unset count
     local count="$($time -o >(read et; [[ "$et" =~ ^[0-9.]+$ ]] && echo -n " ${et}s " >&2) -f %e curl -Ssm ${connect_timeout} ${url} | sed -n '/numFound/ s/.*numFound="\([0-9]*\)".*/\1/p')"
         sleep 0.1 #let stdout flush
         [[ "$count" ]] && echo -n " ($count datasets) " || echo -n " (no response) "
         (( port == 80 )) && ((sum+=count)) || ((sum_local+=count))
+        unset et
 }
 
 ############################################
