@@ -3,6 +3,8 @@ package esg.search.query.ws.rest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,8 @@ import esg.search.query.api.SearchService;
  */
 @Controller("searchController")
 public class SearchController {
+    
+    private static final Log LOG = LogFactory.getLog(SearchController.class);
 	
     /**
      * The underlying base controller to which all calls are delegated.
@@ -41,6 +45,8 @@ public class SearchController {
 			           final SearchCommand command, 
 			           final HttpServletResponse response) throws Exception {
 	    
+	    long startTime = System.currentTimeMillis();
+	    
 	    // process request, obtain Solr/XML output
         String output = baseController.process(request, command, response);
         
@@ -52,6 +58,9 @@ public class SearchController {
                 baseController.writeToResponse(output, "text/xml", response); 
             }
         }
+        
+        long elapsedTime = System.currentTimeMillis() - startTime;
+        if (LOG.isInfoEnabled()) LOG.info("Overall SearchController Elapsed Time="+elapsedTime+" msecs");
 	    
 	}
 	

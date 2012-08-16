@@ -270,6 +270,7 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 3.3.5
 -- Fixed bug related to changing output format when purging unresponsive shards.
 
-3.3.?
+3.3.6
 -- Fix wget script cache to clean entries for missing files (when intentionally removed by user)
 -- Added -U option to wget script to upgrade files detected as different
+-- Inserted additional timing detection for searches
