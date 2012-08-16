@@ -285,7 +285,7 @@ public class WgetController {
                 }
                 
                 //last message
-                desc.addMessage(String.format("Downloading %s file(s)...\n", desc.getFileCount()));
+                desc.addMessage(String.format("Script created for %s file(s)\n(The count won't match if you manually edit this file!)\n", desc.getFileCount()));
                 
                 // generate wget script
                 final String wgetScript = WgetScriptGenerator.getWgetScript(desc);
