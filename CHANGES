@@ -274,3 +274,6 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 -- Fix wget script cache to clean entries for missing files (when intentionally removed by user)
 -- Added -U option to wget script to upgrade files detected as different
 -- Inserted additional timing detection for searches
+
+3.3.7
+-- Added logging.properties file
