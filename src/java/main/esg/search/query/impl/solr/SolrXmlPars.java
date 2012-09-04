@@ -107,6 +107,9 @@ public class SolrXmlPars {
 	
 	final public static String FIELD_DATA_FORMAT = "data_format";
 	final public static String FIELD_FILE_NAME = "file_name";
+	
+	// multi-valued field specifying access types: HTTPServer, OPENDAP, GridFTP, etc.
+	final public static String FIELD_ACCESS = "access";
 		
 	/**
 	 * Map holding references from record type to Solr core storing those records.

@@ -160,6 +160,11 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        record.addField(SolrXmlPars.FIELD_EAST, Double.toString(ds.lonEast) );
 	    if (record.getFieldValue(SolrXmlPars.FIELD_WEST)==null && ds.lonWest!=Double.MAX_VALUE)
 	        record.addField(SolrXmlPars.FIELD_WEST, Double.toString(ds.lonWest) );
+	    
+	    // set summary access types
+	    for (String accessType : ds.access) {
+	        record.addField(SolrXmlPars.FIELD_ACCESS, accessType );
+	    }
 
 		// debug
 		if (LOG.isDebugEnabled()) {

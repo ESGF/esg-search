@@ -1,5 +1,8 @@
 package esg.search.publish.thredds.parsers;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import ucar.nc2.units.DateRange;
 
 /**
@@ -22,6 +25,9 @@ public class DatasetSummary {
     public double lonWest = Double.MAX_VALUE;
     public double latNorth = Double.MIN_VALUE;
     public double latSouth = Double.MAX_VALUE;
+    
+    // HTTPServer, OPENDAP, GridFTP
+    public Set<String> access = new HashSet<String>();
 
 
 }

@@ -31,6 +31,9 @@ public class AccessParser implements ThreddsElementParser {
             record.addField(QueryParameters.FIELD_URL, 
                             RecordHelper.encodeUrlTuple(url, ThreddsPars.getMimeType(url, type), access.getService().getDescription() ));
 
+            // add access type to summary metadata
+            ds.access.add(type);
+        
         }
 
     }
