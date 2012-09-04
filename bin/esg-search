@@ -470,6 +470,16 @@ _get_next_open_port() {
 
 start_search_services() {
     echo "Starting search services... $@"
+    if [ -e "${esg_config_dir}/facets.properties" ]; then
+        #check the format and version to determine if should move aside.
+        #Not the best sed regex..."#v." passes :-(
+        #Don't know how to do an "at least one" greedy match, usually '+' would do it.
+        if [ -z "$(sed '/^$/d' ${esg_config_dir}/facets.properties | head -n1 | sed -n '/^#[ ]*v[0-9]*\.[0-9]*[ ]*$/p')" ]; then
+            echo "Detected an old style or out of version file [${esg_config_dir}/facets.properties] moving it out of the way..."
+            mv -v ${esg_config_dir}/facets.properties{,.bak}
+        fi
+    fi
+
     if [ ! -e "${esg_config_dir}/facets.properties" ] && [ -e "${tomcat_install_dir}/webapps/esg-search/WEB-INF/classes/esg/search/config/facets.properties" ]; then
         cp -v ${tomcat_install_dir}/webapps/esg-search/WEB-INF/classes/esg/search/config/facets.properties ${esg_config_dir}/facets.properties
     fi
