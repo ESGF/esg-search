@@ -174,14 +174,12 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	            // parse files into separate records
 	            boolean inherit = true;
 	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, ds, QueryParameters.TYPE_FILE);
-	            ds.numberOfFiles += 1;
 
 	        } else if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.AGGREGATION_ID) )) {
 	            
 	            // parse aggregations into separate records
 	            boolean inherit = false;
 	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, ds, QueryParameters.TYPE_AGGREGATION);
-	            ds.numberOfAggregations += 1;
 	            
 	        }
 	        
