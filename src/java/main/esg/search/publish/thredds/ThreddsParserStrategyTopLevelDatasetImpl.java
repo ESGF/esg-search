@@ -163,7 +163,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    
 	    // set summary access types
 	    for (String accessType : ds.access) {
-	        record.addField(SolrXmlPars.FIELD_ACCESS, accessType );
+	        record.addField(QueryParameters.FIELD_ACCESS, accessType );
 	    }
 
 		// debug

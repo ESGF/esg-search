@@ -39,6 +39,7 @@ public class QueryParameters {
     final public static String FIELD_DESCRIPTION = "description";
     final public static String FIELD_TIMESTAMP = "timestamp";
     final public static String FIELD_URL = "url";
+    final public static String FIELD_ACCESS = "access";
     final public static String FIELD_XLINK = "xlink";
     final public static String FIELD_SIZE = "size";
     final public static String FIELD_DATASET_ID = "dataset_id"; // note: generic notation to allow parent-child relations beyond just datasets   
@@ -71,7 +72,7 @@ public class QueryParameters {
     public final static List<String> CORE_QUERY_FIELDS = Arrays.asList( new String[]{ 
             FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_LATEST, FIELD_MASTER_ID, FIELD_INSTANCE_ID, FIELD_DRS_ID,
             FIELD_TITLE, FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_XLINK, FIELD_SIZE, 
-            FIELD_NUMBER_OF_FILES, FIELD_NUMBER_OF_AGGREGATIONS, FIELD_DATASET_ID,
+            FIELD_NUMBER_OF_FILES, FIELD_NUMBER_OF_AGGREGATIONS, FIELD_DATASET_ID, FIELD_ACCESS,
             FIELD_VERSION, FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE, FIELD_DATA_NODE, FIELD_INDEX_NODE,
             FIELD_BBOX, FIELD_BBOX, FIELD_LON, FIELD_LON, FIELD_RADIUS, FIELD_POLYGON,
             FIELD_START, FIELD_END,
