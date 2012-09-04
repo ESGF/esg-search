@@ -49,13 +49,13 @@ public class GeospatialCoverageParser implements ThreddsElementParser {
                 record.addField(SolrXmlPars.FIELD_EAST, Double.toString(gsc.getEastWestRange().getStart()+gsc.getEastWestRange().getSize()));
             
             // summary metadata
-            if (gsc.getNorthSouthRange()!=null) {                
-                if (ds.latNorth==Double.NaN || ds.latNorth<gsc.getLatNorth()) ds.latNorth = gsc.getLatNorth();
-                if (ds.latSouth==Double.NaN || ds.latSouth>gsc.getLatSouth()) ds.latSouth = gsc.getLatSouth();                
+            if (gsc.getNorthSouthRange()!=null) {        
+                if (ds.latNorth<gsc.getLatNorth()) ds.latNorth = gsc.getLatNorth();
+                if (ds.latSouth>gsc.getLatSouth()) ds.latSouth = gsc.getLatSouth();                
             }
             if (gsc.getEastWestRange()!=null) {                
-                if (ds.lonEast==Double.NaN || ds.lonEast<gsc.getLonEast()) ds.lonEast = gsc.getLonEast();
-                if (ds.lonWest==Double.NaN || ds.lonWest>gsc.getLonWest()) ds.lonWest = gsc.getLonWest();                
+                if (ds.lonEast<gsc.getLonEast()) ds.lonEast = gsc.getLonEast();
+                if (ds.lonWest>gsc.getLonWest()) ds.lonWest = gsc.getLonWest();                
             }
             
         }

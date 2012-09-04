@@ -152,13 +152,13 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        if (record.getFieldValue(SolrXmlPars.FIELD_DATETIME_STOP)==null)
 	            record.addField(SolrXmlPars.FIELD_DATETIME_STOP, ds.dateRange.getEnd().toDateTimeStringISO());  
 		}
-		if (record.getFieldValue(SolrXmlPars.FIELD_NORTH)==null && ds.latNorth!=Double.NaN)
+		if (record.getFieldValue(SolrXmlPars.FIELD_NORTH)==null && ds.latNorth!=Double.MIN_VALUE)
 		    record.addField(SolrXmlPars.FIELD_NORTH, Double.toString(ds.latNorth) );
-	    if (record.getFieldValue(SolrXmlPars.FIELD_SOUTH)==null && ds.latSouth!=Double.NaN)
+	    if (record.getFieldValue(SolrXmlPars.FIELD_SOUTH)==null && ds.latSouth!=Double.MAX_VALUE)
 	        record.addField(SolrXmlPars.FIELD_SOUTH, Double.toString(ds.latSouth) );
-	    if (record.getFieldValue(SolrXmlPars.FIELD_EAST)==null && ds.lonEast!=Double.NaN)
+	    if (record.getFieldValue(SolrXmlPars.FIELD_EAST)==null && ds.lonEast!=Double.MIN_VALUE)
 	        record.addField(SolrXmlPars.FIELD_EAST, Double.toString(ds.lonEast) );
-	    if (record.getFieldValue(SolrXmlPars.FIELD_WEST)==null && ds.lonWest!=Double.NaN)
+	    if (record.getFieldValue(SolrXmlPars.FIELD_WEST)==null && ds.lonWest!=Double.MAX_VALUE)
 	        record.addField(SolrXmlPars.FIELD_WEST, Double.toString(ds.lonWest) );
 
 		// debug

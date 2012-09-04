@@ -18,10 +18,10 @@ public class DatasetSummary {
     
     public DateRange dateRange = null;
     
-    public double lonEast = Double.NaN;
-    public double lonWest = Double.NaN;
-    public double latNorth = Double.NaN;
-    public double latSouth = Double.NaN;
+    public double lonEast = Double.MIN_VALUE;
+    public double lonWest = Double.MAX_VALUE;
+    public double latNorth = Double.MIN_VALUE;
+    public double latSouth = Double.MAX_VALUE;
 
 
 }
