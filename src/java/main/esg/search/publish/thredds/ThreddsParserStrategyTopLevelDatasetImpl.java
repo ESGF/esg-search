@@ -145,6 +145,22 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		record.addField(QueryParameters.FIELD_NUMBER_OF_FILES, Long.toString(ds.numberOfFiles));
 		record.addField(QueryParameters.FIELD_NUMBER_OF_AGGREGATIONS, Long.toString(ds.numberOfAggregations));
 		
+		// set geospatial and temporal coverage
+		if (ds.dateRange!=null) {
+		    if (record.getFieldValue(SolrXmlPars.FIELD_DATETIME_START)==null)
+		        record.addField(SolrXmlPars.FIELD_DATETIME_START, ds.dateRange.getStart().toDateTimeStringISO());  
+	        if (record.getFieldValue(SolrXmlPars.FIELD_DATETIME_STOP)==null)
+	            record.addField(SolrXmlPars.FIELD_DATETIME_STOP, ds.dateRange.getEnd().toDateTimeStringISO());  
+		}
+		if (record.getFieldValue(SolrXmlPars.FIELD_NORTH)==null && ds.latNorth!=Double.NaN)
+		    record.addField(SolrXmlPars.FIELD_NORTH, Double.toString(ds.latNorth) );
+	    if (record.getFieldValue(SolrXmlPars.FIELD_SOUTH)==null && ds.latSouth!=Double.NaN)
+	        record.addField(SolrXmlPars.FIELD_SOUTH, Double.toString(ds.latSouth) );
+	    if (record.getFieldValue(SolrXmlPars.FIELD_EAST)==null && ds.lonEast!=Double.NaN)
+	        record.addField(SolrXmlPars.FIELD_EAST, Double.toString(ds.lonEast) );
+	    if (record.getFieldValue(SolrXmlPars.FIELD_WEST)==null && ds.lonWest!=Double.NaN)
+	        record.addField(SolrXmlPars.FIELD_WEST, Double.toString(ds.lonWest) );
+
 		// debug
 		if (LOG.isDebugEnabled()) {
     		for (final Record rec : records) LOG.debug(rec);

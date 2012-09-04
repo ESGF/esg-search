@@ -38,17 +38,25 @@ public class GeospatialCoverageParser implements ThreddsElementParser {
         
         if (gsc!=null) {
             
+            // record metadata
             if (gsc.getNorthSouthRange()!=null)
                 record.addField(SolrXmlPars.FIELD_SOUTH, Double.toString(gsc.getNorthSouthRange().getStart()));
-        
             if (gsc.getNorthSouthRange()!=null)
                 record.addField(SolrXmlPars.FIELD_NORTH, Double.toString(gsc.getNorthSouthRange().getStart()+gsc.getNorthSouthRange().getSize()));
-            
             if (gsc.getEastWestRange()!=null)
                 record.addField(SolrXmlPars.FIELD_WEST, Double.toString(gsc.getEastWestRange().getStart()));
-            
             if (gsc.getEastWestRange()!=null)
                 record.addField(SolrXmlPars.FIELD_EAST, Double.toString(gsc.getEastWestRange().getStart()+gsc.getEastWestRange().getSize()));
+            
+            // summary metadata
+            if (gsc.getNorthSouthRange()!=null) {                
+                if (ds.latNorth==Double.NaN || ds.latNorth<gsc.getLatNorth()) ds.latNorth = gsc.getLatNorth();
+                if (ds.latSouth==Double.NaN || ds.latSouth>gsc.getLatSouth()) ds.latSouth = gsc.getLatSouth();                
+            }
+            if (gsc.getEastWestRange()!=null) {                
+                if (ds.lonEast==Double.NaN || ds.lonEast<gsc.getLonEast()) ds.lonEast = gsc.getLonEast();
+                if (ds.lonWest==Double.NaN || ds.lonWest>gsc.getLonWest()) ds.lonWest = gsc.getLonWest();                
+            }
             
         }
 
