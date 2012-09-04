@@ -42,6 +42,7 @@ import esg.search.core.RecordImpl;
 import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.plugins.MetadataEnhancer;
 import esg.search.publish.thredds.parsers.AccessParser;
+import esg.search.publish.thredds.parsers.DatasetSummary;
 import esg.search.publish.thredds.parsers.DocumentationParser;
 import esg.search.publish.thredds.parsers.MetadataGroupParser;
 import esg.search.publish.thredds.parsers.PropertiesParser;
@@ -121,11 +122,14 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    // instantiate overall list of records from this catalogs
         final List<Record> records = new ArrayList<Record>();
         
+        // summary metadata for this dataset
+        final DatasetSummary ds = new DatasetSummary();
+        
         // catalog-scope variables
         final String hostName = getHostName(dataset);
 
         // parse top-level dataset
-        final Record record = this.parseCollection(dataset, latest, hostName);
+        final Record record = this.parseCollection(dataset, latest, hostName, ds);
                 
         // IMPORTANT: add top-level dataset as first record
         records.add(record);
@@ -134,7 +138,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         boolean isReplica = record.isReplica();
         
         // recursion
-		final DatasetSummary ds = parseSubDatasets(dataset, latest, isReplica, records, hostName);
+		parseSubDatasets(dataset, latest, isReplica, records, hostName, ds);
+		
 		// set total size of dataset, number of files, number of aggregations
 		record.addField(QueryParameters.FIELD_SIZE, Long.toString(ds.size));
 		record.addField(QueryParameters.FIELD_NUMBER_OF_FILES, Long.toString(ds.numberOfFiles));
@@ -158,34 +163,30 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @return
 	 */
 	private DatasetSummary parseSubDatasets(final InvDataset dataset, final boolean latest, final boolean isReplica,
-	                              final List<Record> records, String hostName) {
+	                              final List<Record> records, String hostName, final DatasetSummary ds) {
 	    
 	    if (LOG.isTraceEnabled()) LOG.trace("Crawling dataset: "+dataset.getID()+" for files");
 	    
-	    final DatasetSummary ds = new DatasetSummary();
 	    for (final InvDataset childDataset : dataset.getDatasets()) {
 	        
 	        if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.FILE_ID) )) {
 	            
 	            // parse files into separate records
 	            boolean inherit = true;
-	            ds.size += this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, QueryParameters.TYPE_FILE);
+	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, ds, QueryParameters.TYPE_FILE);
 	            ds.numberOfFiles += 1;
 
 	        } else if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.AGGREGATION_ID) )) {
 	            
 	            // parse aggregations into separate records
 	            boolean inherit = false;
-	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, QueryParameters.TYPE_AGGREGATION);
+	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, ds, QueryParameters.TYPE_AGGREGATION);
 	            ds.numberOfAggregations += 1;
 	            
 	        }
 	        
 	        // recursion
-	        final DatasetSummary sds = parseSubDatasets(childDataset, latest, isReplica, records, hostName);
-	        ds.size += sds.size;
-	        ds.numberOfFiles += sds.numberOfFiles;
-	        ds.numberOfAggregations += sds.numberOfAggregations;
+	        parseSubDatasets(childDataset, latest, isReplica, records, hostName, ds);
 	        
 	    }
 	    
@@ -193,7 +194,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         
 	}
 	
-	private Record parseCollection(final InvDataset dataset, final boolean latest, final String hostName) {
+	private Record parseCollection(final InvDataset dataset, final boolean latest, final String hostName, final DatasetSummary ds) {
 	    
 	    if (LOG.isDebugEnabled()) LOG.debug("Parsing dataset: "+dataset.getID());
 	        	    	    
@@ -223,7 +224,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	                        
 	    // parse THREDDS elements
         for (final ThreddsElementParser parser : parsers) {
-            parser.parse(dataset, record);
+            parser.parse(dataset, record, ds);
         }
                 
         this.enhanceMetadata(record);
@@ -239,12 +240,13 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @param dataset
 	 * @param records
 	 * @param inherit : set to true to copy parent dataset fields as file record fields (without overriding existing fields)
-	 * @return : the file size for computational purposes, or 0 if un-available.
 	 */
-	private long parseSubDataset(final InvDataset subDataset, 
+	private void parseSubDataset(final InvDataset subDataset, 
 	                             final boolean latest, final boolean isReplica, 
 	                             final List<Record> records, boolean inherit,
-	                             final String hostName, final String recordType) {
+	                             final String hostName, 
+	                             final DatasetSummary ds,
+	                             final String recordType) {
 	    
         // create new record with universally unique record identifier
         final Record record = newRecord(subDataset, latest, hostName);
@@ -265,7 +267,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         
         // parse THREDDS elements
         for (final ThreddsElementParser parser : parsers) {
-            parser.parse(subDataset, record);
+            parser.parse(subDataset, record, ds);
         }
 
         // set size if found
@@ -293,8 +295,16 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         	    
         // add this record to the list
         records.add(record);
-	    return size;
-	    
+        
+        // summary information
+        if (recordType.equals(QueryParameters.TYPE_FILE)) {
+            ds.size += size;
+            ds.numberOfFiles += 1;
+                
+        } else if (recordType.equals(QueryParameters.TYPE_AGGREGATION)) {
+            ds.numberOfAggregations += 1;
+        }
+        	    
 	}	
 	
 	/**
@@ -375,16 +385,6 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             }
         }
         
-	}
-	
-	/**
-	 * Data structure to keep track of critical dataset fields.
-	 *
-	 */
-	private class DatasetSummary  {
-	    long size = 0L;
-	    int numberOfFiles = 0;
-	    int numberOfAggregations = 0;
 	}
 	
 }

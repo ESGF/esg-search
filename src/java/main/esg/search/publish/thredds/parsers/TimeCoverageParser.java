@@ -19,7 +19,7 @@ import esg.search.query.impl.solr.SolrXmlPars;
 public class TimeCoverageParser implements ThreddsElementParser {
 
     @Override
-    public void parse(InvDataset dataset, Record record) {
+    public void parse(InvDataset dataset, Record record, final DatasetSummary ds) {
     
         final DateRange daterange = dataset.getTimeCoverage();
         

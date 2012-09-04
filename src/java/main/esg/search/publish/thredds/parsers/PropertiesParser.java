@@ -26,7 +26,7 @@ public class PropertiesParser implements ThreddsElementParser {
     private final Log LOG = LogFactory.getLog(this.getClass());
 
     @Override
-    public void parse(InvDataset dataset, Record record) {
+    public void parse(InvDataset dataset, Record record, final DatasetSummary ds) {
     
         for (final InvProperty property : dataset.getProperties()) {
             

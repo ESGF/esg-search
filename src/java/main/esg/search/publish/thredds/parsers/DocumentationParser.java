@@ -17,7 +17,7 @@ import esg.search.query.api.QueryParameters;
 public class DocumentationParser implements ThreddsElementParser {
 
     @Override
-    public void parse(final InvDataset dataset, final Record record) {
+    public void parse(final InvDataset dataset, final Record record, final DatasetSummary ds) {
         
         // <documentation type="...">.......</documentation>
         for (final InvDocumentation documentation : dataset.getDocumentation()) {

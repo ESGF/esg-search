@@ -18,7 +18,7 @@ import esg.search.query.api.QueryParameters;
 public class AccessParser implements ThreddsElementParser {
 
     @Override
-    public void parse(final InvDataset dataset, final Record record) {
+    public void parse(final InvDataset dataset, final Record record, final DatasetSummary ds) {
         
         for (final InvAccess access : dataset.getAccess()) {
                                    

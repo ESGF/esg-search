@@ -32,7 +32,7 @@ import esg.search.query.impl.solr.SolrXmlPars;
 public class GeospatialCoverageParser implements ThreddsElementParser {
 
     @Override
-    public void parse(InvDataset dataset, Record record) {
+    public void parse(InvDataset dataset, Record record, final DatasetSummary ds) {
        
         final GeospatialCoverage gsc = dataset.getGeospatialCoverage();
         

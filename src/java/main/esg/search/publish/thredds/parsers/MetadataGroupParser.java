@@ -21,10 +21,10 @@ public class MetadataGroupParser implements ThreddsElementParser {
     }
 
     @Override
-    public void parse(InvDataset dataset, Record record) {
+    public void parse(InvDataset dataset, Record record, final DatasetSummary ds) {
         
-        geoParser.parse(dataset, record);
-        timeParser.parse(dataset, record);
+        geoParser.parse(dataset, record, ds);
+        timeParser.parse(dataset, record, ds);
 
     }
 

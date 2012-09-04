@@ -24,7 +24,7 @@ import esg.search.query.impl.solr.SolrXmlPars;
 public class VariablesParser implements ThreddsElementParser {
 
     @Override
-    public void parse(final InvDataset dataset, final Record record) {
+    public void parse(final InvDataset dataset, final Record record, final DatasetSummary ds) {
         
         for (final Variables variables : dataset.getVariables()) {
             final String vocabulary = variables.getVocabulary();

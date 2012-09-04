@@ -11,6 +11,12 @@ import esg.search.core.Record;
  */
 public interface ThreddsElementParser {
     
-    void parse(InvDataset dataset, Record record);
+    /**
+     * 
+     * @param dataset input THREDDS dataset
+     * @param record output metadata record
+     * @param ds container for high-level dataset metadata
+     */
+    void parse(InvDataset dataset, Record record, DatasetSummary ds);
 
 }
