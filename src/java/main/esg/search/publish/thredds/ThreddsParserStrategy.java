@@ -18,6 +18,7 @@
  ******************************************************************************/
 package esg.search.publish.thredds;
 
+import java.net.URI;
 import java.util.List;
 
 import thredds.catalog.InvDataset;
@@ -32,8 +33,9 @@ public interface ThreddsParserStrategy {
 	 * Method to parse a THREDDS dataset and return an ordered list of search records
 	 * @param dataset : the THREDDS dataset to be parsed into metadata records
 	 * @param latest : latest flag to be assigned to the records
+	 * @param uris : list of nested THREDDS catalogs URIs, for hierarchical parsing
 	 * @return
 	 */
-	List<Record> parseDataset(InvDataset dataset, boolean latest) throws Exception;
+	List<Record> parseDataset(InvDataset dataset, boolean latest, List<URI> catalogRefs) throws Exception;
 	
 }

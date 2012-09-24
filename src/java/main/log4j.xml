@@ -29,7 +29,7 @@
 	</appender>
 
 	<logger name="esg" additivity="false">
-		<level value="INFO" />
+		<level value="DEBUG" />
 		<appender-ref ref="stdout" />
 	</logger>
 	

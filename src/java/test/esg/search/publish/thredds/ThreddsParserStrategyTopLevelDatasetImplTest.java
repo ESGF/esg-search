@@ -18,6 +18,8 @@
  ******************************************************************************/
 package esg.search.publish.thredds;
 
+import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -56,7 +58,7 @@ public class ThreddsParserStrategyTopLevelDatasetImplTest {
 		ThreddsParserStrategy parser = new ThreddsParserStrategyTopLevelDatasetImpl();
 		
 		// tests number of metadata records (1 dataset, 5 files)
-		final List<Record> records = parser.parseDataset(dataset, true); // latest=true
+		final List<Record> records = parser.parseDataset(dataset, true, new ArrayList<URI>()); // latest=true
 		Assert.assertTrue(records.size()==6);
 		
 		// test record fields

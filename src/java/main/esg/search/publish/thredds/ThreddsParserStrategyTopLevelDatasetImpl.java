@@ -19,6 +19,7 @@
 package esg.search.publish.thredds;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -35,7 +36,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import thredds.catalog.InvCatalogRef;
 import thredds.catalog.InvDataset;
+import thredds.catalog.InvDatasetImpl;
 import esg.search.core.Record;
 import esg.search.core.RecordHelper;
 import esg.search.core.RecordImpl;
@@ -117,7 +120,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
     /**
 	 * Method to parse the catalog top-level dataset.
 	 */
-	public List<Record> parseDataset(final InvDataset dataset, final boolean latest) {
+	@Override
+	public List<Record> parseDataset(final InvDataset dataset, final boolean latest, List<URI> catalogRefs) {
 		
 	    // instantiate overall list of records from this catalogs
         final List<Record> records = new ArrayList<Record>();
@@ -138,7 +142,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         boolean isReplica = record.isReplica();
         
         // recursion
-		parseSubDatasets(dataset, latest, isReplica, records, hostName, ds);
+		parseSubDatasets(dataset, latest, isReplica, records, hostName, ds, catalogRefs);
 		
 		// set total size of dataset, number of files, number of aggregations
 		record.addField(QueryParameters.FIELD_SIZE, Long.toString(ds.size));
@@ -184,28 +188,43 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @return
 	 */
 	private DatasetSummary parseSubDatasets(final InvDataset dataset, final boolean latest, final boolean isReplica,
-	                              final List<Record> records, String hostName, final DatasetSummary ds) {
-	    
-	    if (LOG.isTraceEnabled()) LOG.trace("Crawling dataset: "+dataset.getID()+" for files");
+	                              final List<Record> records, String hostName, final DatasetSummary ds,
+	                              final List<URI> catalogRefs) {
+	    	    
+	    if (LOG.isDebugEnabled()) LOG.trace("Crawling dataset: "+dataset.getID()+" for files");
 	    
 	    for (final InvDataset childDataset : dataset.getDatasets()) {
 	        
-	        if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.FILE_ID) )) {
+	        if (childDataset instanceof InvCatalogRef) {
 	            
-	            // parse files into separate records
-	            boolean inherit = true;
-	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, ds, QueryParameters.TYPE_FILE);
-
-	        } else if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.AGGREGATION_ID) )) {
+	            try {
+    	            final URI catalogRef = ThreddsPars.getCatalogRef(childDataset);
+    	            System.out.println("detected catalog ref="+catalogRef.toString());
+    	            catalogRefs.add(catalogRef);
+	            } catch(Exception e) {
+	                LOG.warn(e.getMessage());
+	            }
 	            
-	            // parse aggregations into separate records
-	            boolean inherit = false;
-	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, ds, QueryParameters.TYPE_AGGREGATION);
-	            
+	        } else if (childDataset instanceof InvDatasetImpl) {
+	        	        
+    	        if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.FILE_ID) )) {
+    	            
+    	            // parse files into separate records
+    	            boolean inherit = true;
+    	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, ds, QueryParameters.TYPE_FILE);
+    
+    	        } else if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.AGGREGATION_ID) )) {
+    	            
+    	            // parse aggregations into separate records
+    	            boolean inherit = false;
+    	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, ds, QueryParameters.TYPE_AGGREGATION);
+    	            
+    	        }
+    	        
+    	        // recursion
+    	        parseSubDatasets(childDataset, latest, isReplica, records, hostName, ds, catalogRefs);
+    	        
 	        }
-	        
-	        // recursion
-	        parseSubDatasets(childDataset, latest, isReplica, records, hostName, ds);
 	        
 	    }
 	    
@@ -239,7 +258,6 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");      
         // metadata file name
         record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
-
 	                        
 	    // parse THREDDS elements
         for (final ThreddsElementParser parser : parsers) {

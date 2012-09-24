@@ -18,12 +18,17 @@
  ******************************************************************************/
 package esg.search.publish.thredds;
 
+import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
+
+import thredds.catalog.InvCatalogRef;
+import thredds.catalog.InvDataset;
+import thredds.catalog.InvDatasetImpl;
 
 import esg.search.query.api.QueryParameters;
 
@@ -169,6 +174,18 @@ public class ThreddsPars {
 	    }
 	
 	}
+	
+    public static URI getCatalogRef(final InvDataset dataset) throws Exception {
+
+        final InvCatalogRef catalogRef = (InvCatalogRef) dataset;
+        String uriString = InvDatasetImpl.resolve(dataset, catalogRef.getXlinkHref());
+        uriString = uriString.replace("/./", "/");
+        uriString = uriString.replace("\\.\\", "\\");
+        final URI uri = new URI(uriString);
+        uri.normalize();
+        return uri;
+        
+    }
 	
 	private ThreddsPars() {};
 	

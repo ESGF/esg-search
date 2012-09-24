@@ -122,7 +122,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
     				    
     					if (recursive) {
     						// crawl catalogs recursively
-    						final URI catalogRef = getCatalogRef(dataset);
+    						final URI catalogRef = ThreddsPars.getCatalogRef(dataset);
     						try {
     						    crawl(catalogRef, filter, recursive, callback, publish);
     						} catch(Exception e) {
@@ -135,6 +135,8 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
     				} else if (dataset instanceof InvDatasetImpl) {
     				    
     			        if (matcher.matches()) {
+    			            
+    			            final List<URI> catalogRefs = new ArrayList<URI>();
 
     			            if (LOG.isInfoEnabled()) 
     			                LOG.info("Catalog "+catalogURI.toString()+" matches filter regular expression, proceeding with publishing/unpubishing of records");
@@ -143,7 +145,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
                             final List<Record> _records = new ArrayList<Record>();
         				    
         					// list of records from this catalog
-        					final List<Record> records = parser.parseDataset(dataset, true); // set latest=true by default
+        					final List<Record> records = parser.parseDataset(dataset, true, catalogRefs); // set latest=true by default
         										
         					// top-level dataset
         					final Record drecord = records.get(0);	
@@ -174,7 +176,8 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
         				                            if (exDataset instanceof InvDatasetImpl) {
         				                                // publish previous records with "latest"=false
         				                                if (LOG.isInfoEnabled()) LOG.info("Republishing dataset: "+exDataset.getID()+" with latest=false");
-        				                                _records.addAll( parser.parseDataset(exDataset, false));
+        				                                // NOTE: the nested catalogRefs are ignored as they are already referenced in the outer loop
+        				                                _records.addAll( parser.parseDataset(exDataset, false, new ArrayList<URI>()));
         				                            }
         				                        }
         					                        					                    
@@ -209,6 +212,20 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
                                 callback.notify(drecord);
         					    
         					}
+        					
+        					// recursion
+                            if (recursive) {
+                                for (final URI catalogRef : catalogRefs) {
+                                    try {
+                                        crawl(catalogRef, filter, recursive, callback, publish);
+                                    } catch(Exception e) {
+                                        // print error from nested invocation
+                                        LOG.warn("Error parsing catalog: "+catalogRef.toString());
+                                        LOG.warn(e.getMessage());
+                                    }
+                                }
+                            }
+
         					
     			        } else {
     			            if (LOG.isInfoEnabled()) 
@@ -272,18 +289,6 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
         
         return output.getResults();
 	    
-	}
-	
-	private URI getCatalogRef(final InvDataset dataset) throws Exception {
-
-		final InvCatalogRef catalogRef = (InvCatalogRef) dataset;
-		String uriString = InvDatasetImpl.resolve(dataset, catalogRef.getXlinkHref());
-		uriString = uriString.replace("/./", "/");
-		uriString = uriString.replace("\\.\\", "\\");
-		final URI uri = new URI(uriString);
-		uri.normalize();
-		return uri;
-		
 	}
 
     @Override
