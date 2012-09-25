@@ -141,7 +141,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		// set replica flag from top-level dataset
         boolean isReplica = record.isReplica();
         
-        // recursion
+        // recursion within this catalog
 		parseSubDatasets(dataset, latest, isReplica, records, hostName, ds, catalogRefs);
 		
 		// set total size of dataset, number of files, number of aggregations
@@ -198,9 +198,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        if (childDataset instanceof InvCatalogRef) {
 	            
 	            try {
-    	            final URI catalogRef = ThreddsPars.getCatalogRef(childDataset);
-    	            System.out.println("detected catalog ref="+catalogRef.toString());
-    	            catalogRefs.add(catalogRef);
+	                catalogRefs.add( ThreddsPars.getCatalogRef(childDataset) );
+	                
 	            } catch(Exception e) {
 	                LOG.warn(e.getMessage());
 	            }

@@ -94,12 +94,18 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	/**
 	 * Method to crawl a THREDDS catalog located at some URI, and optionally the whole hierarchy of referenced catalogs.
 	 * An optional filter expression can be specified to filter the catalogs URIs.
+	 * 
+	 * This method implements the filtering and recursive behaviour, while leaving the crawl of a single dataset hierarchy to the
+	 * "crawlDataset" method.
+	 * 
 	 * @param uri : the URI of the starting THREDDS catalog
 	 * @param recursive : true to crawl the whole catalog hierarchy
 	 * @param publish: true to publish, false to unpublish
 	 */
 	public void crawl(final URI catalogURI, final String filter, boolean recursive, final RecordProducer callback, boolean publish) throws Exception {
 		
+        if (LOG.isInfoEnabled()) LOG.info("Parsing catalog: "+catalogURI.toString());
+        
 	    // regex pattern to match THREDDS catalogs URIs
 	    Pattern pattern = Pattern.compile(".*"); // match everything by default
 	    if (StringUtils.hasText(filter) && !filter.equals("*") && !filter.equalsIgnoreCase(QueryParameters.ALL)) {
@@ -109,84 +115,76 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	    
 	    // only crawl catalogs that match filter provided
 	    final Matcher matcher = pattern.matcher(catalogURI.toString());
+        if (matcher.matches()) {
+            
+            // parse THREDDS catalog
+            if (LOG.isInfoEnabled()) 
+                LOG.info("Catalog "+catalogURI.toString()+" matches filter regular expression, proceeding with publishing/unpubishing of records");
+            
+            // list of catalog references, anywhere in this catalog
+            final List<URI> catalogRefs = new ArrayList<URI>();
 	    
     	    try {
     	        
-    	        // parse THREDDS catalog
-    	        if (LOG.isInfoEnabled()) LOG.info("Parsing catalog: "+catalogURI.toString());
     	        final InvCatalog catalog = parseCatalog(catalogURI.toString());
-    							
+    	            							
     			for (final InvDataset dataset : catalog.getDatasets()) {
     				
     				if (dataset instanceof InvCatalogRef) {
-    				    
-    					if (recursive) {
-    						// crawl catalogs recursively
-    						final URI catalogRef = ThreddsPars.getCatalogRef(dataset);
-    						try {
-    						    crawl(catalogRef, filter, recursive, callback, publish);
-    						} catch(Exception e) {
-    						    // print error from nested invocation
-    						    LOG.warn("Error parsing catalog: "+catalogRef.toString());
-    						    LOG.warn(e.getMessage());
-    						}
-    					}
+    				  
+    				    // store this catalog reference
+    				    catalogRefs.add( ThreddsPars.getCatalogRef(dataset) );
     					
     				} else if (dataset instanceof InvDatasetImpl) {
     				    
-    			        if (matcher.matches()) {
-    			            
-    			            final List<URI> catalogRefs = new ArrayList<URI>();
-
-    			            if (LOG.isInfoEnabled()) 
-    			                LOG.info("Catalog "+catalogURI.toString()+" matches filter regular expression, proceeding with publishing/unpubishing of records");
-    				    
-    			            parseDataset(dataset, publish, callback, catalogRefs);
-        					
-        					// recursion
-                            if (recursive) {
-                                for (final URI catalogRef : catalogRefs) {
-                                    try {
-                                        crawl(catalogRef, filter, recursive, callback, publish);
-                                    } catch(Exception e) {
-                                        // print error from nested invocation
-                                        LOG.warn("Error parsing catalog: "+catalogRef.toString());
-                                        LOG.warn(e.getMessage());
-                                    }
-                                }
-                            }
-
-        					
-    			        } else {
-    			            if (LOG.isInfoEnabled()) 
-    			                LOG.info("Catalog: "+catalogURI.toString()+" does not match regular expression filter, skipping publishing/unpublishing of records.");
-    			        }
-    					
+    			      crawlDataset(dataset, publish, callback, catalogRefs);	
+     					
     				} // dataset instanceof InvCatalogRef or InvDatasetImpl
     				
-    			} // loop over datasets
+    			} // loop over top-level datasets in this catalog
+    			
+                // notify listener of successful completion
+                if (listener!=null) listener.afterCrawlingSuccess(catalogURI.toString());
     		    			
     		// invalid catalog
     		} catch(IOException e) {
+    		    
                 // notify listener of crawling error
                 if (listener!=null) listener.afterCrawlingError(catalogURI.toString());
+               
                 // throw the exception up the stack
     			throw e;
-    		}
     		
-            // notify listener of successful completion
-            if (listener!=null) listener.afterCrawlingSuccess(catalogURI.toString());
+    		}
+    		            
+            // recursion
+            if (recursive) {
+                for (final URI catalogRef : catalogRefs) {
+                    try {
+                        crawl(catalogRef, filter, recursive, callback, publish);
+                    } catch(Exception e) {
+                        // print error from nested invocation
+                        LOG.warn("Error parsing catalog: "+catalogRef.toString());
+                        LOG.warn(e.getMessage());
+                    }
+                }
+            }
+            
+        } else {
+            if (LOG.isInfoEnabled()) 
+                LOG.info("Catalog: "+catalogURI.toString()+" does not match regular expression filter, skipping publishing/unpublishing of records.");
+        }
             				
 	}
 	
 	/**
-	 * Method to parse a hierarchy of datasets contained within a single THREDDS catalog.
+	 * Method to crawl a hierarchy of datasets contained within a single THREDDS catalog.
 	 * @param dataset
 	 * @param publish
 	 * @param callback
 	 * @param catalogRefs
 	 */
-	private void parseDataset(final InvDataset dataset, boolean publish, final RecordProducer callback, 
+	private void crawlDataset(final InvDataset dataset, boolean publish, final RecordProducer callback, 
 	                          final List<URI> catalogRefs) throws Exception {
 	    
         // list or previous records to be republished
@@ -224,7 +222,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
                                 if (exDataset instanceof InvDatasetImpl) {
                                     // publish previous records with "latest"=false
                                     if (LOG.isInfoEnabled()) LOG.info("Republishing dataset: "+exDataset.getID()+" with latest=false");
-                                    // NOTE: the nested catalogRefs are ignored as they are already referenced in the outer loop
+                                    // NOTE: the nested catalogRefs are ignored as they will be processed independently
                                     _records.addAll( parser.parseDataset(exDataset, false, new ArrayList<URI>()));
                                 }
                             }
