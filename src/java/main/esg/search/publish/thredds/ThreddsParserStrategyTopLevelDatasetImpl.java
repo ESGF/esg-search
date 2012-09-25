@@ -198,7 +198,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        if (childDataset instanceof InvCatalogRef) {
 	            
 	            try {
-	                catalogRefs.add( ThreddsPars.getCatalogRef(childDataset) );
+	                catalogRefs.add( ThreddsUtils.getCatalogRef(childDataset) );
 	                
 	            } catch(Exception e) {
 	                LOG.warn(e.getMessage());
@@ -206,13 +206,13 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	            
 	        } else if (childDataset instanceof InvDatasetImpl) {
 	        	        
-    	        if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.FILE_ID) )) {
+    	        if (ThreddsUtils.isFile(childDataset)) {
     	            
     	            // parse files into separate records
     	            boolean inherit = true;
     	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, ds, QueryParameters.TYPE_FILE);
     
-    	        } else if (StringUtils.hasText( childDataset.findProperty(ThreddsPars.AGGREGATION_ID) )) {
+    	        } else if (ThreddsUtils.isAggregation(childDataset)) {
     	            
     	            // parse aggregations into separate records
     	            boolean inherit = false;
@@ -249,7 +249,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    final String url = dataset.getCatalogUrl();
 	    record.addField(QueryParameters.FIELD_URL, 
 	                    RecordHelper.encodeUrlTuple(url, 
-	                                                ThreddsPars.getMimeType(url, ThreddsPars.SERVICE_TYPE_CATALOG),
+	                                                ThreddsUtils.getMimeType(url, ThreddsPars.SERVICE_TYPE_CATALOG),
 	                                                ThreddsPars.SERVICE_TYPE_CATALOG));
 	    
         // FIXME

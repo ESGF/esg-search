@@ -18,17 +18,12 @@
  ******************************************************************************/
 package esg.search.publish.thredds;
 
-import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TimeZone;
-
-import thredds.catalog.InvCatalogRef;
-import thredds.catalog.InvDataset;
-import thredds.catalog.InvDatasetImpl;
 
 import esg.search.query.api.QueryParameters;
 
@@ -113,7 +108,7 @@ public class ThreddsPars {
 	public final static String SERVICE_TYPE_GRIDFTP = "GridFTP";
 	public final static String SERVICE_TYPE_FTP = "FTP";
 		
-	private final static Map<String,String> mimeTypes = new HashMap<String,String>();
+	public final static Map<String,String> mimeTypes = new HashMap<String,String>();
 	
 	// static initializer populates the mime types map
 	static {
@@ -127,65 +122,6 @@ public class ThreddsPars {
 	    mimeTypes.put(SERVICE_TYPE_HTTP.toLowerCase(), QueryParameters.MIME_TYPE_HTML);
 	    
 	}
-	
-	/**
-	 * Method to map the THREDDS service type to a known mime/type is possible, otherwise return the service type itself.
-	 * Note that in some cases, it is necessary to parse the URL extension to determine the proper mime type.
-	 * 
-	 * @param serviceType
-	 * @return
-	 */
-	public static final String getMimeType(final String url, final String serviceType) {
-	    
-	    // execute case-insensitive comparisons
-	    final String _serviceType = serviceType.toLowerCase();
-	    final String _url = url.toLowerCase();
-	    
-	    // special mapping of HTTP URLs
-	    if (_serviceType.equalsIgnoreCase(ThreddsPars.SERVICE_TYPE_HTTP)) {
-	        if (_url.endsWith(".nc") || _url.endsWith(".cdf")) {
-	            return QueryParameters.MIME_TYPE_NETCDF;
-	        } else if (_url.endsWith(".hdf") || _url.endsWith(".h5")) {
-	            return QueryParameters.MIME_TYPE_HDF;
-	        } else {
-	            return QueryParameters.MIME_TYPE_HTML;
-	        }
-	        
-	    // special mapping of OpenDAP URLs
-	    } else if (_serviceType.equalsIgnoreCase(ThreddsPars.SERVICE_TYPE_OPENDAP)) {
-	        if (_url.endsWith(".html")) {
-	            return QueryParameters.MIME_TYPE_OPENDAP_HTML;
-	        } else if (_url.endsWith(".dods")) {
-	            return QueryParameters.MIME_TYPE_OPENDAP_DODS;
-	        } else if (_url.endsWith(".das")) {
-                return QueryParameters.MIME_TYPE_OPENDAP_DAS;
-            } else if (_url.endsWith(".dds")) {
-                return QueryParameters.MIME_TYPE_OPENDAP_DDS;
-            } else {
-                return QueryParameters.MIME_TYPE_OPENDAP;
-            }
-	        
-	    } else {	    
-    	    if (mimeTypes.containsKey(_serviceType)) {
-    	        return mimeTypes.get(_serviceType);
-    	    } else {
-    	        return serviceType;
-    	    }
-	    }
-	
-	}
-	
-    public static URI getCatalogRef(final InvDataset dataset) throws Exception {
-
-        final InvCatalogRef catalogRef = (InvCatalogRef) dataset;
-        String uriString = InvDatasetImpl.resolve(dataset, catalogRef.getXlinkHref());
-        uriString = uriString.replace("/./", "/");
-        uriString = uriString.replace("\\.\\", "\\");
-        final URI uri = new URI(uriString);
-        uri.normalize();
-        return uri;
-        
-    }
 	
 	private ThreddsPars() {};
 	

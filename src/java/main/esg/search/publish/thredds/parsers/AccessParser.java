@@ -5,6 +5,7 @@ import thredds.catalog.InvDataset;
 import esg.search.core.Record;
 import esg.search.core.RecordHelper;
 import esg.search.publish.thredds.ThreddsPars;
+import esg.search.publish.thredds.ThreddsUtils;
 import esg.search.query.api.QueryParameters;
 
 /**
@@ -29,7 +30,7 @@ public class AccessParser implements ThreddsElementParser {
             
             // encode URL tuple
             record.addField(QueryParameters.FIELD_URL, 
-                            RecordHelper.encodeUrlTuple(url, ThreddsPars.getMimeType(url, type), access.getService().getDescription() ));
+                            RecordHelper.encodeUrlTuple(url, ThreddsUtils.getMimeType(url, type), access.getService().getDescription() ));
 
             // add access type to summary metadata
             ds.access.add(type);

@@ -133,7 +133,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
     				if (dataset instanceof InvCatalogRef) {
     				  
     				    // store this catalog reference
-    				    catalogRefs.add( ThreddsPars.getCatalogRef(dataset) );
+    				    catalogRefs.add( ThreddsUtils.getCatalogRef(dataset) );
     					
     				} else if (dataset instanceof InvDatasetImpl) {
     				    
@@ -196,69 +196,75 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
         // top-level dataset
         final Record drecord = records.get(0);  
         
-        // publish
-        if (publish) {
-            
-            // check versus existing records in the metadata repository
-            if (searchService!=null) {
-                final List<Record> exRecords = this.getLatestDatasets(drecord.getMasterId());
-                // loop over existing records
-                for (final Record exRecord : exRecords) {
-                    
-                    if (exRecord.getVersion()<drecord.getVersion()) {
-                        // case 1) publishing a newer version:
-                        // republish previous version with "latest"=false
+        // only publish/unpublish if it has associated files, aggregations or URLs (except for the THREDDS catalog URL)
+        // -) one top-level dataset + files or aggregations
+        // -) or, one or more access URLs besides THREDDS
+        if ( (records.size()>1) || (drecord.getFieldValues(QueryParameters.FIELD_URL).size()>1) ) {
+        
+            // publish
+            if (publish) {
+                
+                // check versus existing records in the metadata repository
+                if (searchService!=null) {
+                    final List<Record> exRecords = this.getLatestDatasets(drecord.getMasterId());
+                    // loop over existing records
+                    for (final Record exRecord : exRecords) {
                         
-                        // retrieve previous record THREDDS catalogs URI
-                        String exCatalogUri = RecordHelper.selectUrlByMimeType(exRecord, QueryParameters.MIME_TYPE_THREDDS);
-                        if (StringUtils.hasText(exCatalogUri)) {
+                        if (exRecord.getVersion()<drecord.getVersion()) {
+                            // case 1) publishing a newer version:
+                            // republish previous version with "latest"=false
                             
-                            final InvCatalog exCatalog = parseCatalog(exCatalogUri);
+                            // retrieve previous record THREDDS catalogs URI
+                            String exCatalogUri = RecordHelper.selectUrlByMimeType(exRecord, QueryParameters.MIME_TYPE_THREDDS);
+                            if (StringUtils.hasText(exCatalogUri)) {
                                 
-                            for (final InvDataset exDataset : exCatalog.getDatasets()) {
-                                if (LOG.isInfoEnabled()) 
-                                    LOG.info("Latest version in index: catalog uri="+exCatalogUri+" record id="
-                                            +exRecord.getId()+" record master_id="+exRecord.getMasterId()+" version="+exRecord.getVersion());
-                                if (exDataset instanceof InvDatasetImpl) {
-                                    // publish previous records with "latest"=false
-                                    if (LOG.isInfoEnabled()) LOG.info("Republishing dataset: "+exDataset.getID()+" with latest=false");
-                                    // NOTE: the nested catalogRefs are ignored as they will be processed independently
-                                    _records.addAll( parser.parseDataset(exDataset, false, new ArrayList<URI>()));
+                                final InvCatalog exCatalog = parseCatalog(exCatalogUri);
+                                    
+                                for (final InvDataset exDataset : exCatalog.getDatasets()) {
+                                    if (LOG.isInfoEnabled()) 
+                                        LOG.info("Latest version in index: catalog uri="+exCatalogUri+" record id="
+                                                +exRecord.getId()+" record master_id="+exRecord.getMasterId()+" version="+exRecord.getVersion());
+                                    if (exDataset instanceof InvDatasetImpl) {
+                                        // publish previous records with "latest"=false
+                                        if (LOG.isInfoEnabled()) LOG.info("Republishing dataset: "+exDataset.getID()+" with latest=false");
+                                        // NOTE: the nested catalogRefs are ignored as they will be processed independently
+                                        _records.addAll( parser.parseDataset(exDataset, false, new ArrayList<URI>()));
+                                    }
                                 }
+                                                                            
                             }
-                                                                        
+                          
+                        } else if (exRecord.getVersion()>drecord.getVersion()) {
+                            // case 2) publishing an older version:
+                            // change latest flag of this version before publishing it
+                            if (LOG.isInfoEnabled()) LOG.info("Index already contains newer version: "+exRecord.getVersion()
+                                                             +" - setting latest=false for this version: "+drecord.getVersion());
+    
+                            for (final Record record : records) {
+                                record.setLatest(false);
+                            }
+                            
+                        } else {
+                            // case 3) publishing the same version:
+                            // nothing to do
                         }
-                      
-                    } else if (exRecord.getVersion()>drecord.getVersion()) {
-                        // case 2) publishing an older version:
-                        // change latest flag of this version before publishing it
-                        if (LOG.isInfoEnabled()) LOG.info("Index already contains newer version: "+exRecord.getVersion()
-                                                         +" - setting latest=false for this version: "+drecord.getVersion());
-
-                        for (final Record record : records) {
-                            record.setLatest(false);
-                        }
-                        
-                    } else {
-                        // case 3) publishing the same version:
-                        // nothing to do
                     }
                 }
+                
+                // publish new and older versions as a single commit
+                records.addAll(_records);
+                callback.notify(records);
+                                        
+            // un-publish
+            } else {
+                
+                // remove top-level dataset only, files will follow
+                if (LOG.isDebugEnabled()) LOG.debug("Removing catalog for top-level dataset="+drecord.getId());
+                callback.notify(drecord);
+                
             }
-            
-            // publish new and older versions as a single commit
-            records.addAll(_records);
-            callback.notify(records);
-                                    
-        // un-publish
-        } else {
-            
-            // remove top-level dataset only, files will follow
-            if (LOG.isDebugEnabled()) LOG.debug("Removing catalog for top-level dataset="+drecord.getId());
-            callback.notify(drecord);
-            
-        }
-
+        
+        } // dataset hasUrls()
 	    
 	}
 	
