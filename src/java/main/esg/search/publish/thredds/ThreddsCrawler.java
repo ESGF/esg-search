@@ -160,7 +160,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
                     
                     // parse THREDDS catalog
                     if (LOG.isInfoEnabled()) 
-                        LOG.info("Catalog "+catalogURI.toString()+" matches filter regular expression, proceeding with publishing/unpubishing of records");
+                        LOG.info("Catalog "+catalogRef.toString()+" matches filter regular expression, proceeding with publishing/unpubishing of records");
                     try {
                         crawl(catalogRef, filter, recursive, callback, publish);
                     } catch(Exception e) {
@@ -171,7 +171,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
                 
                 } else {
                     if (LOG.isInfoEnabled()) 
-                        LOG.info("Catalog: "+catalogURI.toString()+" does not match regular expression filter, skipping publishing/unpublishing of records.");
+                        LOG.info("Catalog: "+catalogRef.toString()+" does not match regular expression filter, skipping publishing/unpublishing of records.");
                 } // regex match
                 
             }
