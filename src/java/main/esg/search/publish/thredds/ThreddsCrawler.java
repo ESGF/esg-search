@@ -107,59 +107,60 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
         if (LOG.isInfoEnabled()) LOG.info("Parsing catalog: "+catalogURI.toString());
         
 	    // regex pattern to match THREDDS catalogs URIs
+        // NOTE: always crawl top-level catalog, enforce regular expression only for nested catalogs
 	    Pattern pattern = Pattern.compile(".*"); // match everything by default
 	    if (StringUtils.hasText(filter) && !filter.equals("*") && !filter.equalsIgnoreCase(QueryParameters.ALL)) {
 	        pattern = Pattern.compile(filter);
 	    }
         if (LOG.isDebugEnabled()) LOG.debug("Crawling catalogs that match regex="+pattern.toString());
-	    
-	    // only crawl catalogs that match filter provided
-	    final Matcher matcher = pattern.matcher(catalogURI.toString());
-        if (matcher.matches()) {
-            
-            // parse THREDDS catalog
-            if (LOG.isInfoEnabled()) 
-                LOG.info("Catalog "+catalogURI.toString()+" matches filter regular expression, proceeding with publishing/unpubishing of records");
-            
-            // list of catalog references, anywhere in this catalog
-            final List<URI> catalogRefs = new ArrayList<URI>();
-	    
-    	    try {
-    	        
-    	        final InvCatalog catalog = parseCatalog(catalogURI.toString());
-    	            							
-    			for (final InvDataset dataset : catalog.getDatasets()) {
-    				
-    				if (dataset instanceof InvCatalogRef) {
-    				  
-    				    // store this catalog reference
-    				    catalogRefs.add( ThreddsUtils.getCatalogRef(dataset) );
-    					
-    				} else if (dataset instanceof InvDatasetImpl) {
-    				    
-    			      crawlDataset(dataset, publish, callback, catalogRefs);	
-     					
-    				} // dataset instanceof InvCatalogRef or InvDatasetImpl
-    				
-    			} // loop over top-level datasets in this catalog
-    			
-                // notify listener of successful completion
-                if (listener!=null) listener.afterCrawlingSuccess(catalogURI.toString());
-    		    			
-    		// invalid catalog
-    		} catch(IOException e) {
-    		    
-                // notify listener of crawling error
-                if (listener!=null) listener.afterCrawlingError(catalogURI.toString());
-               
-                // throw the exception up the stack
-    			throw e;
-    		
-    		}
+	                            
+        // list of catalog references, anywhere in this catalog
+        final List<URI> catalogRefs = new ArrayList<URI>();
+    
+	    try {
+	        
+	        final InvCatalog catalog = parseCatalog(catalogURI.toString());
+	            							
+			for (final InvDataset dataset : catalog.getDatasets()) {
+				
+				if (dataset instanceof InvCatalogRef) {
+				  
+				    // store this catalog reference
+				    catalogRefs.add( ThreddsUtils.getCatalogRef(dataset) );
+					
+				} else if (dataset instanceof InvDatasetImpl) {
+				    
+			      crawlDataset(dataset, publish, callback, catalogRefs);	
+ 					
+				} // dataset instanceof InvCatalogRef or InvDatasetImpl
+				
+			} // loop over top-level datasets in this catalog
+			
+            // notify listener of successful completion
+            if (listener!=null) listener.afterCrawlingSuccess(catalogURI.toString());
+		    			
+		// invalid catalog
+		} catch(IOException e) {
+		    
+            // notify listener of crawling error
+            if (listener!=null) listener.afterCrawlingError(catalogURI.toString());
+           
+            // throw the exception up the stack
+			throw e;
+		
+		}
     		            
-            // recursion
-            if (recursive) {
-                for (final URI catalogRef : catalogRefs) {
+        // recursion
+        if (recursive) {
+            for (final URI catalogRef : catalogRefs) {
+                
+                // only crawl catalogs that match filter provided
+                final Matcher matcher = pattern.matcher(catalogRef.toString());
+                if (matcher.matches()) {
+                    
+                    // parse THREDDS catalog
+                    if (LOG.isInfoEnabled()) 
+                        LOG.info("Catalog "+catalogURI.toString()+" matches filter regular expression, proceeding with publishing/unpubishing of records");
                     try {
                         crawl(catalogRef, filter, recursive, callback, publish);
                     } catch(Exception e) {
@@ -167,14 +168,15 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
                         LOG.warn("Error parsing catalog: "+catalogRef.toString());
                         LOG.warn(e.getMessage());
                     }
-                }
+                
+                } else {
+                    if (LOG.isInfoEnabled()) 
+                        LOG.info("Catalog: "+catalogURI.toString()+" does not match regular expression filter, skipping publishing/unpublishing of records.");
+                } // regex match
+                
             }
-            
-        } else {
-            if (LOG.isInfoEnabled()) 
-                LOG.info("Catalog: "+catalogURI.toString()+" does not match regular expression filter, skipping publishing/unpublishing of records.");
         }
-            				
+                        				
 	}
 	
 	/**
