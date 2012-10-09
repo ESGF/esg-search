@@ -185,7 +185,7 @@ public class SearchServiceImpl implements SearchService {
 	}
 	
 	/**
-     *  Private method containin the business logic implementation of the public query method.
+     *  Private method contains the business logic implementation of the public query method.
      */
     private String _query(final SearchInput input, final SearchReturnType returnType) throws Exception {
         
@@ -208,10 +208,7 @@ public class SearchServiceImpl implements SearchService {
         } else {
             if (this.datasetsReadTimeout>0) httpClient.setReadTimeout(this.datasetsReadTimeout);
         }
-        
-        // execute HTTP/GET request, return response as Solr/XML or Solr/JSON
-        //String output = httpClient.doGet( new URL(builder.buildSelectUrl() + "?" + builder.buildSelectQueryString()) );
-        
+                
         // execute HTTP/POST request, return response as Solr/XML or Solr/JSON   
         String output = httpClient.doPost(new URL(builder.buildSelectUrl()), builder.buildSelectQueryString(), false);
         
