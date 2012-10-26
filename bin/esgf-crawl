@@ -66,12 +66,13 @@ crawl_site() {
     local site=$(resolve_site ${1})
     local regex=${2:-'ALL'}
     local host=$(echo "${site}" | sed -n 's@http[s]*://\([^/]*\)/.*@\1@p')
+    local java_opts=${JAVA_OPTS:-"-Xmx1024m"}
     verbose_print "------------"
     verbose_print "host: ${host}"
     echo "crawling ${site} ...."
     ((DEBUG)) && curl -s ${site}
-    verbose_print "$JAVA_HOME/bin/java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} ${regex} THREDDS $( ((REMOVE)) && echo "false" || echo "true") ${out_dir}/${host}_publishing.log"
-    $JAVA_HOME/bin/java -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} ${regex} THREDDS $( ((REMOVE)) && echo "false" || echo "true") ${out_dir}/${host}_publishing.log
+    verbose_print "$JAVA_HOME/bin/java $([[ ${java_opts} ]] && echo ${java_opts}) -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} ${regex} THREDDS $( ((REMOVE)) && echo "false" || echo "true") ${out_dir}/${host}_publishing.log"
+    $JAVA_HOME/bin/java $([[ ${java_opts} ]] && echo "${java_opts}") -Dlog4j.configuration=./log4j.xml -Djava.ext.dirs=../lib esg.search.publish.impl.PublishingServiceMain ${site} ${regex} THREDDS $( ((REMOVE)) && echo "false" || echo "true") ${out_dir}/${host}_publishing.log
     verbose_print "------------"
 }
 
