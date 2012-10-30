@@ -104,6 +104,9 @@ public class SolrXmlPars {
 	final public static String FIELD_SOUTH = "south_degrees";
 	final public static String FIELD_EAST = "east_degrees";
 	final public static String FIELD_WEST = "west_degrees";
+	final public static String FIELD_HEIGHT_BOTTOM = "height_bottom";
+	final public static String FIELD_HEIGHT_TOP = "height_top";
+	final public static String FIELD_HEIGHT_UNITS = "height_units";
 	
 	final public static String FIELD_DATA_FORMAT = "data_format";
 	final public static String FIELD_FILE_NAME = "file_name";

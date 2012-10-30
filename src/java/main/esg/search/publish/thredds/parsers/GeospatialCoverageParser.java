@@ -1,5 +1,7 @@
 package esg.search.publish.thredds.parsers;
 
+import org.springframework.util.StringUtils;
+
 import thredds.catalog.InvDataset;
 import thredds.catalog.ThreddsMetadata.GeospatialCoverage;
 import esg.search.core.Record;
@@ -47,6 +49,11 @@ public class GeospatialCoverageParser implements ThreddsElementParser {
                 record.addField(SolrXmlPars.FIELD_WEST, Double.toString(gsc.getEastWestRange().getStart()));
             if (gsc.getEastWestRange()!=null)
                 record.addField(SolrXmlPars.FIELD_EAST, Double.toString(gsc.getEastWestRange().getStart()+gsc.getEastWestRange().getSize()));
+            if (gsc.getUpDownRange()!=null) {
+                record.addField(SolrXmlPars.FIELD_HEIGHT_BOTTOM, Double.toString(gsc.getUpDownRange().getStart()));
+                record.addField(SolrXmlPars.FIELD_HEIGHT_TOP, Double.toString(gsc.getUpDownRange().getStart()+gsc.getUpDownRange().getSize()));
+                record.addField(SolrXmlPars.FIELD_HEIGHT_UNITS, gsc.getHeightUnits());
+            }
             
             // summary metadata
             if (gsc.getNorthSouthRange()!=null) {        
@@ -56,6 +63,12 @@ public class GeospatialCoverageParser implements ThreddsElementParser {
             if (gsc.getEastWestRange()!=null) {                
                 if (ds.lonEast<gsc.getLonEast()) ds.lonEast = gsc.getLonEast();
                 if (ds.lonWest>gsc.getLonWest()) ds.lonWest = gsc.getLonWest();                
+            }
+            if (gsc.getUpDownRange()!=null) {
+                if (ds.heightBottom>gsc.getUpDownRange().getStart()) ds.heightBottom=gsc.getUpDownRange().getStart();
+                if (ds.heightTop<(gsc.getUpDownRange().getStart()+gsc.getUpDownRange().getSize())) 
+                    ds.heightTop=(gsc.getUpDownRange().getStart()+gsc.getUpDownRange().getSize());
+                if (StringUtils.hasText(gsc.getHeightUnits())) ds.heightUnits = gsc.getHeightUnits();
             }
             
         }

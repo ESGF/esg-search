@@ -26,6 +26,11 @@ public class DatasetSummary {
     public double latNorth = Double.MIN_VALUE;
     public double latSouth = Double.MAX_VALUE;
     
+    public double heightBottom = Double.MAX_VALUE;
+    public double heightTop = Double.MIN_VALUE;
+    public String heightUnits = "";
+    
+    
     // HTTPServer, OPENDAP, GridFTP
     public Set<String> access = new HashSet<String>();
 

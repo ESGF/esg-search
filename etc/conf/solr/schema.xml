@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="ESGF-v1.8" version="1.2">
+<schema name="ESGF-v1.9" version="1.2">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        Applications should change this to reflect the nature of the search collection.
        version="1.2" is Solr's version number for the schema syntax and semantics.  It should
@@ -56,6 +56,7 @@
        .....
        1.7: added field "number_of_aggregations"
        1.8: removed default="NOW" for record time stamps
+       1.9: added height fields: top, bottom, units
      -->
 
   <types>
@@ -483,6 +484,11 @@
    <field name="east_degrees" type="float" indexed="true" stored="true" multiValued="false"/>
    <field name="south_degrees" type="float" indexed="true" stored="true" multiValued="false"/>
    <field name="west_degrees" type="float" indexed="true" stored="true" multiValued="false"/>
+   
+   <!-- Altitude range -->
+   <field name="height_bottom" type="float" indexed="true" stored="true" multiValued="false"/>
+   <field name="height_top" type="float" indexed="true" stored="true" multiValued="false"/>
+   <field name="height_units" type="string" indexed="true" stored="true" multiValued="false"/>
    
    <!-- Metadata file fields -->
    <field name="metadata_format" type="string" indexed="true" stored="true" multiValued="false"/>
