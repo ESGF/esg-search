@@ -281,3 +281,6 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 3.4.0
 -- Provide top-level summary of dataset access points (https://github.com/ESGF/esg-search/issues/1)
 -- Harvest geospatial and temporal information into top-level dataset (https://github.com/ESGF/esg-search/issues/2)
+
+3.5.0
+-- https://github.com/ESGF/esg-search/issues?milestone=2&page=1&state=closed
