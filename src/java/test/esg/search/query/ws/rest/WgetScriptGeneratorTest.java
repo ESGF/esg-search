@@ -39,6 +39,8 @@ public class WgetScriptGeneratorTest {
 		Field tmpField = WgetScriptGenerator.class.getDeclaredField("TEMPLATE");
 		tmpField.setAccessible(true);
 		tmpField.set(null, sb.toString());
+		fr.close();
+		
 	}
 
 	@Test
@@ -46,6 +48,12 @@ public class WgetScriptGeneratorTest {
 		WgetScriptGenerator.init(null);
 	}
 	
+	/**
+	 * As we read the template also here, there's not much to be tested, just
+	 * that there's something in the variable and no exception is thrown.
+	 * 
+	 * @throws Exception not expected
+	 */
 	@Test
 	public void testTemplate() throws Exception{
 		Field tmpField = WgetScriptGenerator.class.getDeclaredField("TEMPLATE");
@@ -54,7 +62,7 @@ public class WgetScriptGeneratorTest {
 		assertNotNull(tmp);
 		assertTrue(tmp instanceof String);
 		assertTrue(((String)tmp).length() > 100);
-		if (VERBOSE) System.out.println(tmp);
+		//if (VERBOSE) System.out.println(tmp);
 	}
 	
 	@Test
