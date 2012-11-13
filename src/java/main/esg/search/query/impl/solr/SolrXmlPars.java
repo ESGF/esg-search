@@ -93,6 +93,7 @@ public class SolrXmlPars {
 	final public static String FIELD_VARIABLE = "variable";
 	final public static String FIELD_CF_STANDARD_NAME = "cf_standard_name";
 	final public static String FIELD_VARIABLE_LONG_NAME = "variable_long_name";
+	final public static String FIELD_VARIABLE_UNITS = "variable_units";
 	final public static String FIELD_GCMD_TERM = "gcmd_term";
 	final public static String FIELD_EXPERIMENT = "experiment";
 	final public static String FIELD_EXPERIMENT_FAMILY = "experiment_family";

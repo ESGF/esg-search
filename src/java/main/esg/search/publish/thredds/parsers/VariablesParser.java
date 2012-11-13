@@ -29,16 +29,24 @@ public class VariablesParser implements ThreddsElementParser {
         for (final Variables variables : dataset.getVariables()) {
             final String vocabulary = variables.getVocabulary();
             for (final Variable variable : variables.getVariableList()) {
+                
+                // NOTE: these arrays must always have the same number of entries
                 record.addField(SolrXmlPars.FIELD_VARIABLE, variable.getName());
+                if (StringUtils.hasText(variable.getDescription())) record.addField(SolrXmlPars.FIELD_VARIABLE_LONG_NAME, variable.getDescription());
+                else record.addField(SolrXmlPars.FIELD_VARIABLE_LONG_NAME, "");
+                if (StringUtils.hasText(variable.getUnits())) record.addField(SolrXmlPars.FIELD_VARIABLE_UNITS, variable.getUnits());
+                else record.addField(SolrXmlPars.FIELD_VARIABLE_UNITS, "");
+                
                 if (vocabulary.equals(ThreddsPars.CF)) {
                     // convert all CF names to lower case, and join by "_"
-                    record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, 
-                                    variable.getVocabularyName().toLowerCase().replaceAll("\\s+", "_"));
+                    if (StringUtils.hasText(variable.getVocabularyName()))
+                        record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, variable.getVocabularyName().toLowerCase().replaceAll("\\s+", "_"));
+                    else record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, "");
                     // do not include if containing upper case letters or spaces
                     //final Matcher matcher = NON_CF_PATTERN.matcher(variable.getVocabularyName());
                     //if (!matcher.matches()) record.addField(SolrXmlPars.FIELD_CF_STANDARD_NAME, variable.getVocabularyName());
                 }
-                if (StringUtils.hasText(variable.getDescription())) record.addField(SolrXmlPars.FIELD_VARIABLE_LONG_NAME, variable.getDescription());
+               
             }
         }        
 
