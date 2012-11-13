@@ -80,6 +80,13 @@ public class PropertiesParser implements ThreddsElementParser {
                     LOG.warn(e.getMessage());
                 }
                 
+            } else if (   property.getName().equals(SolrXmlPars.FIELD_VARIABLE)
+                       || property.getName().equals(SolrXmlPars.FIELD_VARIABLE_LONG_NAME)
+                       || property.getName().equals(SolrXmlPars.FIELD_VARIABLE_UNITS)
+                       || property.getName().equals(SolrXmlPars.FIELD_CF_STANDARD_NAME) ) {
+                
+                // do NOT harvest - would override content from THREDDS <variables> snippet
+                
             } else {
                 // index all other properties verbatim
                 record.addField(property.getName(), property.getValue());
