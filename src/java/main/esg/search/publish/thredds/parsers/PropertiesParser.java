@@ -38,7 +38,7 @@ public class PropertiesParser implements ThreddsElementParser {
                 // note: override "master_id" with version-independent identifier
                 // <property name="dataset_id" value="obs4MIPs.NASA-JPL.AIRS.mon"/>
                 // <property name="file_id" value="obs4MIPs.NASA-JPL.AIRS.mon.husNobs_AIRS_L3_RetStd-v5_200209-201105.nc"/>
-                record.setMasterId(property.getValue());
+                record.setMasterId(property.getValue().replaceAll("/", ".")); // FIXME ?
                 
             } else if (property.getName().equals(QueryParameters.FIELD_TITLE)) {
                 // note: record title already set from dataset name

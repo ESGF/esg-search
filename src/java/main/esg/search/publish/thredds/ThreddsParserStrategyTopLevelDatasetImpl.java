@@ -379,7 +379,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    
 	    // retrieve dataset ID from THREDDS catalog...
 	    // <dataset name="...." ID="..." restrictAccess="...">
-        String id = dataset.getID();
+        String id = dataset.getID().replaceAll("/", "."); // FIXME ?
         
         // ...or assign random UUID if dataset id was not found
         if (id==null) id = UUID.randomUUID().toString();
