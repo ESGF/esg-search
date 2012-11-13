@@ -153,6 +153,20 @@ public class RecordImpl implements Record, Serializable {
 	}
 	
 	/**
+	 * {@inheritDoc}
+	 * 
+	 * Note that the field name must be non null.
+	 */
+	public void addEmptyField(final String name) {
+	    if (this.hasText(name)) {
+            if (!fields.containsKey(name)) {
+                fields.put(name, new ArrayList<String>());
+            }
+            fields.get(name).add("");
+        }
+	}
+	
+	/**
      * {@inheritDoc}
      * 
      */

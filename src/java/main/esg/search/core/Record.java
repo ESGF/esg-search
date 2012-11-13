@@ -114,6 +114,13 @@ public interface Record {
 	void addField(final String name, final String value);
 	
 	/**
+	 * Method to add an empty value to a given named field.
+	 * This may be useful when populating sets of correlated arrays.
+	 * @param name
+	 */
+	void addEmptyField(final String name);
+	
+	/**
 	 * Method to completely replace a record's field with a new set of values.
 	 * @param name
 	 * @param values
