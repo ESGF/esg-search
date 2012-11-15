@@ -283,7 +283,7 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 -- Harvest geospatial and temporal information into top-level dataset (https://github.com/ESGF/esg-search/issues/2)
 
 3.5.0
--- https://github.com/ESGF/esg-search/issues?milestone=2&page=1&state=closed
+-- https://github.com/ESGF/esg-search/issues?milestone=2&state=closed
 
 3.6.0
--- https://github.com/ESGF/esg-search/issues?milestone=3&state=open
+-- https://github.com/ESGF/esg-search/issues?milestone=3&state=closed
