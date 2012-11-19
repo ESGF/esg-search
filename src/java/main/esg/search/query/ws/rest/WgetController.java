@@ -99,9 +99,9 @@ public class WgetController {
             }
             
             @Override
-            public Map<String, String> getParameterMap() {
+            public Map<String, String[]> getParameterMap() {
                 @SuppressWarnings("unchecked")
-                HashMap<String, String> new_map = new HashMap<String, String>(super.getParameterMap());
+                HashMap<String, String[]> new_map = new HashMap<String, String[]>(super.getParameterMap());
                 for (String s : LOCAL_FIELDS) {
                     new_map.remove(s);
                 }
