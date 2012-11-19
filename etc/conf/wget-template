@@ -137,7 +137,7 @@ while getopts ':c:pfF:o:w:iuUndvqh' OPT; do
         w) output="$OPTARG";;           #<file> : Write embedded files into a file and exit
         i) insecure=1;;                 #       : set insecure mode, i.e. don't check server certificate
         u) update=1;;                   #       : Issue the search again and see if something has changed.
-        U) update_files=1;;             #       : Update files from server overwritting local ones (detect with -u)
+        U) update_files=1;;             #       : Update files from server overwriting local ones (detect with -u)
         n) dry_run=1;;                  #       : Don't download any files, just report.
         d) verbose=1;debug=1;;          #       : display debug information
         v) verbose=1;;                  #       : be more verbose

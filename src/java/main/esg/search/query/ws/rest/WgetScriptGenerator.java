@@ -70,7 +70,7 @@ public class WgetScriptGenerator {
 		
         private final String MSG_FILE_COLLISION = "There were files with the "
             + "same name which were requested to be download to the same "
-            + "directory. To avoid overwritting the previous downloaded "
+            + "directory. To avoid overwriting the previous downloaded "
             + "one they were skipped.\nPlease use the parameter "
             + "'download_structure' to set up unique directories for them.";
 		private boolean collision_msg_sent = false;
