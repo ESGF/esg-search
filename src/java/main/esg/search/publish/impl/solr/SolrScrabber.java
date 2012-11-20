@@ -29,14 +29,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import esg.search.core.Record;
+import esg.search.publish.api.RecordConsumer;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
- * Implementation of {@link SolrClient} that sends (skeleton) records to a Solr server for removal.
- * Note that bulk removal is delegated to removal of single records.
+ * Implementation of {@link RecordConsumer} that sends (skeleton) records to a Solr server for removal.
  */
 @Component("scrabber")
-public class SolrScrabber extends SolrClient {
+public class SolrScrabber implements RecordConsumer {
+    
+    // client object that sends XML requests to Solr server
+    final SolrClient solrClient;
 						
 	/**
 	 * Constructor delegates to superclass.
@@ -44,7 +47,7 @@ public class SolrScrabber extends SolrClient {
 	 */
 	@Autowired
 	public SolrScrabber(final @Value("${esg.search.solr.publish.url}") URL url) {
-		super(url);
+	    solrClient = new SolrClient(url);
 	}
 
 	/**
@@ -52,27 +55,10 @@ public class SolrScrabber extends SolrClient {
 	 */
 	public void consume(final Record record) throws Exception {
 		
-	    delete( Arrays.asList( new String[]{record.getId()} ) );
+	    solrClient.delete( Arrays.asList( new String[]{record.getId()} ) );
 		
 	}
 	
-	/**
-	 * Method to delete a list of documents, from all cores.
-	 * @param ids
-	 */
-	public void delete(List<String> ids) throws Exception {
-	    
-	    // loop over all cores, remove records from all cores alike
-        for (final String core : SolrXmlPars.CORES.values()) {
-            final String xml = messageBuilder.buildDeleteMessage(ids, true);
-            final URL postUrl = solrUrlBuilder.buildUpdateUrl(core); 
-            if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
-            httpClient.doPost(postUrl, xml, true);
-        }
-        
-        // commit changes to all cores
-        commit();
-	}
 	
 	/**
      * {@inheritDoc}
@@ -83,7 +69,7 @@ public class SolrScrabber extends SolrClient {
         for (final Record record : records) {
             ids.add(record.getId());
         }
-        delete(ids);
+        solrClient.delete(ids);
         
     }
 

@@ -1,5 +1,7 @@
 package esg.search.publish.jaxrs;
 
+import java.net.URL;
+
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -12,10 +14,10 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
-import esg.search.publish.impl.solr.SolrIndexer;
-import esg.search.publish.impl.solr.SolrScrabber;
+import esg.search.publish.impl.solr.SolrClient;
 
 @Path("/")
 @Produces("application/xml")
@@ -23,13 +25,17 @@ public class PublishResource {
     
     private final Log LOG = LogFactory.getLog(this.getClass());
     
+    // client that sends XML requests to the Solr server
+    public SolrClient solrClient; 
+        
+    /**
+     * Constructor is configured to interact with a specific Solr server.
+     * @param url
+     */
     @Autowired
-    public SolrIndexer solrIndexer;
-    
-    @Autowired
-    public SolrScrabber solrScrabber;
-    
-    public PublishResource() {}
+    public PublishResource(final @Value("${esg.search.solr.publish.url}") URL url) {
+        solrClient = new SolrClient(url);
+    }
     
     @GET
     @Produces("text/plain")
@@ -47,8 +53,9 @@ public class PublishResource {
         }
         
         try {
-            solrScrabber.delete( Arrays.asList( ids ) );
+            solrClient.delete( Arrays.asList( ids ) );
         } catch(Exception e) {
+            e.printStackTrace();
             throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
         }
                 
@@ -63,9 +70,10 @@ public class PublishResource {
         String request = "<add>"+record+"</add>";
         
         try {
-            String response = solrIndexer.index(request, type, true); // commit=true after this record
+            String response = solrClient.index(request, type, true); // commit=true after this record
             return response;
         } catch(Exception e) {
+            e.printStackTrace();
             throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
         }
         

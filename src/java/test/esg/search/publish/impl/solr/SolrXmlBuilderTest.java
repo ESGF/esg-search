@@ -19,9 +19,7 @@ import esg.search.query.api.QueryParameters;
 import esg.search.utils.StringUtils;
 
 public class SolrXmlBuilderTest {
-	
-	final SolrXmlBuilder solrMessageHandler = new SolrXmlBuilder();
-	
+		
 	private final Log LOG = LogFactory.getLog(this.getClass());
 	
 	final Record record = new RecordImpl();
@@ -60,7 +58,7 @@ public class SolrXmlBuilderTest {
 	public void testBuildDeleteMessage() throws IOException {
 		
 		final List<String> ids = Arrays.asList(new String[]{ "123", "456"} );
-		final String xml = solrMessageHandler.buildDeleteMessage(ids, true);
+		final String xml = SolrXmlBuilder.buildDeleteMessage(ids, true);
 		if (LOG.isInfoEnabled()) LOG.info(xml);
 		Assert.assertEquals( StringUtils.compact(FileUtils.readFileToString( DELETE_MESSAGE.getFile() ) ), StringUtils.compact( xml ));
 		
@@ -73,7 +71,7 @@ public class SolrXmlBuilderTest {
 	@Test
 	public void testBuildAddMessage() throws IOException {
 		
-		String xml = solrMessageHandler.buildAddMessage(record, true);
+		String xml = SolrXmlBuilder.buildAddMessage(record, true);
 		if (LOG.isInfoEnabled()) LOG.info(xml);
 		Assert.assertEquals( StringUtils.compact(FileUtils.readFileToString( ADD_MESSAGE.getFile() ) ), StringUtils.compact( xml ));
 	

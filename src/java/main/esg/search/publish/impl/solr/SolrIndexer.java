@@ -21,20 +21,21 @@ package esg.search.publish.impl.solr;
 import java.net.URL;
 import java.util.Collection;
 
-import org.apache.commons.lang.WordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 import esg.search.core.Record;
-import esg.search.query.impl.solr.SolrXmlPars;
+import esg.search.publish.api.RecordConsumer;
 
 /**
- * Implementation of {@link SolrClient} that sends (fully populated) records to a Solr server for indexing.
+ * Implementation of {@link RecordConsumer} that sends (fully populated) records to a Solr server for indexing.
  */
 @Component("indexer")
-public class SolrIndexer extends SolrClient {
+public class SolrIndexer implements RecordConsumer {
+    
+    // client object that sends XML requests to Solr server
+    final SolrClient solrClient;
 				
 	/**
 	 * Constructor delegates to superclass.
@@ -42,7 +43,7 @@ public class SolrIndexer extends SolrClient {
 	 */
 	@Autowired
 	public SolrIndexer(final @Value("${esg.search.solr.publish.url}") URL url) {
-		super(url);
+	    solrClient = new SolrClient(url);
 	}
 
 	/**
@@ -51,37 +52,11 @@ public class SolrIndexer extends SolrClient {
 	 */
 	public void consume(final Record record) throws Exception {
 	    	    
-		final String xml = messageBuilder.buildAddMessage(record, true);
-		this.index(xml, record.getType(), true); // commit=true
+		final String xml = SolrXmlBuilder.buildAddMessage(record, true);
+		solrClient.index(xml, record.getType(), true); // commit=true
 				
 	}
-	
-	/**
-	 * Method to index a single XML record.
-	 * @param xml.
-	 * @param type : chosen among the supported record types.
-	 * @param commit : true to commit the transaction after indexing this record, false if other records are coming.
-	 * @return
-	 * @throws Exception
-	 */
-	public String index(final String xml, final String type, boolean commit) throws Exception {
-	    
-	    // validate record type versus supported Solr cores
-	    final String core = SolrXmlPars.CORES.get( WordUtils.capitalize(type) );
-        if (!StringUtils.hasText(core)) throw new Exception("Unmapped core for record type="+type);
-        final URL postUrl = solrUrlBuilder.buildUpdateUrl(core);
-        
-        // send POST request
-        if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
-        String response = httpClient.doPost(postUrl, xml, true);
-        
-        // commit changes, do not optimize for a single record
-        if (commit) this.commit();
-        
-        return response;
-	    
-	}
-	
+		
 	/**
      * {@inheritDoc}
      * 
@@ -93,13 +68,13 @@ public class SolrIndexer extends SolrClient {
         // index one record at a time, do not commit
         for (final Record record : records) {
             
-            final String xml = messageBuilder.buildAddMessage(record, true);
-            this.index(xml, record.getType(), true);
+            final String xml = SolrXmlBuilder.buildAddMessage(record, true);
+            solrClient.index(xml, record.getType(), true);
             
         }
         
         // commit all records at once, to all cores
-        commit();
+        solrClient.commit();
         
     }
 

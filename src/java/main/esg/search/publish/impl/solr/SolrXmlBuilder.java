@@ -27,7 +27,7 @@ public class SolrXmlBuilder {
 	 * Example output XML: <delete><id>05991</id><query>dataset_id:05991</query><id>06544</id><query>dataset_id:06544</query></delete>
 	 * @param ids
 	 */
-	public String buildDeleteMessage(final List<String> ids, final boolean indent) {
+	public static String buildDeleteMessage(final List<String> ids, final boolean indent) {
 		
 		// <delete>
 		final Element deleteEl = new Element(SolrXmlPars.ELEMENT_DELETE);
@@ -67,7 +67,7 @@ public class SolrXmlBuilder {
      * 		</doc>
 	 *	</add>
 	 */
-	public String buildAddMessage(final Record record, final boolean indent) {
+	public static String buildAddMessage(final Record record, final boolean indent) {
 		
 		// <add>
 		final Element addEl = new Element(SolrXmlPars.ELEMENT_ADD);
@@ -112,7 +112,7 @@ public class SolrXmlBuilder {
 	 * @param indent
 	 * @return
 	 */
-	public String buildCommitMessage() {
+	public static String buildCommitMessage() {
 	    return "<commit waitfFlush=\"true\" waitSearcher=\"true\"/>";
 	}
 	
@@ -122,14 +122,16 @@ public class SolrXmlBuilder {
      * @param indent
      * @return
      */
-    public String buildOptimizeMessage() {
+    public static String buildOptimizeMessage() {
         return "<optimize/>";
     }
 	
-	private String toString(final Element element, final boolean indent) {
+	private static String toString(final Element element, final boolean indent) {
 	  	Format format = (indent ? Format.getPrettyFormat() : Format.getCompactFormat());
 	  	XMLOutputter outputter = new XMLOutputter(format);
 	  	return outputter.outputString(element) + (indent ? NEWLINE : "");
 	}
+	
+	private SolrXmlBuilder() {}
 
 }

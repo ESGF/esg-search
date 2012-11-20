@@ -22,28 +22,23 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
+import org.apache.commons.lang.WordUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.util.StringUtils;
 
-import esg.search.publish.api.RecordConsumer;
 import esg.search.query.impl.solr.SolrUrlBuilder;
 import esg.search.query.impl.solr.SolrXmlPars;
 import esg.search.utils.HttpClient;
 
 /**
- * Abstract implementation of {@link RecordConsumer} that sends records to a remote Solr server.
- * Specific sub-classes define how the records are consumed (inserted, removed, etc.).
+ * Client object that sends XML requests to a Solr server.
  */
-public abstract class SolrClient implements RecordConsumer {
+public class SolrClient {
 					
 	protected final Log LOG = LogFactory.getLog(this.getClass());
-	
-	/**
-	 * Utility class used to generate Solr XML messages.
-	 */
-	protected SolrXmlBuilder messageBuilder = new SolrXmlBuilder();
-
 	
 	/**
 	 * Instance attribute shared among all HTTP request,
@@ -67,6 +62,50 @@ public abstract class SolrClient implements RecordConsumer {
 	}
 	
 	/**
+     * Method to index a single XML record.
+     * @param xml.
+     * @param type : chosen among the supported record types.
+     * @param commit : true to commit the transaction after indexing this record, false if other records are coming.
+     * @return
+     * @throws Exception
+     */
+    public String index(final String xml, final String type, boolean commit) throws Exception {
+        
+        // validate record type versus supported Solr cores
+        final String core = SolrXmlPars.CORES.get( WordUtils.capitalize(type) );
+        if (!StringUtils.hasText(core)) throw new Exception("Unmapped core for record type="+type);
+        final URL postUrl = solrUrlBuilder.buildUpdateUrl(core);
+        
+        // send POST request
+        if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
+        String response = httpClient.doPost(postUrl, xml, true);
+        
+        // commit changes, do not optimize for a single record
+        if (commit) this.commit();
+        
+        return response;
+        
+    }
+    
+    /**
+     * Method to delete a list of documents, from all cores.
+     * @param ids
+     */
+    public void delete(List<String> ids) throws Exception {
+        
+        // loop over all cores, remove records from all cores alike
+        for (final String core : SolrXmlPars.CORES.values()) {
+            final String xml = SolrXmlBuilder.buildDeleteMessage(ids, true);
+            final URL postUrl = solrUrlBuilder.buildUpdateUrl(core); 
+            if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
+            httpClient.doPost(postUrl, xml, true);
+        }
+        
+        // commit changes to all cores
+        commit();
+    }
+	
+	/**
 	 * Method to commit changes to all cores,
 	 * and wait till the commit goes into effect
 	 */
@@ -74,7 +113,7 @@ public abstract class SolrClient implements RecordConsumer {
 	    
         for (final String core : SolrXmlPars.CORES.values()) {
             
-            String xml = messageBuilder.buildCommitMessage();
+            String xml = SolrXmlBuilder.buildCommitMessage();
             URL postUrl = solrUrlBuilder.buildUpdateUrl(core);
             if (LOG.isInfoEnabled()) LOG.info("Issuing commit:"+xml+" to URL:"+postUrl.toString());
             httpClient.doPost(postUrl, xml, true);

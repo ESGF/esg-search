@@ -44,9 +44,7 @@ public class FileWriter extends SingleRecordConsumer {
 	private File directory;
 		
 	private static final Log LOG = LogFactory.getLog(FileWriter.class);
-	
-	private SolrXmlBuilder serializer = new SolrXmlBuilder();
-	
+		
 	/**
 	 * Constructor uses "java.io.tmpdir" environment by default
 	 */
@@ -65,7 +63,7 @@ public class FileWriter extends SingleRecordConsumer {
 		
 		final File file = new File(directory, record.getId()+".xml");
 		if (LOG.isInfoEnabled()) LOG.info("Indexing record:"+record.getId()+" to file:"+file.getAbsolutePath());
-		final String xml = serializer.buildAddMessage(record, true);
+		final String xml = SolrXmlBuilder.buildAddMessage(record, true);
 		FileUtils.writeStringToFile(file, xml);
 		
 	}
