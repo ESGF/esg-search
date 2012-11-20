@@ -120,5 +120,12 @@
 	<classpathentry kind="lib" path="lib/fetched/spring-core-3.0.7.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/spring-expression-3.0.7.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/spring-instrument-3.0.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/cxf-api-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/cxf-rt-bindings-xml-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/cxf-rt-core-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/cxf-rt-frontend-jaxrs-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/cxf-rt-transports-http-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/jsr250-api-1.0.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/jsr311-api-1.1.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

@@ -19,6 +19,7 @@
 package esg.search.publish.impl.solr;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -51,27 +52,39 @@ public class SolrScrabber extends SolrClient {
 	 */
 	public void consume(final Record record) throws Exception {
 		
-	    // loop over all cores, remove datasets and files from all cores alike
-	    for (final String core : SolrXmlPars.CORES.values()) {
-	        final List<String> ids = Arrays.asList(new String[]{record.getId()} );
-	        final String xml = messageBuilder.buildDeleteMessage(ids, true);
-	        final URL postUrl = solrUrlBuilder.buildUpdateUrl(core); 
-	        if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
-	        httpClient.doPost(postUrl, xml, true);
-	    }
-	    
-	    // commit+optimize all changes to all cores
-	    commit(true); // optimize=true
+	    delete( Arrays.asList( new String[]{record.getId()} ) );
 		
 	}
 	
-	   /**
+	/**
+	 * Method to delete a list of documents, from all cores.
+	 * @param ids
+	 */
+	public void delete(List<String> ids) throws Exception {
+	    
+	    // loop over all cores, remove records from all cores alike
+        for (final String core : SolrXmlPars.CORES.values()) {
+            final String xml = messageBuilder.buildDeleteMessage(ids, true);
+            final URL postUrl = solrUrlBuilder.buildUpdateUrl(core); 
+            if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
+            httpClient.doPost(postUrl, xml, true);
+        }
+        
+        // commit changes to all cores
+        commit();
+	}
+	
+	/**
      * {@inheritDoc}
      */
     public void consume(final Collection<Record> records) throws Exception {
+        
+        List<String> ids = new ArrayList<String>();
         for (final Record record : records) {
-            this.consume(record);
+            ids.add(record.getId());
         }
+        delete(ids);
+        
     }
 
 }

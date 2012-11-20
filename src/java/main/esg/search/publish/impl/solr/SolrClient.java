@@ -70,7 +70,7 @@ public abstract class SolrClient implements RecordConsumer {
 	 * Method to commit changes to all cores,
 	 * and wait till the commit goes into effect
 	 */
-	public void commit(boolean optimize) throws MalformedURLException, UnsupportedEncodingException, IOException  {
+	public void commit() throws MalformedURLException, UnsupportedEncodingException, IOException  {
 	    
         for (final String core : SolrXmlPars.CORES.values()) {
             

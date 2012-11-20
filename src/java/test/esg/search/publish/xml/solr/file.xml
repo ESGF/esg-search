@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<doc>
+	<field name="id">obs4MIPs.NASA-JPL.AIRS.mon.v1.husNobs_AIRS_L3_RetStd-v5_200209-201105.nc|esg-datanode.jpl.nasa.gov
+	</field>
+	<field name="version">1</field>
+	<field name="cf_standard_name">specific_humidity_number_of_observations</field>
+	<field name="checksum">72cc3d58f2c7cff0ddc5b2f5277258cb</field>
+	<field name="checksum_type">MD5</field>
+	<field name="data_node">esg-datanode.jpl.nasa.gov</field>
+	<field name="data_structure">grid</field>
+	<field name="dataset_id">obs4MIPs.NASA-JPL.AIRS.mon.v1|esg-datanode.jpl.nasa.gov
+	</field>
+	<field name="dataset_id_template_">%(project)s.%(institute)s.%(source_id)s.%(time_frequency)s
+	</field>
+	<field name="experiment">obs</field>
+	<field name="experiment_family">All</field>
+	<field name="index_node">localhost</field>
+	<field name="instance_id">obs4MIPs.NASA-JPL.AIRS.mon.v1.husNobs_AIRS_L3_RetStd-v5_200209-201105.nc
+	</field>
+	<field name="institute">NASA-JPL</field>
+	<field name="latest">true</field>
+	<field name="master_id">obs4MIPs.NASA-JPL.AIRS.mon.husNobs_AIRS_L3_RetStd-v5_200209-201105.nc
+	</field>
+	<field name="metadata_format">THREDDS</field>
+	<field name="metadata_url">http://esg-datanode.jpl.nasa.gov/thredds/esgcet/1/obs4MIPs.NASA-JPL.AIRS.mon.v1.xml
+	</field>
+	<field name="model">Obs-AIRS</field>
+	<field name="processing_level">L3</field>
+	<field name="product">observations</field>
+	<field name="project">obs4MIPs</field>
+	<field name="realm">atmos</field>
+	<field name="replica">false</field>
+	<field name="size">462697336</field>
+	<field name="source_id">AIRS</field>
+	<field name="time_frequency">mon</field>
+	<field name="timestamp">2011-06-07T19:40:47Z</field>
+	<field name="title">husNobs_AIRS_L3_RetStd-v5_200209-201105.nc</field>
+	<field name="tracking_id">7c2ee54c-e8e7-440e-8d36-49a302d413dd</field>
+	<field name="type">File</field>
+	<field name="url">http://esg-datanode.jpl.nasa.gov/thredds/fileServer/esg_dataroot/obs4MIPs/observations/atmos/husNobs/mon/grid/NASA-JPL/AIRS/v20110608/husNobs_AIRS_L3_RetStd-v5_200209-201105.nc|application/netcdf|HTTPServer
+	</field>
+	<field name="url">http://esg-datanode.jpl.nasa.gov/thredds/dodsC/esg_dataroot/obs4MIPs/observations/atmos/husNobs/mon/grid/NASA-JPL/AIRS/v20110608/husNobs_AIRS_L3_RetStd-v5_200209-201105.nc.html|application/opendap-html|OPENDAP
+	</field>
+	<field name="variable">husNobs</field>
+	<field name="variable_long_name">Specific Humidity Number of Observations</field>
+	<field name="variable_units">1</field>
+</doc>
