@@ -278,12 +278,17 @@ get_credentials() {
         fi
     fi
 
-    #if the user already defined one don't bother
+    #if the user already defined one, use it
     if [[ -z $openId ]]; then
+        #try to parse the last valid value if any
         [[ -f "$MYPROXY_STATUS" ]] && openId=$(awk -F= '/^OpenID/ {gsub("\\\\", ""); print $2}' $MYPROXY_STATUS)
-        [[ -z $openId ]] && openId='https://myserver/example/username'
-        #no OpenID, we need to ask the user
-        echo -n "Please give your OpenID (hit ENTER to accept default) [$openId]? "
+        if [[ -z $openId ]]; then
+            #no OpenID, we need to ask the user
+            echo -n "Please give your OpenID (Example: https://myserver/example/username) ? "
+        else
+            #Allow the user to change it if desired
+            echo -n "Please give your OpenID (hit ENTER to accept default: $openId)? "
+        fi
         read -e
         [[ "$REPLY" ]] && openId="$REPLY"
     else
