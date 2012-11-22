@@ -91,18 +91,22 @@ public class SolrClient {
      * Method to delete a list of documents, from all cores.
      * @param ids
      */
-    public void delete(List<String> ids) throws Exception {
+    public String delete(List<String> ids) throws Exception {
+        
+        StringBuffer sb = new StringBuffer();
         
         // loop over all cores, remove records from all cores alike
         for (final String core : SolrXmlPars.CORES.values()) {
             final String xml = SolrXmlBuilder.buildDeleteMessage(ids, true);
             final URL postUrl = solrUrlBuilder.buildUpdateUrl(core); 
             if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
-            httpClient.doPost(postUrl, xml, true);
+            sb.append( httpClient.doPost(postUrl, xml, true) );
         }
         
         // commit changes to all cores
         commit();
+        
+        return sb.toString();
     }
 	
 	/**

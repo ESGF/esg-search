@@ -1,6 +1,7 @@
 package esg.search.publish.jaxrs;
 
 import java.net.URL;
+import java.util.List;
 
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -13,6 +14,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.cxf.jaxrs.impl.ResponseBuilderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -45,18 +47,19 @@ public class PublishResource {
     
     @POST
     @Path("unpublish/")
-    @Produces("text/plain")
-    public void unpublish(@FormParam("id") String[] ids) {
+    public String unpublish(@FormParam("id") List<String> ids) {
         
         if (LOG.isDebugEnabled()) {
             for (String id : ids) LOG.debug("Unpublishing id="+id);
         }
         
         try {
-            solrClient.delete( Arrays.asList( ids ) );
+            String response = solrClient.delete( ids );
+            return response;
+            
         } catch(Exception e) {
             e.printStackTrace();
-            throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+            throw newWebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
                 
     }
@@ -66,16 +69,29 @@ public class PublishResource {
     public String publish(@PathParam("type") String type, String record) {
         
         if (LOG.isDebugEnabled()) LOG.debug("Publishing type="+type+" record="+record);
-        
-        String request = "<add>"+record+"</add>";
-        
         try {
+            String request = "<add>"+record+"</add>";
             String response = solrClient.index(request, type, true); // commit=true after this record
             return response;
         } catch(Exception e) {
-            e.printStackTrace();
-            throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+            throw newWebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
+        
+    }
+    
+    /**
+     * Helper method to build an HTTP exception response with given body content and status code.
+     * @param message
+     * @param status
+     * @return
+     */
+    private WebApplicationException newWebApplicationException(String message, Response.Status status) {
+        
+        ResponseBuilderImpl builder = new ResponseBuilderImpl();
+        builder.status(status);
+        builder.entity("<?xml version=\"1.0\" encoding=\"UTF-8\"?><error>"+message+"</error>");
+        Response response = builder.build();
+        return new WebApplicationException(response);
         
     }
 
