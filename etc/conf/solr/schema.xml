@@ -457,7 +457,7 @@
    <!-- The version of the document (optional) -->
    <field name="version" type="string" indexed="true" stored="true" required="false" multiValued="false" />
    
-   <!-- The parent record if (optional) -->
+   <!-- The enclosing dataset identifier - for files and aggregations only (optional) -->
    <field name="dataset_id" type="string" indexed="true" stored="true" required="false" multiValued="false" />
    
    <!-- The record logical identifier, same for all versions and replicas  -->
