@@ -18,8 +18,9 @@ import org.apache.cxf.jaxrs.impl.ResponseBuilderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import edu.emory.mathcs.backport.java.util.Arrays;
 import esg.search.publish.impl.solr.SolrClient;
+import esg.search.publish.validation.CoreRecordValidator;
+import esg.search.publish.validation.RecordValidator;
 
 @Path("/")
 @Produces("application/xml")
@@ -29,14 +30,19 @@ public class PublishResource {
     
     // client that sends XML requests to the Solr server
     public SolrClient solrClient; 
+    
+    public RecordValidator validator;
         
     /**
      * Constructor is configured to interact with a specific Solr server.
      * @param url
      */
     @Autowired
-    public PublishResource(final @Value("${esg.search.solr.publish.url}") URL url) {
+    public PublishResource(final @Value("${esg.search.solr.publish.url}") URL url) throws Exception {
+        
         solrClient = new SolrClient(url);
+        
+        validator = new CoreRecordValidator();
     }
     
     @GET
@@ -65,14 +71,18 @@ public class PublishResource {
     }
     
     @POST
-    @Path("publish/{type}/")
-    public String publish(@PathParam("type") String type, String record) {
+    @Path("publish/")
+    public String publish(String record) {
         
-        if (LOG.isDebugEnabled()) LOG.debug("Publishing type="+type+" record="+record);
         try {
+            
+            String type = validator.validate(record);
+            if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+type);
+            
             String request = "<add>"+record+"</add>";
             String response = solrClient.index(request, type, true); // commit=true after this record
             return response;
+            
         } catch(Exception e) {
             throw newWebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
