@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.WordUtils;
@@ -88,7 +89,20 @@ public class SolrClient {
     }
     
     /**
-     * Method to delete a list of documents, from all cores.
+     * Method to delete a single document by identifier, from all cores.
+     * @param id
+     * @return
+     */
+    public String delete(String id) throws Exception {
+        
+        List<String> ids = new ArrayList<String>();
+        ids.add(id);
+        return this.delete(ids);
+        
+    }
+     
+    /**
+     * Method to delete a list of documents by identifier, from all cores.
      * @param ids
      */
     public String delete(List<String> ids) throws Exception {
