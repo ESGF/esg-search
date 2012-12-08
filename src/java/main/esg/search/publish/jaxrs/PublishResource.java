@@ -23,6 +23,7 @@ import esg.search.core.Record;
 import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.PublishingService;
 import esg.search.publish.impl.solr.SolrClient;
+import esg.search.publish.security.AuthorizerAdapter;
 import esg.search.publish.validation.CoreRecordValidator;
 import esg.search.publish.validation.RecordValidator;
 
@@ -48,6 +49,9 @@ public class PublishResource {
     // service that parses remote metadata repositories
     // (for pull operations)
     private final PublishingService publishingService;
+    
+    // class used to authorize the publishing calls
+    private final AuthorizerAdapter authorizer;
         
     /**
      * Constructor is configured to interact with a specific Solr server.
@@ -55,11 +59,14 @@ public class PublishResource {
      */
     @Autowired
     public PublishResource(final @Value("${esg.search.solr.publish.url}") URL url,
-                           final @Qualifier("publishingService") PublishingService publishingService) throws Exception {
+                           final @Qualifier("publishingService") PublishingService publishingService,
+                           final AuthorizerAdapter authorizer) throws Exception {
         
         this.solrClient = new SolrClient(url);
         
         this.publishingService = publishingService;
+        
+        this.authorizer = authorizer;
         
         this.validator = new CoreRecordValidator();
         
@@ -91,6 +98,7 @@ public class PublishResource {
             Record obj = validator.validate(record);
             if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
             
+            // FIXME: authorize obj
             String request = "<add>"+record+"</add>";
             String response = solrClient.index(request, obj.getType(), true); // commit=true after this record
             return response;
@@ -116,6 +124,7 @@ public class PublishResource {
             Record obj = validator.validate(record);
             if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
             
+            // FIXME: authorize obj
             String response = solrClient.delete(obj.getId());
             return response;
             
@@ -150,7 +159,9 @@ public class PublishResource {
             
         }
         MetadataRepositoryType _metadataRepositoryType = MetadataRepositoryType.valueOf(metadataRepositoryType);
+        // FIXME: check _metadataRepositoryType not null
         
+        authorizer.checkAuthorization(uri);
         publishingService.publish(uri, filter, recursive, _metadataRepositoryType);
         
         return "";
@@ -182,7 +193,9 @@ public class PublishResource {
             
         }
         MetadataRepositoryType _metadataRepositoryType = MetadataRepositoryType.valueOf(metadataRepositoryType);
+        // FIXME: check _metadataRepositoryType not null
         
+        authorizer.checkAuthorization(uri);
         publishingService.unpublish(uri, filter, recursive, _metadataRepositoryType);
         
         return "";
@@ -200,6 +213,7 @@ public class PublishResource {
         
         if (LOG.isDebugEnabled()) {
             for (String id : ids) LOG.debug("Unpublishing id="+id);
+            // FIXME: authorize id
         }
         
         try {
