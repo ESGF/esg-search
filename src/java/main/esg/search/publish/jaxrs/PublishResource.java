@@ -18,9 +18,11 @@ import org.apache.cxf.jaxrs.impl.ResponseBuilderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 
 import esg.search.core.Record;
 import esg.search.publish.api.MetadataRepositoryType;
+import esg.search.publish.api.PublishingException;
 import esg.search.publish.api.PublishingService;
 import esg.search.publish.impl.solr.SolrClient;
 import esg.search.publish.security.AuthorizerAdapter;
@@ -51,7 +53,7 @@ public class PublishResource {
     private final PublishingService publishingService;
     
     // class used to authorize the publishing calls
-    private final AuthorizerAdapter authorizer;
+    private final AuthorizerAdapter authorizer = null;
         
     /**
      * Constructor is configured to interact with a specific Solr server.
@@ -66,7 +68,8 @@ public class PublishResource {
         
         this.publishingService = publishingService;
         
-        this.authorizer = authorizer;
+        // FIXME
+        //this.authorizer = authorizer;
         
         this.validator = new CoreRecordValidator();
         
@@ -100,7 +103,7 @@ public class PublishResource {
             if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
             
             // authorization
-            authorizer.checkAuthorization(obj.getId());
+            authorize(obj.getId());
             
             // FIXME: authorize obj
             String request = "<add>"+record+"</add>";
@@ -130,7 +133,7 @@ public class PublishResource {
             if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
             
             // authorization
-            authorizer.checkAuthorization(obj.getId());
+            authorize(obj.getId());
             
             String response = solrClient.delete(obj.getId());
             return response;
@@ -158,19 +161,11 @@ public class PublishResource {
                           @FormParam("recursive") @DefaultValue("true") boolean recursive, 
                           @FormParam("metadataRepositoryType") String metadataRepositoryType) {
         
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Harvesting request:");
-            LOG.debug("\turi="+uri);
-            LOG.debug("\tfilter="+filter);
-            LOG.debug("\trecursive="+recursive);
-            LOG.debug("\tmetadataRepositoryType="+metadataRepositoryType);
-            
-        }
-        MetadataRepositoryType _metadataRepositoryType = MetadataRepositoryType.valueOf(metadataRepositoryType);
-        // FIXME: check _metadataRepositoryType not null
+        // validate HTTP parameters       
+        MetadataRepositoryType _metadataRepositoryType = validateHarvestParameters(uri, filter, recursive, metadataRepositoryType);
         
         // authorization
-        authorizer.checkAuthorization(uri);
+        authorize(uri);
         
         publishingService.publish(uri, filter, recursive, _metadataRepositoryType);
         
@@ -195,19 +190,11 @@ public class PublishResource {
                             @FormParam("recursive") @DefaultValue("true") boolean recursive, 
                             @FormParam("metadataRepositoryType") String metadataRepositoryType) {
         
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("Un-harvesting request:");
-            LOG.debug("\turi="+uri);
-            LOG.debug("\tfilter="+filter);
-            LOG.debug("\trecursive="+recursive);
-            LOG.debug("\tmetadataRepositoryType="+metadataRepositoryType);
-            
-        }
-        MetadataRepositoryType _metadataRepositoryType = MetadataRepositoryType.valueOf(metadataRepositoryType);
-        // FIXME: check _metadataRepositoryType not null
+        // validate HTTP parameters       
+        MetadataRepositoryType _metadataRepositoryType = validateHarvestParameters(uri, filter, recursive, metadataRepositoryType);
         
         // authorization
-        authorizer.checkAuthorization(uri);
+        authorize(uri);
         
         publishingService.unpublish(uri, filter, recursive, _metadataRepositoryType);
         
@@ -229,7 +216,7 @@ public class PublishResource {
         // authorization
         for (String id : ids) {
             if (LOG.isDebugEnabled()) LOG.debug("Unpublishing id="+id);
-            authorizer.checkAuthorization(id);
+            authorize(id);
         }
         
         try {
@@ -241,6 +228,53 @@ public class PublishResource {
             throw newWebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
                 
+    }
+    
+    /**
+     * Method to authorize the user for the requested publishing operations.
+     * @param uri
+     */
+    private void authorize(String uri) {
+        try {
+            authorizer.checkAuthorization(uri);
+        } catch(PublishingException e) {
+            e.printStackTrace();
+            throw newWebApplicationException(e.getMessage(), Response.Status.UNAUTHORIZED);
+        }
+    }
+    
+    /**
+     * Method to validate the parameters needed for a harvesting/unharvesing operation.
+     * @param uri
+     * @param metadataRepositoryType
+     * @return
+     */
+    private MetadataRepositoryType validateHarvestParameters(String uri, String filter, boolean recursive, String metadataRepositoryType) {
+        
+        if (LOG.isDebugEnabled()) {
+            LOG.debug("Un-harvesting request:");
+            LOG.debug("\turi="+uri);
+            LOG.debug("\tfilter="+filter);
+            LOG.debug("\trecursive="+recursive);
+            LOG.debug("\tmetadataRepositoryType="+metadataRepositoryType);
+            
+        }
+        
+        if (!StringUtils.hasText(uri)) 
+            throw newWebApplicationException("Missing mandatory parameter 'uri'", Response.Status.BAD_REQUEST);
+        
+        if (!StringUtils.hasText(metadataRepositoryType)) 
+            throw newWebApplicationException("Missing mandatory parameter 'metadataRepositoryType'", Response.Status.BAD_REQUEST);
+        
+        MetadataRepositoryType _metadataRepositoryType = null;       
+        try {
+            _metadataRepositoryType = MetadataRepositoryType.valueOf(metadataRepositoryType);
+        } catch(IllegalArgumentException e) {
+           throw newWebApplicationException("Invalid value for 'metadataRepositoryType'", Response.Status.BAD_REQUEST);
+        }
+        
+        return _metadataRepositoryType;
+           
     }
     
     /**
