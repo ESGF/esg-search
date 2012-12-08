@@ -84,6 +84,7 @@ public class PublishResource {
     
     /**
      * POST push publishing method: pushes XML records to be published to the server.
+     * This method authorization is based on the record identifier.
      * 
      * @param record: record to be published encoded as XML/Solr.
      * 
@@ -98,6 +99,9 @@ public class PublishResource {
             Record obj = validator.validate(record);
             if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
             
+            // authorization
+            authorizer.checkAuthorization(obj.getId());
+            
             // FIXME: authorize obj
             String request = "<add>"+record+"</add>";
             String response = solrClient.index(request, obj.getType(), true); // commit=true after this record
@@ -111,6 +115,7 @@ public class PublishResource {
     
     /**
      * POST push unpublishing method: pushes XML records to be unpublished to the server.
+     * This method authorization is based on the record identifier.
      * 
      * @param record
      * @return
@@ -124,7 +129,9 @@ public class PublishResource {
             Record obj = validator.validate(record);
             if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
             
-            // FIXME: authorize obj
+            // authorization
+            authorizer.checkAuthorization(obj.getId());
+            
             String response = solrClient.delete(obj.getId());
             return response;
             
@@ -136,6 +143,7 @@ public class PublishResource {
     
     /**
      * POST pull harvesting method: requests the server to harvest a remote metadata catalog.
+     * This method authorization is based on the catalog uri.
      * 
      * @param uri
      * @param filter
@@ -161,7 +169,9 @@ public class PublishResource {
         MetadataRepositoryType _metadataRepositoryType = MetadataRepositoryType.valueOf(metadataRepositoryType);
         // FIXME: check _metadataRepositoryType not null
         
+        // authorization
         authorizer.checkAuthorization(uri);
+        
         publishingService.publish(uri, filter, recursive, _metadataRepositoryType);
         
         return "";
@@ -170,6 +180,7 @@ public class PublishResource {
     
     /**
      * POST pull unharvesting method: requests the server to unharvest a remote metadata catalog.
+     * This method authorization is based on the catalog uri.
      * 
      * @param uri
      * @param filter
@@ -195,7 +206,9 @@ public class PublishResource {
         MetadataRepositoryType _metadataRepositoryType = MetadataRepositoryType.valueOf(metadataRepositoryType);
         // FIXME: check _metadataRepositoryType not null
         
+        // authorization
         authorizer.checkAuthorization(uri);
+        
         publishingService.unpublish(uri, filter, recursive, _metadataRepositoryType);
         
         return "";
@@ -204,6 +217,8 @@ public class PublishResource {
     
     /**
      * Push POST deletion method: delete records by specific identifiers.
+     * This method authorization is based on the records identifiers.
+     * 
      * @param ids
      * @return
      */
@@ -211,9 +226,10 @@ public class PublishResource {
     @Path("delete/")
     public String delete(@FormParam("id") List<String> ids) {
         
-        if (LOG.isDebugEnabled()) {
-            for (String id : ids) LOG.debug("Unpublishing id="+id);
-            // FIXME: authorize id
+        // authorization
+        for (String id : ids) {
+            if (LOG.isDebugEnabled()) LOG.debug("Unpublishing id="+id);
+            authorizer.checkAuthorization(id);
         }
         
         try {
