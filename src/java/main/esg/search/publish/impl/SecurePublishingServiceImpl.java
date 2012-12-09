@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import esg.orp.app.Authorizer;
 import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.PublishingException;
 import esg.search.publish.api.PublishingService;
