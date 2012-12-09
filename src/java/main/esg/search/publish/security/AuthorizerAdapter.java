@@ -66,7 +66,7 @@ public class AuthorizerAdapter {
             if (!authorized) {
                 String message = "User: "+openid+" is not authorized to publish/unpublish resource: "+uri;
                 LOG.warn(message);
-                throw new PublishingException(message);
+                throw new SecurityException(message);
             }
             
         }

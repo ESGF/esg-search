@@ -22,7 +22,6 @@ import org.springframework.util.StringUtils;
 
 import esg.search.core.Record;
 import esg.search.publish.api.MetadataRepositoryType;
-import esg.search.publish.api.PublishingException;
 import esg.search.publish.api.PublishingService;
 import esg.search.publish.impl.solr.SolrClient;
 import esg.search.publish.security.AuthorizerAdapter;
@@ -53,7 +52,7 @@ public class PublishResource {
     private final PublishingService publishingService;
     
     // class used to authorize the publishing calls
-    private final AuthorizerAdapter authorizer = null;
+    private final AuthorizerAdapter authorizer;
         
     /**
      * Constructor is configured to interact with a specific Solr server.
@@ -68,8 +67,7 @@ public class PublishResource {
         
         this.publishingService = publishingService;
         
-        // FIXME
-        //this.authorizer = authorizer;
+        this.authorizer = authorizer;
         
         this.validator = new CoreRecordValidator();
         
@@ -97,18 +95,19 @@ public class PublishResource {
     @Path("publish/")
     public String publish(String record) {
         
-        try {
-            
+    try {       
             Record obj = validator.validate(record);
             if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
             
             // authorization
-            authorize(obj.getId());
+            authorizer.checkAuthorization(obj.getId());
             
-            // FIXME: authorize obj
             String request = "<add>"+record+"</add>";
             String response = solrClient.index(request, obj.getType(), true); // commit=true after this record
             return response;
+            
+        } catch(SecurityException se) {
+            throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
             
         } catch(Exception e) {
             throw newWebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
@@ -133,11 +132,14 @@ public class PublishResource {
             if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
             
             // authorization
-            authorize(obj.getId());
+            authorizer.checkAuthorization(obj.getId());
             
             String response = solrClient.delete(obj.getId());
             return response;
-            
+         
+        } catch(SecurityException se) {
+            throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
+
         } catch(Exception e) {
             throw newWebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
@@ -161,15 +163,21 @@ public class PublishResource {
                           @FormParam("recursive") @DefaultValue("true") boolean recursive, 
                           @FormParam("metadataRepositoryType") String metadataRepositoryType) {
         
-        // validate HTTP parameters       
-        MetadataRepositoryType _metadataRepositoryType = validateHarvestParameters(uri, filter, recursive, metadataRepositoryType);
+        try { 
+            
+            // validate HTTP parameters       
+            MetadataRepositoryType _metadataRepositoryType = validateHarvestParameters(uri, filter, recursive, metadataRepositoryType);
+            
+            // authorization
+            authorizer.checkAuthorization(uri);
+            
+            publishingService.publish(uri, filter, recursive, _metadataRepositoryType);
+            
+            return "";
         
-        // authorization
-        authorize(uri);
-        
-        publishingService.publish(uri, filter, recursive, _metadataRepositoryType);
-        
-        return "";
+        } catch(SecurityException se) {
+            throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
+        }
         
     }
     
@@ -190,15 +198,21 @@ public class PublishResource {
                             @FormParam("recursive") @DefaultValue("true") boolean recursive, 
                             @FormParam("metadataRepositoryType") String metadataRepositoryType) {
         
-        // validate HTTP parameters       
-        MetadataRepositoryType _metadataRepositoryType = validateHarvestParameters(uri, filter, recursive, metadataRepositoryType);
+        try {
+            
+            // validate HTTP parameters       
+            MetadataRepositoryType _metadataRepositoryType = validateHarvestParameters(uri, filter, recursive, metadataRepositoryType);
+            
+            // authorization
+            authorizer.checkAuthorization(uri);
+            
+            publishingService.unpublish(uri, filter, recursive, _metadataRepositoryType);
+            
+            return "";
         
-        // authorization
-        authorize(uri);
-        
-        publishingService.unpublish(uri, filter, recursive, _metadataRepositoryType);
-        
-        return "";
+        } catch(SecurityException se) {
+            throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
+        }
         
     }
     
@@ -213,34 +227,25 @@ public class PublishResource {
     @Path("delete/")
     public String delete(@FormParam("id") List<String> ids) {
         
-        // authorization
-        for (String id : ids) {
-            if (LOG.isDebugEnabled()) LOG.debug("Unpublishing id="+id);
-            authorize(id);
-        }
-        
         try {
+        
+            // authorization
+            for (String id : ids) {
+                if (LOG.isDebugEnabled()) LOG.debug("Unpublishing id="+id);
+                authorizer.checkAuthorization(id);
+            }
+        
             String response = solrClient.delete( ids );
             return response;
             
+        } catch(SecurityException se) {
+            throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
+
         } catch(Exception e) {
             e.printStackTrace();
             throw newWebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
                 
-    }
-    
-    /**
-     * Method to authorize the user for the requested publishing operations.
-     * @param uri
-     */
-    private void authorize(String uri) {
-        try {
-            authorizer.checkAuthorization(uri);
-        } catch(PublishingException e) {
-            e.printStackTrace();
-            throw newWebApplicationException(e.getMessage(), Response.Status.UNAUTHORIZED);
-        }
     }
     
     /**
@@ -252,7 +257,7 @@ public class PublishResource {
     private MetadataRepositoryType validateHarvestParameters(String uri, String filter, boolean recursive, String metadataRepositoryType) {
         
         if (LOG.isDebugEnabled()) {
-            LOG.debug("Un-harvesting request:");
+            LOG.debug("Harvesting request:");
             LOG.debug("\turi="+uri);
             LOG.debug("\tfilter="+filter);
             LOG.debug("\trecursive="+recursive);
