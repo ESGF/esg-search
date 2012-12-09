@@ -12,7 +12,7 @@ import esg.search.publish.api.PublishingService;
 import esg.search.publish.security.AuthorizerAdapter;
 
 /**
- * Implementation of {@link PublishingService} secured via an {@link Authorizer} bean.
+ * Implementation of {@link PublishingService} secured via an {@link AuthorizerAdapter} bean.
  * After enforcing security, this class delegates all publishing/unpublishing operations to the underlying PublishingService
  * 
  * @author Luca Cinquini
