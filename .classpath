@@ -103,7 +103,6 @@
 	<classpathentry kind="lib" path="lib/fetched/hessian-4.0.7.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.6.14.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.6.14.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.2.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/ant-1.8.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/ant-launcher-1.8.2.jar"/>
@@ -127,5 +126,6 @@
 	<classpathentry kind="lib" path="lib/fetched/cxf-rt-transports-http-2.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/jsr250-api-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/jsr311-api-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.2.5.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
