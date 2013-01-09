@@ -22,6 +22,7 @@ import org.jdom.Element;
 import org.jdom.xpath.XPath;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -81,6 +82,12 @@ public class WgetController {
     public void wget(final HttpServletRequest request, 
                        final SearchCommand command, 
                        final HttpServletResponse response) throws Exception {
+        
+        // prevent requests with no constraints
+        if (!StringUtils.hasText(request.getQueryString())) {
+            response.sendRedirect(request.getRequestURI()+"?limit=1&distrib=false");
+            return;
+        }
     	
         HttpServletRequestWrapper new_req = new HttpServletRequestWrapper(request) {
             
