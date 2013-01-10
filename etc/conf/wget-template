@@ -566,7 +566,7 @@ sleep 1
 check_os
 find_credentials
 #do we have old results? Create the file if not
-[ ! -f $CACHE_FILE ] && echo "#filename mtime checksum" > $CACHE_FILE
+[ ! -f $CACHE_FILE ] && echo "#filename mtime checksum" > $CACHE_FILE && chmod 666 $CACHE_FILE
 
 #clean the force parameter if here (at htis point we already have the certificate)
 unset force
