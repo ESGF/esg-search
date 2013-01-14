@@ -149,18 +149,17 @@ public class PublishResource {
     /**
      * POST pull harvesting method: requests the server to harvest a remote metadata catalog.
      * This method authorization is based on the catalog uri.
-     * 
-     * @param uri
-     * @param filter
-     * @param recursive
-     * @param metadataRepositoryType
+     * @param uri: location identifier of remote metadata repository
+     * @param recursive: optional boolean to recursively harvest the metadata repository 
+     * @param filter: optional filter to sub-select the remote catalogs
+     * @param metadataRepositoryType: type of metadata repository, chosen from controlled vocabulary
      * @return
      */
     @POST
     @Path("harvest/")
     public String harvest(@FormParam("uri") String uri, 
-                          @FormParam("filter") @DefaultValue("*") String filter, 
-                          @FormParam("recursive") @DefaultValue("true") boolean recursive, 
+                          @FormParam("recursive") @DefaultValue("false") boolean recursive, 
+                          @FormParam("filter") @DefaultValue("*") String filter,
                           @FormParam("metadataRepositoryType") String metadataRepositoryType) {
         
         try { 
@@ -185,17 +184,17 @@ public class PublishResource {
      * POST pull unharvesting method: requests the server to unharvest a remote metadata catalog.
      * This method authorization is based on the catalog uri.
      * 
-     * @param uri
-     * @param filter
-     * @param recursive
-     * @param metadataRepositoryType
+     * @param uri: location identifier of remote metadata repository
+     * @param recursive: optional boolean to recursively unpublish the metadata repository 
+     * @param filter: optional filter to sub-select the remote catalogs
+     * @param metadataRepositoryType: type of metadata repository, chosen from controlled vocabulary
      * @return
      */
     @POST
     @Path("unharvest/")
     public String unharvest(@FormParam("uri") String uri, 
+                            @FormParam("recursive") @DefaultValue("false") boolean recursive, 
                             @FormParam("filter") @DefaultValue("*") String filter, 
-                            @FormParam("recursive") @DefaultValue("true") boolean recursive, 
                             @FormParam("metadataRepositoryType") String metadataRepositoryType) {
         
         try {
@@ -220,7 +219,7 @@ public class PublishResource {
      * Push POST deletion method: delete records by specific identifiers.
      * This method authorization is based on the records identifiers.
      * 
-     * @param ids
+     * @param id: identifiers of records to be deleted (one or more)
      * @return
      */
     @POST
