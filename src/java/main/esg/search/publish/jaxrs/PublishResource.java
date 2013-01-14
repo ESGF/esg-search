@@ -95,6 +95,10 @@ public class PublishResource {
     @Path("publish/")
     public String publish(String record) {
         
+    // validate HTTP request
+    if (!StringUtils.hasText(record)) 
+        throw newWebApplicationException("Request body must contain the record to be published", Response.Status.BAD_REQUEST);
+        
     try {       
             Record obj = validator.validate(record);
             if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
@@ -103,8 +107,9 @@ public class PublishResource {
             authorizer.checkAuthorization(obj.getId());
             
             String request = "<add>"+record+"</add>";
-            String response = solrClient.index(request, obj.getType(), true); // commit=true after this record
-            return response;
+            // ignore response from Solr client
+            solrClient.index(request, obj.getType(), true); // commit=true after this record
+            return newXmlResponse("Published record: "+obj.getId());
             
         } catch(SecurityException se) {
             throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
@@ -126,6 +131,10 @@ public class PublishResource {
     @Path("unpublish/")
     public String unpublish(String record) {
         
+        // validate HTTP request
+        if (!StringUtils.hasText(record)) 
+            throw newWebApplicationException("Request body must contain the record to be unpublished", Response.Status.BAD_REQUEST);
+        
         try {
             
             Record obj = validator.validate(record);
@@ -134,8 +143,9 @@ public class PublishResource {
             // authorization
             authorizer.checkAuthorization(obj.getId());
             
-            String response = solrClient.delete(obj.getId());
-            return response;
+            // ignore response from Solr client
+            solrClient.delete(obj.getId()); 
+            return newXmlResponse("Unpublished record: "+obj.getId());
          
         } catch(SecurityException se) {
             throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
@@ -172,7 +182,7 @@ public class PublishResource {
             
             publishingService.publish(uri, filter, recursive, _metadataRepositoryType);
             
-            return "";
+            return newXmlResponse("Harvested uri="+uri);
         
         } catch(SecurityException se) {
             throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
@@ -207,7 +217,7 @@ public class PublishResource {
             
             publishingService.unpublish(uri, filter, recursive, _metadataRepositoryType);
             
-            return "";
+            return newXmlResponse("Unharvested uri="+uri);
         
         } catch(SecurityException se) {
             throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
@@ -226,6 +236,10 @@ public class PublishResource {
     @Path("delete/")
     public String delete(@FormParam("id") List<String> ids) {
         
+        // validate HTTP parameters
+        if (ids.size()==0) 
+            throw newWebApplicationException("Missing mandatory parameter 'id'", Response.Status.BAD_REQUEST);
+        
         try {
         
             // authorization
@@ -234,8 +248,9 @@ public class PublishResource {
                 authorizer.checkAuthorization(id);
             }
         
-            String response = solrClient.delete( ids );
-            return response;
+            // ignore response from Solr client
+            solrClient.delete( ids );
+            return newXmlResponse("Deleted id(s): "+ org.apache.commons.lang.StringUtils.join( ids.toArray(), ", ") );
             
         } catch(SecurityException se) {
             throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
@@ -251,7 +266,7 @@ public class PublishResource {
      * Method to validate the parameters needed for a harvesting/unharvesing operation.
      * @param uri
      * @param metadataRepositoryType
-     * @return
+     * @return the metadataRepositoryType converted to enumeration value
      */
     private MetadataRepositoryType validateHarvestParameters(String uri, String filter, boolean recursive, String metadataRepositoryType) {
         
@@ -274,7 +289,8 @@ public class PublishResource {
         try {
             _metadataRepositoryType = MetadataRepositoryType.valueOf(metadataRepositoryType);
         } catch(IllegalArgumentException e) {
-           throw newWebApplicationException("Invalid value for 'metadataRepositoryType'", Response.Status.BAD_REQUEST);
+           throw newWebApplicationException("Invalid value for 'metadataRepositoryType': "+metadataRepositoryType, 
+                                            Response.Status.BAD_REQUEST);
         }
         
         return _metadataRepositoryType;
@@ -291,10 +307,14 @@ public class PublishResource {
         
         ResponseBuilderImpl builder = new ResponseBuilderImpl();
         builder.status(status);
-        builder.entity("<?xml version=\"1.0\" encoding=\"UTF-8\"?><error>"+message+"</error>");
+        builder.entity("<?xml version=\"1.0\" encoding=\"UTF-8\"?><response status=\"error\">"+message+"</response>").type("application/xml");
         Response response = builder.build();
         return new WebApplicationException(response);
-        
+                
+    }
+    
+    private String newXmlResponse(String message) {
+        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><response status=\"success\">"+message+"</response>";
     }
 
 }
