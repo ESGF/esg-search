@@ -1,6 +1,8 @@
 package esg.search.publish.jaxrs;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ws.rs.DefaultValue;
@@ -52,7 +54,8 @@ public class PublishResource {
     private final PublishingService publishingService;
     
     // class used to authorize the publishing calls
-    private final AuthorizerAdapter authorizer;
+    // no authorization takes place if null
+    private final AuthorizerAdapter authorizer = null;
         
     /**
      * Constructor is configured to interact with a specific Solr server.
@@ -67,7 +70,8 @@ public class PublishResource {
         
         this.publishingService = publishingService;
         
-        this.authorizer = authorizer;
+        // FIXME
+        //this.authorizer = authorizer;
         
         this.validator = new CoreRecordValidator();
         
@@ -100,11 +104,18 @@ public class PublishResource {
         throw newWebApplicationException("Request body must contain the record to be published", Response.Status.BAD_REQUEST);
         
     try {       
-            Record obj = validator.validate(record);
+            
+            // validation
+            List<String> errors = new ArrayList<String>();
+            Record obj = validator.validate(record, errors);
+            if (LOG.isDebugEnabled()) LOG.debug("Number of errors="+errors.size());
+            if (!errors.isEmpty()) {
+                throw newWebApplicationException(errors, Response.Status.BAD_REQUEST);
+            }
             if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
             
             // authorization
-            authorizer.checkAuthorization(obj.getId());
+            if (authorizer!=null) authorizer.checkAuthorization(obj.getId());
             
             String request = "<add>"+record+"</add>";
             // ignore response from Solr client
@@ -115,6 +126,7 @@ public class PublishResource {
             throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
             
         } catch(Exception e) {
+            e.printStackTrace();
             throw newWebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
         
@@ -137,7 +149,12 @@ public class PublishResource {
         
         try {
             
-            Record obj = validator.validate(record);
+            // validation
+            List<String> errors = new ArrayList<String>();
+            Record obj = validator.validate(record, errors);
+            if (errors.size()>0) {
+                throw newWebApplicationException(errors, Response.Status.BAD_REQUEST);
+            }
             if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
             
             // authorization
@@ -250,7 +267,9 @@ public class PublishResource {
         
             // ignore response from Solr client
             solrClient.delete( ids );
-            return newXmlResponse("Deleted id(s): "+ org.apache.commons.lang.StringUtils.join( ids.toArray(), ", ") );
+            List<String> messages = new ArrayList<String>();
+            for (String id : ids) messages.add("Deleted id: "+id);
+            return newXmlResponse(messages);
             
         } catch(SecurityException se) {
             throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
@@ -305,16 +324,50 @@ public class PublishResource {
      */
     private WebApplicationException newWebApplicationException(String message, Response.Status status) {
         
-        ResponseBuilderImpl builder = new ResponseBuilderImpl();
-        builder.status(status);
-        builder.entity("<?xml version=\"1.0\" encoding=\"UTF-8\"?><response status=\"error\">"+message+"</response>").type("application/xml");
-        Response response = builder.build();
-        return new WebApplicationException(response);
+        return newWebApplicationException( Arrays.asList( new String[]{ message } ), status);
                 
     }
     
+    /**
+     * Helper method to build an HTTP exception response with given body content and status code.
+     * @param message
+     * @param status
+     * @return
+     */
+    private WebApplicationException newWebApplicationException(List<String> messages, Response.Status status) {
+        
+        // assemble all messages
+        StringBuilder sb = new StringBuilder();
+        for (String message : messages) {
+            sb.append("<message>"+message+"</message>");
+        }
+        
+        // embed messages in response
+        ResponseBuilderImpl builder = new ResponseBuilderImpl();
+        builder.status(status);
+        builder.entity("<?xml version=\"1.0\" encoding=\"UTF-8\"?><response status=\"error\">"+sb.toString()+"</response>").type("application/xml");
+        Response response = builder.build();
+        return new WebApplicationException(response);
+
+        
+    }
+
     private String newXmlResponse(String message) {
-        return "<?xml version=\"1.0\" encoding=\"UTF-8\"?><response status=\"success\">"+message+"</response>";
+        return newXmlResponse( Arrays.asList( new String[] { message }));
+    }
+    
+    private String newXmlResponse(List<String> messages) {
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?><response status=\"success\">");
+        
+        for (String message : messages) {
+            sb.append("<message>"+message+"</message>");
+        }
+
+        sb.append("</response>");
+        return sb.toString();
+        
     }
 
 }

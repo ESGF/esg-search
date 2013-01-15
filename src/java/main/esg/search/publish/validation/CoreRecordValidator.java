@@ -1,5 +1,7 @@
 package esg.search.publish.validation;
 
+import java.util.List;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.xpath.XPath;
@@ -33,7 +35,7 @@ public class CoreRecordValidator implements RecordValidator {
     }
 
     @Override
-    public Record validate(String xml) throws Exception {
+    public Record validate(String xml, List<String> errors) throws Exception {
         
         Document doc = parser.parseString(xml);
         
