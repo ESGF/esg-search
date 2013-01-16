@@ -17,6 +17,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.impl.ResponseBuilderImpl;
+import org.jdom.JDOMException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -123,9 +124,15 @@ public class PublishResource {
             return newXmlResponse("Published record: "+obj.getId());
             
         } catch(SecurityException se) {
+            // security error
             throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
             
+        } catch(JDOMException je) {
+            // XML validation error
+            throw newWebApplicationException(je.getMessage(), Response.Status.BAD_REQUEST);
+            
         } catch(Exception e) {
+            // all other errors
             e.printStackTrace();
             throw newWebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
@@ -164,10 +171,18 @@ public class PublishResource {
             solrClient.delete(obj.getId()); 
             return newXmlResponse("Unpublished record: "+obj.getId());
          
+            
         } catch(SecurityException se) {
+            // security error
             throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
-
+            
+        } catch(JDOMException je) {
+            // XML validation error
+            throw newWebApplicationException(je.getMessage(), Response.Status.BAD_REQUEST);
+            
         } catch(Exception e) {
+            // all other errors
+            e.printStackTrace();
             throw newWebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
         

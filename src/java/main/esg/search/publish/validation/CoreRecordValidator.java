@@ -37,24 +37,25 @@ public class CoreRecordValidator implements RecordValidator {
     @Override
     public Record validate(String xml, List<String> errors) throws Exception {
         
+        // validate XML
         Document doc = parser.parseString(xml);
-        
+                
         // record identifier
         Element idElement = (Element)idPath.selectSingleNode(doc);
         if (idElement==null || !StringUtils.hasText(idElement.getTextNormalize())) {
-            throw new Exception("Missing record identifier");
+            errors.add("Missing record identifier");
         }
         
         // record type
         Element typeElement = (Element)typePath.selectSingleNode(doc);
         if (typeElement==null || !StringUtils.hasText(typeElement.getTextNormalize())) {
-            throw new Exception("Missing record type");
+            errors.add("Missing record type");
         }
         
         // record title
         Element titleElement = (Element)titlePath.selectSingleNode(doc);
         if (titleElement==null || !StringUtils.hasText(titleElement.getTextNormalize())) {
-            throw new Exception("Missing record title");
+            errors.add("Missing record title");
         }
         
         // build stub record object

@@ -30,7 +30,6 @@ import org.springframework.stereotype.Component;
 
 import esg.search.core.Record;
 import esg.search.publish.api.RecordConsumer;
-import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
  * Implementation of {@link RecordConsumer} that sends (skeleton) records to a Solr server for removal.
