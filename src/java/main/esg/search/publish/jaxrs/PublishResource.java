@@ -70,7 +70,8 @@ public class PublishResource {
     @Autowired
     public PublishResource(final @Value("${esg.search.solr.publish.url}") URL url,
                            final @Qualifier("publishingService") PublishingService publishingService,
-                           final AuthorizerAdapter authorizer) throws Exception {
+                           final AuthorizerAdapter authorizer,
+                           final @Qualifier("recordValidatorManager") RecordValidator validator) throws Exception {
         
         this.solrClient = new SolrClient(url);
         
@@ -79,7 +80,7 @@ public class PublishResource {
         // FIXME
         //this.authorizer = authorizer;
         
-        this.validator = new RecordValidatorManager();
+        this.validator = validator;
         
         this.serializer = new SolrRecordSerializer();
         

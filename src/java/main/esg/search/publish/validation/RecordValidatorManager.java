@@ -14,21 +14,17 @@ import esg.search.core.Record;
  */
 public class RecordValidatorManager implements RecordValidator {
     
-    // core validator
+    // base validator
     RecordValidator baseValidator;
     
-    // map (project, validators)
-    Map<String, RecordValidator[]> validators = new HashMap<String, RecordValidator[]>();
+    // project-specific validators
+    Map<String, List<RecordValidator>> validators;
     
-    public RecordValidatorManager() throws Exception {
+    public RecordValidatorManager(RecordValidator baseValidator, 
+                                  Map<String, List<RecordValidator>> validators) throws Exception {
        
-        baseValidator = new SchemaRecordValidator("esg/search/config/esgf.xml");
-        
-        // FIXME: read map of project-specific validators from Spring configuration
-        RecordValidator geoValidator = new SchemaRecordValidator("esg/search/config/geo.xml");
-        RecordValidator cmip5Validator = new SchemaRecordValidator("esg/search/config/cmip5.xml");
-        validators.put("cmip5", new RecordValidator[] { geoValidator, cmip5Validator } );      
-        validators.put("obs4MIPs", new RecordValidator[] { geoValidator, cmip5Validator } );
+        this.baseValidator = baseValidator;       
+        this.validators = validators;
         
     }
 
