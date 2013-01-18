@@ -24,12 +24,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.StringUtils;
 
 import esg.search.core.Record;
+import esg.search.core.RecordSerializer;
 import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.PublishingService;
 import esg.search.publish.impl.solr.SolrClient;
+import esg.search.publish.impl.solr.SolrRecordSerializer;
 import esg.search.publish.security.AuthorizerAdapter;
-import esg.search.publish.validation.CoreRecordValidator;
 import esg.search.publish.validation.RecordValidator;
+import esg.search.publish.validation.RecordValidatorManager;
 
 /**
  * JAXRS Resource that exposes publishing operations (push and pull) through a RESTful API.
@@ -47,6 +49,9 @@ public class PublishResource {
     // (for push operations)
     private SolrClient solrClient; 
         
+    // collaborator that serializes the records into XML
+    RecordSerializer serializer;
+    
     // collaborator that validate records (for push operations)
     public RecordValidator validator;
     
@@ -74,7 +79,9 @@ public class PublishResource {
         // FIXME
         //this.authorizer = authorizer;
         
-        this.validator = new CoreRecordValidator();
+        this.validator = new RecordValidatorManager();
+        
+        this.serializer = new SolrRecordSerializer();
         
     }
     
@@ -100,20 +107,22 @@ public class PublishResource {
     @Path("publish/")
     public String publish(String record) {
         
-    // validate HTTP request
-    if (!StringUtils.hasText(record)) 
-        throw newWebApplicationException("Request body must contain the record to be published", Response.Status.BAD_REQUEST);
+        // validate HTTP request
+        if (!StringUtils.hasText(record)) 
+            throw newWebApplicationException("Request body must contain the record to be published", Response.Status.BAD_REQUEST);
         
-    try {       
+        try {       
             
-            // validation
+            // deserialize XML into record
+            Record obj = serializer.deserialize(record);
+        
+            // validate record
             List<String> errors = new ArrayList<String>();
-            Record obj = validator.validate(record, errors);
+            validator.validate(obj, errors);            
             if (LOG.isDebugEnabled()) LOG.debug("Number of errors="+errors.size());
             if (!errors.isEmpty()) {
                 throw newWebApplicationException(errors, Response.Status.BAD_REQUEST);
             }
-            if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
             
             // authorization
             if (authorizer!=null) authorizer.checkAuthorization(obj.getId());
@@ -131,10 +140,12 @@ public class PublishResource {
             // XML validation error
             throw newWebApplicationException(je.getMessage(), Response.Status.BAD_REQUEST);
             
+        } catch(WebApplicationException we) {
+            throw we;
         } catch(Exception e) {
             // all other errors
             e.printStackTrace();
-            throw newWebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
+            throw newWebApplicationException(e.getClass().getName()+": "+e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
         
     }
@@ -156,9 +167,12 @@ public class PublishResource {
         
         try {
             
+            // deserialize XML into record
+            Record obj = serializer.deserialize(record);
+            
             // validation
             List<String> errors = new ArrayList<String>();
-            Record obj = validator.validate(record, errors);
+            validator.validate(obj, errors);
             if (errors.size()>0) {
                 throw newWebApplicationException(errors, Response.Status.BAD_REQUEST);
             }
@@ -182,8 +196,7 @@ public class PublishResource {
             
         } catch(Exception e) {
             // all other errors
-            e.printStackTrace();
-            throw newWebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
+            throw newWebApplicationException(e.getClass().getName()+": "+e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
         }
         
     }

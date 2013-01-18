@@ -18,6 +18,7 @@
  ******************************************************************************/
 package esg.search.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -65,6 +66,17 @@ public class XmlParser {
 	public Document parseFile(final String filepath) throws IOException, JDOMException {
 		return this.getBuilder().build(filepath);
 	}
+	
+	/**
+     * Method to parse an XML file into a JDOM document.
+     * @param filepath
+     * @return
+     * @throws IOException
+     * @throws JDOMException
+     */
+    public Document parseFile(final File file) throws IOException, JDOMException {
+        return this.getBuilder().build(file);
+    }
 	
 	/**
 	 * Method to obtain an XML parser.

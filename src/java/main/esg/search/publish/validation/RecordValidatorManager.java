@@ -1,7 +1,8 @@
 package esg.search.publish.validation;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import esg.search.core.Record;
 
@@ -13,16 +14,38 @@ import esg.search.core.Record;
  */
 public class RecordValidatorManager implements RecordValidator {
     
-    List<RecordValidator> validators = new ArrayList<RecordValidator>();
+    // core validator
+    RecordValidator baseValidator;
+    
+    // map (project, validators)
+    Map<String, RecordValidator[]> validators = new HashMap<String, RecordValidator[]>();
     
     public RecordValidatorManager() throws Exception {
-        validators.add(new CoreRecordValidator());
+       
+        baseValidator = new SchemaRecordValidator("esg/search/config/esgf.xml");
+        
+        // FIXME: read map of project-specific validators from Spring configuration
+        RecordValidator geoValidator = new SchemaRecordValidator("esg/search/config/geo.xml");
+        RecordValidator cmip5Validator = new SchemaRecordValidator("esg/search/config/cmip5.xml");
+        validators.put("cmip5", new RecordValidator[] { geoValidator, cmip5Validator } );      
+        validators.put("obs4MIPs", new RecordValidator[] { geoValidator, cmip5Validator } );
+        
     }
 
     @Override
-    public Record validate(String record, List<String> errors) throws Exception {
-        // TODO Auto-generated method stub
-        return null;
+    public void validate(Record record, List<String> errors) throws Exception {
+        
+        // always run core validator
+        baseValidator.validate(record, errors);
+        
+        // run project specific validators
+        String project = record.getFieldValue("project");
+        if (validators.containsKey(project)) {
+            for (RecordValidator validator : validators.get(project)) {
+                validator.validate(record, errors);
+            }
+        }
+        
     }
 
 }
