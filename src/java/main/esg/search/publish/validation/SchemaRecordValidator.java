@@ -3,7 +3,6 @@ package esg.search.publish.validation;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +31,7 @@ import esg.search.utils.XmlParser;
 public class SchemaRecordValidator implements RecordValidator {
     
     Set<Field> fields = new HashSet<Field>();
-    
+        
     // location of XML schema
     private final String filepath;
     
@@ -102,12 +101,21 @@ public class SchemaRecordValidator implements RecordValidator {
             if (StringUtils.hasText(maxValue)) {
                 field.maxValue = Double.parseDouble(maxValue);
             }
+            
+            // record types
+            String records = el.getAttributeValue("records");
+            if (StringUtils.hasText(records)) {
+                for (String recType : records.split(",")) {
+                    field.records.add(recType.trim());
+                }
+            }
                         
             // values
             for (Object _obj : el.getChildren("value", ns)) {
                 Element _el = (Element)_obj;
                 field.values.add(_el.getTextNormalize());
             }
+            
             
             _fields.add(field);
         }
@@ -120,12 +128,16 @@ public class SchemaRecordValidator implements RecordValidator {
 
     @Override
     public void validate(Record record, List<String> errors) {
-                
+                        
         // retrieve record metadata
         Map<String,List<String>> recfields = record.getFields();
         
-        // loop over required categories
+        // loop over schema categories
         for (Field field : fields) {
+            
+          if (field.records.isEmpty() || field.records.contains(record.getType())) {
+            
+            if (LOG.isDebugEnabled()) LOG.debug("Checking schema field name="+field.name);
             
             // special Record attribute "id"
             if (field.name.equals(QueryParameters.FIELD_ID)) {
@@ -159,77 +171,81 @@ public class SchemaRecordValidator implements RecordValidator {
                             }
                         }
                     }
-                }
-                
-                // url
-                if (field.name.equals(QueryParameters.FIELD_URL)) {
-                    for (String value : recfields.get(field.name)) {
-                        String[] parts = value.split("\\|");
-                        if (parts.length!=3) {
-                            errors.add("Incorrect URL value:'"+value+"' (must have the form: 'url|mime type|service name'");
-                        }
-                    }
-                }
-                
-                // dates
-                if (field.type.equals("date")) {
-                    for (String value : recfields.get(field.name)) {
-                        try {
-                            SolrXmlPars.SOLR_DATE_TIME_FORMATTER.parse(value);
-                        } catch(ParseException e) {
-                            errors.add("Incorrect date-time format: "+value);
+                    
+                    // url
+                    if (field.name.equals(QueryParameters.FIELD_URL)) {
+                        for (String value : values) {
+                            String[] parts = value.split("\\|");
+                            if (parts.length!=3) {
+                                errors.add("Incorrect URL value:'"+value+"' (must have the form: 'url|mime type|service name'");
+                            }
                         }
                     }
                     
-                // integers
-                } else if (field.type.equals("int")) {
-                    for (String value : recfields.get(field.name)) {
-                        try {
-                            int i = Integer.parseInt(value);
-                            if (i<field.minValue) errors.add("Field: '"+field.name+"' must be >= "+(int)field.minValue);
-                            if (i>field.maxValue) errors.add("Field: '"+field.name+"' must be <= "+(int)field.maxValue);
-                        } catch(NumberFormatException e) {
-                            errors.add("Incorrect integer value: "+value+" for field: '"+field.name+"'");
+                    // dates
+                    if (field.type.equals("date")) {
+                        for (String value : values) {
+                            try {
+                                SolrXmlPars.SOLR_DATE_TIME_FORMATTER.parse(value);
+                            } catch(ParseException e) {
+                                errors.add("Incorrect date-time format: "+value);
+                            }
+                        }
+                        
+                    // integers
+                    } else if (field.type.equals("int")) {
+                        for (String value : values) {
+                            try {
+                                int i = Integer.parseInt(value);
+                                if (i<field.minValue) errors.add("Field: '"+field.name+"' must be >= "+(int)field.minValue);
+                                if (i>field.maxValue) errors.add("Field: '"+field.name+"' must be <= "+(int)field.maxValue);
+                            } catch(NumberFormatException e) {
+                                errors.add("Incorrect integer value: "+value+" for field: '"+field.name+"'");
+                            }
+                        }
+                        
+                    // longs
+                    } else if (field.type.equals("long")) {
+                        for (String value : values) {
+                            try {
+                                long l = Long.parseLong(value);
+                                if (l<field.minValue) errors.add("Field: '"+field.name+"' must be >= "+(long)field.minValue);
+                                if (l>field.maxValue) errors.add("Field: '"+field.name+"' must be <= "+(long)field.maxValue);
+                            } catch(NumberFormatException e) {
+                                errors.add("Incorrect long value: "+value+" for field: '"+field.name+"'");
+                            }
+                        }
+                        
+                    // floats
+                    } else if (field.type.equals("float")) {
+                        for (String value : values) {
+                            try {
+                                float x = Float.parseFloat(value);
+                                if (x<field.minValue) errors.add("Field: '"+field.name+"' must be >= "+(float)field.minValue);
+                                if (x>field.maxValue) errors.add("Field: '"+field.name+"' must be <= "+(float)field.maxValue);
+                            } catch(NumberFormatException e) {
+                                errors.add("Incorrect float value: "+value+" for field: '"+field.name+"'");
+                            }
+                        }
+                    
+                    // booleans
+                    } else if (field.type.equals("boolean")) {
+                        for (String value : values) {
+                            if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false"))
+                                errors.add("Incorrect boolean value: "+value+" for field: '"+field.name+"'");
                         }
                     }
                     
-                // longs
-                } else if (field.type.equals("long")) {
-                    for (String value : recfields.get(field.name)) {
-                        try {
-                            long l = Long.parseLong(value);
-                            if (l<field.minValue) errors.add("Field: '"+field.name+"' must be >= "+(long)field.minValue);
-                            if (l>field.maxValue) errors.add("Field: '"+field.name+"' must be <= "+(long)field.maxValue);
-                        } catch(NumberFormatException e) {
-                            errors.add("Incorrect long value: "+value+" for field: '"+field.name+"'");
-                        }
-                    }
-                    
-                // floats
-                } else if (field.type.equals("float")) {
-                    for (String value : recfields.get(field.name)) {
-                        try {
-                            float x = Float.parseFloat(value);
-                            if (x<field.minValue) errors.add("Field: '"+field.name+"' must be >= "+(float)field.minValue);
-                            if (x>field.maxValue) errors.add("Field: '"+field.name+"' must be <= "+(float)field.maxValue);
-                        } catch(NumberFormatException e) {
-                            errors.add("Incorrect float value: "+value+" for field: '"+field.name+"'");
-                        }
-                    }
+                } // record contains this field
                 
-                // booleans
-                } else if (field.type.equals("boolean")) {
-                    for (String value : recfields.get(field.name)) {
-                        if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false"))
-                            errors.add("Incorrect boolean value: "+value+" for field: '"+field.name+"'");
-                    }
-                }
-                
-            }
+            } // "id", "version" or anything else
             
-        }
+          } // schema field definition applies to this record type
+            
+        } // loop over records
         
     }
+    
     
     /**
      * Class holding data from a single <field> tag
@@ -243,6 +259,7 @@ public class SchemaRecordValidator implements RecordValidator {
         String type = "string";
         double minValue = Double.MIN_VALUE;
         double maxValue = Double.MAX_VALUE;
+        Set<String> records = new HashSet<String>();
         
         Set<String> values = new HashSet<String>();
         

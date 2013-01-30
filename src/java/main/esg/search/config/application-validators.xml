@@ -24,11 +24,12 @@
 			<ref bean="baseValidator"/>
 		</constructor-arg>
     	<constructor-arg index="1">
+    		<!-- note: use lower-case projects as keys -->
 	    	<map>
 				<entry key="cmip5">
 					<list><ref bean="geoValidator"/><ref bean="cmip5Validator"/></list>
 				</entry>
-				<entry key="obs4MIPs">
+				<entry key="obs4mips">
 					<list><ref bean="geoValidator"/><ref bean="cmip5Validator"/></list>
 				</entry>
 			</map>

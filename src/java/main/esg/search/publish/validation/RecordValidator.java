@@ -15,5 +15,5 @@ public interface RecordValidator {
      *                     (implying that the record must be considered invalid)
      */
     void validate(Record record, List<String> errors) throws Exception;
-
+    
 }

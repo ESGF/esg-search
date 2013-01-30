@@ -3,6 +3,8 @@ package esg.search.publish.validation;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.util.StringUtils;
+
 import esg.search.core.Record;
 
 /**
@@ -36,9 +38,11 @@ public class RecordValidatorManager implements RecordValidator {
         
         // run project specific validators
         String project = record.getFieldValue("project");
-        if (validators.containsKey(project)) {
-            for (RecordValidator validator : validators.get(project)) {
-                validator.validate(record, errors);
+        if (StringUtils.hasText(project)) {
+            if (validators.containsKey(project)) {
+                for (RecordValidator validator : validators.get(project)) {
+                    validator.validate(record, errors);
+                }
             }
         }
         

@@ -16,6 +16,10 @@
 	<!-- "title" field is mandatory for all records -->
 	<esgf:field name="title" minOccurs="1" maxOccurs="1" />
 	
+	<!-- "dataset_id" field is mandatory for Files, Aggregations -->
+	<esgf:field name="dataset_id" minOccurs="1" maxOccurs="1" records="File, Aggregation"/>
+	
+	
 	<!--  "version" field is optional, defaults to 0, if provided it must be an integer -->	
 	<esgf:field name="version" minOccurs="0" maxOccurs="1" type="int" default="0" />
 	

@@ -1,4 +1,5 @@
-  <doc>
+<doc>
+    <field name="project">CMIP5</field>
     <field name="id">cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.huss.20110323.aggregation|pcmdi9.llnl.gov</field>
     <field name="cf_standard_name">specific_humidity</field>
     <field name="data_node">pcmdi9.llnl.gov</field>
@@ -20,5 +21,4 @@
     <field name="variable_long_name">Near-Surface Specific Humidity</field>
     <field name="variable_units">1</field>
     <field name="west_degrees">0.0</field>
-  </doc>
-</add>
+</doc>
