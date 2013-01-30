@@ -103,9 +103,9 @@ public class SchemaRecordValidator implements RecordValidator {
             }
             
             // record types
-            String records = el.getAttributeValue("records");
-            if (StringUtils.hasText(records)) {
-                for (String recType : records.split(",")) {
+            String recordTypes = el.getAttributeValue("recordTypes");
+            if (StringUtils.hasText(recordTypes)) {
+                for (String recType : recordTypes.split(",")) {
                     field.records.add(recType.trim());
                 }
             }
@@ -135,7 +135,7 @@ public class SchemaRecordValidator implements RecordValidator {
         // loop over schema categories
         for (Field field : fields) {
             
-          if (field.records.isEmpty() || field.records.contains(record.getType())) {
+          if (field.recordTypes.isEmpty() || field.recordTypes.contains(record.getType())) {
             
             if (LOG.isDebugEnabled()) LOG.debug("Checking schema field name="+field.name);
             
@@ -259,7 +259,7 @@ public class SchemaRecordValidator implements RecordValidator {
         String type = "string";
         double minValue = Double.MIN_VALUE;
         double maxValue = Double.MAX_VALUE;
-        Set<String> records = new HashSet<String>();
+        Set<String> recordTypes = new HashSet<String>();
         
         Set<String> values = new HashSet<String>();
         
