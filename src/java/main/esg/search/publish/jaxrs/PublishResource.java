@@ -180,7 +180,7 @@ public class PublishResource {
             if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
             
             // authorization
-            authorizer.checkAuthorization(obj.getId());
+            if (authorizer!=null) authorizer.checkAuthorization(obj.getId());
             
             // ignore response from Solr client
             solrClient.delete(obj.getId()); 
@@ -224,7 +224,7 @@ public class PublishResource {
             MetadataRepositoryType _metadataRepositoryType = validateHarvestParameters(uri, filter, recursive, metadataRepositoryType);
             
             // authorization
-            authorizer.checkAuthorization(uri);
+            if (authorizer!=null) authorizer.checkAuthorization(uri);
             
             publishingService.publish(uri, filter, recursive, _metadataRepositoryType);
             
@@ -259,7 +259,7 @@ public class PublishResource {
             MetadataRepositoryType _metadataRepositoryType = validateHarvestParameters(uri, filter, recursive, metadataRepositoryType);
             
             // authorization
-            authorizer.checkAuthorization(uri);
+            if (authorizer!=null) authorizer.checkAuthorization(uri);
             
             publishingService.unpublish(uri, filter, recursive, _metadataRepositoryType);
             
@@ -289,9 +289,11 @@ public class PublishResource {
         try {
         
             // authorization
-            for (String id : ids) {
-                if (LOG.isDebugEnabled()) LOG.debug("Unpublishing id="+id);
-                authorizer.checkAuthorization(id);
+            if (authorizer!=null) {
+                for (String id : ids) {
+                    if (LOG.isDebugEnabled()) LOG.debug("Unpublishing id="+id);
+                    authorizer.checkAuthorization(id);
+                }
             }
         
             // ignore response from Solr client

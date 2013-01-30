@@ -1,13 +1,13 @@
 package esg.search.publish.validation;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import esg.search.core.Record;
 
 /**
- * Class that validates records by invoking multiple other validators.
+ * Class that manages records validation by invoking other validators
+ * depending on the specified project.
  * 
  * @author Luca Cinquini
  *
