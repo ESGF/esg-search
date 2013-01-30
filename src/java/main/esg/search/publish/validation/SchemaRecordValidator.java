@@ -106,7 +106,7 @@ public class SchemaRecordValidator implements RecordValidator {
             String recordTypes = el.getAttributeValue("recordTypes");
             if (StringUtils.hasText(recordTypes)) {
                 for (String recType : recordTypes.split(",")) {
-                    field.records.add(recType.trim());
+                    field.recordTypes.add(recType.trim());
                 }
             }
                         
