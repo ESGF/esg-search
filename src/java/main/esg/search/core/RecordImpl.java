@@ -19,6 +19,7 @@
 package esg.search.core;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -51,7 +52,10 @@ public class RecordImpl implements Record, Serializable {
 	 */
 	private long version = 0;
 	
-	//private static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+	/**
+	 * Optional schema the record must conform to.
+	 */
+	private URI schema = null;
 	
 	/**
 	 * Constructor for yet unknown record identifier.
@@ -217,6 +221,16 @@ public class RecordImpl implements Record, Serializable {
      */
     public void setType(String type) {
         this.addField(QueryParameters.FIELD_TYPE, type);
+    }
+    
+    @Override
+    public URI getSchema() {
+        return this.schema;
+    }
+
+    @Override
+    public void setSchema(URI uri) {
+        this.schema = uri;
     }
 
     private boolean hasText(final String s) {

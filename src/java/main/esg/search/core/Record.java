@@ -18,6 +18,7 @@
  ******************************************************************************/
 package esg.search.core;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Map;
 
@@ -165,5 +166,17 @@ public interface Record {
 	 * @param version
 	 */
 	void setVersion(long version);
+	
+	/**
+	 * Method to return the schema the record conforms to.
+	 * @return
+	 */
+	URI getSchema();
+	
+	/**
+	 * Method to set the schema the record must conform to.
+	 * @param uri
+	 */
+	void setSchema(URI uri);
 
 }

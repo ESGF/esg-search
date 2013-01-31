@@ -39,6 +39,7 @@ public class SchemaRecordValidator implements RecordValidator {
     private final Log LOG = LogFactory.getLog(this.getClass());
     
     public SchemaRecordValidator(String filepath) throws Exception {
+        
         this.filepath = filepath;
         
         // FIXME: call only if file has changed
@@ -129,6 +130,8 @@ public class SchemaRecordValidator implements RecordValidator {
 
     @Override
     public void validate(Record record, List<String> errors) {
+        
+        if (LOG.isDebugEnabled()) LOG.debug("Validating record versus schema: "+this.filepath);
                         
         // retrieve record metadata
         Map<String,List<String>> recfields = record.getFields();
@@ -138,7 +141,7 @@ public class SchemaRecordValidator implements RecordValidator {
             
           if (field.recordTypes.isEmpty() || field.recordTypes.contains(record.getType())) {
             
-            if (LOG.isDebugEnabled()) LOG.debug("Checking schema field name="+field.name);
+            if (LOG.isTraceEnabled()) LOG.trace("Checking schema field name="+field.name);
             
             // special Record attribute "id"
             if (field.name.equals(QueryParameters.FIELD_ID)) {

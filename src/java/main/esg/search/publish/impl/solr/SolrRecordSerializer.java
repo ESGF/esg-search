@@ -1,10 +1,13 @@
 package esg.search.publish.impl.solr;
 
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.springframework.util.StringUtils;
 
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
@@ -27,7 +30,7 @@ public class SolrRecordSerializer implements RecordSerializer {
     /**
      * Method to build a Record object from a Solr/XML document.
      */
-    public Record deserialize(String xml) throws IOException, JDOMException, NumberFormatException {
+    public Record deserialize(String xml) throws IOException, JDOMException, NumberFormatException, URISyntaxException {
         
         // validate XML 
         // (throws JDOMEXception if XML is not valid)
@@ -36,6 +39,10 @@ public class SolrRecordSerializer implements RecordSerializer {
         
         // create record stub
         Record record = new RecordImpl();
+        
+        // optional record schema (note: convert to lower case)
+        String schema = root.getAttributeValue(SolrXmlPars.ATTRIBUTE_SCHEMA);
+        if (StringUtils.hasText(schema)) record.setSchema(new URI(schema.toLowerCase()));
         
         // parse XML, populate record object
         for (Object field : root.getChildren(SolrXmlPars.ELEMENT_FIELD)) {

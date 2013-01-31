@@ -1,4 +1,4 @@
-<doc>
+<doc schema="cmip5">
 	<field name="id">obs4MIPs.NASA-JPL.AIRS.mon.v1|esg-datanode.jpl.nasa.gov</field>
 	<field name="version">1</field>
 	<field name="access">LAS</field>

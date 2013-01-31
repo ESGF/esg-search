@@ -1,11 +1,12 @@
 package esg.search.publish.validation;
 
+import java.net.URI;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.util.StringUtils;
-
 import esg.search.core.Record;
+import esg.search.query.api.QueryParameters;
 
 /**
  * Class that manages records validation by invoking other validators
@@ -15,34 +16,36 @@ import esg.search.core.Record;
  *
  */
 public class RecordValidatorManager implements RecordValidator {
-    
-    // base validator
-    RecordValidator baseValidator;
-    
+        
     // project-specific validators
-    Map<String, List<RecordValidator>> validators;
+    Map<String, RecordValidator> validators = new HashMap<String, RecordValidator>();
     
-    public RecordValidatorManager(RecordValidator baseValidator, 
-                                  Map<String, List<RecordValidator>> validators) throws Exception {
+    public RecordValidatorManager(Map<String, String> schemas) throws Exception {
        
-        this.baseValidator = baseValidator;       
-        this.validators = validators;
+        // instantiate validators
+        for (String uri : schemas.keySet()) {
+            validators.put(uri, new SchemaRecordValidator(schemas.get(uri)));
+        }
         
     }
 
     @Override
     public void validate(Record record, List<String> errors) throws Exception {
-        
+                
         // always run core validator
-        baseValidator.validate(record, errors);
+        validators.get(QueryParameters.SCHEMA_ESGF).validate(record, errors);
         
-        // run project specific validators
-        String project = record.getFieldValue("project");
-        if (StringUtils.hasText(project)) {
-            if (validators.containsKey(project.toLowerCase())) {
-                for (RecordValidator validator : validators.get(project.toLowerCase())) {
-                    validator.validate(record, errors);
-                }
+        // also always run geo validator
+        validators.get(QueryParameters.SCHEMA_GEO).validate(record, errors);
+        
+        // run schema specific validators
+        URI uri = record.getSchema();
+        if (uri!=null) {
+            String schema = uri.toString();
+            if (validators.containsKey(schema)) {
+                validators.get(schema).validate(record, errors);
+            } else {
+                throw new Exception("Unknown validation schema: "+schema);
             }
         }
         

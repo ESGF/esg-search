@@ -1,4 +1,4 @@
-<doc>
+<doc schema="cmip5">
 	<field name="project">CMIP5</field>
     <field name="id">cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323.huss_day_inmcm4_1pctCO2_r1i1p1_20900101-20991231.nc|pcmdi9.llnl.gov</field>
     <field name="version">1</field>

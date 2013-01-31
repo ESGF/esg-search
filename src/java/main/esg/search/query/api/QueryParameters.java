@@ -155,6 +155,10 @@ public class QueryParameters {
     public final static int DEFAULT_FILES_READ_TIMEOUT = 3600000;
     public final static String PROPERTY_FILES_READ_TIMEOUT = "index.timeout.read.files";
     
+    // schema URIs
+    public final static String SCHEMA_ESGF = "esgf";
+    public final static String SCHEMA_GEO = "geo";
+    
     private QueryParameters() {};
 
 }
