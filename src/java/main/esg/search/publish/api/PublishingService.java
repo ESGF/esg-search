@@ -1,5 +1,6 @@
 package esg.search.publish.api;
 
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -16,9 +17,10 @@ public interface PublishingService {
 	 * @param filter: optional regex to filter the repository URIs
 	 * @param recursive : true to recursively crawl the remote metadata repository.
 	 * @param metadataRepositoryType : the metadata repository type.
+	 * @param schema : optional schema for record validation
 	 * @throws PublishingException
 	 */
-	void publish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException;
+	void publish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType, URI schema) throws PublishingException;
 	
 	/**
 	 * Method to unpublish metadata from a remote metadata repository.

@@ -37,9 +37,10 @@ public interface MetadataRepositoryCrawler {
 	 *        The special value "ALL" can also be used to crawl ALL URis (i.e. no filtering is applied).
 	 * @param recursive : true to recursively crawl the locations referenced by the starting location
 	 * @param callback: a {@link RecordProducer} that is triggered every time a new Record is generated while crawling
-	 * @param : a boolean flag indicating whether the repository is crawled for publishing (true) or un-pubishing (false)
+	 * @param publish: a boolean flag indicating whether the repository is crawled for publishing (true) or un-pubishing (false)
+	 * @param schema : optional schema for record validation
 	 */
-	public void crawl(URI uri, String filter, boolean recursive, RecordProducer callback, boolean publish) throws Exception;
+	public void crawl(URI uri, String filter, boolean recursive, RecordProducer callback, boolean publish, URI schema) throws Exception;
 	
 	/**
 	 * Method to indicate the {@link MetadataRepositoryType} supported by this crawler.

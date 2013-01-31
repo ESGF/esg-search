@@ -1,5 +1,6 @@
 package esg.search.publish.impl;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,10 +42,10 @@ public class SecurePublishingServiceImpl implements PublishingService {
     }
 
     @Override
-    public void publish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
+    public void publish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType, URI schema) throws PublishingException {
         
         authorizer.checkAuthorization(uri);
-        this.publishingService.publish(uri, filter, recursive, metadataRepositoryType);
+        this.publishingService.publish(uri, filter, recursive, metadataRepositoryType, schema);
 
     }
 

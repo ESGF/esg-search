@@ -102,7 +102,7 @@ public class PublishingServiceMain {
 		    }
 		    
 		    if (publish) {
-		    	publishingService.publish(uri, filter, true, type);    // recursive=true
+		    	publishingService.publish(uri, filter, true, type, null);    // recursive=true, schema=null
 		    } else {
 		    	publishingService.unpublish(uri, filter, true, type);  // recursive=true
 		    }

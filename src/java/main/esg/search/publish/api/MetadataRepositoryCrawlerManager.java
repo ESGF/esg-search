@@ -18,6 +18,8 @@
  ******************************************************************************/
 package esg.search.publish.api;
 
+import java.net.URI;
+
 
 /**
  * API for managing crawling of heterogeneous metadata repositories.
@@ -31,8 +33,9 @@ public interface MetadataRepositoryCrawlerManager {
 	 * @param recursive
 	 * @param metadataRepositoryType
 	 * @param publish
+	 * @param schema
 	 * @throws Exception
 	 */
-	void crawl(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType, boolean publish) throws Exception;
+	void crawl(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType, boolean publish, URI schema) throws Exception;
 
 }

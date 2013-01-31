@@ -1,5 +1,6 @@
 package esg.search.publish.impl;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,8 +63,8 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
 
 
     @Override
-    public void publish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
-        this.getPublishingService().publish(uri, filter, recursive, metadataRepositoryType);
+    public void publish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType, URI schema) throws PublishingException {
+        this.getPublishingService().publish(uri, filter, recursive, metadataRepositoryType, schema);
     }
 
     @Override
@@ -86,7 +87,7 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
         
         try {
             // Note filter=null since dataset is being created
-            publishingService.publish(threddsURL, null, RECURSIVE, METADATA_REPOSITORY_TYPE); 
+            publishingService.publish(threddsURL, null, RECURSIVE, METADATA_REPOSITORY_TYPE, null); // schema=null 
             return RETURN_VALUE;
         } catch(PublishingException e) {
             LOG.error(e.getMessage());

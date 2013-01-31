@@ -1,5 +1,7 @@
 package esg.search.publish.jaxrs;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -221,7 +223,10 @@ public class PublishResource {
             // authorization
             if (authorizer!=null) authorizer.checkAuthorization(uri);
             
-            publishingService.publish(uri, filter, recursive, _metadataRepositoryType);
+            // optional schema validation
+            URI schemaUri = (StringUtils.hasText(schema) ? new URI(schema) : null);
+            
+            publishingService.publish(uri, filter, recursive, _metadataRepositoryType, schemaUri);
             
             return newXmlResponse("Harvested uri="+uri);
         
@@ -229,6 +234,8 @@ public class PublishResource {
             throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
         } catch(PublishingException pe) {
             throw newWebApplicationException(pe.getMessage(), Response.Status.BAD_REQUEST);
+        } catch(URISyntaxException use) {
+            throw newWebApplicationException(use.getMessage(), Response.Status.BAD_REQUEST);
         }
         
     }

@@ -33,4 +33,6 @@
 	<field name="service">LAS|Live Access Server|http://las.test.com/?dsid=id1</field>
 	<field name="experiment">sresa2</field>
 	<field name="variable">clivi</field>
+	<field name="data_node">localhost</field>
+	<field name="index_node">localhost</field>
 </doc>

@@ -1,5 +1,6 @@
 package esg.search.publish.impl;
 
+import java.net.URI;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -55,10 +56,10 @@ public class PublishingServiceImpl implements PublishingService {
     }
 
     @Override
-	public void publish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
+	public void publish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType, URI schema) throws PublishingException {
              
         try {
-            publisherCrawler.crawl(uri, filter, recursive, metadataRepositoryType, true); // publish=true
+            publisherCrawler.crawl(uri, filter, recursive, metadataRepositoryType, true, schema); // publish=true
         } catch(Exception e) {
             LOG.error(e.getMessage());
             e.printStackTrace();
@@ -71,7 +72,7 @@ public class PublishingServiceImpl implements PublishingService {
     public void unpublish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
 
         try {
-            unpublisherCrawler.crawl(uri, filter, recursive, metadataRepositoryType, false); // publish=false
+            unpublisherCrawler.crawl(uri, filter, recursive, metadataRepositoryType, false, null); // publish=false, schema=null
         } catch(Exception e) {
             LOG.error(e.getMessage());
             e.printStackTrace();

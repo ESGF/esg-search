@@ -101,8 +101,9 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	 * @param uri : the URI of the starting THREDDS catalog
 	 * @param recursive : true to crawl the whole catalog hierarchy
 	 * @param publish: true to publish, false to unpublish
+	 * @param schema: optional URI of schema for record validation
 	 */
-	public void crawl(final URI catalogURI, final String filter, boolean recursive, final RecordProducer callback, boolean publish) throws Exception {
+	public void crawl(final URI catalogURI, final String filter, boolean recursive, final RecordProducer callback, boolean publish, URI schema) throws Exception {
 		
         if (LOG.isInfoEnabled()) LOG.info("Parsing catalog: "+catalogURI.toString());
         
@@ -162,7 +163,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
                     if (LOG.isInfoEnabled()) 
                         LOG.info("Catalog "+catalogRef.toString()+" matches filter regular expression, proceeding with publishing/unpubishing of records");
                     try {
-                        crawl(catalogRef, filter, recursive, callback, publish);
+                        crawl(catalogRef, filter, recursive, callback, publish, schema);
                     } catch(Exception e) {
                         // print error from nested invocation
                         LOG.warn("Error parsing catalog: "+catalogRef.toString());

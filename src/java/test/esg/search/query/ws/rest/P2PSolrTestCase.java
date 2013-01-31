@@ -93,6 +93,10 @@ public class P2PSolrTestCase extends AbstractSolrTestCase {
         
     }
     
+    public void testme() {
+        assert(true);
+    }
+    
     /**
      * Turned off as you need a working index for this, and no index is guaranteed to be working at this time.
      * @throws Exception

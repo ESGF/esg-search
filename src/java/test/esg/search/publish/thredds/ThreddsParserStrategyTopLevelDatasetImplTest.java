@@ -59,7 +59,7 @@ public class ThreddsParserStrategyTopLevelDatasetImplTest {
 		
 		// tests number of metadata records (1 dataset, 5 files)
 		final List<Record> records = parser.parseDataset(dataset, true, new ArrayList<URI>()); // latest=true
-		Assert.assertTrue(records.size()==6);
+		Assert.assertTrue(records.size()==16);
 		
 		// test record fields
 		final Record record = records.get(0);
@@ -94,7 +94,7 @@ public class ThreddsParserStrategyTopLevelDatasetImplTest {
 		Assert.assertTrue(fields.get("variable_long_name").contains("Surface and Subsurface Runoff"));
 		Assert.assertTrue(fields.get("variable_long_name").contains("Surface Runoff"));
 		Assert.assertTrue(fields.get("variable_long_name").contains("Total Soil Moisture Content"));
-		Assert.assertTrue(fields.get("creation_time").contains("2010-03-31 15:52:44"));
+		Assert.assertTrue(fields.get("timestamp").contains("2010-03-31T21:52:44Z"));
 		//Assert.assertTrue(fields.get("dataset_id").contains("pcmdi.ipcc4.UKMO.ukmo_hadgem1.amip.mon.land.run1"));
 		Assert.assertTrue(record.getVersion()==1);
 		Assert.assertTrue(fields.get("variable").contains("mrfso"));
