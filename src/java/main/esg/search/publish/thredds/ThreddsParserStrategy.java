@@ -34,8 +34,9 @@ public interface ThreddsParserStrategy {
 	 * @param dataset : the THREDDS dataset to be parsed into metadata records
 	 * @param latest : latest flag to be assigned to the records
 	 * @param uris : list of nested THREDDS catalogs URIs, for hierarchical parsing
+	 * @param schema : optional compliance schema to be assigned to the datasets
 	 * @return
 	 */
-	List<Record> parseDataset(InvDataset dataset, boolean latest, List<URI> catalogRefs) throws Exception;
+	List<Record> parseDataset(InvDataset dataset, boolean latest, List<URI> catalogRefs, URI schema) throws Exception;
 	
 }

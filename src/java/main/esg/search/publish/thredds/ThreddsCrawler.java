@@ -105,7 +105,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	 */
 	public void crawl(final URI catalogURI, final String filter, boolean recursive, final RecordProducer callback, boolean publish, URI schema) throws Exception {
 		
-        if (LOG.isInfoEnabled()) LOG.info("Parsing catalog: "+catalogURI.toString());
+        if (LOG.isInfoEnabled()) LOG.info("Parsing catalog: "+catalogURI.toString()+" Validation schema="+schema);
         
 	    // regex pattern to match THREDDS catalogs URIs
         // NOTE: always crawl top-level catalog, enforce regular expression only for nested catalogs
@@ -131,7 +131,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 					
 				} else if (dataset instanceof InvDatasetImpl) {
 				    
-			      crawlDataset(dataset, publish, callback, catalogRefs);	
+			      crawlDataset(dataset, publish, callback, catalogRefs, schema);	
  					
 				} // dataset instanceof InvCatalogRef or InvDatasetImpl
 				
@@ -188,13 +188,13 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	 * @param catalogRefs
 	 */
 	private void crawlDataset(final InvDataset dataset, boolean publish, final RecordProducer callback, 
-	                          final List<URI> catalogRefs) throws Exception {
+	                          final List<URI> catalogRefs, URI schema) throws Exception {
 	    
         // list or previous records to be republished
         final List<Record> _records = new ArrayList<Record>();
         
         // list of records from this catalog
-        final List<Record> records = parser.parseDataset(dataset, true, catalogRefs); // set latest=true by default
+        final List<Record> records = parser.parseDataset(dataset, true, catalogRefs, schema); // set latest=true by default
                             
         // top-level dataset
         final Record drecord = records.get(0);  
@@ -231,7 +231,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
                                         // publish previous records with "latest"=false
                                         if (LOG.isInfoEnabled()) LOG.info("Republishing dataset: "+exDataset.getID()+" with latest=false");
                                         // NOTE: the nested catalogRefs are ignored as they will be processed independently
-                                        _records.addAll( parser.parseDataset(exDataset, false, new ArrayList<URI>()));
+                                        _records.addAll( parser.parseDataset(exDataset, false, new ArrayList<URI>(), schema));
                                     }
                                 }
                                                                             

@@ -64,7 +64,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	private final Log LOG = LogFactory.getLog(this.getClass());
 	
 	// anti-pattern for CF standard names, which do not contain upper case letters or spaces
-    private final Pattern NON_CF_PATTERN = Pattern.compile(".*[A-Z\\s].*");
+    //private final Pattern NON_CF_PATTERN = Pattern.compile(".*[A-Z\\s].*");
 	
 	/**
 	 * Default URL builder
@@ -121,7 +121,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * Method to parse the catalog top-level dataset.
 	 */
 	@Override
-	public List<Record> parseDataset(final InvDataset dataset, final boolean latest, List<URI> catalogRefs) {
+	public List<Record> parseDataset(final InvDataset dataset, final boolean latest, List<URI> catalogRefs, URI schema) {
 		
 	    // instantiate overall list of records from this catalogs
         final List<Record> records = new ArrayList<Record>();
@@ -133,7 +133,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         final String hostName = getHostName(dataset);
 
         // parse top-level dataset
-        final Record record = this.parseCollection(dataset, latest, hostName, ds);
+        final Record record = this.parseCollection(dataset, latest, hostName, schema, ds);
                 
         // IMPORTANT: add top-level dataset as first record
         records.add(record);
@@ -142,7 +142,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         boolean isReplica = record.isReplica();
         
         // recursion within this catalog
-		parseSubDatasets(dataset, latest, isReplica, records, hostName, ds, catalogRefs);
+		parseSubDatasets(dataset, latest, isReplica, records, hostName, schema, ds, catalogRefs);
 		
 		// set total size of dataset, number of files, number of aggregations
 		record.addField(QueryParameters.FIELD_SIZE, Long.toString(ds.size));
@@ -194,7 +194,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @return
 	 */
 	private DatasetSummary parseSubDatasets(final InvDataset dataset, final boolean latest, final boolean isReplica,
-	                              final List<Record> records, String hostName, final DatasetSummary ds,
+	                              final List<Record> records, String hostName, final URI schema, final DatasetSummary ds,
 	                              final List<URI> catalogRefs) {
 	    	    
 	    if (LOG.isDebugEnabled()) LOG.trace("Crawling dataset: "+dataset.getID()+" for files");
@@ -216,18 +216,18 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
     	            
     	            // parse files into separate records
     	            boolean inherit = true;
-    	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, ds, QueryParameters.TYPE_FILE);
+    	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, schema, ds, QueryParameters.TYPE_FILE);
     
     	        } else if (ThreddsUtils.isAggregation(childDataset)) {
     	            
     	            // parse aggregations into separate records
     	            boolean inherit = false;
-    	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, ds, QueryParameters.TYPE_AGGREGATION);
+    	            this.parseSubDataset(childDataset, latest, isReplica, records, inherit, hostName, schema, ds, QueryParameters.TYPE_AGGREGATION);
     	            
     	        }
     	        
     	        // recursion
-    	        parseSubDatasets(childDataset, latest, isReplica, records, hostName, ds, catalogRefs);
+    	        parseSubDatasets(childDataset, latest, isReplica, records, hostName, schema, ds, catalogRefs);
     	        
 	        }
 	        
@@ -237,12 +237,12 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         
 	}
 	
-	private Record parseCollection(final InvDataset dataset, final boolean latest, final String hostName, final DatasetSummary ds) {
+	private Record parseCollection(final InvDataset dataset, final boolean latest, final String hostName, final URI schema, final DatasetSummary ds) {
 	    
 	    if (LOG.isDebugEnabled()) LOG.debug("Parsing dataset: "+dataset.getID());
 	        	    	    
 	    // create new record with universally unique record identifier
-	    final Record record = newRecord(dataset, latest, hostName);
+	    final Record record = newRecord(dataset, latest, hostName, schema);
 	    
 	    final String name = dataset.getName();
 	    Assert.notNull(name, "Dataset name cannot be null");
@@ -287,11 +287,12 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	                             final boolean latest, final boolean isReplica, 
 	                             final List<Record> records, boolean inherit,
 	                             final String hostName, 
+	                             final URI schema,
 	                             final DatasetSummary ds,
 	                             final String recordType) {
 	    
         // create new record with universally unique record identifier
-        final Record record = newRecord(subDataset, latest, hostName);
+        final Record record = newRecord(subDataset, latest, hostName, schema);
         
         // set replica flag same as top-level dataset
         record.setReplica(isReplica);
@@ -375,7 +376,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @param latest
 	 * @param hostName
 	 */
-	private Record newRecord(final InvDataset dataset, final boolean latest, final String hostName) {
+	private Record newRecord(final InvDataset dataset, final boolean latest, final String hostName, URI schema) {
 	    
 	    // retrieve dataset ID from THREDDS catalog...
 	    // <dataset name="...." ID="..." restrictAccess="...">
@@ -406,6 +407,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
         
         // "data_node" field
         record.setField(QueryParameters.FIELD_DATA_NODE, hostName);
+        
+        // "schema" field
+        if (schema!=null) record.setSchema(schema);
         
         return record;
 
