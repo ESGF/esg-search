@@ -39,8 +39,8 @@ public class RecordValidatorManager implements RecordValidator {
         // run project specific validators
         String project = record.getFieldValue("project");
         if (StringUtils.hasText(project)) {
-            if (validators.containsKey(project)) {
-                for (RecordValidator validator : validators.get(project)) {
+            if (validators.containsKey(project.toLowerCase())) {
+                for (RecordValidator validator : validators.get(project.toLowerCase())) {
                     validator.validate(record, errors);
                 }
             }

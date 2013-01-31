@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -103,10 +104,10 @@ public class SchemaRecordValidator implements RecordValidator {
             }
             
             // record types
-            String recordTypes = el.getAttributeValue("recordTypes");
-            if (StringUtils.hasText(recordTypes)) {
-                for (String recType : recordTypes.split(",")) {
-                    field.recordTypes.add(recType.trim());
+            String recordType = el.getAttributeValue("recordType");
+            if (StringUtils.hasText(recordType)) {
+                for (String rct : recordType.split(",")) {
+                    field.recordTypes.add(rct.trim());
                 }
             }
                         
@@ -161,7 +162,7 @@ public class SchemaRecordValidator implements RecordValidator {
                     
                     // check number of values
                     if (values.size()<field.minOccurs || values.size()>field.maxOccurs) {
-                        errors.add("Wrong of values for field:'"+field.name+"'");
+                        errors.add("Wrong number of values for field:'"+field.name+"'");
                     }
                     // check values match controlled vocabulary, if specified
                     if (!field.values.isEmpty()) {
@@ -233,6 +234,16 @@ public class SchemaRecordValidator implements RecordValidator {
                         for (String value : values) {
                             if (!value.equalsIgnoreCase("true") && !value.equalsIgnoreCase("false"))
                                 errors.add("Incorrect boolean value: "+value+" for field: '"+field.name+"'");
+                        }
+                        
+                    // UUIDs
+                    } else if (field.type.equals("uuid")) {
+                        for (String value : values) {
+                            try {
+                                UUID.fromString(value);
+                            } catch(IllegalArgumentException e) {
+                                errors.add("Incorrect UUID value: "+value+" for field: '"+field.name+"'");
+                            }
                         }
                     }
                     
