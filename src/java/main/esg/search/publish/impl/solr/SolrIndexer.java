@@ -19,14 +19,21 @@
 package esg.search.publish.impl.solr;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import esg.search.core.Record;
+import esg.search.publish.api.PublishingException;
 import esg.search.publish.api.RecordConsumer;
+import esg.search.publish.validation.RecordValidator;
 
 /**
  * Implementation of {@link RecordConsumer} that sends (fully populated) records to a Solr server for indexing.
@@ -36,14 +43,24 @@ public class SolrIndexer implements RecordConsumer {
     
     // client object that sends XML requests to Solr server
     final SolrClient solrClient;
+    
+    // collaborator that validate records
+    public RecordValidator validator;
+    
+    private final Log LOG = LogFactory.getLog(this.getClass());
 				
 	/**
 	 * Constructor delegates to superclass.
 	 * @param url
 	 */
 	@Autowired
-	public SolrIndexer(final @Value("${esg.search.solr.publish.url}") URL url) {
+	public SolrIndexer(final @Value("${esg.search.solr.publish.url}") URL url,
+	                   final @Qualifier("recordValidatorManager") RecordValidator validator) {
+	    
 	    solrClient = new SolrClient(url);
+	    
+	    this.validator = validator;
+	    
 	}
 
 	/**
@@ -51,7 +68,8 @@ public class SolrIndexer implements RecordConsumer {
 	 * 
 	 */
 	public void consume(final Record record) throws Exception {
-	    	    
+	   	    
+	    validate(record);
 		final String xml = SolrXmlBuilder.buildAddMessage(record, true);
 		solrClient.index(xml, record.getType(), true); // commit=true
 				
@@ -68,6 +86,7 @@ public class SolrIndexer implements RecordConsumer {
         // index one record at a time, do not commit
         for (final Record record : records) {
             
+            validate(record);
             final String xml = SolrXmlBuilder.buildAddMessage(record, true);
             solrClient.index(xml, record.getType(), true);
             
@@ -76,6 +95,24 @@ public class SolrIndexer implements RecordConsumer {
         // commit all records at once, to all cores
         solrClient.commit();
         
+    }
+    
+    /**
+     * Method to validate a record
+     * @param record
+     * @throws Exception
+     */
+    private void validate(Record record) throws Exception {
+        
+        // validate record
+        List<String> errors = new ArrayList<String>();
+        validator.validate(record, errors);            
+        if (LOG.isDebugEnabled()) LOG.debug("Number of errors="+errors.size());
+        if (!errors.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            for (String error : errors) sb.append("Record validation error: "+error+"\n");
+            throw new PublishingException(sb.toString());
+        }
     }
 
 }

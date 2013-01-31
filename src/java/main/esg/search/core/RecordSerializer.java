@@ -28,9 +28,7 @@ public interface RecordSerializer {
      * @return: Record object
      * @throws IOException
      * @throws JDOMException: in case of XML parsing error
-     * @throws URISyntaxException 
-     * @throws NumberFormatException 
      */
-    Record deserialize(String xml) throws IOException, JDOMException, NumberFormatException, URISyntaxException;
+    Record deserialize(String xml) throws IOException, JDOMException, URISyntaxException;
 
 }

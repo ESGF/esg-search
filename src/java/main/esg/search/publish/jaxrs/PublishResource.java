@@ -26,12 +26,12 @@ import org.springframework.util.StringUtils;
 import esg.search.core.Record;
 import esg.search.core.RecordSerializer;
 import esg.search.publish.api.MetadataRepositoryType;
+import esg.search.publish.api.PublishingException;
 import esg.search.publish.api.PublishingService;
 import esg.search.publish.impl.solr.SolrClient;
 import esg.search.publish.impl.solr.SolrRecordSerializer;
 import esg.search.publish.security.AuthorizerAdapter;
 import esg.search.publish.validation.RecordValidator;
-import esg.search.publish.validation.RecordValidatorManager;
 
 /**
  * JAXRS Resource that exposes publishing operations (push and pull) through a RESTful API.
@@ -116,7 +116,10 @@ public class PublishResource {
             
             // deserialize XML into record
             Record obj = serializer.deserialize(record);
-        
+            
+            // authorization
+            if (authorizer!=null) authorizer.checkAuthorization(obj.getId());
+            
             // validate record
             List<String> errors = new ArrayList<String>();
             validator.validate(obj, errors);            
@@ -124,9 +127,6 @@ public class PublishResource {
             if (!errors.isEmpty()) {
                 throw newWebApplicationException(errors, Response.Status.BAD_REQUEST);
             }
-            
-            // authorization
-            if (authorizer!=null) authorizer.checkAuthorization(obj.getId());
             
             String request = "<add>"+record+"</add>";
             // ignore response from Solr client
@@ -170,14 +170,8 @@ public class PublishResource {
             
             // deserialize XML into record
             Record obj = serializer.deserialize(record);
-            
-            // validation
-            List<String> errors = new ArrayList<String>();
-            validator.validate(obj, errors);
-            if (errors.size()>0) {
-                throw newWebApplicationException(errors, Response.Status.BAD_REQUEST);
-            }
             if (LOG.isDebugEnabled()) LOG.debug("Detected record type="+obj.getType());
+            
             
             // authorization
             if (authorizer!=null) authorizer.checkAuthorization(obj.getId());
@@ -216,12 +210,13 @@ public class PublishResource {
     public String harvest(@FormParam("uri") String uri, 
                           @FormParam("recursive") @DefaultValue("false") boolean recursive, 
                           @FormParam("filter") @DefaultValue("*") String filter,
-                          @FormParam("metadataRepositoryType") String metadataRepositoryType) {
+                          @FormParam("metadataRepositoryType") String metadataRepositoryType,
+                          @FormParam("schema") String schema) {
         
         try { 
             
             // validate HTTP parameters       
-            MetadataRepositoryType _metadataRepositoryType = validateHarvestParameters(uri, filter, recursive, metadataRepositoryType);
+            MetadataRepositoryType _metadataRepositoryType = validateHarvestParameters(uri, filter, recursive, metadataRepositoryType, schema);
             
             // authorization
             if (authorizer!=null) authorizer.checkAuthorization(uri);
@@ -232,6 +227,8 @@ public class PublishResource {
         
         } catch(SecurityException se) {
             throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
+        } catch(PublishingException pe) {
+            throw newWebApplicationException(pe.getMessage(), Response.Status.BAD_REQUEST);
         }
         
     }
@@ -251,12 +248,13 @@ public class PublishResource {
     public String unharvest(@FormParam("uri") String uri, 
                             @FormParam("recursive") @DefaultValue("false") boolean recursive, 
                             @FormParam("filter") @DefaultValue("*") String filter, 
-                            @FormParam("metadataRepositoryType") String metadataRepositoryType) {
+                            @FormParam("metadataRepositoryType") String metadataRepositoryType,
+                            @FormParam("schema") String schema) {
         
         try {
             
             // validate HTTP parameters       
-            MetadataRepositoryType _metadataRepositoryType = validateHarvestParameters(uri, filter, recursive, metadataRepositoryType);
+            MetadataRepositoryType _metadataRepositoryType = validateHarvestParameters(uri, filter, recursive, metadataRepositoryType, schema);
             
             // authorization
             if (authorizer!=null) authorizer.checkAuthorization(uri);
@@ -318,7 +316,8 @@ public class PublishResource {
      * @param metadataRepositoryType
      * @return the metadataRepositoryType converted to enumeration value
      */
-    private MetadataRepositoryType validateHarvestParameters(String uri, String filter, boolean recursive, String metadataRepositoryType) {
+    private MetadataRepositoryType validateHarvestParameters(String uri, String filter, boolean recursive, 
+                                                             String metadataRepositoryType, String schema) {
         
         if (LOG.isDebugEnabled()) {
             LOG.debug("Harvesting request:");
@@ -326,6 +325,7 @@ public class PublishResource {
             LOG.debug("\tfilter="+filter);
             LOG.debug("\trecursive="+recursive);
             LOG.debug("\tmetadataRepositoryType="+metadataRepositoryType);
+            LOG.debug("\tschema="+schema);
             
         }
         
