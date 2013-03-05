@@ -18,7 +18,7 @@ if [ $BASH ] && [ `basename $BASH` != bash ]; then
     exit $?
 fi
 
-version=1.3.1
+version=1.3.2
 CACHE_FILE=.$(basename $0).status
 openId={{userOpenId}}
 search_url='{{searchUrl}}'
@@ -127,7 +127,7 @@ debug=0
 clean_work=1
 
 #parse flags
-while getopts ':c:pfF:o:w:iuUndvqh' OPT; do
+while getopts ':c:pfF:o:w:isuUndvqh' OPT; do
     case $OPT in
         c) ESG_CREDENTIALS="$OPTARG";;  #<cert> : use this certificate for authentication.
         p) clean_work=0;;               #       : preserve data that failed checksum
@@ -136,6 +136,7 @@ while getopts ':c:pfF:o:w:iuUndvqh' OPT; do
         o) openId="$OPTARG";;           #<openid>: Provide OpenID instead of interactively asking for it.
         w) output="$OPTARG";;           #<file> : Write embedded files into a file and exit
         i) insecure=1;;                 #       : set insecure mode, i.e. don't check server certificate
+        s) skip_security=1;;            #       : completely skip security. It will only work if the accessd data is not secured at all.
         u) update=1;;                   #       : Issue the search again and see if something has changed.
         U) update_files=1;;             #       : Update files from server overwriting local ones (detect with -u)
         n) dry_run=1;;                  #       : Don't download any files, just report.
@@ -523,7 +524,7 @@ download() {
             echo "download failed"
             # most common failure is certificate expiration, so check this
             #if we have the pasword we can retrigger download
-            [[ "$pass" ]] && check_cert
+            ((!skip_security)) && [[ "$pass" ]] && check_cert
             unset failed
         fi
         
@@ -564,7 +565,7 @@ EOF-MESSAGE
 sleep 1
 
 check_os
-find_credentials
+((!skip_security)) && find_credentials
 #do we have old results? Create the file if not
 [ ! -f $CACHE_FILE ] && echo "#filename mtime checksum" > $CACHE_FILE && chmod 666 $CACHE_FILE
 
