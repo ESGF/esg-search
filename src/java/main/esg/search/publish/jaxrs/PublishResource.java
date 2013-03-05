@@ -63,7 +63,7 @@ public class PublishResource {
     
     // class used to authorize the publishing calls
     // no authorization takes place if null
-    private final AuthorizerAdapter authorizer = null;
+    private final AuthorizerAdapter authorizer;
         
     /**
      * Constructor is configured to interact with a specific Solr server.
@@ -79,8 +79,7 @@ public class PublishResource {
         
         this.publishingService = publishingService;
         
-        // FIXME
-        //this.authorizer = authorizer;
+        this.authorizer = authorizer;
         
         this.validator = validator;
         
