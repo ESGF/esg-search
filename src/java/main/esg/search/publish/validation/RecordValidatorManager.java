@@ -42,10 +42,12 @@ public class RecordValidatorManager implements RecordValidator {
         URI uri = record.getSchema();
         if (uri!=null) {
             String schema = uri.toString();
-            if (validators.containsKey(schema)) {
-                validators.get(schema).validate(record, errors);
-            } else {
-                throw new Exception("Unknown validation schema: "+schema);
+            if (!schema.equals(QueryParameters.SCHEMA_ESGF) && !schema.equals(QueryParameters.SCHEMA_GEO)) {
+                if (validators.containsKey(schema)) {
+                    validators.get(schema).validate(record, errors);
+                } else {
+                    throw new Exception("Unknown validation schema: "+schema);
+                }
             }
         }
         

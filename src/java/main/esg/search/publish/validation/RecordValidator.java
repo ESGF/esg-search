@@ -10,7 +10,7 @@ public interface RecordValidator {
      * Method to validate a document containing a single record.
      * @param record : record to be validated as Java object
      * @param errors : list of validation errors (unless an exception is thrown)
-     * @return : stub record object if valid
+     *
      * @throws Exception : if the record validation failed for some reason 
      *                     (implying that the record must be considered invalid)
      */

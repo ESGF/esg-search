@@ -70,7 +70,7 @@ public class SolrIndexer implements RecordConsumer {
 	public void consume(final Record record) throws Exception {
 	   	    
 	    validate(record);
-		final String xml = SolrXmlBuilder.buildAddMessage(record, true);
+		final String xml = SolrMessageBuilder.buildAddMessage(record, true);
 		solrClient.index(xml, record.getType(), true); // commit=true
 				
 	}
@@ -87,7 +87,7 @@ public class SolrIndexer implements RecordConsumer {
         for (final Record record : records) {
             
             validate(record);
-            final String xml = SolrXmlBuilder.buildAddMessage(record, true);
+            final String xml = SolrMessageBuilder.buildAddMessage(record, true);
             solrClient.index(xml, record.getType(), true);
             
         }

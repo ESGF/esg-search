@@ -111,7 +111,7 @@ public class SolrClient {
         
         // loop over all cores, remove records from all cores alike
         for (final String core : SolrXmlPars.CORES.values()) {
-            final String xml = SolrXmlBuilder.buildDeleteMessage(ids, true);
+            final String xml = SolrMessageBuilder.buildDeleteMessage(ids, true);
             final URL postUrl = solrUrlBuilder.buildUpdateUrl(core); 
             if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
             sb.append( httpClient.doPost(postUrl, xml, true) );
@@ -131,7 +131,7 @@ public class SolrClient {
 	    
         for (final String core : SolrXmlPars.CORES.values()) {
             
-            String xml = SolrXmlBuilder.buildCommitMessage();
+            String xml = SolrMessageBuilder.buildCommitMessage();
             URL postUrl = solrUrlBuilder.buildUpdateUrl(core);
             if (LOG.isInfoEnabled()) LOG.info("Issuing commit:"+xml+" to URL:"+postUrl.toString());
             httpClient.doPost(postUrl, xml, true);

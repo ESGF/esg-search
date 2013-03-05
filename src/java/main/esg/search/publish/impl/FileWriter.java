@@ -28,7 +28,7 @@ import org.springframework.util.Assert;
 
 import esg.search.core.Record;
 import esg.search.publish.api.RecordConsumer;
-import esg.search.publish.impl.solr.SolrXmlBuilder;
+import esg.search.publish.impl.solr.SolrMessageBuilder;
 
 /**
  * Implementation of {@link RecordConsumer} that writes the serialized record XML to the file system (one at a time).
@@ -63,7 +63,7 @@ public class FileWriter extends SingleRecordConsumer {
 		
 		final File file = new File(directory, record.getId()+".xml");
 		if (LOG.isInfoEnabled()) LOG.info("Indexing record:"+record.getId()+" to file:"+file.getAbsolutePath());
-		final String xml = SolrXmlBuilder.buildAddMessage(record, true);
+		final String xml = SolrMessageBuilder.buildAddMessage(record, true);
 		FileUtils.writeStringToFile(file, xml);
 		
 	}

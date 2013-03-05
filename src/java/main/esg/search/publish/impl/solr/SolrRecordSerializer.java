@@ -3,6 +3,8 @@ package esg.search.publish.impl.solr;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Map;
 
 import org.jdom.Document;
 import org.jdom.Element;
@@ -15,6 +17,7 @@ import esg.search.core.RecordSerializer;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
 import esg.search.utils.XmlParser;
+import esg.search.utils.XmlUtils;
 
 /**
  * Implementation of {@link RecordSerializer} based on Solr XML.
@@ -26,7 +29,7 @@ public class SolrRecordSerializer implements RecordSerializer {
     
     // The underlying XML parser
     static XmlParser parser = new XmlParser(false); // validate XSD = false
-    
+        
     /**
      * Method to build a Record object from a Solr/XML document.
      */
@@ -68,8 +71,56 @@ public class SolrRecordSerializer implements RecordSerializer {
         return record;
     }
     
-    public String serialize(Record record) {
-        return null;
+    /**
+     * Method to build an Solr/XML document from a record object.
+     */
+    public Element serialize(Record record) {
+        
+        // <doc>
+        final Element docEl = new Element(SolrXmlPars.ELEMENT_DOC);
+        
+        // <doc schema="...">
+        if (record.getSchema()!=null) {
+            docEl.setAttribute(SolrXmlPars.ATTRIBUTE_SCHEMA, record.getSchema().toString());
+        }
+        
+        // <field name="id">...</field>
+        final Element idEl = new Element(SolrXmlPars.ELEMENT_FIELD);
+        idEl.setAttribute(SolrXmlPars.ATTRIBUTE_NAME, QueryParameters.FIELD_ID);
+        idEl.setText(record.getId());
+        docEl.addContent(idEl);
+        
+        // <field name="version">...</field>
+        if (record.getVersion()!=0) {
+            final Element vEl = new Element(SolrXmlPars.ELEMENT_FIELD);
+            vEl.setAttribute(SolrXmlPars.ATTRIBUTE_NAME, QueryParameters.FIELD_VERSION);
+            vEl.setText(Long.toString(record.getVersion()));
+            docEl.addContent(vEl);
+        }
+        
+        // <field name="...">....</field>
+        // (for each value)
+        final Map<String, List<String>> fields = record.getFields();
+        for (final String key : fields.keySet()) {
+            for (final String value : fields.get(key)) {
+                final Element fieldEl = new Element(SolrXmlPars.ELEMENT_FIELD);
+                fieldEl.setAttribute(SolrXmlPars.ATTRIBUTE_NAME, key);
+                fieldEl.setText(value);
+                docEl.addContent(fieldEl);
+            }
+        }
+        
+        return docEl;
     }
-
+    
+    /**
+     * Method to build an Solr/XML document from a record object.
+     */
+    public String serialize(Record record, boolean indent) {
+        
+        Element docEl = this.serialize(record);
+        return XmlUtils.toString(docEl, indent);        
+        
+    }
+   
 }
