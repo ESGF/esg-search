@@ -18,7 +18,7 @@ import esg.search.core.RecordImpl;
 import esg.search.query.api.QueryParameters;
 import esg.search.utils.StringUtils;
 
-public class SolrXmlBuilderTest {
+public class SolrMessageBuilderTest {
 		
 	private final Log LOG = LogFactory.getLog(this.getClass());
 	

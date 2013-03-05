@@ -78,7 +78,7 @@ public class SolrMessageBuilder {
 		final Element docEl = serializer.serialize(record);
 		addEl.addContent(docEl);
 		
-		return XmlUtils.toString(docEl, indent);
+		return XmlUtils.toString(addEl, indent);
 
 	}
 	
