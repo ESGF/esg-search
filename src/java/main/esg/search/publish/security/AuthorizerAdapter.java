@@ -32,7 +32,8 @@ public class AuthorizerAdapter {
     
     private final Log LOG = LogFactory.getLog(this.getClass());
     
-    @Autowired
+    // FIXME SECURITY
+    //@Autowired
     public void setAuthorizer(Authorizer authorizer) {
         this.authorizer = authorizer;
     }
