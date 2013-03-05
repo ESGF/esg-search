@@ -270,6 +270,7 @@ check_shards() {
 
 add_shard() {
     local config_type=${1:?"Must specify shard host or type"}
+    local target_index_search_port=8983
     if [ "${config_type%:*}" != "master" ] && [ "${config_type%:*}" != "slave" ]; then
         if grep -q ${config_type%:*} ${esgf_shards_config_file} ; then
             local answer="n"
@@ -277,13 +278,13 @@ add_shard() {
             read -p " Are you sure you wish to add a NEW replica index for ${config_type%:*}? [y/N] " answer
             [ -z "${answer}" ] || [ "$(tr A-Z a-z <<< ${answer})" = "n" ] && return 1
         fi
-        if ! ping -c 1 ${config_type%:*} >& /dev/null ; then
+        if ! curl -f -s -m 5 http://${config_type%:*}:${target_index_search_port}/solr >& /dev/null ; then
             local answer="n"
             echo "WARNING the shard source entered [${config_type%:*}] is not currently reachable"
             read -p "Would you like to continue anyway [y/N]? " answer
             [ -z "${answer}" ] || [ "$(tr A-Z a-z <<< ${answer})" = "n" ] && return 1
         fi
-        nc -w 3 -z ${config_type%:*} 8983 2> /dev/null || echo "[INFO] - The search port [8983] is not available on ${config_type%:*}"
+        nc -w 3 -z ${config_type%:*} ${target_index_search_port} 2> /dev/null || echo "[INFO] - The search port [${target_index_search_port}] is not available on ${config_type%:*}"
     else
         #Migration code to move over the old master and slave indexes into the new location.
         #only intended to run once ever.
