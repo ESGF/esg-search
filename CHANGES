@@ -288,5 +288,6 @@ Solr Schema version 1.6: removed type "date" for Solr fields ending in *time.
 3.6.0
 -- https://github.com/ESGF/esg-search/issues?milestone=3&state=closed
 
-
+3.7.0
+-- https://github.com/ESGF/esg-search/issues?milestone=4&state=closed
 
