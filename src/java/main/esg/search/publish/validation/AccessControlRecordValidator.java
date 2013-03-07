@@ -28,6 +28,7 @@ import esg.security.registry.service.impl.ReloadableFileSet;
 /**
  * Special {@link RecordValidator} that enforces restrictions
  * for the publishing Datasets into Projects.
+ * Note that this class disregard the case of the project name.
  * 
  * @author Luca Cinquini
  *
@@ -83,7 +84,7 @@ public class AccessControlRecordValidator implements RecordValidator, Reloadable
             // reload configuration if needed
             watcher.reload();        
             
-            String project = record.getFieldValue(QueryParameters.PROJECT);
+            String project = record.getFieldValue(QueryParameters.PROJECT).toLowerCase();
             if (StringUtils.hasText(project)) {
                 
                 if (projects.contains(project)) {
@@ -148,7 +149,7 @@ public class AccessControlRecordValidator implements RecordValidator, Reloadable
                  */          
                 for (Object obj1 : root.getChildren("project", ns)) {
                     Element el1 = (Element)obj1;
-                    String project = el1.getAttributeValue("name");
+                    String project = el1.getAttributeValue("name").toLowerCase();
                     _projects.add(project);
                                 
                     for (Object obj2 : el1.getChildren("index_node", ns)) {

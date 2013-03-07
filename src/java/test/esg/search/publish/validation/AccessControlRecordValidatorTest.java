@@ -48,6 +48,12 @@ public class AccessControlRecordValidatorTest {
         validator.validate(record, errors);
         Assert.assertEquals(1, errors.size()); 
         
+        // project restricted but supplied in wrong case, dataset matches policy for different host
+        errors.clear();
+        record = createRecord("CmIp5", "cmip5.X");
+        validator.validate(record, errors);
+        Assert.assertEquals(1, errors.size()); 
+        
     }
     
     @Test
@@ -67,6 +73,12 @@ public class AccessControlRecordValidatorTest {
         // project restricted, dataset matches policy for this host
         errors.clear();
         record = createRecord("obs4MIPs", "obs4MIPs.NASA-JPL.MLS.mon.v1|esg-datanode.jpl.nasa.gov");
+        validator.validate(record, errors);
+        Assert.assertEquals(0, errors.size()); 
+        
+        // project restricted but supplied in wrong case, dataset matches policy for this host
+        errors.clear();
+        record = createRecord("obs4mips", "obs4MIPs.NASA-JPL.MLS.mon.v1|esg-datanode.jpl.nasa.gov");
         validator.validate(record, errors);
         Assert.assertEquals(0, errors.size()); 
         
