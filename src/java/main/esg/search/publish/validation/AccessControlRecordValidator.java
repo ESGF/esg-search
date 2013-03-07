@@ -53,11 +53,11 @@ public class AccessControlRecordValidator implements RecordValidator, Reloadable
 
     public AccessControlRecordValidator(String filepath, ESGFProperties properties) throws Exception {
                
-        // instantiate files watcher
+        // instantiate file watcher
         watcher = new ReloadableFileSet(filepath);
         watcher.setObserver(this);
         
-        // trigger first loading of configuration files
+        // trigger first loading of configuration file
         watcher.reload();
         
         // load local hostname

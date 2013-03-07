@@ -15,13 +15,14 @@ import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.Namespace;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StringUtils;
 
 import esg.search.core.Record;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
 import esg.search.utils.XmlParser;
+import esg.security.registry.service.api.ReloadableFileSetObserver;
+import esg.security.registry.service.impl.ReloadableFileSet;
 
 /**
  * Class that validates a record based on the supplied XML meta-instance.
@@ -29,97 +30,119 @@ import esg.search.utils.XmlParser;
  * @author Luca Cinquini
  *
  */
-public class SchemaRecordValidator implements RecordValidator {
+public class SchemaRecordValidator implements RecordValidator, ReloadableFileSetObserver {
     
     Set<Field> fields = new HashSet<Field>();
-        
-    // location of XML schema
+            
+    // class that monitors the schema for changes
+    private ReloadableFileSet watcher;
+    
+    // schema file path, stored only for debugging purposes
     private final String filepath;
     
     private final Log LOG = LogFactory.getLog(this.getClass());
     
     public SchemaRecordValidator(String filepath) throws Exception {
-        
+                
+        // instantiate file watcher
+        watcher = new ReloadableFileSet(filepath);
+        watcher.setObserver(this);
         this.filepath = filepath;
         
-        // FIXME: call only if file has changed
-        parseSchema();
+        // trigger first loading of configuration files
+        watcher.reload();
 
     }
     
     
-    private void parseSchema() throws IOException, JDOMException, NumberFormatException {
-                 
+    /**
+     * Method that parses the XML schema.
+     */
+    public void parse(List<File> files) {
+        
         Set<Field> _fields = new HashSet<Field>();
         
-        File file = new ClassPathResource(filepath).getFile();
-        if (LOG.isInfoEnabled()) LOG.info("Parsing XML schema: "+file.getAbsolutePath());
-        
-        // parse XML 
-        XmlParser parser = new XmlParser(false); // validate XSD = false
-        Document doc = parser.parseFile(file);
-        Element root = doc.getRootElement();
-        Namespace ns = root.getNamespace();
-        
-        for (Object obj : root.getChildren("project", ns)) {
-            Element el = (Element)obj;
+        for (File file : files) {
             
-            /*
-             *  <esgf:field name="model" minOccurs="1" maxOccurs="1">
-                    <esgf:value>ACCESS1.0</esgf:value>
-                    <esgf:value>CCSM4</esgf:value>
-                </esgf:field>
-             */            
-            Field field = new Field(el.getAttributeValue("name"));
-            
-            // minOccurs="1"
-            String minOccurs = el.getAttributeValue("minOccurs");
-            if (StringUtils.hasText(minOccurs)) {
-                field.minOccurs = Integer.parseInt(minOccurs);
-            }
-            
-            // maxOccurs="1"
-            String maxOccurs = el.getAttributeValue("maxOccurs");
-            if (StringUtils.hasText(maxOccurs)) {
-                if (maxOccurs.equalsIgnoreCase("unbounded")) {
-                    field.maxOccurs = Integer.MAX_VALUE;
-                } else {
-                    field.maxOccurs = Integer.parseInt(maxOccurs);
-                }
-            }
-            
-            // type="string"
-            String type = el.getAttributeValue("type");
-            if (StringUtils.hasText(type)) field.type = type;
-            
-            // minValue=Double.MIN_VALUE
-            String minValue = el.getAttributeValue("minValue");
-            if (StringUtils.hasText(minValue)) {
-                field.minValue = Double.parseDouble(minValue);
-            }
-            
-            // maxValue=Double.MAX_VALUE
-            String maxValue = el.getAttributeValue("maxValue");
-            if (StringUtils.hasText(maxValue)) {
-                field.maxValue = Double.parseDouble(maxValue);
-            }
-            
-            // record types
-            String recordType = el.getAttributeValue("recordType");
-            if (StringUtils.hasText(recordType)) {
-                for (String rct : recordType.split(",")) {
-                    field.recordTypes.add(rct.trim());
-                }
-            }
+            try {
                         
-            // values
-            for (Object _obj : el.getChildren("value", ns)) {
-                Element _el = (Element)_obj;
-                field.values.add(_el.getTextNormalize());
+                if (LOG.isInfoEnabled()) LOG.info("Parsing XML schema: "+file.getAbsolutePath());
+                
+                // parse XML 
+                XmlParser parser = new XmlParser(false); // validate XSD = false
+                Document doc = parser.parseFile(file);
+                Element root = doc.getRootElement();
+                Namespace ns = root.getNamespace();
+                
+                for (Object obj : root.getChildren("project", ns)) {
+                    Element el = (Element)obj;
+                    
+                    /*
+                     *  <esgf:field name="model" minOccurs="1" maxOccurs="1">
+                            <esgf:value>ACCESS1.0</esgf:value>
+                            <esgf:value>CCSM4</esgf:value>
+                        </esgf:field>
+                     */            
+                    Field field = new Field(el.getAttributeValue("name"));
+                    
+                    // minOccurs="1"
+                    String minOccurs = el.getAttributeValue("minOccurs");
+                    if (StringUtils.hasText(minOccurs)) {
+                        field.minOccurs = Integer.parseInt(minOccurs);
+                    }
+                    
+                    // maxOccurs="1"
+                    String maxOccurs = el.getAttributeValue("maxOccurs");
+                    if (StringUtils.hasText(maxOccurs)) {
+                        if (maxOccurs.equalsIgnoreCase("unbounded")) {
+                            field.maxOccurs = Integer.MAX_VALUE;
+                        } else {
+                            field.maxOccurs = Integer.parseInt(maxOccurs);
+                        }
+                    }
+                    
+                    // type="string"
+                    String type = el.getAttributeValue("type");
+                    if (StringUtils.hasText(type)) field.type = type;
+                    
+                    // minValue=Double.MIN_VALUE
+                    String minValue = el.getAttributeValue("minValue");
+                    if (StringUtils.hasText(minValue)) {
+                        field.minValue = Double.parseDouble(minValue);
+                    }
+                    
+                    // maxValue=Double.MAX_VALUE
+                    String maxValue = el.getAttributeValue("maxValue");
+                    if (StringUtils.hasText(maxValue)) {
+                        field.maxValue = Double.parseDouble(maxValue);
+                    }
+                    
+                    // record types
+                    String recordType = el.getAttributeValue("recordType");
+                    if (StringUtils.hasText(recordType)) {
+                        for (String rct : recordType.split(",")) {
+                            field.recordTypes.add(rct.trim());
+                        }
+                    }
+                                
+                    // values
+                    for (Object _obj : el.getChildren("value", ns)) {
+                        Element _el = (Element)_obj;
+                        field.values.add(_el.getTextNormalize());
+                    }
+                    
+                    
+                    _fields.add(field);
+                }
+            
+            } catch(IOException ioe) {
+                LOG.warn(ioe.getMessage());
+            } catch(JDOMException jde) {
+                LOG.warn(jde.getMessage());
+            } catch(NumberFormatException nfe) {
+                LOG.warn(nfe.getMessage());
             }
-            
-            
-            _fields.add(field);
+        
         }
         
         synchronized(fields) {
