@@ -61,7 +61,7 @@ public class SchemaRecordValidator implements RecordValidator {
         Element root = doc.getRootElement();
         Namespace ns = root.getNamespace();
         
-        for (Object obj : root.getChildren("field", ns)) {
+        for (Object obj : root.getChildren("project", ns)) {
             Element el = (Element)obj;
             
             /*

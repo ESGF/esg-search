@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esgf:restrictions xmlns:esgf="http://www.esgf.org/#" >
+
+	<esgf:project name="obs4MIPs">
+		<esgf:index_node hostname="esg-datanode.jpl.nasa.gov">
+			<esgf:datasets pattern="obs4MIPs.NASA-JPL.AIRS.*"/>
+			<esgf:datasets pattern="obs4MIPs.NASA-JPL.MLS.*"/>
+		</esgf:index_node>
+		<esgf:index_node hostname="esgf.nccs.nasa.gov">
+			<esgf:datasets pattern="obs4MIPs.NASA-GSFC.GPCP.*"/>
+		</esgf:index_node>
+	</esgf:project>
+	<esgf:project name="CMIP5">
+		<esgf:index_node hostname="pcmdi9.llnl.gov">
+			<esgf:datasets pattern=".*cmip5.*"/>
+		</esgf:index_node>
+	</esgf:project>
+
+</esgf:restrictions>

@@ -17,5 +17,10 @@
 			</map>
     	</constructor-arg>
     </bean> 
+    
+    <bean class="esg.search.publish.validation.AccessControlRecordValidator" id="acValidator">
+    	<constructor-arg index="0" value="esg/search/config/esgf_project_restrictions.xml"/>
+    	<constructor-arg index="1"><ref bean="esgfProperties" /></constructor-arg>
+    </bean>
 	
 </beans>

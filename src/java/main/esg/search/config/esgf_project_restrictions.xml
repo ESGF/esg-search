@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<esgf:restrictions xmlns:esgf="http://www.esgf.org/#" >
+
+	<esgf:project name="obs4MIPs">
+		<!-- FIXME -->
+		<esgf:index_node hostname="localhost">
+			<esgf:datasets pattern="obs4MIPs.NASA-JPL.AIRS.*"/>
+		</esgf:index_node>
+	</esgf:project>
+
+</esgf:restrictions>

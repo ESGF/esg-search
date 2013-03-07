@@ -159,6 +159,9 @@ public class QueryParameters {
     public final static String SCHEMA_ESGF = "esgf";
     public final static String SCHEMA_GEO = "geo";
     
+    // other special fields
+    public final static String PROJECT = "project";
+    
     private QueryParameters() {};
 
 }
