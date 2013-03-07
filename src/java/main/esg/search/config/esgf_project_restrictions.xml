@@ -2,7 +2,6 @@
 <esgf:restrictions xmlns:esgf="http://www.esgf.org/#" >
 
 	<esgf:project name="obs4MIPs">
-		<!-- FIXME -->
 		<esgf:index_node hostname="localhost">
 			<esgf:datasets pattern="obs4MIPs.NASA-JPL.AIRS.*"/>
 		</esgf:index_node>
