@@ -80,6 +80,9 @@ public class AccessControlRecordValidator implements RecordValidator, Reloadable
             
             if (LOG.isInfoEnabled()) LOG.info("Enforcing access control for publication of dataset with id="+id);
             
+            // reload configuration if needed
+            watcher.reload();        
+            
             String project = record.getFieldValue(QueryParameters.PROJECT);
             if (StringUtils.hasText(project)) {
                 

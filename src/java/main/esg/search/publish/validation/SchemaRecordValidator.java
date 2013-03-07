@@ -155,6 +155,9 @@ public class SchemaRecordValidator implements RecordValidator, ReloadableFileSet
     public void validate(Record record, List<String> errors) {
         
         if (LOG.isDebugEnabled()) LOG.debug("Validating record versus schema: "+this.filepath);
+        
+        // reload schema if needed
+        watcher.reload();        
                         
         // retrieve record metadata
         Map<String,List<String>> recfields = record.getFields();
