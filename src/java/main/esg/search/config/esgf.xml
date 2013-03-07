@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ESGF core schema -->
-<esgf:cv xmlns:esgf="http://www.esgf.org/#" version="0.1">
+<esgf:schema xmlns:esgf="http://www.esgf.org/#" version="0.1">
     
     <!-- "id" field is mandatory for ALL records -->
 	<esgf:field name="id" minOccurs="1" maxOccurs="1" />
@@ -35,4 +35,4 @@
 	<!-- "size" field is optional, if provided it must be a long -->
 	<esgf:field name="size" minOccurs="0" maxOccurs="1" type="long" minValue="0" />
 			
-</esgf:cv>
+</esgf:schema>

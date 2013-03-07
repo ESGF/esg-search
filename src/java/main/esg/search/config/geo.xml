@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ESGF schema for geospatial data -->
-<esgf:cv xmlns:esgf="http://www.esgf.org/#" version="0.1">
+<esgf:schema xmlns:esgf="http://www.esgf.org/#" version="0.1">
 	
 	<!-- optional date-time coverage fields, must have format: yyyy-MM-dd'T'HH:mm:ss'Z' -->
 	<esgf:field name="datetime_start" minOccurs="0" maxOccurs="1" type="date" />
@@ -17,4 +17,4 @@
 	<esgf:field name="height_top" minOccurs="0" maxOccurs="1" type="float"  />
 	<esgf:field name="height_units" minOccurs="0" maxOccurs="1" type="string" />
 		
-</esgf:cv>
+</esgf:schema>

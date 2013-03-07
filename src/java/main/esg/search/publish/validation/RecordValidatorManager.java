@@ -35,7 +35,8 @@ public class RecordValidatorManager implements RecordValidator {
         
     }
     
-    @Autowired
+    // NOTE: comment out @Autowired to disable access control validation
+    //@Autowired
     public void setAcValidator(@Qualifier("acValidator") RecordValidator acValidator) {
         this.acValidator = acValidator;
     }
