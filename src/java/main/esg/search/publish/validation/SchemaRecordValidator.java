@@ -167,7 +167,7 @@ public class SchemaRecordValidator implements RecordValidator, ReloadableFileSet
             
           if (field.recordTypes.isEmpty() || field.recordTypes.contains(record.getType())) {
             
-            if (LOG.isInfoEnabled()) LOG.info("Checking schema field name="+field.name);
+            if (LOG.isTraceEnabled()) LOG.trace("Checking schema field name="+field.name);
             
             // special Record attribute "id"
             if (field.name.equals(QueryParameters.FIELD_ID)) {
