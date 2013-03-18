@@ -74,7 +74,7 @@ public class SchemaRecordValidator implements RecordValidator, ReloadableFileSet
                 Element root = doc.getRootElement();
                 Namespace ns = root.getNamespace();
                 
-                for (Object obj : root.getChildren("project", ns)) {
+                for (Object obj : root.getChildren("field", ns)) {
                     Element el = (Element)obj;
                     
                     /*
@@ -167,7 +167,7 @@ public class SchemaRecordValidator implements RecordValidator, ReloadableFileSet
             
           if (field.recordTypes.isEmpty() || field.recordTypes.contains(record.getType())) {
             
-            if (LOG.isTraceEnabled()) LOG.trace("Checking schema field name="+field.name);
+            if (LOG.isInfoEnabled()) LOG.info("Checking schema field name="+field.name);
             
             // special Record attribute "id"
             if (field.name.equals(QueryParameters.FIELD_ID)) {
