@@ -92,6 +92,9 @@ esgf_shards_config_file=${esg_config_dir}/esgf_shards.config
 esgf_shards_static_file=${esg_config_dir}/esgf_shards_static.xml
 esgf_shards_dynamic_file=${esg_config_dir}/esgf_shards.xml
 esgf_excludes_file=${esg_config_dir}/esgf_excludes.txt
+
+esgf_publisher_resources_home=${esgf_config_dir}
+esgf_publisher_resources_repo=git://esgf.org/esgf-publisher-resources.git
 #--------------
 
 date_format=${date_format:-"+%Y_%m_%d_%H%M%S"}
@@ -150,6 +153,9 @@ setup_search() {
 
     setup_search_service ${upgrade} && write_search_service_install_log
     [ $? != 0 ] && echo " ERROR: Could not fully install search service" && checked_done 1
+    setup_publisher_resources
+    [ $? != 0 ] && echo " WARNING: Could not setup publisher resources" || echo " [OK] "
+
     write_as_property index_service_endpoint "http://${esgf_host:-$(hostname --fqdn)}/esg-search/search"
     write_as_property index_service_app_home ${search_web_service_dir}
     write_as_property index_master_port
@@ -170,6 +176,20 @@ setup_search() {
     echo "done"
     echo
     return 0
+}
+
+setup_publisher_resources() {
+    echo "Publisher Resources... "
+    [[ ! ${esg_config_dir} ]] && echo "WARNING: No Configuration directory set - Cannot setup publisher resources [FAIL]" && return 1
+    [ ! -d "${esgf_publisher_resources_home:=${esg_config_dir}}" ] && mkdir -p ${esgf_publisher_resources_home}
+    local found_git=$(type git | sed -e 's/.*(\([^)]*\))/\1/')
+    [[ ${found_git} ]] && echo "git found: ${found_git}" && return 2
+    local repo_tld=${esgf_publisher_resources_home}/$(sed -e 's/.git//' <<<${esgf_publisher_resources_repo##*/})
+    if [ -d "${repo_tld}/.git" ]; then
+        (cd ${repo_tld} && ${found_git} fetch --all && ${found_git} pull) || return 3
+    else
+        ${found_git} clone ${esgf_publisher_resources_repo} ${repo_tld} 2> /dev/null || return 4
+    fi
 }
 
 #--------------------
