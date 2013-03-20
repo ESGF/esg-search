@@ -24,7 +24,7 @@ public class SearchReporter extends AbstractReporter {
     private final XPath[] xpaths;
     
     // Example: url = "http://INDEX_NODE_HOSTNAME/esg-search/search?latest=true&replica=false&facets=model,project";
-    private String url = "http://INDEX_NODE_HOSTNAME/esg-search/search?latest=true&replica=false&facets=FACETS";
+    private String url = "http://INDEX_NODE_HOSTNAME/esg-search/search?latest=true&replica=false&project=CMIP5&facets=FACETS";
     
     private String cvs_file_path = "/esg/content/metrics/search_INDEX_NODE_HOSTNAME_FACETS.csv";
     private String xml_file_path = "/esg/content/metrics/search_INDEX_NODE_HOSTNAME_FACETS.xml";
@@ -73,6 +73,7 @@ public class SearchReporter extends AbstractReporter {
     public Map<String, Integer> report() throws Exception {
 
         // execute HTTP request
+        System.out.println("URL="+this.url);
         HttpClient httpClient = new HttpClient();
         String xml = httpClient.doGet(new URL(this.url));
 
@@ -96,6 +97,7 @@ public class SearchReporter extends AbstractReporter {
                 String name = elem.getAttributeValue("name");
                 int counts = Integer.parseInt(elem.getTextNormalize());
                 map.put(facets[i]+"="+name, counts);
+                System.out.println(facets[i]+"="+name+" counts="+counts);
             }
         }
 
