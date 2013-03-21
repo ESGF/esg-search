@@ -186,7 +186,7 @@ setup_publisher_resources() {
     [[ ! ${esg_config_dir} ]] && echo "WARNING: No Configuration directory set - Cannot setup publisher resources [FAIL]" && return 1
     [ ! -d "${esgf_publisher_resources_home:=${esg_config_dir}}" ] && mkdir -p ${esgf_publisher_resources_home}
     local found_git=$(type git | sed -e 's/.*(\([^)]*\))/\1/')
-    [[ ${found_git} ]] && echo "git found: ${found_git}" && return 2
+    [[ ${found_git} ]] && echo "git found: ${found_git}" || return 2
     local repo_tld=${esgf_publisher_resources_home}/$(sed -e 's/.git//' <<<${esgf_publisher_resources_repo##*/})
     if [ -d "${repo_tld}/.git" ]; then
         (cd ${repo_tld} && ${found_git} fetch --all && ${found_git} pull) || return 3
