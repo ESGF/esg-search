@@ -92,6 +92,9 @@ esgf_shards_config_file=${esg_config_dir}/esgf_shards.config
 esgf_shards_static_file=${esg_config_dir}/esgf_shards_static.xml
 esgf_shards_dynamic_file=${esg_config_dir}/esgf_shards.xml
 esgf_excludes_file=${esg_config_dir}/esgf_excludes.txt
+
+esgf_publisher_resources_home=${esgf_publisher_resources_home:-${esgf_config_dir}}
+esgf_publisher_resources_repo=${esgf_publisher_resources_repo:-git://esgf.org/esgf-publisher-resources.git}
 #--------------
 
 date_format=${date_format:-"+%Y_%m_%d_%H%M%S"}
@@ -150,6 +153,7 @@ setup_search() {
 
     setup_search_service ${upgrade} && write_search_service_install_log
     [ $? != 0 ] && echo " ERROR: Could not fully install search service" && checked_done 1
+
     write_as_property index_service_endpoint "http://${esgf_host:-$(hostname --fqdn)}/esg-search/search"
     write_as_property index_service_app_home ${search_web_service_dir}
     write_as_property index_master_port
@@ -163,6 +167,11 @@ setup_search() {
 
     write_search_rss_properties
 
+    setup_publisher_resources
+    [ $? != 0 ] && echo " WARNING: Could not setup publisher resources" || echo " [OK] "
+    write_as_property esgf_publisher_resources_home
+    write_as_property esgf_publisher_resources_repo
+
     #Get utility script for crawling thredds sites
     fetch_crawl_launcher
     fetch_index_optimization_launcher
@@ -170,6 +179,23 @@ setup_search() {
     echo "done"
     echo
     return 0
+}
+
+setup_publisher_resources() {
+    echo "Publisher Resources... "
+    [[ ! ${esg_config_dir} ]] && echo "WARNING: No Configuration directory set - Cannot setup publisher resources [FAIL]" && return 1
+    [ ! -d "${esgf_publisher_resources_home:=${esg_config_dir}}" ] && mkdir -p ${esgf_publisher_resources_home}
+    #local found_git=$(type git | sed -e 's/.*(\([^)]*\))/\1/') #this incantation works on for the output of 'type' on macs... not on CentOS
+    local found_git=${git_install_dir}/bin/git
+    [ ! -e "${found_git}" ] && found_git=$(type git | awk '{print $3}')
+    [[ ! ${found_git} ]] && return 2 || ((DEBUG)) && echo "git found: ${found_git}"
+    local repo_tld=${esgf_publisher_resources_home}/$(sed -e 's/.git//' <<<${esgf_publisher_resources_repo##*/})
+    if [ -d "${repo_tld}/.git" ]; then
+        (cd ${repo_tld} && ${found_git} fetch --all && ${found_git} pull) || return 3
+    else
+        ((DEBUG)) && echo "${found_git} clone ${esgf_publisher_resources_repo} ${repo_tld}"
+        ${found_git} clone ${esgf_publisher_resources_repo} ${repo_tld} 2> /dev/null || return 4
+    fi
 }
 
 #--------------------
