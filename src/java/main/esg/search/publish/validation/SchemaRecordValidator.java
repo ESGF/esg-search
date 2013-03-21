@@ -45,6 +45,7 @@ public class SchemaRecordValidator implements RecordValidator, ReloadableFileSet
     public SchemaRecordValidator(String filepath) throws Exception {
                 
         // instantiate file watcher
+        if (LOG.isInfoEnabled()) LOG.info("Schema location: "+filepath);
         watcher = new ReloadableFileSet(filepath);
         watcher.setObserver(this);
         this.filepath = filepath;

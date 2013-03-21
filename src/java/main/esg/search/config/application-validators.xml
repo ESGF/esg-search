@@ -11,15 +11,16 @@
     	<constructor-arg index="0">
     		<!-- maps schema URIs to schema locations (note: use lower-case keys)-->
 	    	<map>
-				<entry key="esgf"><value>/esg/content/esgf-publisher-resources/schema/esgf.xml</value></entry>
-				<entry key="geo"><value>/esg/content/esgf-publisher-resources/schema/geo.xml</value></entry>
-				<entry key="cmip5"><value>/esg/content/esgf-publisher-resources/schema/cmip5.xml</value></entry>
+				<entry key="esgf"><value>esgf-publisher-resources/schema/esgf.xml</value></entry>
+				<entry key="geo"><value>esgf-publisher-resources/schema/geo.xml</value></entry>
+				<entry key="cmip5"><value>esgf-publisher-resources/schema/cmip5.xml</value></entry>
 			</map>
     	</constructor-arg>
+    	<constructor-arg index="1"><ref bean="esgfProperties" /></constructor-arg>
     </bean> 
     
     <bean class="esg.search.publish.validation.AccessControlRecordValidator" id="acValidator">
-    	<constructor-arg index="0" value="/esg/content/esgf-publisher-resources/security/esgf_project_restrictions.xml"/>
+    	<constructor-arg index="0" value="esgf-publisher-resources/security/esgf_project_restrictions.xml"/>
     	<constructor-arg index="1"><ref bean="esgfProperties" /></constructor-arg>
     </bean>
 	

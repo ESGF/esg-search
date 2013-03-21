@@ -39,10 +39,7 @@ public class AccessControlRecordValidator implements RecordValidator, Reloadable
     private final Log LOG = LogFactory.getLog(this.getClass());
     
     private String hostname;
-    
-    // /esg/config/esgf.properties: esgf.host=....
-    public final static String PROPERTIES_KEY = "esgf.host";
-    
+        
     // set containing restricted projects
     Set<String> projects = new HashSet<String>();
     
@@ -55,6 +52,13 @@ public class AccessControlRecordValidator implements RecordValidator, Reloadable
     public AccessControlRecordValidator(String filepath, ESGFProperties properties) throws Exception {
                
         // instantiate file watcher
+        if (StringUtils.hasText(properties.getProperty(QueryParameters.SCHEMA_LOCATION_PROPERTY))) {
+            String location = properties.getProperty(QueryParameters.SCHEMA_LOCATION_PROPERTY);
+            if (!location.endsWith("/")) location = location + "/";
+            filepath = location + filepath;
+        } else {
+            filepath = QueryParameters.SCHEMA_DEFAULT_LOCATION + filepath;
+        }
         watcher = new ReloadableFileSet(filepath);
         watcher.setObserver(this);
         
@@ -62,8 +66,8 @@ public class AccessControlRecordValidator implements RecordValidator, Reloadable
         watcher.reload();
         
         // load local hostname
-        if (properties.containsKey(PROPERTIES_KEY)) {
-            hostname = properties.get(PROPERTIES_KEY).toString().trim();   
+        if (properties.containsKey(QueryParameters.HOSTNAME_PROPERTY)) {
+            hostname = properties.get(QueryParameters.HOSTNAME_PROPERTY).toString().trim();   
         } else {
             hostname = java.net.InetAddress.getLocalHost().getHostName();
         }

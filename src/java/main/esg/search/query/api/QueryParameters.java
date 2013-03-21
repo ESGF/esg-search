@@ -162,6 +162,16 @@ public class QueryParameters {
     // other special fields
     public final static String PROJECT = "project";
     
+    // key for looking up schema root location from /esgf/config/esgf.properties
+    public final static String SCHEMA_LOCATION_PROPERTY = "esgf.publisher.resources.home";
+    
+    // default schema location, if property is not specified
+    public final static String SCHEMA_DEFAULT_LOCATION = "/esg/config/"; 
+    
+    // /esg/config/esgf.properties: esgf.host=....
+    public final static String HOSTNAME_PROPERTY = "esgf.host";
+
+    
     private QueryParameters() {};
 
 }

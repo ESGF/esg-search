@@ -20,9 +20,10 @@ public class AccessControlRecordValidatorTest {
     @Before
     public void setup() throws Exception {
         
-        String filepath = "esg/search/publish/validation/esgf_project_test_restrictions.xml";
+        String filepath = "validation/esgf_project_test_restrictions.xml";
         ESGFProperties props = new ESGFProperties();
-        props.put(AccessControlRecordValidator.PROPERTIES_KEY, "esg-datanode.jpl.nasa.gov");        
+        props.put(QueryParameters.HOSTNAME_PROPERTY, "esg-datanode.jpl.nasa.gov"); 
+        props.put(QueryParameters.SCHEMA_LOCATION_PROPERTY, "esg/search/publish/"); // NOTE: relative path to classpath
         validator = new AccessControlRecordValidator(filepath, props);
         
     }
