@@ -91,8 +91,7 @@ Note: Check Maven for propery dependency parameter values @
 
     
     <dependency org="org.jdom" name="jdom" rev="1.1"/>
-    <dependency org="org.jdom" name="jdom2" rev="2.0.4" transitive="false"/>
-    
+  
     <dependency org="org.slf4j" name="slf4j-api" rev="1.6.1"/>
     <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.1"/>
     
