@@ -112,7 +112,7 @@ Builds the project via ant (obviously).
     <arg value="git tag | sed 's/^v//' | sort -s -t. -k1,1n -k2,2n -k3,3n  | sed -ne 's/\([0-9]*\.[0-9]*\.[0-9]*\)-\([a-zA-Z0-9_-]*\)-release.*$/\2/p'| tail -n 1"/>
   </exec>
 
-  <property name="ivy_retrieve_type" value="jar"/>
+  <property name="ivy_retrieve_type" value="jar, bundle"/>
   <property name="filter" value="false"/>
 
   <!-- **static defines** -->
