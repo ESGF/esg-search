@@ -112,6 +112,7 @@ Builds the project via ant (obviously).
     <arg value="git tag | sed 's/^v//' | sort -s -t. -k1,1n -k2,2n -k3,3n  | sed -ne 's/\([0-9]*\.[0-9]*\.[0-9]*\)-\([a-zA-Z0-9_-]*\)-release.*$/\2/p'| tail -n 1"/>
   </exec>
 
+  <property name="ivy.esgf-repo-local.default.root.dir" value="${user.home}/.ivy2/local"/>
   <property name="ivy_retrieve_type" value="jar, bundle"/>
   <property name="filter" value="false"/>
 
@@ -568,6 +569,10 @@ Builds the project via ant (obviously).
     <tstamp/>
   </target>
 
+  <target name="clean_local_repo" depends="init,init-ivy" description="(Cleans the local filesystem Ivy repo)">
+    <delete dir="${ivy.esgf-repo-local.default.root.dir}/org.esgf/${module}"/>
+  </target>
+
   <target name="clean_test" depends="init" 
 	  description="(Cleans out the test build directory)">
     <echo message="Cleaning out test build directory"/> 
@@ -590,7 +595,7 @@ Builds the project via ant (obviously).
 
   
   <target name="clean_all"
-	  depends="clean,clean_dist,clean_jaxb,dep_clean_libs"
+	  depends="clean,clean_dist,clean_local_repo,clean_jaxb,dep_clean_libs"
 	  description="(Cleans out generatable artifacts)"/>
   
   <!--
@@ -859,6 +864,16 @@ Builds the project via ant (obviously).
                  overwrite="true" haltonmissing="false">
       <artifacts pattern="dist/[artifact]-[revision].[ext]"/>
       <artifacts pattern="dist/[artifact].war"/>
+    </ivy:publish>
+  </target>
+
+  <target name="publish_local" depends="init-ivy" description="(publishes built artifacts to artifact repository)">
+    <ivy:publish resolver="esgf_repo_local"
+                 organisation="org.esgf"
+                 module="${module}"
+                 revision="${version_num}"
+                 overwrite="true" haltonmissing="false">
+      <artifacts pattern="dist/[artifact]-[revision].[ext]"/>
     </ivy:publish>
   </target>
 

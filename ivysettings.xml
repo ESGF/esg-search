@@ -2,6 +2,9 @@
       <property name="ivy.default.root.url" value="http://esgf.org/ivy" override="false"/>
       <settings defaultResolver="default-chain"/>
       
+      <!-- ESGF LOCAL repository -->
+      <include url="${ivy.default.root.url}/ivysettings-esgf-repo-local.xml"/>
+
       <!-- ESGF Devel repository -->
       <include url="${ivy.default.root.url}/ivysettings-esgf-repo-devel.xml"/>
 
