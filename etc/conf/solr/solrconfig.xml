@@ -87,7 +87,7 @@
     <!-- Sets the amount of RAM that may be used by Lucene indexing
       for buffering added documents and deletions before they are
       flushed to the Directory.  -->
-    <ramBufferSizeMB>32</ramBufferSizeMB>
+    <ramBufferSizeMB>128</ramBufferSizeMB>
     <!-- <maxMergeDocs>2147483647</maxMergeDocs> -->
     <maxFieldLength>10000</maxFieldLength>
     <writeLockTimeout>1000</writeLockTimeout>
