@@ -49,6 +49,9 @@ public class Cmip5OpendapParser extends DefaultOpendapParser {
             // 'experiment_id' -> 'experiment'
             aname = aname.replaceAll("_id$", "");
             
+            // correct attribute name
+            if (aname.equals("frequency")) aname = "time_frequency";
+            
             // transfer attribute (name, value) pairs
             record.setField(aname, avalue);
                          

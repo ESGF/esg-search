@@ -29,7 +29,7 @@ public class OpendapMain {
         
         // Fixed properties
         Properties props = new Properties();
-        props.setProperty("time_frequency", "monthly");
+        //props.setProperty("time_frequency", "mon");
         props.setProperty(QueryParameters.FIELD_INDEX_NODE, "localhost"); // FIXME ?
         
         // create ESGF record from OpenDAP URL
