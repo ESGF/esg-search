@@ -45,6 +45,15 @@ public class ThreddsPars {
 	public final static String TIME = "time";
     final public static String MOD_TIME = "mod_time";
     final public static String CREATION_TIME = "creation_time";
+    
+    final public static String STANDARD_NAME = "standard_name";
+    final public static String CONVENTIONS = "conventions";
+    final public static String MIP_SPECS = "mip_specs";
+    final public static String CREATION_DATE = "creation_date";
+    
+    //final public static String TITLE = "title";
+    //final public static String DESCRIPTION = "description";
+    //final public static String COMMENT = "comment";
 	
 	// replica properties
 	public final static String IS_REPLICA = "is_replica";

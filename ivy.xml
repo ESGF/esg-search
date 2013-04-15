@@ -114,6 +114,8 @@ Note: Check Maven for propery dependency parameter values @
     <dependency org="rome" name="rome" rev="1.0"/>
     
     <dependency org="org.apache.cxf" name="cxf-rt-frontend-jaxrs" rev="2.6.2" />
+    
+    <dependency org="edu.ucar" name="opendap" rev="2.2.2"/>
 
   </dependencies>
    
