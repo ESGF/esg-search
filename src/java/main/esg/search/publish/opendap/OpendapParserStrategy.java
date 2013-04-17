@@ -1,5 +1,6 @@
 package esg.search.publish.opendap;
 
+import java.net.URI;
 import java.util.List;
 
 import esg.search.core.Record;
@@ -9,14 +10,15 @@ import esg.search.core.Record;
  * @author Luca Cinquini
  *
  */
-public interface OpendapParser {
+public interface OpendapParserStrategy {
     
     /**
+     * Method to parse a remote OpenDAP dataset into one or more searchable ESGF records.
      * 
      * @param url : OpenDAP URL
-     * @param publish: true to generate records to be published, false otherwise
+     * @param schema: optional compliance schema to be assigned to the datasets
      * @return : list of ESGF records to be published
      */
-    List<Record> parse(String url, boolean publish);
+    List<Record> parse(String url, URI schema) throws Exception;
 
 }

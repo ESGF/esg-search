@@ -5,33 +5,47 @@ import java.net.URISyntaxException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 
 import ucar.nc2.Attribute;
 import ucar.nc2.dataset.NetcdfDataset;
 import esg.search.core.Record;
+import esg.search.publish.plugins.MetadataEnhancer;
 import esg.search.publish.thredds.ThreddsPars;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
 import esg.search.utils.DateUtils;
 
 /**
- * CMIP5 specific implementation of {@link OpendapParser}:
+ * CMIP5 specific implementation of {@link OpendapParserStrategy}:
  * parses the OpenDAP stream to generate ESGF datasets 
  * that conform to the CMIP5 schema.
  * 
  * @author Luca Cinquini
  *
  */
-public class Cmip5OpendapParser extends DefaultOpendapParser {
+// FIXME: select strategy to use depending on schema ?
+@Component
+public class Cmip5OpendapParserStrategyImpl extends DefaultOpendapParserStrategyImpl {
     
     private final Log LOG = LogFactory.getLog(this.getClass());
     
-    public Cmip5OpendapParser(Properties props) {
-        super( props );
+    public Cmip5OpendapParserStrategyImpl() {
+        super();
+    }
+    
+    /**
+     * Constructor with metadata enhancer.
+     * @param metadataEnhancer
+     */
+    @Autowired
+    public Cmip5OpendapParserStrategyImpl(final @Qualifier("typeMetadataEnhancer") MetadataEnhancer metadataEnhancer) {
+        super( metadataEnhancer );
     }
     
     protected void setAttributes(NetcdfDataset ncd, Record record) {

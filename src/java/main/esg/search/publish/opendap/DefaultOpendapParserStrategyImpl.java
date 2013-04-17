@@ -1,12 +1,14 @@
 package esg.search.publish.opendap;
 
+import java.net.URI;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.StringUtils;
 
 import ucar.nc2.Attribute;
@@ -16,13 +18,14 @@ import ucar.nc2.ncml.Aggregation;
 import esg.search.core.Record;
 import esg.search.core.RecordHelper;
 import esg.search.core.RecordImpl;
+import esg.search.publish.plugins.MetadataEnhancer;
 import esg.search.publish.thredds.ThreddsPars;
 import esg.search.publish.thredds.ThreddsUtils;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
- * Default implementation of {@link OpendapParser} based on reasonable assumptions:
+ * Default implementation of {@link OpendapParserStrategy} based on reasonable assumptions:
  * 
  * o) it creates one ESGF record of type 'Dataset' for each OpenDAP URL
  * o) all global attributes are used to populate corresponding dataset search properties
@@ -31,35 +34,37 @@ import esg.search.query.impl.solr.SolrXmlPars;
  * @author Luca Cinquini
  *
  */
-public class DefaultOpendapParser implements OpendapParser {
-    
-    /**
-     * Optional properties used to set fix attributes.
-     */
-    private Properties properties = new Properties();
-    
+public class DefaultOpendapParserStrategyImpl implements OpendapParserStrategy {
+        
     private final Log LOG = LogFactory.getLog(this.getClass());
+    
+    // optional metadata enhancer
+    private MetadataEnhancer metadataEnhancer;
     
     /**
      * No argument constructor.
      */
-    public DefaultOpendapParser() {}
+    public DefaultOpendapParserStrategyImpl() {}
     
-    public DefaultOpendapParser(Properties props) {
-        this.properties = props;
+    /**
+     * Constructor with metadata enhancer.
+     * @param metadataEnhancer
+     */
+    @Autowired
+    public DefaultOpendapParserStrategyImpl(final @Qualifier("typeMetadataEnhancer") MetadataEnhancer metadataEnhancer) {
+        this.metadataEnhancer = metadataEnhancer;
     }
     
-    public void setProperties(Properties props) {
-        this.properties = props;
-    }
-
     @Override
-    public List<Record> parse(String url, boolean publish) {
+    public List<Record> parse(String url, URI schema) {
         
         if (LOG.isInfoEnabled()) LOG.info("Parsing OpenDAP url="+url);
 
         // create (list of) records
         Record record = new RecordImpl();
+        
+        // optional validatrion schema
+        if (schema!=null) record.setSchema(schema);
 
         NetcdfDataset ncd = null;
         try {
@@ -105,9 +110,12 @@ public class DefaultOpendapParser implements OpendapParser {
                     
           // variables
           this.setVariables(ncd, record);
-          
-          // fixed properties
-          this.setFixedProperties(ncd, properties, record);
+              
+          // trigger additional metadata on record 'id'
+          // (i.e. disregard dependence on key, values)
+          if (metadataEnhancer!=null) {
+              metadataEnhancer.enhance("id", null, record);
+          }
                               
         } catch(Exception e) {
            LOG.warn(e.getMessage());
@@ -263,19 +271,6 @@ public class DefaultOpendapParser implements OpendapParser {
      */
     protected void setLatest(NetcdfDataset ncd, Record record) {
         record.setLatest(true);
-    }
-    
-    /**
-     * Default implementation to set the fixed dataset properties
-     * @param ncd
-     * @param props
-     * @param record
-     */
-    protected void setFixedProperties(NetcdfDataset ncd, Properties props, Record record) {
-        for (String key : properties.stringPropertyNames()) {
-            String value = properties.getProperty(key);
-            record.addField(key, value);
-        }
     }
 
 }

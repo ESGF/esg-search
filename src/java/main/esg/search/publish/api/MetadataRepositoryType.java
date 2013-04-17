@@ -21,6 +21,7 @@ package esg.search.publish.api;
 public enum MetadataRepositoryType {
 	
 	THREDDS,
+	OPENDAP,
 	OAI,
 	CAS,
 	FGDC;

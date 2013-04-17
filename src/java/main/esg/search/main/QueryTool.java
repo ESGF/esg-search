@@ -1,8 +1,5 @@
 package esg.search.main;
 
-import java.net.URL;
-
-import esg.search.utils.HttpClient;
 
 /**
  * Simple class to execute a POST request to a search service.

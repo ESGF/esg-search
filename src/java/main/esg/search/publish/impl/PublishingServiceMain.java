@@ -121,12 +121,12 @@ public class PublishingServiceMain {
     	System.out.println("          java esg.search.publish.impl."+this.getClass().getName()+" <Metadata Repository URL> <regex filter> <Metadata repository Type> true|false [optional log file]");
     	System.out.println("          where true:publish, false:unpublish");
     	System.out.println("Note: use <filter>='regular expression' to filter the catalogs to publish/unpublish. To apply no filtering, use <filter>='*' or <filter>='ALL'");
-    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" nasa.jpl.tes.monthly");
-    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml '*' THREDDS true|false /tmp/publishing.log");
-    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" http://pcmdi3.llnl.gov/thredds/esgcet/catalog.xml ALL THREDDS true|false /tmp/publishing.log");
-    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" http://esg-datanode.jpl.nasa.gov/thredds/esgcet/catalog.xml ALL THREDDS true|false");
-    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml '*' OAI true|false");
-    	System.out.println("Example: java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/cas_rdf.xml '*' CAS true|false");
+    	System.out.println("Example: java -Djava.ext.dirs=../lib/fetched esg.search.publish.impl."+this.getClass().getName()+" nasa.jpl.tes.monthly");
+    	System.out.println("Example: -Djava.ext.dirs=../lib/fetched java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/pcmdi.ipcc4.GFDL.gfdl_cm2_0.picntrl.mon.land.run1.v1.xml '*' THREDDS true|false /tmp/publishing.log");
+    	System.out.println("Example: -Djava.ext.dirs=../lib/fetched java esg.search.publish.impl."+this.getClass().getName()+" http://pcmdi3.llnl.gov/thredds/esgcet/catalog.xml ALL THREDDS true|false /tmp/publishing.log");
+    	System.out.println("Example: -Djava.ext.dirs=../lib/fetched java esg.search.publish.impl."+this.getClass().getName()+" http://esg-datanode.jpl.nasa.gov/thredds/esgcet/catalog.xml ALL THREDDS true|false");
+    	System.out.println("Example: -Djava.ext.dirs=../lib/fetched java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/ORNL-oai_dif.xml '*' OAI true|false");
+    	System.out.println("Example: -Djava.ext.dirs=../lib/fetched java esg.search.publish.impl."+this.getClass().getName()+" file:///Users/cinquini/Documents/workspace/esg-search/resources/cas_rdf.xml '*' CAS true|false");
     	System.exit(-1);
 
 	}
