@@ -2,6 +2,7 @@ package esg.search.publish.opendap;
 
 import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,8 +138,8 @@ public class DefaultOpendapParserStrategyImpl implements OpendapParserStrategy {
      * @param record
      * @return
      */
-    protected void setId(NetcdfDataset ncd, Record record) {
-        record.setId( ncd.getLocation() );
+    protected void setId(NetcdfDataset ncd, Record record) throws Exception {
+        record.setId( URLEncoder.encode( ncd.getLocation(), "UTF-8") );
     }
     
     /**

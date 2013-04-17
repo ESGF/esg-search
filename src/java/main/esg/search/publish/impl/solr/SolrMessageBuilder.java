@@ -38,16 +38,16 @@ public class SolrMessageBuilder {
 		for (final String id : ids) {
 		    
 		    // escape Lucene/Solr reserved characters: + - && || ! ( ) { } [ ] ^ " ~ * ? : \ /
-		    String _id = id.replaceAll(":", "\\\\:");
+		    //String _id = id.replaceAll(":", "\\\\:");
 		    
 			// <id>...</id>
 			final Element idEl = new Element(SolrXmlPars.ELEMENT_ID);
-			idEl.setText(_id);
+			idEl.setText(id);
 			deleteEl.addContent(idEl);
 			
 			// <query>dataset_id:...</query>
 			final Element queryEl = new Element(SolrXmlPars.ELEMENT_QUERY);
-			queryEl.setText(QueryParameters.FIELD_DATASET_ID+":"+_id);
+			queryEl.setText(QueryParameters.FIELD_DATASET_ID+":"+id);
 			deleteEl.addContent(queryEl);
 			
 		}
