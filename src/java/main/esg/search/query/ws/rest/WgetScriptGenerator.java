@@ -283,7 +283,7 @@ public class WgetScriptGenerator {
 			try {
 				ServletContextResource resource = new ServletContextResource(servletContext, TEMPLATE_LOC);
 				
-				LOG.debug(resource.getFile().getAbsolutePath());
+				LOG.trace(resource.getFile().getAbsolutePath());
 				InputStreamReader reader = new InputStreamReader(resource.getInputStream(), "UTF-8");
 				StringBuilder sb = new StringBuilder();
 				char[] buff = new char[1024];
@@ -311,7 +311,7 @@ public class WgetScriptGenerator {
 	static public void init(ServletContext servletContext) {
 		
 		getTemplate(servletContext);
-		LOG.debug(getTemplate(null));
+		LOG.trace(getTemplate(null));
 	}
 
 }
