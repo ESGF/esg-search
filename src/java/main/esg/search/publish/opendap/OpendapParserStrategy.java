@@ -6,7 +6,8 @@ import java.util.List;
 import esg.search.core.Record;
 
 /**
- * API for parsing an OpenDAP dataset into one or more ESGF datasets
+ * API for parsing an OpenDAP dataset into one or more ESGF datasets.
+ * 
  * @author Luca Cinquini
  *
  */

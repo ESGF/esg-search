@@ -64,7 +64,7 @@ public class DefaultOpendapParserStrategyImpl implements OpendapParserStrategy {
         // create (list of) records
         Record record = new RecordImpl();
         
-        // optional validatrion schema
+        // optional validation schema
         if (schema!=null) record.setSchema(schema);
 
         NetcdfDataset ncd = null;
