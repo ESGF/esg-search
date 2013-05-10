@@ -115,6 +115,8 @@ Note: Check Maven for propery dependency parameter values @
     
     <dependency org="org.apache.cxf" name="cxf-rt-frontend-jaxrs" rev="2.6.2" />
 
+    <dependency org="javax.servlet" name="javax.servlet-api" rev="3.0.1"/>
+
   </dependencies>
    
   
