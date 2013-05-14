@@ -337,7 +337,7 @@ Builds the project via ant (obviously).
 	    <mkdir dir="${dist_dir}/tmplib"/>
 
 	    <copy todir="${dist_dir}/tmplib" overwrite="true" flatten="yes">
-	      <fileset dir="${lib_dir}" includes="**/*.jar" excludes="servlet-api*.jar,**/junit*.jar,**/*sources.jar,**/*javadoc.jar"/>
+	      <fileset dir="${lib_dir}" includes="**/*.jar" excludes="**/*servlet-api*.jar,**/junit*.jar,**/*sources.jar,**/*javadoc.jar"/>
 	    </copy>
 	  	<echo message="${conf_dir}"/>
 	    <delete file="${dist_dir}/${module}.war"/>

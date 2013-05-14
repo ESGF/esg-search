@@ -117,6 +117,8 @@ Note: Check Maven for propery dependency parameter values @
     
     <dependency org="edu.ucar" name="opendap" rev="2.2.2"/>
 
+    <dependency org="javax.servlet" name="javax.servlet-api" rev="3.0.1"/>
+
   </dependencies>
    
   
