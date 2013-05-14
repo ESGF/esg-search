@@ -137,13 +137,15 @@ public class RssViewBuilder {
     
     // <pubDate>Wed, 24 Aug 2011 16:43:47 GMT</pubDate>
     public final static void addPubDate(Item feedItem, Record record) {
-        try {
-            // replace Zulu time with GMT time zone
-            String date = record.getFieldValue(QueryParameters.FIELD_TIMESTAMP).replaceAll("(\\.\\d+)?Z", "+0000");
-            feedItem.setPubDate( df.parse( date )); // result is on locale time
-        } catch(ParseException e) {
-            LOG.warn(e.getMessage());
-            LOG.warn("Record timestamp="+record.getFieldValue(QueryParameters.FIELD_TIMESTAMP));
+        if (record.getFieldValue(QueryParameters.FIELD_TIMESTAMP)!=null) {
+            try {
+                // replace Zulu time with GMT time zone
+                String date = record.getFieldValue(QueryParameters.FIELD_TIMESTAMP).replaceAll("(\\.\\d+)?Z", "+0000");
+                feedItem.setPubDate( df.parse( date )); // result is on locale time
+            } catch(ParseException e) {
+                LOG.warn(e.getMessage());
+                LOG.warn("Record timestamp="+record.getFieldValue(QueryParameters.FIELD_TIMESTAMP));
+            }
         }
     }
 
