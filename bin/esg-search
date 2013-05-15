@@ -198,6 +198,13 @@ setup_publisher_resources() {
     fi
 }
 
+search_startup_hook() {
+    echo "Search Startup Hook... :-)"
+    get_property index_auto_fetch_pub_resources
+    [ -z "${index_auto_fetch_pub_resources}" ] && index_auto_fetch_pub_resources="true" && write_as_property index_auto_fetch_pub_resources
+    [ "$(tr [A-Z] [a-z] <<<${index_auto_fetch_pub_resources})" = "true" ] && setup_publisher_resources
+}
+
 #--------------------
 # ONE SHOT FUNCTIONS (called from outside this script [see esg-node's options])
 #--------------------
