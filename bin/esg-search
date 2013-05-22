@@ -1215,7 +1215,7 @@ start_solr() {
         java ${solr_java_opts} -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar >& /dev/null &
         popd >& /dev/null
         
-        pcheck 15 2 1 -- check_solr_process
+        pcheck 30 2 1 -- check_solr_process
         ret=$?
         [ $ret == 0 ] && echo " [OK]" || echo " [FAIL]"
         shift
