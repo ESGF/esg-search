@@ -71,6 +71,7 @@ public class Cmip5OpendapParserStrategyImpl extends DefaultOpendapParserStrategy
                          
             // global attributes that are used for special record fields                
             // mip_specs: CMIP5 --> used to set the validation schema
+            // will override schema set earlier in main parse() method
             if (aname.equalsIgnoreCase(ThreddsPars.MIP_SPECS)) {
                 try {
                     record.setSchema(new URI(avalue.toLowerCase()));
