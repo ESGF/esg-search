@@ -7,7 +7,8 @@ import esg.search.core.Record;
 
 /**
  * Implementation of {@link MetadataEnhancer} 
- * that inserts all (key, value) pairs contained in the give property file
+ * that inserts all (key, value) pairs contained in the given property file.
+ * 
  * @author Luca Cinquini
  *
  */
@@ -21,16 +22,14 @@ public class AllPropertiesMetadataEnhancer extends BaseMetadataEnhancerImpl {
 
 
     /**
-     * NOTE: (name, values) argument are disregarded
+     * This implementation inserts all (key,value) pairs contained in the property file.
+     * The method arguments "name" and "values" are disregarded.
      */
     @Override
     public void enhance(String name, List<String> values, Record record) {
-        
-        System.out.println("enhancing....");
-        
+                
         // loop over properties
         for(String key : properties.stringPropertyNames()) {
-            System.out.println("key="+key);
             String value = properties.getProperty(key);
             record.addField(key, value);
           }
