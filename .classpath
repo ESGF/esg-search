@@ -111,7 +111,6 @@
 	<classpathentry kind="lib" path="lib/ivy-2.3.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/solr-core-1.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/solr-solrj-1.4.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/opendap-2.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.3.8.jar"/>
 	<classpathentry kind="output" path="build"/>
