@@ -198,6 +198,13 @@ setup_publisher_resources() {
     fi
 }
 
+search_startup_hook() {
+    echo "Search Startup Hook... :-)"
+    get_property index_auto_fetch_pub_resources
+    [ -z "${index_auto_fetch_pub_resources}" ] && index_auto_fetch_pub_resources="true" && write_as_property index_auto_fetch_pub_resources
+    [ "$(tr [A-Z] [a-z] <<<${index_auto_fetch_pub_resources})" = "true" ] && setup_publisher_resources
+}
+
 #--------------------
 # ONE SHOT FUNCTIONS (called from outside this script [see esg-node's options])
 #--------------------
@@ -1208,7 +1215,7 @@ start_solr() {
         java ${solr_java_opts} -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar >& /dev/null &
         popd >& /dev/null
         
-        pcheck 15 2 1 -- check_solr_process
+        pcheck 30 2 1 -- check_solr_process
         ret=$?
         [ $ret == 0 ] && echo " [OK]" || echo " [FAIL]"
         shift

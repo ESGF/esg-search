@@ -189,6 +189,11 @@ public class SchemaRecordValidator implements RecordValidator, ReloadableFileSet
                 } else {
                     
                     List<String> values = recfields.get(field.name);
+                    if (LOG.isTraceEnabled()) {
+                        for (String value : values) {
+                            LOG.trace("Field: "+field.name+" has value: "+value);
+                        }
+                    }
                     
                     // check number of values
                     if (values.size()<field.minOccurs || values.size()>field.maxOccurs) {
@@ -252,6 +257,7 @@ public class SchemaRecordValidator implements RecordValidator, ReloadableFileSet
                         for (String value : values) {
                             try {
                                 float x = Float.parseFloat(value);
+                                LOG.trace("FIELD MIN VALUE="+field.minValue);
                                 if (x<field.minValue) errors.add("Field: '"+field.name+"' must be >= "+(float)field.minValue);
                                 if (x>field.maxValue) errors.add("Field: '"+field.name+"' must be <= "+(float)field.maxValue);
                             } catch(NumberFormatException e) {
@@ -298,7 +304,7 @@ public class SchemaRecordValidator implements RecordValidator, ReloadableFileSet
         int minOccurs = 1;
         int maxOccurs = 1;
         String type = "string";
-        double minValue = Double.MIN_VALUE;
+        double minValue =-Double.MAX_VALUE; // NOTE: NOT Double.MIN_VALUE
         double maxValue = Double.MAX_VALUE;
         Set<String> recordTypes = new HashSet<String>();
         
