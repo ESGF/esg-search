@@ -1365,8 +1365,8 @@ fetch_index_optimization_launcher() {
 }
 
 fetch_static_shards_file() {
-    local project=${1}
-    [[ ! $project ]] && echo "Please specify project. Ex: cmip5, test, cssef" && return 1
+    local project_name=${1}
+    [[ ! $project_name ]] && echo "Please specify project. Ex: cmip5, test, cssef" && return 1
     
     local fetch_file=esgf_shards_static.xml
     local force=1
