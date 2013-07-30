@@ -388,6 +388,7 @@ check_chksum() {
 
     case $chk_type in
         md5) local_chksum=$(md5sum_ $file | cut -f1 -d" ");;
+        sha256) local_chksum=$(sha256sum $file|awk '{print $1}'|cut -d ' ' -f1);;
         *) echo "Can't verify checksum." && return 0;;
     esac
 
