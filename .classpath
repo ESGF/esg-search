@@ -107,5 +107,6 @@
 	<classpathentry kind="lib" path="lib/fetched/spring-web-3.2.2.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/spring-webmvc-3.2.2.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/javax.servlet-api-3.0.1.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/log4j-1.2.17.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

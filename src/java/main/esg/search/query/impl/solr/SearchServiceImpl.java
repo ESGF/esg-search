@@ -176,11 +176,15 @@ public class SearchServiceImpl implements SearchService {
                 if (n==0) {
                     
                     // prune the shards list
-                    if (LOG.isInfoEnabled()) LOG.info("Pruning the shards list");
-                    long startTime2 = System.currentTimeMillis();            
-                    this.recover(input);
-                    long stopTime2 = System.currentTimeMillis();
-                    if (LOG.isInfoEnabled()) LOG.info("Pruning Elapsed Time: "+(stopTime2-startTime2)+" ms");
+                    if (this.registryService!=null) {
+                        if (LOG.isInfoEnabled()) LOG.info("Pruning the shards list");
+                        long startTime2 = System.currentTimeMillis();            
+                        this.recover(input);
+                        long stopTime2 = System.currentTimeMillis();
+                        if (LOG.isInfoEnabled()) LOG.info("Pruning Elapsed Time: "+(stopTime2-startTime2)+" ms");
+                    } else {
+                        if (LOG.isInfoEnabled()) LOG.info("Registry service not available, cannot prune shards");   
+                    }
                     
                 } else if (n==1) {
                     
