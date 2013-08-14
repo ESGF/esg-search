@@ -113,6 +113,23 @@ public class SearchServiceImpl implements SearchService {
         }
 
 	}
+	
+	/**
+	 * Alternate constructor independent of ESGFProperties (uses timeout default values).
+	 * @param url
+	 * @throws MalformedURLException
+	 */
+	public SearchServiceImpl(final URL url) throws MalformedURLException {
+	    
+	    this.url = url;
+	    
+        if (LOG.isInfoEnabled()) {
+            LOG.info("Search Service connection timeout="+this.connectionTimeout);
+            LOG.info("Search Service datasets read timeout="+this.datasetsReadTimeout);
+            LOG.info("Search Service files read timeout="+this.filesReadTimeout);
+        }
+	    
+	}
 
 	/**
 	 * {@inheritDoc}
