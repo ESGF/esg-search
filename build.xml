@@ -235,7 +235,7 @@ Builds the project via ant (obviously).
     <taskdef resource="org/apache/ivy/ant/antlib.xml"
              uri="antlib:org.apache.ivy.ant" classpath="${lib_dir}/ivy-${ivy_version}.jar"/>
     <ivy:settings file="./ivysettings.xml">
-      <credentials host="esgf.org" realm="Artifactory Realm" username="${username}" passwd="${passwd}" />
+      <credentials host="devel.esgf.org" realm="Artifactory Realm" username="${username}" passwd="${passwd}" />
     </ivy:settings>
   </target>
   
@@ -769,7 +769,7 @@ Builds the project via ant (obviously).
       </packageset>
 
       <doctitle><![CDATA[<h1>${module}</h1>]]></doctitle>
-      <bottom><![CDATA[<i><a href="http://esgf.org/" target="_top">ESGF</a> / <a href="http://esgf.org/LICENSE" target="_top">BSD OpenSource License</a></i>]]></bottom>
+      <bottom><![CDATA[<i><a href="http://devel.esgf.org/" target="_top">ESGF</a> / <a href="http://devel.esgf.org/LICENSE" target="_top">BSD OpenSource License</a></i>]]></bottom>
       <tag name="todo" scope="all" description="To do:"/>
       <group title="ESG Search Component Packages" packages="esg.search*"/>
       <group title="ESG Search Connection Packages" packages="esg.node.search.connector*"/>
@@ -830,7 +830,7 @@ Builds the project via ant (obviously).
     -->
   <target name="post_docs"  depends="init" description="(posts generated documentatoin to web server)">
     <property name="orig.dir" value="${doc_dir_generated}"/>
-    <property name="dest.server" value="esgf.org"/>
+    <property name="dest.server" value="devel.esgf.org"/>
     <property name="dest.dir" value="www/${module}-site/"/>
     
     <echo message="orig.dir      = ${orig.dir} "/>
