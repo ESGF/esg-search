@@ -182,7 +182,7 @@ setup_search() {
 }
 
 setup_publisher_resources() {
-    echo "Publisher Resources... "
+    echo "Publisher Resources... (${esgf_publisher_resources_repo})"
     [[ ! ${esg_config_dir} ]] && echo "WARNING: No Configuration directory set - Cannot setup publisher resources [FAIL]" && return 1
     [ ! -d "${esgf_publisher_resources_home:=${esg_config_dir}}" ] && mkdir -p ${esgf_publisher_resources_home}
     #local found_git=$(type git | sed -e 's/.*(\([^)]*\))/\1/') #this incantation works on for the output of 'type' on macs... not on CentOS
