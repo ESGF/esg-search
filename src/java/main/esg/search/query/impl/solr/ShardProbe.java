@@ -71,7 +71,7 @@ public class ShardProbe extends Thread {
             if (LOG.isInfoEnabled()) LOG.info("Shard="+shard+" Number of Results="+this.numFound+" Query Time="+this.queryTime+" Elapsed Time="+this.elapsedTime);
             
         } catch(Exception e) {
-            System.out.println("Error probing shard="+shard+": "+e.getMessage());
+            if (LOG.isWarnEnabled()) LOG.warn("Error probing shard="+shard+": "+e.getMessage());
         }
 
         
