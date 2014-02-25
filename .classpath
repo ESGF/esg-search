@@ -81,9 +81,6 @@
 	<classpathentry kind="lib" path="lib/fetched/solr-solrj-1.4.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/asm-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-io-2.4.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.3.6.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.6.18.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.3.16.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/geronimo-javamail_1.4_spec-1.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/geronimo-jms_1.1_spec-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/jcl-over-slf4j-1.6.4.jar"/>
@@ -108,5 +105,8 @@
 	<classpathentry kind="lib" path="lib/fetched/spring-webmvc-3.2.2.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/javax.servlet-api-3.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/log4j-1.2.17.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.3.8.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.6.19.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.3.17.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
