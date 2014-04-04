@@ -858,25 +858,56 @@ Builds the project via ant (obviously).
     </exec>
   </target>
 
-  <target name="publish" depends="init-ivy" description="(publishes built artifacts to artifact repository)">
-    <ivy:publish resolver="esgf_repo_devel" 
-                 organisation="org.esgf"
-                 module="${module}"
-                 revision="${version_num}"
-                 overwrite="true" haltonmissing="false">
-      <artifacts pattern="dist/[artifact]-[revision].[ext]"/>
-      <artifacts pattern="dist/[artifact].war"/>
-    </ivy:publish>
+  <macrodef name="git">
+  	<attribute name="command" />
+  	<attribute name="dir" default="${ivy.esgf-repo-local.default.root.dir}/esgf-artifacts/"/>
+  	<element name="args" optional="true" />
+  	<sequential>
+  		<echo message="git @{command}" />
+  		<exec executable="git" dir="@{dir}">
+  			<arg value="@{command}" />
+  			<args/>
+  		</exec>
+  	</sequential>
+  </macrodef>
+
+  <target name="publish" depends="publish_local" description="(publishes built artifacts to remote repository: https://github.com/ESGF/esgf-artifacts)">
+  	<input message="Commit message" addproperty="commit-message" />
+  	<echo message="Commiting all changes with message ${commit-message}" />
+
+ 	<git command="add">
+ 		<args>
+ 			<arg value="." />
+ 		</args>
+ 	</git>
+ 	<git command="commit">
+ 		<args>
+ 			<arg value="-am ${commit-message}" />
+ 		</args>
+ 	</git>
+ 	<git command="push" />
   </target>
 
-  <target name="publish_local" depends="init-ivy" description="(publishes built artifacts to artifact repository)">
+  <target name="publish_local" depends="init-ivy,pull" description="(publishes built artifacts to local git repository: ~/.ivy2/local)">
     <ivy:publish resolver="esgf_repo_local"
                  organisation="org.esgf"
                  module="${module}"
                  revision="${version_num}"
                  overwrite="true" haltonmissing="false">
       <artifacts pattern="dist/[artifact]-[revision].[ext]"/>
+      <artifacts pattern="dist/[artifact].war" />
     </ivy:publish>
+  </target>
+
+  <target name="pull" description="Git clone ESGF Maven Repositories from Github">
+  	<mkdir dir="${ivy.esgf-repo-local.default.root.dir}" />
+  	<echo message="Cloning esgf-artifacts repository (approx. 2mn after initialization)" />
+  	<git command="clone" dir="${ivy.esgf-repo-local.default.root.dir}" >
+  		<args>
+  			<arg value="git@github.com:ESGF/esgf-artifacts.git" />
+  		</args>
+  	</git>
+  	<git command="pull" />
   </target>
 
   <!--
