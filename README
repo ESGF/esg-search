@@ -1,5 +1,6 @@
 DESCRIPTION
 
+
 This module contains the next generation search functionality for the Earth System Grid Federation, 
 built upon the Apache Solr search engine. The package contains functionality for:
 
