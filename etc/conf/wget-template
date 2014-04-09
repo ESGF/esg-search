@@ -220,15 +220,15 @@ proxy_to_java() {
     echo "$JAVA_PROXY"
 }
 
-# get certificates from rainbow
+# get certificates from github
 get_certificates() {
     # don't if this was already done today
     [[ -z $force && "$(find $ESG_CERT_DIR -type d -mtime -1 2>/dev/null)" ]] && return 0
     echo -n "Retrieving Federation Certificates..." >&2
     
-    if ! wget https://rainbow.llnl.gov/dist/certs/esg_trusted_certificates.tar -O - -q | tar x -C $ESG_HOME; then
+    if ! wget https://raw.github.com/ESGF/esgf-dist/master/installer/certs/esg_trusted_certificates.tar -O - -q | tar x -C $ESG_HOME; then
         #certificates tarred into esg_trusted_certificates. (if it breaks, let the user know why
-        wget https://rainbow.llnl.gov/dist/certs/esg_trusted_certificates.tar
+        wget https://raw.github.com/ESGF/esgf-dist/master/installer/certs/esg_trusted_certificates.tar
         echo "Could't update certs!" >&2
         return 1
     else
@@ -241,15 +241,15 @@ get_certificates() {
 
 }
 
-#get truststore from rainbow
+#get truststore from github
 get_truststore() {
     # don't if this was already done today
     [[ -z $force && "$(find $TRUSTSTORE -type f -mtime -1 2>/dev/null)" ]] && return 0
     echo -n "Retrieving Federation Truststore..." >&2
     
-    if ! wget https://rainbow.llnl.gov/dist/certs/esg-truststore.ts -O $TRUSTSTORE -q ; then
+    if ! wget https://raw.github.com/ESGF/esgf-dist/master/installer/certs/esg-truststore.ts -O $TRUSTSTORE -q ; then
         #certificates tarred into esg_trusted_certificates. (if it breaks, let the user know why
-        wget https://rainbow.llnl.gov/dist/certs/esg-truststore.ts -O $TRUSTSTORE
+        wget https://raw.github.com/ESGF/esgf-dist/master/installer/certs/esg-truststore.ts -O $TRUSTSTORE
         echo "Could't update truststore!" >&2
         return 1
     else
@@ -271,7 +271,7 @@ get_credentials() {
     if [[ -z "$(find $MYPROXY_GETCERT -type f -mtime -1 2>/dev/null)" ]]; then
         echo -n "(Downloading $MYPROXY_GETCERT... "
         mkdir -p $(dirname $MYPROXY_GETCERT)
-        if wget -q https://rainbow.llnl.gov/dist/devel/esgf-getcert/getcert.jar -O $MYPROXY_GETCERT;then
+        if wget -q https://raw.github.com/ESGF/esgf-dist/master/installer/certs/getcert.jar -O $MYPROXY_GETCERT;then
             echo 'done)'
             touch $MYPROXY_GETCERT
         else
