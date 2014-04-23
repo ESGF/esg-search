@@ -232,12 +232,14 @@ public class WgetController {
                     //Handle exceptions!
                     if (childEl.getAttributeValue("name")
                             .equals(QueryParameters.FIELD_URL)) {
-                        String tuple = childEl.getChild("str")
-                                .getTextNormalize();
-                        String[] parts = RecordHelper.decodeTuple(tuple);
-                        if (parts[2]
-                                .equalsIgnoreCase(ThreddsPars.SERVICE_TYPE_HTTP)) {
-                            attrib.put(childEl.getAttributeValue("name"), parts[0]);
+                        for (final Object subChildObj : childEl.getChildren("str")) {
+                            Element subChildEl = (Element)subChildObj;
+                            String tuple = subChildEl.getTextNormalize();
+                            String[] parts = RecordHelper.decodeTuple(tuple);
+                            if (parts[2]
+                                    .equalsIgnoreCase(ThreddsPars.SERVICE_TYPE_HTTP)) {
+                                attrib.put(childEl.getAttributeValue("name"), parts[0]);
+                            }
                         }
                         //handle all arrays
                     } else if (childEl.getName() == "arr"){
