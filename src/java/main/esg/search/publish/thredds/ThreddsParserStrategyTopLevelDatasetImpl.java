@@ -381,7 +381,6 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    
 	    // retrieve dataset ID from THREDDS catalog...
 	    // <dataset name="...." ID="..." restrictAccess="...">
-        // FIXME
 	    String id = dataset.getID().replaceAll("/", "."); // replace '/' in identifiers
 	    if (id.startsWith(".")) id = id.substring(1);     // do not let id start with '.'
         //String id = dataset.getID();
