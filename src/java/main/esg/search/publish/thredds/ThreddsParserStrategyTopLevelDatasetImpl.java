@@ -44,6 +44,7 @@ import esg.search.core.RecordImpl;
 import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.plugins.MetadataEnhancer;
 import esg.search.publish.thredds.parsers.AccessParser;
+import esg.search.publish.thredds.parsers.DataSizeParser;
 import esg.search.publish.thredds.parsers.DatasetSummary;
 import esg.search.publish.thredds.parsers.DocumentationParser;
 import esg.search.publish.thredds.parsers.MetadataGroupParser;
@@ -90,6 +91,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    parsers.add( new MetadataGroupParser() );
 	    parsers.add( new PropertiesParser() );
 	    parsers.add( new VariablesParser() );
+	    parsers.add( new DataSizeParser() );
 	    	    	    
 	}
 	
@@ -144,9 +146,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		parseSubDatasets(dataset, latest, isReplica, records, hostName, schema, ds, catalogRefs);
 		
 		// set total size of dataset, number of files, number of aggregations
-		record.addField(QueryParameters.FIELD_SIZE, Long.toString(ds.size));
-		record.addField(QueryParameters.FIELD_NUMBER_OF_FILES, Long.toString(ds.numberOfFiles));
-		record.addField(QueryParameters.FIELD_NUMBER_OF_AGGREGATIONS, Long.toString(ds.numberOfAggregations));
+		record.setField(QueryParameters.FIELD_SIZE, Long.toString(ds.size));
+		record.setField(QueryParameters.FIELD_NUMBER_OF_FILES, Long.toString(ds.numberOfFiles));
+		record.setField(QueryParameters.FIELD_NUMBER_OF_AGGREGATIONS, Long.toString(ds.numberOfAggregations));
 		
 		// set geospatial and temporal coverage
 		if (ds.dateRange!=null) {
@@ -380,7 +382,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    // retrieve dataset ID from THREDDS catalog...
 	    // <dataset name="...." ID="..." restrictAccess="...">
         // FIXME
-	    String id = dataset.getID().replaceAll("/", "."); // FIXME: replace '/' in identifiers ?
+	    String id = dataset.getID().replaceAll("/", "."); // replace '/' in identifiers
+	    if (id.startsWith(".")) id = id.substring(1);     // do not let id start with '.'
         //String id = dataset.getID();
         
         // ...or assign random UUID if dataset id was not found
