@@ -7,10 +7,10 @@
 	   					   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
                               			
-  	<!-- All beans of type MetadataEnhencer declared in this file are automatically loaded by Spring into a map keyed by bean id.
-  	     To be invoked for a specific metadata field, the bean id must follow the convention: <field>MetadataEnhancer -->
+  	<!-- All beans of type MetadataEnhencer declared in this file are automatically loaded by Spring -->
 
-	<bean class="esg.search.publish.plugins.StaticPropertiesMetadataEnhancer" id="typeMetadataEnhancer">
+	<!-- adds the metadata field 'index_node' from the value of 'esgf.index.peer' configured in esgf.properties -->
+	<bean class="esg.search.publish.plugins.StaticPropertiesMetadataEnhancer" id="indexNodeMetadataEnhancer">
     	<constructor-arg index="0" value="esgf.index.peer"/>
     	<constructor-arg index="1" value="index_node"/>
     	<constructor-arg index="2" ref="esgfProperties"/>
@@ -19,29 +19,46 @@
     	</property>
     </bean> 
 
+	<!-- maps the 'model' value according to the Controlled Vocabulary  -->
     <bean class="esg.search.publish.plugins.MappingPropertiesMetadataEnhencer" id="modelMetadataEnhancer">
     	<constructor-arg index="0" value="esg/search/config/models.properties"/>
     	<property name="type" value="Dataset"/>
+    	<property name="field" value="model"/>
     </bean> 
 
+	<!-- maps the 'institute' value according to the Controlled Vocabulary  -->
     <bean class="esg.search.publish.plugins.MappingPropertiesMetadataEnhencer" id="instituteMetadataEnhancer">
     	<constructor-arg index="0" value="esg/search/config/institutes.properties"/>
     	<property name="type" value="Dataset"/>
+    	<property name="field" value="institute"/>
     </bean> 
 
+	<!-- maps the 'project' value according to the Controlled Vocabulary  -->
     <bean class="esg.search.publish.plugins.MappingPropertiesMetadataEnhencer" id="projectMetadataEnhancer">
     	<constructor-arg index="0" value="esg/search/config/projects.properties"/>
     	<property name="type" value="Dataset"/>
+    	<property name="field" value="project"/>
     </bean> 
 
+	<!-- maps the 'experiment' value according to the Controlled Vocabulary  -->
     <bean class="esg.search.publish.plugins.ExperimentMetadataEnhancer" id="experimentMetadataEnhancer">
     	<constructor-arg index="0" value="esg/search/config/experiments.properties"/>
 		<property name="type" value="Dataset"/>
+		<property name="field" value="experiment"/>
 	</bean> 
 
-    <bean class="esg.search.publish.plugins.TechNoteMetadataEnhancer" id="master_idMetadataEnhancer">
+	<!-- adds a TechNote reference to a Dataset or File  -->
+    <bean class="esg.search.publish.plugins.TechNoteMetadataEnhancer" id="techNoteMetadataEnhancer">
     	<constructor-arg index="0"><value>/esg/config/techNotes.properties</value></constructor-arg>
     	<property name="type" value="File"/>
+    </bean>
+    
+    <!-- FIXME: ACOS specific -->
+    <bean class="esg.search.publish.plugins.AllPropertiesMetadataEnhancer" id="propsMetadataEnhancer">
+    	<constructor-arg index="0"><value>/esg/config/acos.properties</value></constructor-arg>
+    	<property name="types">
+    		<list><value>Dataset</value><value>File</value></list>
+    	</property>
     </bean>
     
     <!-- Full map of metadata enhancers 

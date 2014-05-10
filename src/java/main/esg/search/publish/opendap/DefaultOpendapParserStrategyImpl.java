@@ -52,7 +52,7 @@ public class DefaultOpendapParserStrategyImpl implements OpendapParserStrategy {
      * @param metadataEnhancer
      */
     @Autowired
-    public DefaultOpendapParserStrategyImpl(final @Qualifier("typeMetadataEnhancer") MetadataEnhancer metadataEnhancer) {
+    public DefaultOpendapParserStrategyImpl(final @Qualifier("indexNodeMetadataEnhancer") MetadataEnhancer metadataEnhancer) {
         this.metadataEnhancer = metadataEnhancer;
     }
     

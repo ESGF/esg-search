@@ -44,7 +44,7 @@ public class Cmip5OpendapParserStrategyImpl extends DefaultOpendapParserStrategy
      * @param metadataEnhancer
      */
     @Autowired
-    public Cmip5OpendapParserStrategyImpl(final @Qualifier("typeMetadataEnhancer") MetadataEnhancer metadataEnhancer) {
+    public Cmip5OpendapParserStrategyImpl(final @Qualifier("indexNodeMetadataEnhancer") MetadataEnhancer metadataEnhancer) {
         super( metadataEnhancer );
     }
     

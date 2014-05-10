@@ -78,7 +78,6 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	
 	/**
 	 * Optional map of metadata enhancers.
-	 * For performance, each metadata enhancer is triggered by a single field, the map key.
 	 */
 	private Map<String, MetadataEnhancer> metadataEnhancers = new LinkedHashMap<String, MetadataEnhancer>();
 		
@@ -421,17 +420,16 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @param record
 	 */
 	private void enhanceMetadata(final Record record) {
-        
-        final Map<String, List<String>> fields = record.getFields();
-        for (final String field : new ArrayList<String>(fields.keySet())) {
-            // note: retrieve bean by adopted naming convention
-            String key = field + "MetadataEnhancer";
-            if (metadataEnhancers.containsKey(key)) {
-                final MetadataEnhancer me = metadataEnhancers.get(key);
-                if (me.forType(record.getType())) {
-                    me.enhance(field, record.getFieldValues(field), record);
-                }
-            }
+               
+        // loop over metadata enhancers
+        for (final MetadataEnhancer me: metadataEnhancers.values()) {
+        	
+        	// apply selectively depending of field name and record type
+        	String fieldName = me.forField();
+        	if (record.getFields().containsKey(fieldName) && me.forType(record.getType())) {
+        		me.enhance(fieldName, record.getFieldValues(fieldName), record);
+        	}
+        	
         }
         
 	}
