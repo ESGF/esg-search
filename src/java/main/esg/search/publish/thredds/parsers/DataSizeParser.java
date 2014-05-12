@@ -20,9 +20,10 @@ public class DataSizeParser implements ThreddsElementParser {
         
     	if (dataset instanceof InvDatasetImpl) {
     		InvDatasetImpl _dataset = (InvDatasetImpl)dataset;
-    		if (_dataset.getDataSize()!=Double.NaN ) {
+    		if (_dataset.getDataSize()!=Double.NaN 
+    			&& record.getFieldValue(SolrXmlPars.FIELD_SIZE)==null) { // do not override
     			// must convert from Double to Long
-    			record.addField(SolrXmlPars.FIELD_SIZE, ""+ (long)_dataset.getDataSize());
+    			record.setField(SolrXmlPars.FIELD_SIZE, ""+ (long)_dataset.getDataSize());
     		}
     	}
     }
