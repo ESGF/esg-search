@@ -155,6 +155,12 @@ public interface Record {
 	List<String> getFieldValues(String name);
 	
 	/**
+	 * Method to remove a named field, and all its associated values
+	 * @param name
+	 */
+	void deleteField(String name);
+	
+	/**
 	 * Method to return the record version, used to only index the latest version.
 	 * Dates can be converted to milliseconds from the Epoch for versioning, or to YYYYMMDD format.
 	 * @return

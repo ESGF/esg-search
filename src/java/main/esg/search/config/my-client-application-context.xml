@@ -1,0 +1,29 @@
+<!-- Spring context configuration for web application deployment. -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+    
+	<!-- Common client configuration -->
+	<import resource="classpath:esg/search/config/client-application-context.xml" />
+	  	
+    <!-- Project-specific configuration -->
+    
+    <!-- ACOS specific metadata enhancers -->
+    <bean class="esg.search.publish.plugins.AllPropertiesMetadataEnhancer" id="propsMetadataEnhancer">
+    	<constructor-arg index="0"><value>/esg/config/acos.properties</value></constructor-arg>
+    	<property name="types">
+    		<list><value>Dataset</value><value>File</value></list>
+    	</property>
+    </bean>
+    <bean class="esg.search.publish.plugins.AcosFilenameMetadataEnhancer" id="acosFilenameMetadataEnhancer">
+    	<!-- acos_L2s_130101_01_Production_v150151_L2s30300_r01_PolB_130225030150.h5 -->
+    	<constructor-arg index="0"><value>acos_L2s_(\d{6}).*\.h5</value></constructor-arg>
+    	<constructor-arg index="1"><list><value>yymmdd</value></list></constructor-arg>
+    	<property name="types">
+    		<list><value>File</value></list>
+    	</property>
+    </bean>
+	
+</beans>

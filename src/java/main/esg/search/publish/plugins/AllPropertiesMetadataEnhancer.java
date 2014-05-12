@@ -49,7 +49,7 @@ public class AllPropertiesMetadataEnhancer extends BaseMetadataEnhancerImpl {
     public void enhance(String name, List<String> values, Record record) {
                 
         // loop over properties
-        for(String key : properties.stringPropertyNames()) {
+        for (String key : properties.stringPropertyNames()) {
             String value = properties.getProperty(key);
             record.addField(key, value);
           }

@@ -53,14 +53,6 @@
     	<property name="type" value="File"/>
     </bean>
     
-    <!-- FIXME: ACOS specific -->
-    <bean class="esg.search.publish.plugins.AllPropertiesMetadataEnhancer" id="propsMetadataEnhancer">
-    	<constructor-arg index="0"><value>/esg/config/acos.properties</value></constructor-arg>
-    	<property name="types">
-    		<list><value>Dataset</value><value>File</value></list>
-    	</property>
-    </bean>
-    
     <!-- Full map of metadata enhancers 
     <util:map id="metadataEnhancers" map-class="java.util.LinkedHashMap"  value-type="esg.search.publish.plugins.MetadataEnhancer">
 		<entry key="type" value-ref="typeMetadataEnhancer"/>
