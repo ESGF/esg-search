@@ -306,9 +306,9 @@ add_shard() {
     local target_index_search_port=8983
     if [ "${config_type%:*}" != "master" ] && [ "${config_type%:*}" != "slave" ]; then
         if grep -q ${config_type%:*} ${esgf_shards_config_file} ; then
-            local answer="n"
+            local answer="y"
             echo " A replica shard entry for ${config_type%:*} is already present!"
-            read -p " Are you sure you wish to add a NEW replica index for ${config_type%:*}? [y/N] " answer
+            read -p " Are you sure you wish to add a NEW replica index for ${config_type%:*}? [Y/n] " answer
             [ -z "${answer}" ] || [ "$(tr A-Z a-z <<< ${answer})" = "n" ] && return 1
         fi
         if ! curl -f -s -m 5 http://${config_type%:*}:${target_index_search_port}/solr >& /dev/null ; then
