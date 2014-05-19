@@ -17,10 +17,14 @@
     		<list><value>Dataset</value><value>File</value></list>
     	</property>
     </bean>
-    <bean class="esg.search.publish.plugins.AcosFilenameMetadataEnhancer" id="acosFilenameMetadataEnhancer">
-    	<!-- acos_L2s_130101_01_Production_v150151_L2s30300_r01_PolB_130225030150.h5 -->
-    	<constructor-arg index="0"><value>acos_L2s_(\d{6}).*\.h5</value></constructor-arg>
-    	<constructor-arg index="1"><list><value>yymmdd</value></list></constructor-arg>
+    
+    <bean class="esg.search.publish.plugins.FileDownloadHdfMetadataEnhancer" id="hdfMetadataEnhancer">
+    	<constructor-arg index="0" value="/tmp/hdflog.txt"/>
+    	<property name="latitude" value="/SoundingGeometry/sounding_latitude"/>
+    	<property name="longitude" value="/SoundingGeometry/sounding_longitude"/>
+    	<property name="time" value="/RetrievalHeader/sounding_time_tai93"/>
+    	<property name="timeOffset" value="1993-01-01T00:00:00Z"/>
+    	<property name="outputDir" value="/usr/local/co2/data/ACOS/3.3"/>
     	<property name="types">
     		<list><value>File</value></list>
     	</property>

@@ -6,10 +6,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import ucar.ma2.Array;
 import ucar.ma2.IndexIterator;
@@ -17,13 +13,16 @@ import ucar.nc2.Group;
 import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import esg.search.core.Record;
+import esg.search.publish.impl.FileLogger;
+import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
+import esg.search.utils.DateUtils;
 
 /**
  * Super-class that parses an HDF file to harvest searchable metadata.
  * Concrete sub-classes must define specific methods for opening the HDF data stream.
  * 
- * @author cinquini
+ * @author Luca Cinquini
  *
  */
 public abstract class HdfMetadataEnhancer extends BaseMetadataEnhancerImpl {
@@ -35,19 +34,14 @@ public abstract class HdfMetadataEnhancer extends BaseMetadataEnhancerImpl {
 	private String longitude = null;
 	private String time = null;
 	
-	// start of TAI date/times
-	private final static String TAI_START = "1993-01-01T00:00:00Z";
-	private DateTime taiDateTimeUtcGmt;
-	DateTimeFormatter formatter;
-		
-	public HdfMetadataEnhancer() {
-		
-		// initialize TAI
-	    DateTimeZone timeZone = DateTimeZone.forID( "Zulu" );
-	    DateTime dateTimeStart = new DateTime( TAI_START, timeZone );
-	    taiDateTimeUtcGmt = dateTimeStart.withZone( DateTimeZone.UTC );
-	    formatter = DateTimeFormat.forPattern( SolrXmlPars.SOLR_DATE_FORMAT ).withZone( timeZone );
-
+	// example: TAI date-time start: "1993-01-01T00:00:00Z"
+	private String timeOffset = "1970-01-01T00:00:00Z"; // defaults to Unix Epoch
+	
+	// keeps track of URL access success/error
+	private FileLogger logger = null;
+			
+	public HdfMetadataEnhancer(String logFilePath) throws Exception {
+		 logger = new FileLogger(logFilePath);
 	}
 	
 	/**
@@ -64,26 +58,53 @@ public abstract class HdfMetadataEnhancer extends BaseMetadataEnhancerImpl {
 	 * @param ncfile
 	 */
 	protected abstract void close(NetcdfFile ncfile);
+	
+	/**
+	 * Selects the appropriate URL for access from the record list.
+	 * 
+	 * @param record
+	 * @return
+	 */
+	protected abstract String selectUrl(Record record);
+	
+	/** 
+	 * Superclass method that selects the URL of a given type from the record list.
+	 * 
+	 * @param record
+	 * @return
+	 */
+	protected String selectUrl(String serviceType, Record record) {
+		
+        // loop over record access URLs
+		// example: http://aurapar1.ecs.nasa.gov/opendap/hyrax/GOSAT_TANSO_Level2/ACOS_L2S.3.3/2013/001/acos_L2s_130101_04_Production_v150151_L2s30300_r01_PolB_130225024220.h5|application/x-hdf|HTTPServer
+		// example: http://aurapar1.ecs.nasa.gov/opendap/hyrax/GOSAT_TANSO_Level2/ACOS_L2S.3.3/2013/001/acos_L2s_130101_04_Production_v150151_L2s30300_r01_PolB_130225024220.h5.html|application/opendap-html|OPENDAP
+        for (String url : record.getFieldValues(QueryParameters.FIELD_URL)) {	
+        	
+        	String[] parts = url.split("\\|");	
+        	if (parts[2].equals(serviceType)) return parts[0];
+
+        }
+        
+        return null;
+		
+	}
 
 	@Override
 	public void enhance(String name, List<String> values, Record record) {
 		
-		// FIXME: use record URL instead
-		//String url = "http://aurapar1.ecs.nasa.gov/opendap/hyrax/GOSAT_TANSO_Level2/ACOS_L2S.3.3/2013/001/acos_L2s_130101_07_Production_v150151_L2s30300_r01_PolB_130225032330.h5.ddx";
-		//String url = "/Users/cinquini/tmp/acos_L2s_130101_40_Production_v150151_L2s30300_r01_PolB_130225035247.h5";
-		String url = "http://aurapar1.ecs.nasa.gov/opendap/GOSAT_TANSO_Level2/ACOS_L2S.3.3/2013/001/acos_L2s_130101_40_Production_v150151_L2s30300_r01_PolB_130225035247.h5";
-		//String url = "/Users/cinquini/tmp/acos_L2s_130101_01_Production_v150151_L2s30300_r01_PolB_130225030150.h5";
-		//String url = "http://acdisc.gsfc.nasa.gov/opendap/Aqua_AIRS_Level3/AIRX3STM.005/2004/AIRS.2004.03.01.L3.RetStd031.v5.0.14.0.G07270011247.hdf";
 		
 		NetcdfFile ncfile = null;
+		String url = this.selectUrl(record);
 		try {
 			ncfile = this.open(url);
 			if (ncfile!=null) {
 			    if (LOG.isTraceEnabled()) LOG.trace("Processing URL: "+url);
 			    process(ncfile, record);
+			    logger.afterCrawlingSuccess(url);
 			}
 		} catch (Exception e) {
 			LOG.warn(e.getMessage());
+			logger.afterCrawlingError(url);
 		} finally {
 			this.close(ncfile);
 		}
@@ -135,25 +156,16 @@ public abstract class HdfMetadataEnhancer extends BaseMetadataEnhancerImpl {
 			Double[] timeBounds = this.parseCoordinate(ncfile, this.time);
 			if (!timeBounds[0].isNaN()) {	
 				  double secs = timeBounds[0];
-				  record.setField(SolrXmlPars.FIELD_DATETIME_START, formatTai(secs));
+				  record.setField(SolrXmlPars.FIELD_DATETIME_START, DateUtils.toSolrDateTimeFormat(timeOffset, secs));
 			}
 			if (!timeBounds[1].isNaN()) {	
 				  double secs = timeBounds[1];
-				  record.setField(SolrXmlPars.FIELD_DATETIME_STOP, formatTai(secs));
+				  record.setField(SolrXmlPars.FIELD_DATETIME_STOP, DateUtils.toSolrDateTimeFormat(timeOffset, secs));
 			}
 		}
 		
 	}
-	
-	private String formatTai(double seconds) {
-	      
-		DateTime dt = taiDateTimeUtcGmt.plusSeconds( (int)seconds );
-	    String iso8601String = dt.toString();
-	    if (LOG.isDebugEnabled()) LOG.debug("TAI datetime="+iso8601String);
-	    return this.formatter.print(dt);
-	      
-	}
-	
+		
 	private Double[] parseCoordinate(NetcdfFile ncfile, String varName) {
 				
 		Double[] minmax = new Double[]{ Double.NaN, Double.NaN };
@@ -191,6 +203,10 @@ public abstract class HdfMetadataEnhancer extends BaseMetadataEnhancerImpl {
 
 	public void setTime(String time) {
 		this.time = time;
+	}
+	
+	public void settimeOffset(String timeOffset) {
+		this.timeOffset = timeOffset;
 	}
 
 }
