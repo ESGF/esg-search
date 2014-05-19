@@ -177,8 +177,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    }
 
 		// debug
-		if (LOG.isDebugEnabled()) {
-    		for (final Record rec : records) LOG.debug(rec);
+		if (LOG.isTraceEnabled()) {
+    		for (final Record rec : records) LOG.trace(rec);
 	    }
 		
 		return records;
