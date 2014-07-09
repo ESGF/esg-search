@@ -110,6 +110,15 @@ public class RecordImpl implements Record, Serializable {
 	public Map<String, List<String>> getFields() {
 		return Collections.unmodifiableMap(fields);
 	}
+    /**
+	 * {@inheritDoc}
+	 */
+	public void deleteField(String name) {
+		if (fields.containsKey(name)) {
+			fields.remove(name);
+		}
+	}
+	
 	
 	/**
      * {@inheritDoc}

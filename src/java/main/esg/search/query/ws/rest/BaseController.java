@@ -193,9 +193,16 @@ public class BaseController {
               
                 // MULTI-VALUED CONSTRAINTS (parse all HTTP parameter values)
                 // &facet1=value1&facet1=value2
+                // OR:
+                // &facets1=value1,value2,...
                 } else {
                     final String[] parValues = request.getParameterValues(parName);
-                    for (final String parValue : parValues) command.addConstraint(parName, parValue);
+                    for (final String parValue : parValues) {
+                    	String[] _parValues = parValue.split("\\s*,\\s*");
+                    	for (String _parValue : _parValues) {
+                    		command.addConstraint(parName, _parValue);
+                    	}
+                    }
                 }
                 
             }

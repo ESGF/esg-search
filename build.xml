@@ -904,7 +904,7 @@ Builds the project via ant (obviously).
   	<echo message="Cloning esgf-artifacts repository (approx. 2mn after initialization)" />
   	<git command="clone" dir="${ivy.esgf-repo-local.default.root.dir}" >
   		<args>
-  			<arg value="git@github.com:ESGF/esgf-artifacts.git" />
+  			<arg value="https://github.com/ESGF/esgf-artifacts.git" />
   		</args>
   	</git>
   	<git command="pull" />

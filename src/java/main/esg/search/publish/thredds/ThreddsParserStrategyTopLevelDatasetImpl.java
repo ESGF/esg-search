@@ -44,6 +44,7 @@ import esg.search.core.RecordImpl;
 import esg.search.publish.impl.PublishingServiceMain;
 import esg.search.publish.plugins.MetadataEnhancer;
 import esg.search.publish.thredds.parsers.AccessParser;
+import esg.search.publish.thredds.parsers.DataSizeParser;
 import esg.search.publish.thredds.parsers.DatasetSummary;
 import esg.search.publish.thredds.parsers.DocumentationParser;
 import esg.search.publish.thredds.parsers.MetadataGroupParser;
@@ -77,7 +78,6 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	
 	/**
 	 * Optional map of metadata enhancers.
-	 * For performance, each metadata enhancer is triggered by a single field, the map key.
 	 */
 	private Map<String, MetadataEnhancer> metadataEnhancers = new LinkedHashMap<String, MetadataEnhancer>();
 		
@@ -90,6 +90,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    parsers.add( new MetadataGroupParser() );
 	    parsers.add( new PropertiesParser() );
 	    parsers.add( new VariablesParser() );
+	    parsers.add( new DataSizeParser() );
 	    	    	    
 	}
 	
@@ -144,9 +145,9 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 		parseSubDatasets(dataset, latest, isReplica, records, hostName, schema, ds, catalogRefs);
 		
 		// set total size of dataset, number of files, number of aggregations
-		record.addField(QueryParameters.FIELD_SIZE, Long.toString(ds.size));
-		record.addField(QueryParameters.FIELD_NUMBER_OF_FILES, Long.toString(ds.numberOfFiles));
-		record.addField(QueryParameters.FIELD_NUMBER_OF_AGGREGATIONS, Long.toString(ds.numberOfAggregations));
+		record.setField(QueryParameters.FIELD_SIZE, Long.toString(ds.size));
+		record.setField(QueryParameters.FIELD_NUMBER_OF_FILES, Long.toString(ds.numberOfFiles));
+		record.setField(QueryParameters.FIELD_NUMBER_OF_AGGREGATIONS, Long.toString(ds.numberOfAggregations));
 		
 		// set geospatial and temporal coverage
 		if (ds.dateRange!=null) {
@@ -176,8 +177,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    }
 
 		// debug
-		if (LOG.isDebugEnabled()) {
-    		for (final Record rec : records) LOG.debug(rec);
+		if (LOG.isTraceEnabled()) {
+    		for (final Record rec : records) LOG.trace(rec);
 	    }
 		
 		return records;
@@ -379,8 +380,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	    
 	    // retrieve dataset ID from THREDDS catalog...
 	    // <dataset name="...." ID="..." restrictAccess="...">
-        // FIXME
-	    String id = dataset.getID().replaceAll("/", "."); // FIXME: replace '/' in identifiers ?
+	    String id = dataset.getID().replaceAll("/", "."); // replace '/' in identifiers
+	    if (id.startsWith(".")) id = id.substring(1);     // do not let id start with '.'
         //String id = dataset.getID();
         
         // ...or assign random UUID if dataset id was not found
@@ -419,17 +420,16 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	 * @param record
 	 */
 	private void enhanceMetadata(final Record record) {
-        
-        final Map<String, List<String>> fields = record.getFields();
-        for (final String field : new ArrayList<String>(fields.keySet())) {
-            // note: retrieve bean by adopted naming convention
-            String key = field + "MetadataEnhancer";
-            if (metadataEnhancers.containsKey(key)) {
-                final MetadataEnhancer me = metadataEnhancers.get(key);
-                if (me.forType(record.getType())) {
-                    me.enhance(field, record.getFieldValues(field), record);
-                }
-            }
+               
+        // loop over metadata enhancers
+        for (final MetadataEnhancer me: metadataEnhancers.values()) {
+        	
+        	// apply selectively depending of field name and record type
+        	String fieldName = me.forField();
+        	if (record.getFields().containsKey(fieldName) && me.forType(record.getType())) {
+        		me.enhance(fieldName, record.getFieldValues(fieldName), record);
+        	}
+        	
         }
         
 	}
