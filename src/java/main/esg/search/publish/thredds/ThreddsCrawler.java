@@ -202,7 +202,8 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
         // only publish/unpublish if it has associated files, aggregations or URLs (except for the THREDDS catalog URL)
         // -) one top-level dataset + files or aggregations
         // -) or, one or more access URLs besides THREDDS
-        if ( (records.size()>1) || (drecord.getFieldValues(QueryParameters.FIELD_URL).size()>1) ) {
+        // FIXME ? records.size() > 1
+        if ( (records.size()>0) || (drecord.getFieldValues(QueryParameters.FIELD_URL).size()>1) ) {
         
             // publish
             if (publish) {

@@ -226,9 +226,9 @@ get_certificates() {
     [[ -z $force && "$(find $ESG_CERT_DIR -type d -mtime -1 2>/dev/null)" ]] && return 0
     echo -n "Retrieving Federation Certificates..." >&2
     
-    if ! wget https://raw.github.com/ESGF/esgf-dist/master/installer/certs/esg_trusted_certificates.tar -O - -q | tar x -C $ESG_HOME; then
+    if ! wget --no-check-certificate https://raw.githubusercontent.com/ESGF/esgf-dist/master/installer/certs/esg_trusted_certificates.tar -O - -q | tar x -C $ESG_HOME; then
         #certificates tarred into esg_trusted_certificates. (if it breaks, let the user know why
-        wget https://raw.github.com/ESGF/esgf-dist/master/installer/certs/esg_trusted_certificates.tar
+        wget --no-check-certificate https://raw.githubusercontent.com/ESGF/esgf-dist/master/installer/certs/esg_trusted_certificates.tar
         echo "Could't update certs!" >&2
         return 1
     else
@@ -247,9 +247,9 @@ get_truststore() {
     [[ -z $force && "$(find $TRUSTSTORE -type f -mtime -1 2>/dev/null)" ]] && return 0
     echo -n "Retrieving Federation Truststore..." >&2
     
-    if ! wget https://raw.github.com/ESGF/esgf-dist/master/installer/certs/esg-truststore.ts -O $TRUSTSTORE -q ; then
+    if ! wget --no-check-certificate https://raw.githubusercontent.com/ESGF/esgf-dist/master/installer/certs/esg-truststore.ts -O $TRUSTSTORE -q ; then
         #certificates tarred into esg_trusted_certificates. (if it breaks, let the user know why
-        wget https://raw.github.com/ESGF/esgf-dist/master/installer/certs/esg-truststore.ts -O $TRUSTSTORE
+        wget --no-check-certificate https://raw.githubusercontent.com/ESGF/esgf-dist/master/installer/certs/esg-truststore.ts -O $TRUSTSTORE
         echo "Could't update truststore!" >&2
         return 1
     else
@@ -271,7 +271,7 @@ get_credentials() {
     if [[ -z "$(find $MYPROXY_GETCERT -type f -mtime -1 2>/dev/null)" ]]; then
         echo -n "(Downloading $MYPROXY_GETCERT... "
         mkdir -p $(dirname $MYPROXY_GETCERT)
-        if wget -q https://raw.github.com/ESGF/esgf-dist/master/installer/certs/getcert.jar -O $MYPROXY_GETCERT;then
+        if wget -q --no-check-certificate https://raw.githubusercontent.com/ESGF/esgf-dist/master/installer/certs/getcert.jar -O $MYPROXY_GETCERT;then
             echo 'done)'
             touch $MYPROXY_GETCERT
         else
@@ -376,7 +376,7 @@ find_credentials() {
     #some wget version complain if there's no file present
     [[ -f $COOKIE_JAR ]] || touch $COOKIE_JAR
 
-    PKI_WGET_OPTS="$PKI_WGET_OPTS --certificate=$ESG_CERT --private-key=$ESG_KEY --save-cookies=$COOKIE_JAR --load-cookies=$COOKIE_JAR"
+    PKI_WGET_OPTS="$PKI_WGET_OPTS --certificate=$ESG_CERT --private-key=$ESG_KEY --save-cookies=$COOKIE_JAR --load-cookies=$COOKIE_JAR --ca-certificate=$ESG_CERT"
 
 }
 

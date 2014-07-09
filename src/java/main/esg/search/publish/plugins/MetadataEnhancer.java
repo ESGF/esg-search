@@ -22,6 +22,13 @@ public interface MetadataEnhancer {
     void enhance(String name, List<String> values, Record record);
     
     /**
+     * Method to retrieve the named metadata field this enhancer applies.
+     * @param fieldName
+     * @return
+     */
+    String forField();
+    
+    /**
      * Method to determine if these metadata enhancements should be applied to the given record type.
      * @return
      */

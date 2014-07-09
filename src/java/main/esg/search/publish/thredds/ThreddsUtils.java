@@ -30,11 +30,14 @@ public class ThreddsUtils {
             return true;
         } 
         
-        // 2nd criteria: URL ending in .nc
+        // 2nd criteria: URL ending in .nc, .h5, .hdf, .he5
         // <dataset name="uas_ARMBE_ARM_Oklahoma_v1p1_19930101-20081231.nc" ID="ARMBE/armbe/ARMBE_Northward_Near_Surface_Wind_data/uas_ARMBE_ARM_Oklahoma_v1p1_19930101-20081231.nc" 
         //          urlPath="ARM/armbe/ARMBE_Northward_Near_Surface_Wind_data/uas_ARMBE_ARM_Oklahoma_v1p1_19930101-20081231.nc">
         for (final InvAccess access : dataset.getAccess()) {
-            if (access.getUrlPath().endsWith(".nc")) return true;
+            if (   access.getUrlPath().endsWith(".nc")
+            	|| access.getUrlPath().endsWith(".h5")
+            	|| access.getUrlPath().endsWith(".hdf")
+            	|| access.getUrlPath().endsWith(".he5")) return true;
         }
         
         // not a file
