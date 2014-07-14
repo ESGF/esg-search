@@ -111,7 +111,7 @@ public class ThreddsPars {
         </xsd:union>
       </xsd:simpleType>
 	 */
-	public final static String SERVICE_TYPE_CATALOG = "Catalog";
+	public final static String SERVICE_TYPE_CATALOG = "THREDDS";
 	public final static String SERVICE_TYPE_HTTP = "HTTPServer";
 	public final static String SERVICE_TYPE_OPENDAP = "OpenDAP";
 	public final static String SERVICE_TYPE_LAS = "LAS";
