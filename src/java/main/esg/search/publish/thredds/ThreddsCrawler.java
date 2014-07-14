@@ -168,7 +168,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
                         LOG.info("Catalog "+catalogRef.toString()+" matches filter regular expression, proceeding with publishing/unpubishing of records");
                     try {
                         crawl(catalogRef, filter, recursive, callback, publish, schema);
-                        LOG.debug("Waiting "+this.waitTimeInSeconds+" before crawling...");
+                        LOG.debug("Waiting "+this.waitTimeInSeconds+" seconds before crawling...");
                         Thread.sleep(waitTimeInSeconds);
                     } catch(Exception e) {
                         // print error from nested invocation
