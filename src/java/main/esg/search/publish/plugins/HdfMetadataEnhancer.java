@@ -164,6 +164,9 @@ public abstract class HdfMetadataEnhancer extends BaseMetadataEnhancerImpl {
 			}
 		}
 		
+		// file data format
+		record.setField(SolrXmlPars.FIELD_DATA_FORMAT, "HDF");
+		
 	}
 		
 	private Double[] parseCoordinate(NetcdfFile ncfile, String varName) {

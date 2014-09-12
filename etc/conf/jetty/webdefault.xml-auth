@@ -428,6 +428,34 @@
       <role-name>publisher</role-name>
     </auth-constraint>
   </security-constraint>
+  
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>ESGF Solr</web-resource-name>
+      <url-pattern>/aggregations/admin/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>admin</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>ESGF Solr</web-resource-name>
+      <url-pattern>/aggregations/update/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>publisher</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <security-constraint>
+    <web-resource-collection>
+      <web-resource-name>ESGF Solr</web-resource-name>
+      <url-pattern>/aggregations/delete/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>publisher</role-name>
+    </auth-constraint>
+  </security-constraint>
 
   <login-config>
     <auth-method>DIGEST</auth-method>

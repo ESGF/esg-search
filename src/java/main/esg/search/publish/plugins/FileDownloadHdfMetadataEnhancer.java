@@ -20,7 +20,7 @@ import esg.search.publish.thredds.ThreddsPars;
 import esg.search.query.api.QueryParameters;
 
 /**
- * HDF parser that download the file to a local cache 
+ * HDF parser that downloads the file to a local cache 
  * before parsing its content for metadata.
  * 
  * @author cinquini
