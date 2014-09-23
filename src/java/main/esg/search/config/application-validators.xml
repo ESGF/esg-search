@@ -14,7 +14,8 @@
 				<entry key="esgf"><value>esgf-publisher-resources/schema/esgf.xml</value></entry>
 				<entry key="geo"><value>esgf-publisher-resources/schema/geo.xml</value></entry>
 				<entry key="cmip5"><value>esgf-publisher-resources/schema/cmip5.xml</value></entry>
-				<entry key="obs4mips"><value>esgf-publisher-resources/schema/cmip5.xml</value></entry>
+				<entry key="obs4mips"><value>esgf-publisher-resources/schema/obs4mips.xml</value></entry>
+				<entry key="cmac"><value>esgf-publisher-resources/schema/obs4mips.xml</value></entry>
 			</map>
     	</constructor-arg>
     	<constructor-arg index="1"><ref bean="esgfProperties" /></constructor-arg>
