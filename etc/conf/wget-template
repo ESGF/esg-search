@@ -449,12 +449,13 @@ download_using_cookies()
   command="wget $wget_args $data"
   http_resp=$(eval $command  2>&1) 
     
-    
+  #Extract orp service from url ?  
   #Evaluate response.
-  if ( echo "$http_resp" | grep -q " 302 " )  
+  redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+  if ( (( "$redirects" == 1 )) && ( echo "$http_resp" | grep -q "/esg-orp/" ) )  
   then
-   urls=$(echo $http_resp | egrep -o 'https?://[^ ]+'| cut -d'/' -f 3)
-   orp_service=$(echo $urls | cut -d' ' -f 3)
+   urls=$(echo "$http_resp" | egrep -o 'https?://[^ ]+' | cut -d'/' -f 3)
+   orp_service=$(echo "$urls" | tr '\n' ' ' | cut -d' ' -f 3)
    if [ -n "$orp_service" ] 
    then
     orp_service_found=1
@@ -466,19 +467,23 @@ download_using_cookies()
   fi
  
   #If redirected to orp service send the openid. 
-  if [[ orp_service_found -eq 1 ]]
+  if (( "$orp_service_found" == 1 ))
   then
 
    
    #Download data using either basic auth or login form
-   if [[ $openid_c == *esgf-idp/openid/ ]]
+   if [[ "$openid_c" == *esgf-idp/openid/ ]]
    then
     download_data_open_id
    else
     download_data_cl_id
    fi
-  else
-   if ( ( echo "$http_resp" | grep -q "401 Unauthorized" ) || ( echo "$http_resp" | grep -q "403: Forbidden" ) ||  ( echo "$http_resp" | grep -q "Connection timed out." ) )
+  else  
+   if (   ( echo "$http_resp" | grep -q "401 Unauthorized" ) \
+       || ( echo "$http_resp" | grep -q "403: Forbidden" ) \
+       || ( echo "$http_resp" | grep -q "Connection timed out." ) \
+       || ( echo "$http_resp" | grep -q "no-check-certificate" ) \
+      )
    then 
     echo "ERROR : http request to orp service did not send."
     failed=1
@@ -496,11 +501,13 @@ download_data_cl_id()
   #Execution of command.
   http_resp=$(eval $command  2>&1)
    
+  #Extract orp service from openid ?
   #Evaluate response.
-  if (  ( echo "$http_resp" | grep -q " 302 " ) && ( echo "$http_resp" | grep -q "login.htm" ) )  
+  redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+  if ( (( redirects == 2  )) && ( echo "$http_resp" | grep -q "login.htm" ) )  
   then
-   urls=$(echo $http_resp | egrep -o 'https?://[^ ]+' | cut -d'/' -f 3)
-   idp_service=$(echo $urls | cut -d' ' -f 2) 
+   urls=$(echo "$http_resp" | egrep -o 'https?://[^ ]+' | cut -d'/' -f 3)
+   idp_service=$(echo "$urls"  | tr '\n' ' ' | cut -d' ' -f 2) 
    if [[ -n "$idp_service" ]] 
    then
     idp_service_found=1
@@ -512,7 +519,7 @@ download_data_cl_id()
   fi
 
   #If redirected to idp service send the credentials.
-  if [[ idp_service_found -eq 1 ]]   
+  if (( "$idp_service_found" == 1 ))   
   then
             
    command="wget --post-data  \"password=$password_c\" $wget_args -O $filename https://$idp_service/esgf-idp/idp/login.htm"
@@ -520,10 +527,15 @@ download_data_cl_id()
    #Execution of command.
    http_resp=$(eval $command  2>&1)
           
-   if ( ( echo "$http_resp" | grep -q "text/html" ) || ( echo "$http_resp" | grep -q "403: Forbidden" ) )  
+   
+   redirects=$(echo "$http_resp" | egrep -c ' 302 ') 
+   if (   (( "$redirects" != 5 )) \
+       || ( echo "$http_resp" | grep -q "text/html" ) \
+       || ( echo "$http_resp" | grep -q "403: Forbidden" ) \
+      )  
    then 
     failed=1;
-    rm $filename  
+    rm "$filename"  
    fi
  
   else
@@ -542,34 +554,16 @@ download_data_open_id()
   
   #Execution of command.
   http_resp=$(eval $command  2>&1)
-  
-  redirects=$(echo $http_resp | egrep -o ' 302 ')
-  
-  #Last redirect indicating that file has been reached.
-  file_downloaded=$(echo $redirects | cut -d' ' -f 7) 
-         
-    
+
   #Evaluate response.
-  if ( echo "$http_resp" | grep -q "text/html" )  
+  redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+  if ( (( "$redirects" != 7 )) || ( echo "$http_resp" | grep -q "text/html" ) )  
   then
-   idp_service_found=0
-  else
-   idp_service_found=1
-  fi  
-    
-  if [[ -z "$file_downloaded" ]] 
-  then
-   idp_service_found=0
-  else
-   idp_service_found=1     
-  fi  
-      
-       
-  if [[ $idp_service_found -ne 1 ]] 
-  then 
    failed=1;
-   rm $filename        
-  fi
+   rm "$filename"
+  fi  
+
+  
 }
 
 
@@ -741,9 +735,17 @@ then
  fi
   
  read -p    "Enter your openid : " openid_c
- read -p    "Enter username (if not supplied within openid) : " username_c
- read -s -p "Enter password : " password_c
- echo -e "\n"
+  
+ if [[ "$openid_c" == *esgf-idp/openid/ ]]
+ then
+  read -p    "Enter username : " username_c
+  read -s -p "Enter password : " password_c
+  echo -e "\n" 
+ else
+  read -s -p "Enter password : " password_c
+  echo -e "\n"
+ fi 
+  
 fi 
 
 
