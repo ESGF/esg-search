@@ -495,7 +495,7 @@ download_using_cookies()
 download_data_cl_id()
 {
   #Http request for senting openid to the orp service.
-  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\"  $wget_args  https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
+  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\"  $wget_args -O- https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
 
  
   #Execution of command.
@@ -762,14 +762,9 @@ dedup_cache_
 #Clean up temp data.
 if ((use_cks))
 then 
- if [ -f "j_spring_openid_security_check.htm" ] 
- then
-  rm j_spring_openid_security_check.htm
- fi
-
  if [ -d $COOKIES_FOLDER ] 
-  then
-   rm -rf $COOKIES_FOLDER
+ then
+  rm -rf $COOKIES_FOLDER
  fi
 fi
 
