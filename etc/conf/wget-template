@@ -723,15 +723,15 @@ if ((use_http_sec))
 then 
      
  if (( ! insecure))
-  then 
-   get_certificates
+ then 
+  get_certificates
  fi
 
  #Create cookies folder.
  COOKIES_FOLDER="$ESG_HOME/wget_cookies"
  if [[ ! -d $COOKIES_FOLDER ]] 
-  then
-   mkdir $COOKIES_FOLDER
+ then
+  mkdir $COOKIES_FOLDER
  fi
   
  read -p    "Enter your openid : " openid_c
