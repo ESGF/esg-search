@@ -456,21 +456,9 @@ download_http_sec()
   then
    urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
    orp_service=$(echo "$urls" | tr '\n' ' ' | cut -d' ' -f 3)
-   if [ -n "$orp_service" ] 
-   then
-    orp_service_found=1
-   else
-    orp_service_found=0
-   fi
-  else
-   orp_service_found=0
-  fi
- 
-  #If redirected to orp service send the openid. 
-  if (( "$orp_service_found" == 1 ))
-  then
-
    
+
+
    #Download data using either http basic auth or http login form.
    if [[ "$openid_c" == *esgf-idp/openid/ ]]
    then
@@ -502,28 +490,16 @@ download_http_sec_cl_id()
   http_resp=$(eval $command  2>&1)
    
   #Extract orp service from openid ?
-  #Evaluate response.
+  #If redirected to idp service send the credentials.
   redirects=$(echo "$http_resp" | egrep -c ' 302 ')
   if ( (( redirects == 2  )) && ( echo "$http_resp" | grep -q "login.htm" ) )  
-  then
+  then 
+  
    urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
    idp_service=$(echo "$urls"  | tr '\n' ' ' | cut -d' ' -f 2) 
-   if [[ -n "$idp_service" ]] 
-   then
-    idp_service_found=1
-   else
-    idp_service_found=0
-   fi
-  else
-   idp_service_found=0
-  fi
-
-  #If redirected to idp service send the credentials.
-  if (( "$idp_service_found" == 1 ))   
-  then
-            
+               
    command="wget --post-data  \"password=$password_c\" $wget_args -O $filename https://$idp_service/esgf-idp/idp/login.htm"
-              
+          
    #Execution of command.
    http_resp=$(eval $command  2>&1)
           
