@@ -42,6 +42,9 @@ COOKIE_JAR=$ESG_HOME/cookies
 MYPROXY_GETCERT=$ESG_HOME/getcert.jar
 CERT_EXPIRATION_WARNING=$((60 * 60 * 8))   #Eight hour (in seconds)
 
+WGET_TRUSTED_CERTIFICATES=$ESG_HOME/certificates
+
+
 # Configure checking of server SSL certificates.
 #   Disabling server certificate checking can resolve problems with myproxy
 #   servers being out of sync with datanodes.
@@ -127,7 +130,7 @@ debug=0
 clean_work=1
 
 #parse flags
-while getopts ':c:pfF:o:w:isuUndvqh' OPT; do
+while getopts ':c:pfF:o:w:isuUndvqhC' OPT; do
     case $OPT in
         c) ESG_CREDENTIALS="$OPTARG";;  #<cert> : use this certificate for authentication.
         p) clean_work=0;;               #       : preserve data that failed checksum
@@ -143,7 +146,8 @@ while getopts ':c:pfF:o:w:isuUndvqh' OPT; do
         d) verbose=1;debug=1;;          #       : display debug information
         v) verbose=1;;                  #       : be more verbose
         q) quiet=1;;                    #       : be less verbose
-        h) usage && exit 0;;            #       : displays this help
+        C) skip_security=1 && use_http_sec=1;; #       : Use basic http auth or http post to authenticate with idp service.
+        h) usage && exit 0;;           #       : displays this help
         \?) echo "Unknown option '$OPTARG'" >&2 && usage && exit 1;;
         \:) echo "Missing parameter for flag '$OPTARG'" >&2 && usage && exit 1;;
     esac
@@ -425,6 +429,127 @@ remove_from_cache() {
     unset cached
 }
 
+#Download data from node using cookies and not certificates.
+download_http_sec()
+{
+  #The data to be downloaded.
+  data=" $url"
+  filename="$file"  
+
+  #Wget args.
+  if ((insecure)) 
+  then
+   wget_args=" --no-check-certificate --cookies=on --keep-session-cookies --save-cookies $COOKIES_FOLDER/wcookies.txt --load-cookies $COOKIES_FOLDER/wcookies.txt " 
+  else
+   wget_args=" --ca-directory=$WGET_TRUSTED_CERTIFICATES --cookies=on --keep-session-cookies --save-cookies $COOKIES_FOLDER/wcookies.txt --load-cookies $COOKIES_FOLDER/wcookies.txt "  
+  fi 
+   
+ 
+  #Try to download the data. 
+  command="wget $wget_args $data"
+  http_resp=$(eval $command  2>&1) 
+  cmd_exit_status="$?"
+    
+  #Extract orp service from url ?  
+  #Evaluate response.
+  redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+  if (    (( "$redirects" == 1 )) && ( echo "$http_resp" | grep -q "/esg-orp/" )  \
+       && (( $cmd_exit_status == 6 )) \
+     )      
+  then
+   urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
+   orp_service=$(echo "$urls" | tr '\n' ' ' | cut -d' ' -f 3)
+   
+
+
+   #Download data using either http basic auth or http login form.
+   if [[ "$openid_c" == *esgf-idp/openid/ ]]
+   then
+    download_http_sec_open_id
+   else
+    download_http_sec_cl_id
+   fi
+  else  
+   if (   ( echo "$http_resp" | grep -q "401 Unauthorized" ) \
+       || ( echo "$http_resp" | grep -q "403: Forbidden" ) \
+       || ( echo "$http_resp" | grep -q "Connection timed out." ) \
+       || ( echo "$http_resp" | grep -q "no-check-certificate" ) \
+       || ( (( $cmd_exit_status != 0 )) ) \
+      )
+   then 
+    echo "ERROR : http request to orp service did not send."
+    failed=1
+   fi
+  fi
+}
+
+#Function for downloading data using the claimed id.
+download_http_sec_cl_id()
+{
+  #Http request for sending openid to the orp service.
+  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\"  $wget_args -O- https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
+
+ 
+  #Execution of command.
+  http_resp=$(eval $command  2>&1)
+  cmd_exit_status="$?"
+   
+  #Extract orp service from openid ?
+  #Evaluate response.If redirected to idp service send the credentials.
+  redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+  if ( (( redirects == 2  )) && ( echo "$http_resp" | grep -q "login.htm" ) && (( cmd_exit_status == 0 )) )  
+  then 
+  
+   urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
+   idp_service=$(echo "$urls"  | tr '\n' ' ' | cut -d' ' -f 2) 
+               
+   command="wget --post-data  \"password=$password_c\" $wget_args -O $filename https://$idp_service/esgf-idp/idp/login.htm"
+          
+   #Execution of command.
+   http_resp=$(eval $command  2>&1)
+   cmd_exit_status="$?"
+   
+   redirects=$(echo "$http_resp" | egrep -c ' 302 ') 
+   if (   (( "$redirects" != 5 )) \
+       || ( echo "$http_resp" | grep -q "text/html" ) \
+       || ( echo "$http_resp" | grep -q "403: Forbidden" ) \
+       || (( cmd_exit_status != 0 ))
+      )  
+   then 
+    failed=1;
+    rm "$filename"  
+   fi
+ 
+  else
+   echo "ERROR : http request to idp service did not send."
+   failed=1
+  fi #if redirected to idp.  
+}
+
+
+
+download_http_sec_open_id()
+{
+  #Http request for sending openid to the orp web service.
+  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\"  --header=\"Agent-type:cl\" --http-user=$username_c --http-password=$password_c    $wget_args  -O $filename https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
+
+  
+  #Execution of command.
+  http_resp=$(eval $command  2>&1)
+  cmd_exit_status="$?"
+
+  #Evaluate response.
+  redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+  if ( (( "$redirects" != 7 )) || ( echo "$http_resp" | grep -q "text/html" ) ||  (( $cmd_exit_status != 0 )) )  
+  then
+   failed=1;
+   rm "$filename"
+  fi  
+
+  
+}
+
+
 download() {
     wget="wget ${insecure:+--no-check-certificate} ${quiet:+-q} ${quiet:--v} -c $PKI_WGET_OPTS"
     
@@ -473,7 +598,16 @@ download() {
                 #No status will be stored
                 break
             else
-                $wget -O "$file" $url || { failed=1; break; }
+                if ((use_http_sec))
+                then
+                 download_http_sec $openid_c $password_c $file $url 
+                 if ((failed))
+                 then
+                  break
+                 fi
+                else
+                 $wget -O "$file" $url || { failed=1; break; }  
+                fi                
             fi
 
             #check if file is there
@@ -567,6 +701,37 @@ sleep 1
 
 check_os
 ((!skip_security)) && find_credentials
+
+if ((use_http_sec))
+then 
+     
+ if (( ! insecure))
+ then 
+  get_certificates
+ fi
+
+ #Create cookies folder.
+ COOKIES_FOLDER="$ESG_HOME/wget_cookies"
+ if [[ ! -d $COOKIES_FOLDER ]] 
+ then
+  mkdir $COOKIES_FOLDER
+ fi
+  
+ read -p    "Enter your openid : " openid_c
+  
+ if [[ "$openid_c" == *esgf-idp/openid/ ]]
+ then
+  read -p    "Enter username : " username_c
+  read -s -p "Enter password : " password_c
+  echo -e "\n" 
+ else
+  read -s -p "Enter password : " password_c
+  echo -e "\n"
+ fi 
+  
+fi 
+
+
 #do we have old results? Create the file if not
 [ ! -f $CACHE_FILE ] && echo "#filename mtime checksum" > $CACHE_FILE && chmod 666 $CACHE_FILE
 
@@ -576,4 +741,14 @@ unset force
 download
 
 dedup_cache_
+
+#Clean up temp data.
+if ((use_http_sec))
+then 
+ if [ -d $COOKIES_FOLDER ] 
+ then
+  rm -rf $COOKIES_FOLDER
+ fi
+fi
+
 echo "done"
