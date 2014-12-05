@@ -458,7 +458,7 @@ download_http_sec()
      )      
   then
    urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
-   orp_service=$(echo "$urls" | tr '\n' ' ' | cut -d' ' -f 3)
+   orp_service=$(echo "$urls" | tr '\n' ' ' | cut -d' ' -f 2)
    
 
 
