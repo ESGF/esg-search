@@ -503,7 +503,7 @@ download_http_sec_cl_id()
    urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
    idp_service=$(echo "$urls"  | tr '\n' ' ' | cut -d' ' -f 2) 
                
-   command="wget --post-data  \"password=$password_c\" $wget_args -O $filename https://$idp_service/esgf-idp/idp/login.htm"
+   command="wget --post-data  password=\"$password_c\" $wget_args -O $filename https://$idp_service/esgf-idp/idp/login.htm"
           
    #Execution of command.
    http_resp=$(eval $command  2>&1)
@@ -531,9 +531,8 @@ download_http_sec_cl_id()
 download_http_sec_open_id()
 {
   #Http request for sending openid to the orp web service.
-  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\"  --header=\"Agent-type:cl\" --http-user=$username_c --http-password=$password_c    $wget_args  -O $filename https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
+  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\"  --header=\"Agent-type:cl\" --http-user=\"$username_c\" --http-password=\"$password_c\"    $wget_args  -O $filename https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
 
-  
   #Execution of command.
   http_resp=$(eval $command  2>&1)
   cmd_exit_status="$?"
