@@ -1229,10 +1229,21 @@ stop_solr() {
         solr_init ${1}
         echo -n "Stopping Solr for ${solr_config_type} on port [${solr_server_port}]"
         local pid=`lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
-        [ -n "${pid}" ] && kill -9 $pid
-        check_solr_process
-        [ $? != 0 ] && echo " [OK]" || echo " [FAIL]"
-        shift
+        if [ -n "${pid}" ]
+	then
+	    kill $pid
+	    sleep 1
+            check_solr_process
+            if [ $? != 0 ]
+	    then
+		echo " [OK]"
+	    else
+		echo " [FAIL]"
+		echo -n "Graceful stop failed, force killing"
+		kill -9 $pid  
+	    fi
+	fi
+	shift
     done
 }
 
