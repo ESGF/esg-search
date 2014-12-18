@@ -255,7 +255,7 @@ public class SolrUrlBuilder {
 		}
 		
 	    // if no text constraint -> use '*'
-        if (qs.isEmpty()) qs.add(URLEncoder.encode("*", "UTF-8"));      
+        if (qs.isEmpty()) qs.add(URLEncoder.encode("*:*", "UTF-8"));      
         
         // &facet.field=...&facet.field=...
         if (this.facets!=null) {

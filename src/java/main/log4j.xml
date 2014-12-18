@@ -28,8 +28,15 @@
 		</layout>
 	</appender>
 
+	<appender name="search_log" class="org.apache.log4j.RollingFileAppender">
+	  <param name="File" value="${catalina.base}/logs/esgf-search.log"/>
+	  <layout class="org.apache.log4j.PatternLayout">
+	    <!-- TODO: add datetime? -->
+	    <param name="conversionPattern" value="%d [%p] %C: %m %n"/>
+	  </layout>
+	</appender>
 	<logger name="esg" additivity="false">
-		<level value="DEBUG" />
+		<level value="INFO" />
 		<appender-ref ref="stdout" />
 	</logger>
 	
@@ -40,7 +47,12 @@
 	
 	<logger name="org.apache.solr" additivity="false">
 		<level value="INFO" />
-		<appender-ref ref="stdout" />
+		<appender-ref ref="search_log" />
 	</logger>
+	<logger name="esg.search" addiitivity="false">
+	  <level value="INFO" />
+	  <appender-ref ref="search_log" />
+	</logger>
+
 
 </log4j:configuration>

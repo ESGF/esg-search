@@ -10,12 +10,12 @@
     <!-- Log4j configuration -->
     <context-param>
 		<param-name>log4jConfigLocation</param-name>
-		<param-value>classpath:log4j.xml</param-value>
+		<param-value>/WEB-INF/classes/log4j.xml</param-value>
 	</context-param>
-	<context-param>
-		<param-name>log4jExposeWebAppRoot</param-name>
-		<param-value>true</param-value>
-	</context-param>
+        <context-param>
+                <param-name>webAppRootKey</param-name>
+                <param-value>esg-search.root</param-value>
+        </context-param>
 	
     <!-- Spring Security filter chain -->
 	<filter>
@@ -83,6 +83,10 @@
 		<param-value>classpath:esg/search/config/web-application-context.xml</param-value>
 	</context-param>
 	
+	<!-- Listener that allows Log4J configuration from the specified context parameter -->
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
 	<!-- Listener that loads the Spring web application context 
 	(from the specified value of contextConfigLocation) -->
 	<listener>

@@ -22,6 +22,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -42,15 +43,25 @@ public class HttpClient {
 	 * @throws IOException
 	 */
 	public String doGet(final URL url) throws IOException {
-						
-		// prepare HTTP request
-		final URLConnection connection = url.openConnection();	
-		if (connectionTimeout!=0) connection.setConnectTimeout(connectionTimeout);
-		if (readTimeout!=0) connection.setReadTimeout(readTimeout);
-		connection.setUseCaches(false);
-				
-	    // execute HTTP request
-	    return getResponse(connection);
+		
+		HttpURLConnection connection = null;
+		try {
+
+			// prepare HTTP request
+			connection = (HttpURLConnection)url.openConnection();
+			if (connectionTimeout!=0) connection.setConnectTimeout(connectionTimeout);
+			if (readTimeout!=0) connection.setReadTimeout(readTimeout);
+			connection.setUseCaches(false);
+
+			// execute HTTP request
+			String response = getResponse(connection);
+			return response;
+
+		} finally {
+		    if (connection != null) {
+		    	connection.disconnect();
+		    }
+		}
 		
 	}
 	
@@ -64,28 +75,40 @@ public class HttpClient {
 	 */
 	public String doPost(final URL url, final String data, boolean xml) throws IOException {
 		
-		// prepare HTTP request
-	    final URLConnection connection = url.openConnection();
-	    connection.setUseCaches(false);
-	    connection.setDoOutput(true); // POST method
-	    if (connectionTimeout!=0) connection.setConnectTimeout(connectionTimeout);
-	    if (readTimeout!=0) connection.setReadTimeout(readTimeout);
-	    if (xml) connection.setRequestProperty("Content-Type", "text/xml");
-	    connection.setRequestProperty("Charset", "utf-8");
-	    
-	    // preemptive authentication
-	    //final String userpassword = "<username>" + ":" + "<password>";   
-	    //final byte[] authEncBytes = Base64.encodeBase64(userpassword.getBytes());
-		//final String authStringEnc = new String(authEncBytes);
-	    //connection.setRequestProperty("Authorization", "Basic "+ authStringEnc );   
-	    	    
-	    final OutputStreamWriter wr = new OutputStreamWriter(connection.getOutputStream());
-	    wr.write(data);
-	    wr.flush();
-	    wr.close();
+		HttpURLConnection connection = null;
+		OutputStreamWriter wr = null;
+		
+		try {
 
-	    // execute HTTP request
-	    return getResponse(connection);
+		    // prepare HTTP request
+			connection = (HttpURLConnection)url.openConnection();
+		    connection.setUseCaches(false);
+		    connection.setDoOutput(true); // POST method
+		    if (connectionTimeout!=0) connection.setConnectTimeout(connectionTimeout);
+		    if (readTimeout!=0) connection.setReadTimeout(readTimeout);
+		    if (xml) connection.setRequestProperty("Content-Type", "text/xml");
+		    connection.setRequestProperty("Charset", "utf-8");
+		    
+		    // send HTTP request
+		    wr = new OutputStreamWriter(connection.getOutputStream());
+		    wr.write(data);
+		    wr.flush();
+
+		    // receive HTTP response
+		    String response = getResponse(connection);
+		    return response;
+
+		} finally {		
+		    if (wr != null) {
+		        try {
+		            wr.close();
+		        } catch (IOException e) {
+		        }
+		    }
+		    if (connection != null) {
+		    	connection.disconnect();
+		    }
+		}
 		
 	}
 	
@@ -97,14 +120,28 @@ public class HttpClient {
 	 */
 	private String getResponse(final URLConnection connection) throws IOException {
 		
-	    final BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-	    final StringBuilder sb = new StringBuilder();
-	    String line = null;
-	    while ((line = rd.readLine()) != null) {
-	    	sb.append(line + "\n");
+	    BufferedReader rd = null;
+	    
+	    try {
+	    	
+	    	rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		    final StringBuilder sb = new StringBuilder();
+		    String line = null;
+		    while ((line = rd.readLine()) != null) {
+		    	sb.append(line + "\n");
+		    }
+		    return sb.toString();
+	    
+	    } finally {
+	    	
+	    	if (rd != null) {
+	    		try {
+	    			rd.close();
+	    		} catch(Exception e) {
+	    		}
+	    	}
+	    	
 	    }
-	    rd.close();
-	    return sb.toString();
 	    
 	}
 	
