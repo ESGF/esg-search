@@ -108,6 +108,6 @@
 	<classpathentry kind="lib" path="lib/fetched/opendap-2.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.3.9.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.7.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.5.1.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
