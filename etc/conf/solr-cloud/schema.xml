@@ -200,10 +200,10 @@
    <!-- catch-all field, containing all other searchable text fields
         (implemented via copyField further on in this schema).
         Not stored since it's never presented to the user.  -->
-   <field name="text" type="text_general" indexed="true" stored="false" multiValued="false"/>
+   <field name="text" type="text_general" indexed="true" stored="false" multiValued="true"/>
 
    <!-- catch-all text field that indexes tokens both normally and in reverse for efficient leading wildcard queries. -->
-   <field name="text_rev" type="text_general_rev" indexed="true" stored="false" multiValued="false"/>
+   <field name="text_rev" type="text_general_rev" indexed="true" stored="false" multiValued="true"/>
 
    <!-- uncomment the following to ignore any fields that don't already match an existing
         field name or dynamic field, rather than reporting them as an error.
