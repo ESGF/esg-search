@@ -450,7 +450,7 @@ download_http_sec()
   http_resp=$(eval $command  2>&1) 
   cmd_exit_status="$?"
     
-  #Extract orp service from url ?  
+  #Extract orp service from url ?
   #Evaluate response.
   redirects=$(echo "$http_resp" | egrep -c ' 302 ')
   if (    (( "$redirects" == 1 )) && ( echo "$http_resp" | grep -q "/esg-orp/" )  \
@@ -463,7 +463,7 @@ download_http_sec()
 
 
    #Download data using either http basic auth or http login form.
-   if [[ "$openid_c" == *esgf-idp/openid/ ]]
+   if [[ "$openid_c" == */openid/ ]]
    then
     download_http_sec_open_id
    else
@@ -496,8 +496,9 @@ download_http_sec_cl_id()
    
   #Extract orp service from openid ?
   #Evaluate response.If redirected to idp service send the credentials.
-  redirects=$(echo "$http_resp" | egrep -c ' 302 ')
-  if ( (( redirects == 2  )) && ( echo "$http_resp" | grep -q "login.htm" ) && (( cmd_exit_status == 0 )) )  
+  #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+  #(( redirects == 2  )) && 
+  if ( ( echo "$http_resp" | grep -q "login.htm" ) && (( cmd_exit_status == 0 )) )  
   then 
   
    urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
@@ -509,9 +510,11 @@ download_http_sec_cl_id()
    http_resp=$(eval $command  2>&1)
    cmd_exit_status="$?"
    
-   redirects=$(echo "$http_resp" | egrep -c ' 302 ') 
-   if (   (( "$redirects" != 5 )) \
-       || ( echo "$http_resp" | grep -q "text/html" ) \
+   #Evaluate response. 
+   #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+   #(( "$redirects" != 5 )) \ 
+   if (   
+          ( echo "$http_resp" | grep -q "text/html" ) \
        || ( echo "$http_resp" | grep -q "403: Forbidden" ) \
        || (( cmd_exit_status != 0 ))
       )  
@@ -531,19 +534,20 @@ download_http_sec_cl_id()
 download_http_sec_open_id()
 {
   #Http request for sending openid to the orp web service.
-  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\"  --header=\"Agent-type:cl\" --http-user=\"$username_c\" --http-password=\"$password_c\"    $wget_args  -O $filename https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
+  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\" --header=\"esgf-idea-agent-type:basic_auth\" --http-user=\"$username_c\" --http-password=\"$password_c\"    $wget_args  -O $filename https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
 
   #Execution of command.
   http_resp=$(eval $command  2>&1)
   cmd_exit_status="$?"
 
   #Evaluate response.
-  redirects=$(echo "$http_resp" | egrep -c ' 302 ')
-  if ( (( "$redirects" != 7 )) || ( echo "$http_resp" | grep -q "text/html" ) ||  (( $cmd_exit_status != 0 )) )  
+  #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+  #(( "$redirects" != 7 )) ||
+  if (( echo "$http_resp" | grep -q "text/html" ) ||  (( $cmd_exit_status != 0 )) )  
   then
    failed=1;
    rm "$filename"
-  fi  
+  fi 
 
   
 }
@@ -718,7 +722,7 @@ then
   
  read -p    "Enter your openid : " openid_c
   
- if [[ "$openid_c" == *esgf-idp/openid/ ]]
+ if [[ "$openid_c" == */openid/ ]]
  then
   read -p    "Enter username : " username_c
   read -s -p "Enter password : " password_c
