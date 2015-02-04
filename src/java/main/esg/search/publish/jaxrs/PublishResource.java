@@ -124,7 +124,13 @@ public class PublishResource {
             // validate record
             List<String> errors = new ArrayList<String>();
             validator.validate(obj, errors);            
-            if (LOG.isDebugEnabled()) LOG.debug("Number of errors="+errors.size());
+            if (LOG.isDebugEnabled()) {
+            	LOG.debug("Number of errors="+errors.size());
+            	for (String error : errors) {
+            		LOG.debug("Error: "+ error);
+            	}
+            }
+            
             if (!errors.isEmpty()) {
                 throw newWebApplicationException(errors, Response.Status.BAD_REQUEST);
             }
