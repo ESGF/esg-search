@@ -117,7 +117,7 @@ check_commands() {
 }
 
 usage() {
-    echo "Usage: $(basename $0) [flags]"
+    echo "Usage: $(basename $0) [flags] [openid] [username]"
     echo "Flags is one of:"
     sed -n '/^while getopts/,/^done/  s/^\([^)]*\)[^#]*#\(.*$\)/\1 \2/p' $0
     echo
@@ -130,7 +130,7 @@ debug=0
 clean_work=1
 
 #parse flags
-while getopts ':c:pfF:o:w:isuUndvqhC' OPT; do
+while getopts ':c:pfF:o:w:isuUndvqhHI:' OPT; do
     case $OPT in
         c) ESG_CREDENTIALS="$OPTARG";;  #<cert> : use this certificate for authentication.
         p) clean_work=0;;               #       : preserve data that failed checksum
@@ -146,8 +146,9 @@ while getopts ':c:pfF:o:w:isuUndvqhC' OPT; do
         d) verbose=1;debug=1;;          #       : display debug information
         v) verbose=1;;                  #       : be more verbose
         q) quiet=1;;                    #       : be less verbose
-        C) skip_security=1 && use_http_sec=1;; #       : Use basic http auth or http post to authenticate with idp service.
-        h) usage && exit 0;;           #       : displays this help
+        H) skip_security=1 && use_http_sec=1;; #       : Authenticate with OpenID (username,) and password, without the need for a certificate.
+        I) username_supplied="$OPTARG";;    #<user_id> : Explicitly set user ID.  By default, the user ID is extracted from the last component of the OpenID URL.  Use this flag to override this behaviour.                   
+        h) usage && exit 0;;            #       : displays this help
         \?) echo "Unknown option '$OPTARG'" >&2 && usage && exit 1;;
         \:) echo "Missing parameter for flag '$OPTARG'" >&2 && usage && exit 1;;
     esac
@@ -450,24 +451,33 @@ download_http_sec()
   http_resp=$(eval $command  2>&1) 
   cmd_exit_status="$?"
     
+
+    #Debug message.
+  if  ((debug))
+  then
+   echo -e "Executing:\n"
+   echo -e "wget $wget_args $data\n"
+  fi
+
+
   #Extract orp service from url ?
   #Evaluate response.
-  redirects=$(echo "$http_resp" | egrep -c ' 302 ')
-  if (    (( "$redirects" == 1 )) && ( echo "$http_resp" | grep -q "/esg-orp/" )  \
+  #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+  #(( "$redirects" == 1 )) && 
+  if (    ( echo "$http_resp" | grep -q "/esg-orp/" )  \
        && (( $cmd_exit_status == 6 )) \
      )      
   then
    urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
    orp_service=$(echo "$urls" | tr '\n' ' ' | cut -d' ' -f 2)
-   
 
 
    #Download data using either http basic auth or http login form.
-   if [[ "$openid_c" == */openid/ ]]
+   if [[ "$openid_c" == */openid/  || "$openid_c" == */openid ]]
    then
     download_http_sec_open_id
    else
-    download_http_sec_cl_id
+    decide_openid_service
    fi
   else  
    if (   ( echo "$http_resp" | grep -q "401 Unauthorized" ) \
@@ -483,13 +493,78 @@ download_http_sec()
   fi
 }
 
+
+#Function that decides which implementaion of idp to use.
+decide_openid_service()
+{
+  #find claimed id
+
+  pos=$(echo "$openid_c" | egrep -o '/' | wc -l)
+  username_c=$(echo "$openid_c"  | cut -d'/' -f "$(($pos + 1))")
+  esgf_uri=$(echo "$openid_c" | egrep -o '/esgf-idp/openid/')
+
+  #Debug message.
+  if  ((debug_duc))
+  then
+   echo -e "Username extracted from openid:\n"
+   echo -e "$username_c\n"
+  fi
+
+  host=$(echo "$openid_c"  | cut -d'/' -f 3)
+  #test ceda first.
+
+  if [ -z "$esgf_uri" ]
+  then
+   openid_c_tmp="https://""$host""/openid/"
+  else
+   openid_c_tmp="https://""$host""/esgf-idp/openid/" 
+  fi
+
+  command="wget "$openid_c_tmp" --no-check-certificate -O-"
+  
+  #Debug message.
+  if  ((debug_duc))
+  then
+   echo -e "Executing:\n"
+   echo -e "$command\n"
+  fi
+
+  #Execution of command.
+  http_resp=$(eval $command  2>&1)
+  cmd_exit_status="$?"
+
+  if (    ( echo "$http_resp" | grep -q "[application/xrds+xml]" ) \
+       && ( echo "$http_resp" | grep -q "200 OK" ) \
+       && (( cmd_exit_status == 0 ))
+      )  
+  then
+   openid_c=$openid_c_tmp
+   download_http_sec_open_id
+  else
+   if [[ -z "$esgf_uri" ]]
+   then
+    echo "ERROR : http request to orp service did not send."
+    failed=1
+   else
+   download_http_sec_cl_id
+   fi
+  fi
+}
+
 #Function for downloading data using the claimed id.
 download_http_sec_cl_id()
 {
   #Http request for sending openid to the orp service.
   command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\"  $wget_args -O- https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
 
- 
+  #Debug message.
+  if  ((debug))
+  then
+   echo -e "Executing:\n"
+   echo -e "wget $command\n"
+  fi  
+
+
   #Execution of command.
   http_resp=$(eval $command  2>&1)
   cmd_exit_status="$?"
@@ -505,7 +580,15 @@ download_http_sec_cl_id()
    idp_service=$(echo "$urls"  | tr '\n' ' ' | cut -d' ' -f 2) 
                
    command="wget --post-data  password=\"$password_c\" $wget_args -O $filename https://$idp_service/esgf-idp/idp/login.htm"
-          
+   
+
+   #Debug message.
+   if  ((debug))
+   then
+    echo -e "Executing:\n"
+    echo -e "wget $command\n"
+   fi 
+
    #Execution of command.
    http_resp=$(eval $command  2>&1)
    cmd_exit_status="$?"
@@ -535,6 +618,15 @@ download_http_sec_open_id()
 {
   #Http request for sending openid to the orp web service.
   command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\" --header=\"esgf-idea-agent-type:basic_auth\" --http-user=\"$username_c\" --http-password=\"$password_c\"    $wget_args  -O $filename https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
+
+
+
+  #Debug message.
+  if  ((debug))
+  then
+   echo -e "Executing:\n"
+   echo -e "wget $command\n"
+  fi 
 
   #Execution of command.
   http_resp=$(eval $command  2>&1)
@@ -719,20 +811,38 @@ then
  then
   mkdir $COOKIES_FOLDER
  fi
-  
- read -p    "Enter your openid : " openid_c
-  
- if [[ "$openid_c" == */openid/ ]]
+ 
+ #Read openid.
+ if [[ ! -z "$openId" ]]
+ then
+  openid_c="$openId"
+ elif ( (("$#" > 1)) || (("$#" == 1)) ) 
+ then
+  openid_c=$1
+ else
+  read -p    "Enter your openid : " openid_c
+ fi
+ 
+ 
+ 
+
+ #Read username.
+ if [[ ! -z "$username_supplied" ]]
+ then
+  username_c="$username_supplied"
+ elif (("$#" == 2))
+  then
+   username_c=$2
+ elif [[ "$openid_c" == */openid/ || "$openid_c" == */openid ]]
  then
   read -p    "Enter username : " username_c
-  read -s -p "Enter password : " password_c
-  echo -e "\n" 
- else
-  read -s -p "Enter password : " password_c
-  echo -e "\n"
- fi 
-  
-fi 
+ fi  
+   
+ 
+ #Read password.
+ read -s -p "Enter password : " password_c
+ echo -e "\n" 
+fi  
 
 
 #do we have old results? Create the file if not
@@ -745,13 +855,5 @@ download
 
 dedup_cache_
 
-#Clean up temp data.
-if ((use_http_sec))
-then 
- if [ -d $COOKIES_FOLDER ] 
- then
-  rm -rf $COOKIES_FOLDER
- fi
-fi
 
 echo "done"
