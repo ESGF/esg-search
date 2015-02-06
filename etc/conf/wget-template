@@ -132,22 +132,22 @@ clean_work=1
 #parse flags
 while getopts ':c:pfF:o:w:isuUndvqhHI:' OPT; do
     case $OPT in
+        H) skip_security=1 && use_http_sec=1;; #       : Authenticate with OpenID (username,) and password, without the need for a certificate.
         c) ESG_CREDENTIALS="$OPTARG";;  #<cert> : use this certificate for authentication.
-        p) clean_work=0;;               #       : preserve data that failed checksum
-        f) force=1;;                    #       : force certificate retrieval (defaults to only once per day)
+        f) force=1;;                    #       : force certificate retrieval (defaults to only once per day); for certificate-less authentication (see -H option), this flag will force login and refresh cookies.
         F) input_file="$OPTARG";;       #<file> : read input from file instead of the embedded one (use - to read from stdin)
         o) openId="$OPTARG";;           #<openid>: Provide OpenID instead of interactively asking for it.
+        I) username_supplied="$OPTARG";;    #<user_id> : Explicitly set user ID.  By default, the user ID is extracted from the last component of the OpenID URL.  Use this flag to override this behaviour.                   
         w) output="$OPTARG";;           #<file> : Write embedded files into a file and exit
         i) insecure=1;;                 #       : set insecure mode, i.e. don't check server certificate
-        s) skip_security=1;;            #       : completely skip security. It will only work if the accessd data is not secured at all.
+        s) skip_security=1 && uschba=1;;            #       : completely skip security. It will only work if the accessd data is not secured at all. – works only if the accessed data is unsecured or a certificate exists or cookies are saved (latter applies to -H option only).
         u) update=1;;                   #       : Issue the search again and see if something has changed.
         U) update_files=1;;             #       : Update files from server overwriting local ones (detect with -u)
         n) dry_run=1;;                  #       : Don't download any files, just report.
+        p) clean_work=0;;               #       : preserve data that failed checksum
         d) verbose=1;debug=1;;          #       : display debug information
         v) verbose=1;;                  #       : be more verbose
         q) quiet=1;;                    #       : be less verbose
-        H) skip_security=1 && use_http_sec=1;; #       : Authenticate with OpenID (username,) and password, without the need for a certificate.
-        I) username_supplied="$OPTARG";;    #<user_id> : Explicitly set user ID.  By default, the user ID is extracted from the last component of the OpenID URL.  Use this flag to override this behaviour.                   
         h) usage && exit 0;;            #       : displays this help
         \?) echo "Unknown option '$OPTARG'" >&2 && usage && exit 1;;
         \:) echo "Missing parameter for flag '$OPTARG'" >&2 && usage && exit 1;;
@@ -440,9 +440,9 @@ download_http_sec()
   #Wget args.
   if ((insecure)) 
   then
-   wget_args=" --no-check-certificate --cookies=on --keep-session-cookies --save-cookies $COOKIES_FOLDER/wcookies.txt --load-cookies $COOKIES_FOLDER/wcookies.txt " 
+   wget_args=" --no-check-certificate --cookies=on --keep-session-cookies --save-cookies $COOKIES_FOLDER/wcookies.txt --load-cookies $COOKIES_FOLDER/wcookies.txt ${quiet:+-q} ${quiet:--v} " 
   else
-   wget_args=" --ca-directory=$WGET_TRUSTED_CERTIFICATES --cookies=on --keep-session-cookies --save-cookies $COOKIES_FOLDER/wcookies.txt --load-cookies $COOKIES_FOLDER/wcookies.txt "  
+   wget_args=" --ca-directory=$WGET_TRUSTED_CERTIFICATES --cookies=on --keep-session-cookies --save-cookies $COOKIES_FOLDER/wcookies.txt --load-cookies $COOKIES_FOLDER/wcookies.txt ${quiet:+-q} ${quiet:--v} "  
   fi 
    
  
@@ -562,7 +562,7 @@ download_http_sec_cl_id()
   then
    echo -e "Executing:\n"
    echo -e "wget $command\n"
-  fi  
+  fi 
 
 
   #Execution of command.
@@ -774,6 +774,12 @@ dedup_cache_() {
 #
 # MAIN
 #
+
+if [[ -z "$use_http_sec"  ]]
+then 
+ echo -e "*** Please also try the -H option for authentication without the use of client certificate. ***\n"
+fi
+
 echo "Running $(basename $0) version: $version"
 ((verbose)) && echo "we use other tools in here, don't try to user their proposed 'options' directly"
 echo "Use $(basename $0) -h for help."$'\n'
@@ -805,6 +811,15 @@ then
   get_certificates
  fi
 
+ 
+ if (( force ))
+ then
+  if [ -d $COOKIES_FOLDER ] 
+  then
+   rm -rf $COOKIES_FOLDER
+  fi
+ fi
+
  #Create cookies folder.
  COOKIES_FOLDER="$ESG_HOME/wget_cookies"
  if [[ ! -d $COOKIES_FOLDER ]] 
@@ -824,25 +839,25 @@ then
  fi
  
  
- 
-
- #Read username.
- if [[ ! -z "$username_supplied" ]]
- then
-  username_c="$username_supplied"
- elif (("$#" == 2))
+ if((!uschba))
+ then 
+  #Read username.
+  if [[ ! -z "$username_supplied" ]]
+  then
+   username_c="$username_supplied"
+  elif (("$#" == 2))
   then
    username_c=$2
- elif [[ "$openid_c" == */openid/ || "$openid_c" == */openid ]]
- then
-  read -p    "Enter username : " username_c
- fi  
-   
- 
- #Read password.
- read -s -p "Enter password : " password_c
- echo -e "\n" 
-fi  
+  elif [[ "$openid_c" == */openid/ || "$openid_c" == */openid ]]
+  then
+   read -p    "Enter username : " username_c
+  fi
+  
+  #Read password.
+  read -s -p "Enter password : " password_c
+  echo -e "\n"
+ fi #use cookies
+fi #use_http_sec 
 
 
 #do we have old results? Create the file if not
