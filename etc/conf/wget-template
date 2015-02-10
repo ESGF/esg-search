@@ -780,13 +780,30 @@ dedup_cache_() {
     ((debug)) && echo "(cache dedup'ed)"
 }
 
+http_basic_auth_func_info_message()
+{
+  echo  "********************************************************************************"
+  echo  "*                                                                              *"
+  echo  "* Note that new functionality to allow authentication without the need for     *"
+  echo  "* certificates is available with this version of the wget script.  To enable,  *"
+  echo  "* use the \"-H\" option and enter your OpenID and password when prompted:        *"
+  echo  "*                                                                              *"
+  echo  "* $ wget-xxxxxxxxxxxxxx.sh -H [options...]                                     *"
+  echo  "*                                                                              *"
+  echo  "* For a full description of the available options use the help option:         *"
+  echo  "*                                                                              *"
+  echo  "* $ wget-xxxxxxxxxxxxxx.sh -h                                                  *"
+  echo  "*                                                                              *"
+  echo  "********************************************************************************"
+}
+
 #
 # MAIN
 #
 
 if [[ -z "$use_http_sec"  ]]
 then 
- echo -e "*** Please also try the -H option for authentication without the use of client certificate. ***\n"
+ http_basic_auth_func_info_message
 fi
 
 echo "Running $(basename $0) version: $version"
