@@ -140,7 +140,7 @@ while getopts ':c:pfF:o:w:isuUndvqhHI:' OPT; do
         I) username_supplied="$OPTARG";;    #<user_id> : Explicitly set user ID.  By default, the user ID is extracted from the last component of the OpenID URL.  Use this flag to override this behaviour.                   
         w) output="$OPTARG";;           #<file> : Write embedded files into a file and exit
         i) insecure=1;;                 #       : set insecure mode, i.e. don't check server certificate
-        s) skip_security=1 && uschba_start=1;;            #       : completely skip security. It will only work if the accessd data is not secured at all. – works only if the accessed data is unsecured or a certificate exists or cookies are saved (latter applies to -H option only).
+        s) skip_security=1 && use_cookies_for_http_basic_auth_start=1;;            #       : completely skip security. It will only work if the accessed data is not secured at all. -- works only if the accessed data is unsecured or a certificate exists or cookies are saved (latter applies to -H option only).
         u) update=1;;                   #       : Issue the search again and see if something has changed.
         U) update_files=1;;             #       : Update files from server overwriting local ones (detect with -u)
         n) dry_run=1;;                  #       : Don't download any files, just report.
@@ -445,13 +445,13 @@ download_http_sec()
    wget_args=" --ca-directory=$WGET_TRUSTED_CERTIFICATES --cookies=on --keep-session-cookies --save-cookies $COOKIES_FOLDER/wcookies.txt "  
   fi 
 
-  if ((uschba_start)) || ((uschba))
+  if ((use_cookies_for_http_basic_auth_start)) || ((use_cookies_for_http_basic_auth))
   then
    wget_args=" $wget_args"" --load-cookies $COOKIES_FOLDER/wcookies.txt"    
   fi
 
   #use cookies for the next downloads
-  uschba=1;
+  use_cookies_for_http_basic_auth=1;
    
     #Debug message.
   if  ((debug))
@@ -788,11 +788,11 @@ http_basic_auth_func_info_message()
   echo  "* certificates is available with this version of the wget script.  To enable,  *"
   echo  "* use the \"-H\" option and enter your OpenID and password when prompted:        *"
   echo  "*                                                                              *"
-  echo  "* $ wget-xxxxxxxxxxxxxx.sh -H [options...]                                     *"
+  echo  "* $ "$(basename "$0")" -H [options...]                                     *"
   echo  "*                                                                              *"
   echo  "* For a full description of the available options use the help option:         *"
   echo  "*                                                                              *"
-  echo  "* $ wget-xxxxxxxxxxxxxx.sh -h                                                  *"
+  echo  "* $ "$(basename "$0")" -h                                                  *"
   echo  "*                                                                              *"
   echo  "********************************************************************************"
 }
@@ -854,7 +854,7 @@ then
   mkdir $COOKIES_FOLDER
  fi
  
- if((! uschba_start))
+ if((! use_cookies_for_http_basic_auth_start))
  then
 
   #Read openid.
