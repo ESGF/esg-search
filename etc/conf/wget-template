@@ -799,7 +799,7 @@ http_basic_auth_func_info_message()
 # MAIN
 #
 
-if [[ -z "$use_http_sec"  ]]
+if ((!use_http_sec))
 then 
  http_basic_auth_func_info_message
 fi
