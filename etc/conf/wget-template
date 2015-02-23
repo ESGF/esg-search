@@ -516,13 +516,6 @@ decide_openid_service()
   username_c=$(echo "$openid_c"  | cut -d'/' -f "$(($pos + 1))")
   esgf_uri=$(echo "$openid_c" | egrep -o '/esgf-idp/openid/')
 
-  #Debug message.
-  if  ((debug_duc))
-  then
-   echo -e "Username extracted from openid:\n"
-   echo -e "$username_c\n"
-  fi
-
   host=$(echo "$openid_c"  | cut -d'/' -f 3)
   #test ceda first.
 
@@ -535,13 +528,6 @@ decide_openid_service()
 
   command="wget "$openid_c_tmp" --no-check-certificate -O-"
   
-  #Debug message.
-  if  ((debug_duc))
-  then
-   echo -e "Executing:\n"
-   echo -e "$command\n"
-  fi
-
   #Execution of command.
   http_resp=$(eval $command  2>&1)
   cmd_exit_status="$?"
