@@ -702,7 +702,7 @@ download() {
             else
                 if ((use_http_sec))
                 then
-                 download_http_sec $openid_c $password_c $file $url 
+                 download_http_sec
                  if ((failed))
                  then
                   break
