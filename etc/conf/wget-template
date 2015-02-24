@@ -496,8 +496,12 @@ download_http_sec()
        || ( (( $cmd_exit_status != 0 )) ) \
       )
    then 
-    echo "ERROR : http request to orp service did not send."
+    echo "ERROR : http request to OpenID Relying Party service failed."
     failed=1
+    if ((debug))
+    then
+     echo "HTTP response: $http_resp"
+    fi
    fi
   fi
 }
@@ -512,13 +516,6 @@ decide_openid_service()
   username_c=$(echo "$openid_c"  | cut -d'/' -f "$(($pos + 1))")
   esgf_uri=$(echo "$openid_c" | egrep -o '/esgf-idp/openid/')
 
-  #Debug message.
-  if  ((debug_duc))
-  then
-   echo -e "Username extracted from openid:\n"
-   echo -e "$username_c\n"
-  fi
-
   host=$(echo "$openid_c"  | cut -d'/' -f 3)
   #test ceda first.
 
@@ -531,13 +528,6 @@ decide_openid_service()
 
   command="wget "$openid_c_tmp" --no-check-certificate -O-"
   
-  #Debug message.
-  if  ((debug_duc))
-  then
-   echo -e "Executing:\n"
-   echo -e "$command\n"
-  fi
-
   #Execution of command.
   http_resp=$(eval $command  2>&1)
   cmd_exit_status="$?"
@@ -552,7 +542,11 @@ decide_openid_service()
   else
    if [[ -z "$esgf_uri" ]]
    then
-    echo "ERROR : http request to orp service did not send."
+    echo "ERROR : HTTP request to OpenID Relying Party service failed."
+    if ((debug))
+    then
+     echo "Error response: $http_resp"
+    fi
     failed=1
    else
    download_http_sec_cl_id
@@ -588,7 +582,7 @@ download_http_sec_cl_id()
    urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
    idp_service=$(echo "$urls"  | tr '\n' ' ' | cut -d' ' -f 2) 
                
-   command="wget --post-data  password=\"$password_c\" $wget_args -O $filename https://$idp_service/esgf-idp/idp/login.htm"
+   command="wget --post-data  password=\"$password_c\" $wget_args ${quiet:+-q} ${quiet:--v} -O $filename https://$idp_service/esgf-idp/idp/login.htm"
    
 
    #Debug message.
@@ -616,7 +610,11 @@ download_http_sec_cl_id()
    fi
  
   else
-   echo "ERROR : http request to idp service did not send."
+   echo "ERROR : HTTP request to OpenID Provider service failed."
+   if ((debug))
+   then
+    echo "Error response: $http_resp"
+   fi
    failed=1
   fi #if redirected to idp.  
 }
@@ -626,7 +624,7 @@ download_http_sec_cl_id()
 download_http_sec_open_id()
 {
   #Http request for sending openid to the orp web service.
-  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\" --header=\"esgf-idea-agent-type:basic_auth\" --http-user=\"$username_c\" --http-password=\"$password_c\"    $wget_args  -O $filename https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
+  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\" --header=\"esgf-idea-agent-type:basic_auth\" --http-user=\"$username_c\" --http-password=\"$password_c\"    $wget_args ${quiet:+-q} ${quiet:--v} -O $filename https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
 
 
 
@@ -704,7 +702,7 @@ download() {
             else
                 if ((use_http_sec))
                 then
-                 download_http_sec $openid_c $password_c $file $url 
+                 download_http_sec
                  if ((failed))
                  then
                   break
@@ -801,7 +799,7 @@ http_basic_auth_func_info_message()
 # MAIN
 #
 
-if [[ -z "$use_http_sec"  ]]
+if ((!use_http_sec))
 then 
  http_basic_auth_func_info_message
 fi
