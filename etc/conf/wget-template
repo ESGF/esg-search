@@ -483,9 +483,7 @@ download_http_sec()
   #Evaluate response.
   #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
   #(( "$redirects" == 1 )) && 
-  if (    ( echo "$http_resp" | grep -q "/esg-orp/" )  \
-       && (( $cmd_exit_status == 6 )) \
-     )      
+  if ( echo "$http_resp" | grep -q "/esg-orp/" )       
   then
    urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
    orp_service=$(echo "$urls" | tr '\n' ' ' | cut -d' ' -f 2)
@@ -539,8 +537,14 @@ decide_openid_service()
    openid_c_tmp="https://""$host""/esgf-idp/openid/" 
   fi
 
-  command="wget "$openid_c_tmp" --no-check-certificate -O-"
-  
+  command="wget "$openid_c_tmp" --no-check-certificate ${force_TLSv1:+--secure-protocol=TLSv1} -O-"
+        
+  if [[ ! -z "$ESGF_WGET_OPT" ]]
+  then
+   command="$command $ESGF_WGET_OPT"
+  fi  
+          
+
   #Execution of command.
   http_resp=$(eval $command  2>&1)
   cmd_exit_status="$?"
