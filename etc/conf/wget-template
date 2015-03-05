@@ -133,7 +133,7 @@ clean_work=1
 while getopts ':c:pfF:o:w:isuUndvqhHI:T' OPT; do
     case $OPT in
         H) skip_security=1 && use_http_sec=1;; #       : Authenticate with OpenID (username,) and password, without the need for a certificate.
-        T) force_TLSv1=1;;              #       : Forces wget to use TLSv1 
+        T) force_TLSv1=1;;              #       : Forces wget to use TLSv1. 
         c) ESG_CREDENTIALS="$OPTARG";;  #<cert> : use this certificate for authentication.
         f) force=1;;                    #       : force certificate retrieval (defaults to only once per day); for certificate-less authentication (see -H option), this flag will force login and refresh cookies.
         F) input_file="$OPTARG";;       #<file> : read input from file instead of the embedded one (use - to read from stdin)
