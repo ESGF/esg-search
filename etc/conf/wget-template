@@ -130,9 +130,10 @@ debug=0
 clean_work=1
 
 #parse flags
-while getopts ':c:pfF:o:w:isuUndvqhHI:' OPT; do
+while getopts ':c:pfF:o:w:isuUndvqhHI:T' OPT; do
     case $OPT in
         H) skip_security=1 && use_http_sec=1;; #       : Authenticate with OpenID (username,) and password, without the need for a certificate.
+        T) force_TLSv1=1;;              #       : Forces wget to use TLSv1 
         c) ESG_CREDENTIALS="$OPTARG";;  #<cert> : use this certificate for authentication.
         f) force=1;;                    #       : force certificate retrieval (defaults to only once per day); for certificate-less authentication (see -H option), this flag will force login and refresh cookies.
         F) input_file="$OPTARG";;       #<file> : read input from file instead of the embedded one (use - to read from stdin)
@@ -449,6 +450,18 @@ download_http_sec()
   then
    wget_args=" $wget_args"" --load-cookies $COOKIES_FOLDER/wcookies.txt"    
   fi
+  
+  if((force_TLSv1))
+  then
+   wget_args=" $wget_args"" --secure-protocol=TLSv1 "
+  fi
+  
+  
+  if [[ ! -z "$ESGF_WGET_OPT" ]]
+  then
+    wget_args="$wget_args $ESGF_WGET_OPT"
+  fi  
+  
 
   #use cookies for the next downloads
   use_cookies_for_http_basic_auth=1;
@@ -519,7 +532,7 @@ decide_openid_service()
   host=$(echo "$openid_c"  | cut -d'/' -f 3)
   #test ceda first.
 
-  if [ -z "$esgf_uri" ]
+  if [[ -z "$esgf_uri" ]]
   then
    openid_c_tmp="https://""$host""/openid/"
   else
@@ -646,6 +659,10 @@ download_http_sec_open_id()
   then
    failed=1;
    rm "$filename"
+   if ((debug))
+   then
+    echo "HTTP response: $http_resp"
+   fi
   fi 
 
   
@@ -653,7 +670,7 @@ download_http_sec_open_id()
 
 
 download() {
-    wget="wget ${insecure:+--no-check-certificate} ${quiet:+-q} ${quiet:--v} -c $PKI_WGET_OPTS"
+    wget="wget ${insecure:+--no-check-certificate} ${quiet:+-q} ${quiet:--v} -c ${force_TLSv1:+--secure-protocol=TLSv1} $PKI_WGET_OPTS"
     
     while read line
     do
