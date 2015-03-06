@@ -446,7 +446,7 @@ download_http_sec()
    wget_args=" --ca-directory=$WGET_TRUSTED_CERTIFICATES --cookies=on --keep-session-cookies --save-cookies $COOKIES_FOLDER/wcookies.txt "  
   fi 
 
-  if ((use_cookies_for_http_basic_auth_start)) || ((use_cookies_for_http_basic_auth))
+  if ((use_cookies_for_http_basic_auth_start)) || ((use_cookies_for_http_basic_auth)) 
   then
    wget_args=" $wget_args"" --load-cookies $COOKIES_FOLDER/wcookies.txt"    
   fi
@@ -483,7 +483,7 @@ download_http_sec()
   #Evaluate response.
   #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
   #(( "$redirects" == 1 )) && 
-  if ( echo "$http_resp" | grep -q "/esg-orp/" )       
+  if  echo "$http_resp" | grep -q "/esg-orp/"        
   then
    urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
    orp_service=$(echo "$urls" | tr '\n' ' ' | cut -d' ' -f 2)
@@ -500,12 +500,12 @@ download_http_sec()
     decide_openid_service
    fi
   else  
-   if (   ( echo "$http_resp" | grep -q "401 Unauthorized" ) \
-       || ( echo "$http_resp" | grep -q "403: Forbidden" ) \
-       || ( echo "$http_resp" | grep -q "Connection timed out." ) \
-       || ( echo "$http_resp" | grep -q "no-check-certificate" ) \
-       || ( (( $cmd_exit_status != 0 )) ) \
-      )
+   if      echo "$http_resp" | grep -q "401 Unauthorized"  \
+       ||  echo "$http_resp" | grep -q "403: Forbidden"  \
+       ||  echo "$http_resp" | grep -q "Connection timed out."  \
+       ||  echo "$http_resp" | grep -q "no-check-certificate"  \
+       ||  (( $cmd_exit_status != 0 ))  \
+      
    then 
     echo "ERROR : http request to OpenID Relying Party service failed."
     failed=1
@@ -549,10 +549,10 @@ decide_openid_service()
   http_resp=$(eval $command  2>&1)
   cmd_exit_status="$?"
 
-  if (    ( echo "$http_resp" | grep -q "[application/xrds+xml]" ) \
-       && ( echo "$http_resp" | grep -q "200 OK" ) \
+  if  echo "$http_resp" | grep -q "[application/xrds+xml]"  \
+       &&  echo "$http_resp" | grep -q "200 OK"  \
        && (( cmd_exit_status == 0 ))
-      )  
+       
   then
    openid_c=$openid_c_tmp
    download_http_sec_open_id
@@ -593,7 +593,7 @@ download_http_sec_cl_id()
   #Evaluate response.If redirected to idp service send the credentials.
   #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
   #(( redirects == 2  )) && 
-  if ( ( echo "$http_resp" | grep -q "login.htm" ) && (( cmd_exit_status == 0 )) )  
+  if  echo "$http_resp" | grep -q "login.htm"  && (( cmd_exit_status == 0 ))   
   then 
   
    urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
@@ -616,11 +616,10 @@ download_http_sec_cl_id()
    #Evaluate response. 
    #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
    #(( "$redirects" != 5 )) \ 
-   if (   
-          ( echo "$http_resp" | grep -q "text/html" ) \
-       || ( echo "$http_resp" | grep -q "403: Forbidden" ) \
+   if      echo "$http_resp" | grep -q "text/html"  \
+       ||  echo "$http_resp" | grep -q "403: Forbidden"  \
        || (( cmd_exit_status != 0 ))
-      )  
+        
    then 
     failed=1;
     rm "$filename"  
@@ -641,7 +640,7 @@ download_http_sec_cl_id()
 download_http_sec_open_id()
 {
   #Http request for sending openid to the orp web service.
-  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\" --header=\"esgf-idea-agent-type:basic_auth\" --http-user=\"$username_c\" --http-password=\"$password_c\"    $wget_args ${quiet:+-q} ${quiet:--v} -O $filename https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
+  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\" --header=\"esgf-idea-agent-type:basic_auth\" --http-user=\"$username_c\" --http-password=\"$password_c\"  $wget_args ${quiet:+-q} ${quiet:--v} -O $filename https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
 
 
 
@@ -659,7 +658,7 @@ download_http_sec_open_id()
   #Evaluate response.
   #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
   #(( "$redirects" != 7 )) ||
-  if ( ( echo "$http_resp" | grep -q "text/html" ) ||  (( $cmd_exit_status != 0 )) )  
+  if   echo "$http_resp" | grep -q "text/html"  ||  (( $cmd_exit_status != 0 ))   
   then
    failed=1;
    rm "$filename"
