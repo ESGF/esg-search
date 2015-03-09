@@ -500,12 +500,11 @@ download_http_sec()
     decide_openid_service
    fi
   else  
-   if      echo "$http_resp" | grep -q "401 Unauthorized"  \
-       ||  echo "$http_resp" | grep -q "403: Forbidden"  \
-       ||  echo "$http_resp" | grep -q "Connection timed out."  \
-       ||  echo "$http_resp" | grep -q "no-check-certificate"  \
-       ||  (( $cmd_exit_status != 0 ))  \
-      
+   if    echo "$http_resp" | grep -q "401 Unauthorized"  \
+      || echo "$http_resp" | grep -q "403: Forbidden"  \
+      || echo "$http_resp" | grep -q "Connection timed out."  \
+      || echo "$http_resp" | grep -q "no-check-certificate"  \
+      || (( $cmd_exit_status != 0 ))      
    then 
     echo "ERROR : http request to OpenID Relying Party service failed."
     failed=1
@@ -551,8 +550,7 @@ decide_openid_service()
 
   if  echo "$http_resp" | grep -q "[application/xrds+xml]"  \
        &&  echo "$http_resp" | grep -q "200 OK"  \
-       && (( cmd_exit_status == 0 ))
-       
+       && (( cmd_exit_status == 0 ))       
   then
    openid_c=$openid_c_tmp
    download_http_sec_open_id
@@ -616,10 +614,9 @@ download_http_sec_cl_id()
    #Evaluate response. 
    #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
    #(( "$redirects" != 5 )) \ 
-   if      echo "$http_resp" | grep -q "text/html"  \
-       ||  echo "$http_resp" | grep -q "403: Forbidden"  \
-       || (( cmd_exit_status != 0 ))
-        
+   if    echo "$http_resp" | grep -q "text/html"  \
+      || echo "$http_resp" | grep -q "403: Forbidden"  \
+      || (( cmd_exit_status != 0 ))        
    then 
     failed=1;
     rm "$filename"  
