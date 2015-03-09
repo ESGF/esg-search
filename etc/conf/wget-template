@@ -481,7 +481,7 @@ download_http_sec()
   
   if ((debug))
   then
-   echo "\nHTTP response:\n $http_resp\n"
+   echo -e "\nHTTP response:\n $http_resp\n"
   fi
       
   #Extract orp service from url ?
@@ -559,7 +559,7 @@ decide_openid_service()
   
   if ((debug))
   then
-   echo "\nHTTP response:\n $http_resp\n"
+   echo -e "\nHTTP response:\n $http_resp\n"
   fi 
   
 
@@ -605,7 +605,7 @@ download_http_sec_cl_id()
   
   if ((debug))
   then
-   echo "\nHTTP response:\n $http_resp\n"
+   echo -e "\nHTTP response:\n $http_resp\n"
   fi 
     
   
@@ -635,7 +635,7 @@ download_http_sec_cl_id()
       
    if ((debug))
    then
-    echo "\nHTTP response:\n $http_resp\n"
+    echo -e "\nHTTP response:\n $http_resp\n"
    fi 
         
    #Evaluate response. 
@@ -677,7 +677,7 @@ download_http_sec_open_id()
   
   if ((debug))
   then
-   echo "\nHTTP response:\n $http_resp\n"
+   echo -e "\nHTTP response:\n $http_resp\n"
   fi 
 
   #Evaluate response.
@@ -685,11 +685,10 @@ download_http_sec_open_id()
   #(( "$redirects" != 7 )) ||
   if   echo "$http_resp" | grep -q "text/html"  ||  (( $cmd_exit_status != 0 ))   
   then
-   failed=1;
    rm "$filename"
    
    echo -e "\nRetrying....\n"
-   #Retry in case that last redirect did not work, this happens with older version of wget
+   #Retry in case that last redirect did not work, this happens with older version of wget.
    command="wget $wget_args $data"
       
    #Debug message.
@@ -705,10 +704,21 @@ download_http_sec_open_id()
       
    if ((debug))
    then
-    echo "HTTP response: $http_resp"
+    echo -e "\nHTTP response:\n $http_resp\n"
    fi
    
-  fi 
+   if    echo "$http_resp" | grep -q "401 Unauthorized"  \
+      || echo "$http_resp" | grep -q "403: Forbidden"  \
+      || echo "$http_resp" | grep -q "Connection timed out."  \
+      || echo "$http_resp" | grep -q "no-check-certificate"  \
+      || (( $cmd_exit_status != 0 ))      
+   then 
+    echo -e "\nERROR : Retry failed.\n"
+    rm "$filename"
+    failed=1
+   fi #if retry failed.
+   
+  fi #if error during http basic authentication. 
   
 }
 
