@@ -502,7 +502,7 @@ download_http_sec()
    then
     download_http_sec_open_id
    else
-    decide_openid_service
+    download_http_sec_decide_service
    fi
   else  
    if    echo "$http_resp" | grep -q "401 Unauthorized"  \
@@ -519,7 +519,7 @@ download_http_sec()
 
 
 #Function that decides which implementaion of idp to use.
-decide_openid_service()
+download_http_sec_decide_service()
 {
   #find claimed id
 
@@ -584,6 +584,40 @@ decide_openid_service()
   fi
 }
 
+
+download_http_sec_retry()
+{
+  echo -e "\nRetrying....\n"
+  #Retry in case that last redirect did not work, this happens with older version of wget.
+  command="wget $wget_args $data"
+      
+  #Debug message.
+  if  ((debug))
+  then
+   echo -e "Executing:\n"
+   echo -e "$command\n"
+  fi   
+   
+  http_resp=$(eval $command  2>&1) 
+  cmd_exit_status="$?"
+
+  if ((debug))
+  then
+   echo -e "\nHTTP response:\n $http_resp\n"
+  fi
+   
+  if    echo "$http_resp" | grep -q "401 Unauthorized"  \
+     || echo "$http_resp" | grep -q "403: Forbidden"  \
+     || echo "$http_resp" | grep -q "Connection timed out."  \
+     || echo "$http_resp" | grep -q "no-check-certificate"  \
+     || (( $cmd_exit_status != 0 ))      
+  then 
+   echo -e "\nERROR : Retry failed.\n"
+   rm "$filename"
+   failed=1
+  fi #if retry failed.
+}
+
 #Function for downloading data using the claimed id.
 download_http_sec_cl_id()
 {
@@ -645,8 +679,8 @@ download_http_sec_cl_id()
       || echo "$http_resp" | grep -q "403: Forbidden"  \
       || (( cmd_exit_status != 0 ))        
    then 
-    failed=1;
-    rm "$filename"  
+    rm "$filename"
+    download_http_sec_retry
    fi
  
   else
@@ -686,38 +720,7 @@ download_http_sec_open_id()
   if   echo "$http_resp" | grep -q "text/html"  ||  (( $cmd_exit_status != 0 ))   
   then
    rm "$filename"
-   
-   echo -e "\nRetrying....\n"
-   #Retry in case that last redirect did not work, this happens with older version of wget.
-   command="wget $wget_args $data"
-      
-   #Debug message.
-   if  ((debug))
-   then
-    echo -e "Executing:\n"
-    echo -e "$command\n"
-   fi   
-   
-   http_resp=$(eval $command  2>&1) 
-   cmd_exit_status="$?"
-
-      
-   if ((debug))
-   then
-    echo -e "\nHTTP response:\n $http_resp\n"
-   fi
-   
-   if    echo "$http_resp" | grep -q "401 Unauthorized"  \
-      || echo "$http_resp" | grep -q "403: Forbidden"  \
-      || echo "$http_resp" | grep -q "Connection timed out."  \
-      || echo "$http_resp" | grep -q "no-check-certificate"  \
-      || (( $cmd_exit_status != 0 ))      
-   then 
-    echo -e "\nERROR : Retry failed.\n"
-    rm "$filename"
-    failed=1
-   fi #if retry failed.
-   
+   download_http_sec_retry     
   fi #if error during http basic authentication. 
   
 }
