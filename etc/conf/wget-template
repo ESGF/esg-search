@@ -466,10 +466,10 @@ download_http_sec()
   #use cookies for the next downloads
   use_cookies_for_http_basic_auth=1;
    
-    #Debug message.
+  #Debug message.
   if  ((debug))
   then
-   echo -e "Executing:\n"
+   echo -e "\nExecuting:\n"
    echo -e "wget $wget_args $data\n"
   fi
 
@@ -478,7 +478,12 @@ download_http_sec()
   command="wget $wget_args $data"
   http_resp=$(eval $command  2>&1) 
   cmd_exit_status="$?"
-    
+  
+  if ((debug))
+  then
+   echo "\nHTTP response:\n $http_resp\n"
+  fi
+      
   #Extract orp service from url ?
   #Evaluate response.
   #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
@@ -508,10 +513,6 @@ download_http_sec()
    then 
     echo "ERROR : http request to OpenID Relying Party service failed."
     failed=1
-    if ((debug))
-    then
-     echo "HTTP response: $http_resp"
-    fi
    fi
   fi
 }
@@ -543,10 +544,24 @@ decide_openid_service()
    command="$command $ESGF_WGET_OPTS"
   fi  
           
+  #Debug message.
+  if  ((debug))
+  then
+   echo -e "\nExecuting:\n"
+   echo -e "$command\n"
+  fi
+            
 
   #Execution of command.
   http_resp=$(eval $command  2>&1)
   cmd_exit_status="$?"
+  
+  
+  if ((debug))
+  then
+   echo "\nHTTP response:\n $http_resp\n"
+  fi 
+  
 
   if  echo "$http_resp" | grep -q "[application/xrds+xml]"  \
        &&  echo "$http_resp" | grep -q "200 OK"  \
@@ -581,12 +596,19 @@ download_http_sec_cl_id()
    echo -e "Executing:\n"
    echo -e "wget $command\n"
   fi 
-
-
+  
+  
   #Execution of command.
   http_resp=$(eval $command  2>&1)
   cmd_exit_status="$?"
-   
+
+  
+  if ((debug))
+  then
+   echo "\nHTTP response:\n $http_resp\n"
+  fi 
+    
+  
   #Extract orp service from openid ?
   #Evaluate response.If redirected to idp service send the credentials.
   #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
@@ -596,7 +618,7 @@ download_http_sec_cl_id()
   
    urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
    idp_service=$(echo "$urls"  | tr '\n' ' ' | cut -d' ' -f 2) 
-               
+      
    command="wget --post-data  password=\"$password_c\" $wget_args ${quiet:+-q} ${quiet:--v} -O $filename https://$idp_service/esgf-idp/idp/login.htm"
    
 
@@ -610,7 +632,12 @@ download_http_sec_cl_id()
    #Execution of command.
    http_resp=$(eval $command  2>&1)
    cmd_exit_status="$?"
-   
+      
+   if ((debug))
+   then
+    echo "\nHTTP response:\n $http_resp\n"
+   fi 
+        
    #Evaluate response. 
    #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
    #(( "$redirects" != 5 )) \ 
@@ -624,10 +651,6 @@ download_http_sec_cl_id()
  
   else
    echo "ERROR : HTTP request to OpenID Provider service failed."
-   if ((debug))
-   then
-    echo "Error response: $http_resp"
-   fi
    failed=1
   fi #if redirected to idp.  
 }
@@ -640,7 +663,6 @@ download_http_sec_open_id()
   command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\" --header=\"esgf-idea-agent-type:basic_auth\" --http-user=\"$username_c\" --http-password=\"$password_c\"  $wget_args ${quiet:+-q} ${quiet:--v} -O $filename https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
 
 
-
   #Debug message.
   if  ((debug))
   then
@@ -651,6 +673,12 @@ download_http_sec_open_id()
   #Execution of command.
   http_resp=$(eval $command  2>&1)
   cmd_exit_status="$?"
+  
+  
+  if ((debug))
+  then
+   echo "\nHTTP response:\n $http_resp\n"
+  fi 
 
   #Evaluate response.
   #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
@@ -659,12 +687,28 @@ download_http_sec_open_id()
   then
    failed=1;
    rm "$filename"
+   
+   echo -e "\nRetrying....\n"
+   #Retry in case that last redirect did not work, this happens with older version of wget
+   command="wget $wget_args $data"
+      
+   #Debug message.
+   if  ((debug))
+   then
+    echo -e "Executing:\n"
+    echo -e "$command\n"
+   fi   
+   
+   http_resp=$(eval $command  2>&1) 
+   cmd_exit_status="$?"
+
+      
    if ((debug))
    then
     echo "HTTP response: $http_resp"
    fi
+   
   fi 
-
   
 }
 
