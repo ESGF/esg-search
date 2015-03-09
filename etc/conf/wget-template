@@ -563,9 +563,9 @@ download_http_sec_decide_service()
   fi 
   
 
-  if  echo "$http_resp" | grep -q "[application/xrds+xml]"  \
-       &&  echo "$http_resp" | grep -q "200 OK"  \
-       && (( cmd_exit_status == 0 ))       
+  if    echo "$http_resp" | grep -q "[application/xrds+xml]"  \
+     && echo "$http_resp" | grep -q "200 OK"  \
+     && (( cmd_exit_status == 0 ))       
   then
    openid_c=$openid_c_tmp
    download_http_sec_open_id
