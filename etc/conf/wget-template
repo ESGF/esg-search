@@ -648,7 +648,7 @@ download_http_sec_open_id()
   if  ((debug))
   then
    echo -e "Executing:\n"
-   echo -e "wget $command\n"
+   echo -e "$command\n"
   fi 
 
   #Execution of command.
