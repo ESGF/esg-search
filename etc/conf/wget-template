@@ -609,7 +609,7 @@ download_http_sec_retry()
      || (( $cmd_exit_status != 0 ))      
   then 
    echo -e "\nERROR : Retry failed.\n"
-   rm "$filename"
+   #rm "$filename"
    failed=1
   fi #if retry failed.
 }
