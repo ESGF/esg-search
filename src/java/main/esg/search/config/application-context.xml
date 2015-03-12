@@ -47,8 +47,7 @@
 	
   	<!-- Facet profile example -->
 	<bean name="wsFacetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
-		<!-- <constructor-arg index="0"><value>esg/search/config/facets.properties</value></constructor-arg> -->
-		<constructor-arg index="0"><value>/esg/config/facets.properties</value></constructor-arg>
+		<constructor-arg index="0" value="${esg.search.solr.publish.url}"/>
 	</bean>
 	
 	<!-- Registry service providing dynamic list of shards for distributed search -->

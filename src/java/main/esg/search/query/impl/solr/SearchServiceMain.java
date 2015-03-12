@@ -61,10 +61,10 @@ public class SearchServiceMain {
 		
 		input.setFacets(new ArrayList<String>(facetProfile.getTopLevelFacets().keySet()));
 		
-		Map<String, Facet> facets = searchService.search(input).getFacets();
-		for (final Facet facet : facets.values()) {
-			LOG.info(facet.toString());
-		}
+		//Map<String, Facet> facets = searchService.search(input).getFacets();
+		//for (final Facet facet : facets.values()) {
+		//	LOG.info(facet.toString());
+		//}
 		
 	}
 
