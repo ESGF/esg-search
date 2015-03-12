@@ -32,6 +32,7 @@ import org.jdom.xpath.XPath;
 
 import esg.search.query.api.Facet;
 import esg.search.query.api.FacetProfile;
+import esg.search.query.api.QueryParameters;
 import esg.search.utils.HttpClient;
 import esg.search.utils.XmlParser;
 
@@ -59,7 +60,7 @@ public class FacetProfileImpl implements FacetProfile, Serializable {
 	private final static String XPATH = "/response/lst[@name='fields']/lst";
 	private XPath xPath = null;
 	private String url = null;
-	
+		
 	/**
 	 * Constructor that builds the list of facets from a properties file.
 	 * @param propertisFile
@@ -83,8 +84,11 @@ public class FacetProfileImpl implements FacetProfile, Serializable {
 		for (final Object obj : xPath.selectNodes(doc)) {
 			
 			String facetKey = ((Element)obj).getAttributeValue("name");
-			_facets.put(facetKey, new FacetImpl(facetKey, facetKey, "")); // facet key = facet name
-			 if (LOG.isInfoEnabled()) LOG.info("Using facet:"+facetKey);
+			// avoid faceting on fields that have too many values to improve performance
+			if (!QueryParameters.NOT_FACETS.contains(facetKey)) {
+				_facets.put(facetKey, new FacetImpl(facetKey, facetKey, "")); // facet key = facet name
+				 if (LOG.isInfoEnabled()) LOG.info("Using facet:"+facetKey);
+			}
 			
 		}
 		
