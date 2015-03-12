@@ -72,6 +72,9 @@ public class QueryParameters {
     public final static String FIELD_HEIGHT_UNITS = "height_units";
     public final static String FIELD_VARIABLE_UNITS = "variable_units";
     
+    // obsolete
+    public final static String FIELD_METADATA_FORMAT = "metadata_format";
+    public final static String FIELD_METADATA_URL = "metadata_url";
     
     // special query fields for open search time extension
     public final static String FIELD_START = "start";
@@ -106,6 +109,7 @@ public class QueryParameters {
     	FIELD_TEXT,
     	FIELD_TYPE,
     	FIELD_VARIABLE_UNITS,
+    	FIELD_METADATA_FORMAT, FIELD_METADATA_URL
     });
 
     
