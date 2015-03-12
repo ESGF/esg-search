@@ -29,12 +29,20 @@ import esg.search.query.api.Facet;
 import esg.search.query.api.FacetProfile;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.api.SearchInput;
-import esg.search.query.api.SearchOutput;
 import esg.search.query.api.SearchService;
 
+/**
+ * Test program to query the ESGF Search Services.
+ * To run locally:
+ * cd build
+ * java -Djava.ext.dirs=../lib/fetched esg.search.query.impl.solr.SearchServiceMain
+ * 
+ * @author Luca Cinquini
+ *
+ */
 public class SearchServiceMain {
 	
-	private static String[] configLocations = new String[] { "classpath:esg/search/config/application-context.xml" };
+	private static String[] configLocations = new String[] { "classpath:esg/search/config/web-application-context.xml" };
 	private static final Log LOG = LogFactory.getLog(SearchServiceMain.class);
 	
 	public static void main(String[] args) throws Exception {
@@ -44,7 +52,7 @@ public class SearchServiceMain {
 		
 		final SearchService searchService = (SearchService) context.getBean("searchService");
 		
-		final FacetProfile facetProfile = (FacetProfile)context.getBean("facetProfile");
+		final FacetProfile facetProfile = (FacetProfile)context.getBean("wsFacetProfile");
 				
 		
 		// test unconstrained facets
@@ -57,74 +65,6 @@ public class SearchServiceMain {
 		for (final Facet facet : facets.values()) {
 			LOG.info(facet.toString());
 		}
-		
-		
-		//added 10-22 - test for geospatial range constraint
-		//Note: this assumes CDIAC/AmeriFlux site code=AMF_USARM, Site name=ARM SGP Main, Version=V003 
-		//data has been ingested into solr with geospatial data included
-		LOG.info("\nQUERY #1A");
-		input.setQuery("CDIAC");
-//		SearchOutput output = searchService.search(input, true, true);
-
-		
-		LOG.info("\nQUERY #1B");
-		input.addGeospatialRangeConstraint("east_degrees:[* TO *]");
-		
-		LOG.info("\nQUERY #1B");
-        input.addGeospatialRangeConstraint("datetime_start:[NOW/DAY-1YEAR TO NOW]");
-        
-        SearchOutput output = searchService.search(input);
-        
-		LOG.info(output.toString());
-
-		
-		/*
-		// text query
-		LOG.info("\nQUERY #1");
-		input.setText("boreas");
-		SearchOutput output = searchService.search(input, true, true);
-		LOG.info(output.toString());
-
-		
-		
-		// text + 1 facet query
-		LOG.info("\nQUERY #2");
-		input.addConstraint("project", "EOSDIS");
-		output = searchService.search(input, true, true);
-		LOG.info(output.toString());
-		
-		// text + 2 facets query
-		LOG.info("\nQUERY #3");
-		input.addConstraint("gcmd_variable", "LAND SURFACE > SOILS > SOIL TEMPERATURE");
-		output = searchService.search(input, true, true);
-		LOG.info(output.toString());
-		
-		// constrained facets
-		LOG.info("\nQUERY #4");
-		facets = searchService.search(input, true, true).getFacets();
-		for (final Facet facet : facets.values()) {
-			LOG.info(facet.toString());
-		}
-		
-		// text + 3 facets query
-		LOG.info("\nQUERY #5");
-		input.addConstraint("instrument", "TEMPERATURE SENSOR");
-		output = searchService.search(input, true, true);
-		LOG.info(output.toString());
-		
-		// empty query for results
-		LOG.info("\nQUERY #6");
-		input.addConstraint("frequency", "Daily");
-		output = searchService.search(input, true, true);
-		LOG.info(output.toString());
-		
-		// empty query for facets
-		LOG.info("\nQUERY #7");
-		facets = searchService.search(input, true, true).getFacets();
-		for (final Facet facet : facets.values()) {
-			LOG.info(facet.toString());
-		}
-		*/
 		
 	}
 
