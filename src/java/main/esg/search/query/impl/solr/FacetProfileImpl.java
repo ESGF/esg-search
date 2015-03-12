@@ -19,43 +19,76 @@
 package esg.search.query.impl.solr;
 
 import java.io.Serializable;
+import java.net.URL;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.xpath.XPath;
 
 import esg.search.query.api.Facet;
 import esg.search.query.api.FacetProfile;
-import esg.search.utils.PropertiesUtils;
+import esg.search.utils.HttpClient;
+import esg.search.utils.XmlParser;
 
 /**
  * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs,
- * or from a properties file.
+ * or directly from a query to Solr.
+ * Note that at this time the list of available facets is NOT reloaded on demand every time a client requests it,
+ * to avoid any performance issues.
+ * 
+ * TODO: switch form using the Soor Luke handler to using the schema RESTful API.
+ * 
  */
 public class FacetProfileImpl implements FacetProfile, Serializable {
 	
 	private Map<String, Facet> facets = new LinkedHashMap<String, Facet>();
 	
+	protected HttpClient httpClient = new HttpClient();
+
+	private final XmlParser xmlParser = new XmlParser(false);
+	
 	private final Log LOG = LogFactory.getLog(this.getClass());
 	
 	private static final long serialVersionUID = 1L;
+
+	private final static String XPATH = "/response/lst[@name='fields']/lst";
+	private XPath xPath = null;
+	private String url = null;
 	
 	/**
 	 * Constructor that builds the list of facets from a properties file.
 	 * @param propertisFile
 	 */
-	public FacetProfileImpl(final String propertiesFilePath) {
-	    final Properties properties = PropertiesUtils.load(propertiesFilePath);	    
-	    for (Iterator iter = properties.keySet().iterator(); iter.hasNext();) {
-	        String key = (String) iter.next();
-	        String value = (String) properties.get(key);
-	        facets.put(key, new FacetImpl(key, value, ""));
-	        if (LOG.isInfoEnabled()) LOG.info("Using facet:"+key+" label="+value);
-	      }
+	public FacetProfileImpl(final String url) {
+		this.url = url;
+	}
+		
+	/**
+	 * Method that queries Solr for the latest list of facets
+	 */
+	protected Map<String, Facet> queryFacets() throws Exception {
+		
+		Map<String, Facet> _facets = new LinkedHashMap<String, Facet>();
+		
+		final String fullUrl = url + "/datasets/admin/luke/?numTerms=0";
+		if (LOG.isInfoEnabled()) LOG.info("Querying all available factes from URL="+fullUrl);
+		String response = httpClient.doGet(new URL(fullUrl));
+		final Document doc = xmlParser.parseString(response);
+		xPath = XPath.newInstance(XPATH);
+		for (final Object obj : xPath.selectNodes(doc)) {
+			
+			String facetKey = ((Element)obj).getAttributeValue("name");
+			_facets.put(facetKey, new FacetImpl(facetKey, facetKey, "")); // facet key = facet name
+			 if (LOG.isInfoEnabled()) LOG.info("Using facet:"+facetKey);
+			
+		}
+		
+		return _facets;
 	}
 
 	/**
@@ -74,6 +107,21 @@ public class FacetProfileImpl implements FacetProfile, Serializable {
 	 * {@inheritDoc}
 	 */
 	public Map<String, Facet> getTopLevelFacets() {
+		
+		// initialize facets ?
+		if (this.facets.isEmpty()) {
+			synchronized(this.facets) {
+				try {
+					Map<String, Facet> newFacets = this.queryFacets();
+					if (!newFacets.isEmpty()) {
+						this.facets = newFacets;
+					}
+				} catch(Exception e) {
+					LOG.warn(e.getMessage());
+				}
+			}
+		}
+		
 		return Collections.unmodifiableMap(facets);
 	}
 
