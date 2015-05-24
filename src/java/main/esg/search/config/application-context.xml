@@ -46,10 +46,14 @@
 	</bean>
 	
   	<!-- Facet profile example -->
-	<bean name="wsFacetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
+	<bean name="wsFacetProfile" class="esg.search.query.impl.solr.PropertiesFileFacetProfileImpl">
+    	<constructor-arg index="0"><value>/esg/config/facets.properties</value></constructor-arg>
+    </bean>
+    <!-- facets initialized from the Solr Luke handler: http://localhost:8984/solr/datasets/admin/luke/?numTerms=0 -->
+    <!-- <bean name="wsFacetProfile" class="esg.search.query.impl.solr.LukeHandlerFacetProfileImpl">
 		<constructor-arg index="0" value="${esg.search.solr.publish.url}"/>
-	</bean>
-	
+	</bean> -->
+    
 	<!-- Registry service providing dynamic list of shards for distributed search -->
 	<bean id="registryService" class="esg.security.registry.service.impl.RegistryServiceLocalXmlImpl">
   		<constructor-arg index="0"><value>/esg/config/esgf_shards_static.xml</value></constructor-arg>
