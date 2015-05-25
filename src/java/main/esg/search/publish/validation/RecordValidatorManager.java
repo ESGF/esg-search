@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.util.StringUtils;
 
@@ -26,6 +28,11 @@ public class RecordValidatorManager implements RecordValidator {
     
     // optional access control validator
     RecordValidator acValidator = null;
+    
+    // flag to disable record validation
+    private boolean disableRecordValidation = false;
+    
+    private final Log LOG = LogFactory.getLog(this.getClass());
             
     /**
      * 
@@ -51,6 +58,11 @@ public class RecordValidatorManager implements RecordValidator {
             
         }
         
+        // optional flag to disable record validation
+        this.disableRecordValidation = Boolean.parseBoolean(properties.getProperty(QueryParameters.DISABLE_RECORD_VALIDATION, "false"));
+        
+        LOG.info("Using flag: "+QueryParameters.DISABLE_RECORD_VALIDATION+"="+disableRecordValidation);
+        
     }
     
     // NOTE: comment out @Autowired to disable access control validation
@@ -62,31 +74,35 @@ public class RecordValidatorManager implements RecordValidator {
 
     @Override
     public void validate(Record record, List<String> errors) throws Exception {
+    	
+    	if (!disableRecordValidation) {
         
-        // optional access control validator
-        if (acValidator!=null) {
-            acValidator.validate(record, errors);
-        }
-                
-        // always run core validator
-        validators.get(QueryParameters.SCHEMA_ESGF).validate(record, errors);
-        
-        // also always run geo validator
-        validators.get(QueryParameters.SCHEMA_GEO).validate(record, errors);
-        
-        // run schema specific validators
-        URI uri = record.getSchema();
-        if (uri!=null) {
-            String schema = uri.toString();
-            if (!schema.equals(QueryParameters.SCHEMA_ESGF) && !schema.equals(QueryParameters.SCHEMA_GEO)) {
-                if (validators.containsKey(schema)) {
-                    validators.get(schema).validate(record, errors);
-                } else {
-                    throw new Exception("Unknown validation schema: "+schema);
-                }
-            }
-        }
-        
+	        // optional access control validator
+	        if (acValidator!=null) {
+	            acValidator.validate(record, errors);
+	        }
+	                
+	        // always run core validator
+	        validators.get(QueryParameters.SCHEMA_ESGF).validate(record, errors);
+	        
+	        // also always run geo validator
+	        validators.get(QueryParameters.SCHEMA_GEO).validate(record, errors);
+	        
+	        // run schema specific validators
+	        URI uri = record.getSchema();
+	        if (uri!=null) {
+	            String schema = uri.toString();
+	            if (!schema.equals(QueryParameters.SCHEMA_ESGF) && !schema.equals(QueryParameters.SCHEMA_GEO)) {
+	                if (validators.containsKey(schema)) {
+	                    validators.get(schema).validate(record, errors);
+	                } else {
+	                    throw new Exception("Unknown validation schema: "+schema);
+	                }
+	            }
+	        }
+	        
+	    }
+    	
     }
 
 }

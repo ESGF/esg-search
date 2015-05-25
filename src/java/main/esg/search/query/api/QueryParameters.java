@@ -199,6 +199,9 @@ public class QueryParameters {
     // key for looking up schema root location from /esgf/config/esgf.properties
     public final static String SCHEMA_LOCATION_PROPERTY = "esgf.publisher.resources.home";
     
+    // key for disabling record validation alltogether
+    public final static String DISABLE_RECORD_VALIDATION = "esgf.publisher.disable.record.validation";
+    
     // default schema location, if property is not specified
     public final static String SCHEMA_DEFAULT_LOCATION = "/esg/config/"; 
     
