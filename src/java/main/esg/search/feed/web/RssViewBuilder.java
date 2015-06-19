@@ -12,12 +12,12 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.util.StringUtils;
 
-import com.sun.syndication.feed.rss.Category;
-import com.sun.syndication.feed.rss.Description;
-import com.sun.syndication.feed.rss.Enclosure;
-import com.sun.syndication.feed.rss.Guid;
-import com.sun.syndication.feed.rss.Item;
-import com.sun.syndication.feed.rss.Source;
+import com.rometools.rome.feed.rss.Category;
+import com.rometools.rome.feed.rss.Description;
+import com.rometools.rome.feed.rss.Enclosure;
+import com.rometools.rome.feed.rss.Guid;
+import com.rometools.rome.feed.rss.Item;
+import com.rometools.rome.feed.rss.Source;
 
 import esg.search.core.Record;
 import esg.search.core.RecordHelper;

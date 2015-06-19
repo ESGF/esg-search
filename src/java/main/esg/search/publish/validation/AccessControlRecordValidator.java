@@ -97,7 +97,7 @@ public class AccessControlRecordValidator implements RecordValidator, Reloadable
                     
                     // if project is found in XML file, it is by default restricted...
                     if (cache.containsKey(project, this.hostname)) {
-                        
+                    	@SuppressWarnings("unchecked")
                         List<Pattern> patterns = (List<Pattern>)cache.get(project, hostname);
                         for (Pattern pattern : patterns) {
                             // unless it matches one of the regular expressions for the local hostname

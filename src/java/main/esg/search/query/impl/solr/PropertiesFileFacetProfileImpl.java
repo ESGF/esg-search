@@ -36,7 +36,7 @@ import esg.search.utils.PropertiesUtils;
  * Base implementation of {@link FacetProfile} initialized from a map of (facet key, facet label) pairs,
  * or from a properties file.
  */
-public class FacetProfileImpl implements FacetProfile, Serializable {
+public class PropertiesFileFacetProfileImpl implements FacetProfile, Serializable {
 	
 	private Map<String, Facet> facets = new LinkedHashMap<String, Facet>();
 	
@@ -48,7 +48,7 @@ public class FacetProfileImpl implements FacetProfile, Serializable {
 	 * Constructor that builds the list of facets from a properties file.
 	 * @param propertisFile
 	 */
-	public FacetProfileImpl(final String propertiesFilePath) {
+	public PropertiesFileFacetProfileImpl(final String propertiesFilePath) {
 	    final Properties properties = PropertiesUtils.load(propertiesFilePath);	    
 	    for (Iterator iter = properties.keySet().iterator(); iter.hasNext();) {
 	        String key = (String) iter.next();
@@ -62,7 +62,7 @@ public class FacetProfileImpl implements FacetProfile, Serializable {
 	 * Constructor that builds the list of facets from a configuration map composed of (facet key, facet label) pairs.
 	 * @param facets
 	 */
-	public FacetProfileImpl(final LinkedHashMap<String, String> map) {
+	public PropertiesFileFacetProfileImpl(final LinkedHashMap<String, String> map) {
 		
 		for (final String key : map.keySet()) {
 			facets.put(key, new FacetImpl(key, map.get(key), ""));

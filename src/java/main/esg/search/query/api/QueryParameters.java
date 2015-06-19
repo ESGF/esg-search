@@ -51,6 +51,10 @@ public class QueryParameters {
     final public static String FIELD_DATA_NODE = "data_node";
     final public static String FIELD_NUMBER_OF_FILES = "number_of_files";
     final public static String FIELD_NUMBER_OF_AGGREGATIONS = "number_of_aggregations";
+    final public static String FIELD_DATASET_ID_TEMPLATE = "dataset_id_template_";
+    final public static String FIELD_DATETIME_START = "datetime_start";
+    final public static String FIELD_DATETIME_STOP = "datetime_stop";
+    final public static String FIELD_TEXT = "text";
             
     // special query fields for open search geo extension
     public final static String FIELD_BBOX ="bbox";  // west, south, east, north
@@ -59,6 +63,18 @@ public class QueryParameters {
     public final static String FIELD_LOCATION = "location";
     public final static String FIELD_RADIUS = "radius";
     public final static String FIELD_POLYGON = "polygon";
+    public final static String FIELD_EAST_DEGREES = "east_degrees";
+    public final static String FIELD_WEST_DEGREES = "west_degrees";
+    public final static String FIELD_NORTH_DEGREES = "north_degrees";
+    public final static String FIELD_SOUTH_DEGREES = "south_degrees";
+    public final static String FIELD_HEIGHT_BOTTOM = "height_bottom";
+    public final static String FIELD_HEIGHT_TOP = "height_top";
+    public final static String FIELD_HEIGHT_UNITS = "height_units";
+    public final static String FIELD_VARIABLE_UNITS = "variable_units";
+    
+    // obsolete
+    public final static String FIELD_METADATA_FORMAT = "metadata_format";
+    public final static String FIELD_METADATA_URL = "metadata_url";
     
     // special query fields for open search time extension
     public final static String FIELD_START = "start";
@@ -77,6 +93,24 @@ public class QueryParameters {
             FIELD_BBOX, FIELD_LAT, FIELD_LON, FIELD_RADIUS, FIELD_POLYGON,
             FIELD_START, FIELD_END,
             FIELD_WGET_PATH, FIELD_WGET_EMPTYPATH});
+    
+    // fields that should NOT be used as facets
+    public final static List<String> NOT_FACETS = Arrays.asList( new String[]{ 
+    	FIELD_ID, FIELD_MASTER_ID, FIELD_INSTANCE_ID,
+    	FIELD_DATASET_ID, FIELD_DATASET_ID_TEMPLATE, FIELD_DRS_ID,
+    	FIELD_DATETIME_START, FIELD_DATETIME_STOP, 
+    	FIELD_EAST_DEGREES, FIELD_WEST_DEGREES, FIELD_NORTH_DEGREES, FIELD_SOUTH_DEGREES,
+    	FIELD_BBOX, FIELD_LAT, FIELD_LON, FIELD_RADIUS, FIELD_POLYGON,
+    	FIELD_HEIGHT_BOTTOM, FIELD_HEIGHT_TOP, FIELD_HEIGHT_UNITS,
+    	FIELD_LATEST, FIELD_REPLICA,
+    	FIELD_NUMBER_OF_FILES, FIELD_NUMBER_OF_AGGREGATIONS,
+    	FIELD_TRACKING_ID,
+    	FIELD_TIMESTAMP, FIELD_TITLE, FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_XLINK, FIELD_SIZE, 
+    	FIELD_TEXT,
+    	FIELD_TYPE,
+    	FIELD_VARIABLE_UNITS,
+    	FIELD_METADATA_FORMAT, FIELD_METADATA_URL
+    });
 
     
     // HTTP mime types
@@ -164,6 +198,9 @@ public class QueryParameters {
     
     // key for looking up schema root location from /esgf/config/esgf.properties
     public final static String SCHEMA_LOCATION_PROPERTY = "esgf.publisher.resources.home";
+    
+    // key for disabling record validation alltogether
+    public final static String DISABLE_RECORD_VALIDATION = "esgf.publisher.disable.record.validation";
     
     // default schema location, if property is not specified
     public final static String SCHEMA_DEFAULT_LOCATION = "/esg/config/"; 

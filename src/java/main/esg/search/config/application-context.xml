@@ -3,9 +3,9 @@
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	   xmlns:context="http://www.springframework.org/schema/context"
 	   xmlns:util="http://www.springframework.org/schema/util"
-	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
-	   					   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
-                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+	   					   http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
                             
     <!-- Use Java Common Annotations: @Resource, @PostConstruct, @PreDestroy annotations -->
     <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
@@ -46,11 +46,14 @@
 	</bean>
 	
   	<!-- Facet profile example -->
-	<bean name="wsFacetProfile" class="esg.search.query.impl.solr.FacetProfileImpl">
-		<!-- <constructor-arg index="0"><value>esg/search/config/facets.properties</value></constructor-arg> -->
-		<constructor-arg index="0"><value>/esg/config/facets.properties</value></constructor-arg>
-	</bean>
-	
+	<bean name="wsFacetProfile" class="esg.search.query.impl.solr.PropertiesFileFacetProfileImpl">
+    	<constructor-arg index="0"><value>/esg/config/facets.properties</value></constructor-arg>
+    </bean>
+    <!-- facets initialized from the Solr Luke handler: http://localhost:8984/solr/datasets/admin/luke/?numTerms=0 -->
+    <!-- <bean name="wsFacetProfile" class="esg.search.query.impl.solr.LukeHandlerFacetProfileImpl">
+		<constructor-arg index="0" value="${esg.search.solr.publish.url}"/>
+	</bean> -->
+    
 	<!-- Registry service providing dynamic list of shards for distributed search -->
 	<bean id="registryService" class="esg.security.registry.service.impl.RegistryServiceLocalXmlImpl">
   		<constructor-arg index="0"><value>/esg/config/esgf_shards_static.xml</value></constructor-arg>

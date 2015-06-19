@@ -42,6 +42,9 @@ COOKIE_JAR=$ESG_HOME/cookies
 MYPROXY_GETCERT=$ESG_HOME/getcert.jar
 CERT_EXPIRATION_WARNING=$((60 * 60 * 8))   #Eight hour (in seconds)
 
+WGET_TRUSTED_CERTIFICATES=$ESG_HOME/certificates
+
+
 # Configure checking of server SSL certificates.
 #   Disabling server certificate checking can resolve problems with myproxy
 #   servers being out of sync with datanodes.
@@ -114,7 +117,7 @@ check_commands() {
 }
 
 usage() {
-    echo "Usage: $(basename $0) [flags]"
+    echo "Usage: $(basename $0) [flags] [openid] [username]"
     echo "Flags is one of:"
     sed -n '/^while getopts/,/^done/  s/^\([^)]*\)[^#]*#\(.*$\)/\1 \2/p' $0
     echo
@@ -127,19 +130,22 @@ debug=0
 clean_work=1
 
 #parse flags
-while getopts ':c:pfF:o:w:isuUndvqh' OPT; do
+while getopts ':c:pfF:o:w:isuUndvqhHI:T' OPT; do
     case $OPT in
+        H) skip_security=1 && use_http_sec=1;; #       : Authenticate with OpenID (username,) and password, without the need for a certificate.
+        T) force_TLSv1=1;;              #       : Forces wget to use TLSv1. 
         c) ESG_CREDENTIALS="$OPTARG";;  #<cert> : use this certificate for authentication.
-        p) clean_work=0;;               #       : preserve data that failed checksum
-        f) force=1;;                    #       : force certificate retrieval (defaults to only once per day)
+        f) force=1;;                    #       : force certificate retrieval (defaults to only once per day); for certificate-less authentication (see -H option), this flag will force login and refresh cookies.
         F) input_file="$OPTARG";;       #<file> : read input from file instead of the embedded one (use - to read from stdin)
         o) openId="$OPTARG";;           #<openid>: Provide OpenID instead of interactively asking for it.
+        I) username_supplied="$OPTARG";;    #<user_id> : Explicitly set user ID.  By default, the user ID is extracted from the last component of the OpenID URL.  Use this flag to override this behaviour.                   
         w) output="$OPTARG";;           #<file> : Write embedded files into a file and exit
         i) insecure=1;;                 #       : set insecure mode, i.e. don't check server certificate
-        s) skip_security=1;;            #       : completely skip security. It will only work if the accessd data is not secured at all.
+        s) skip_security=1 && use_cookies_for_http_basic_auth_start=1;;            #       : completely skip security. It will only work if the accessed data is not secured at all. -- works only if the accessed data is unsecured or a certificate exists or cookies are saved (latter applies to -H option only).
         u) update=1;;                   #       : Issue the search again and see if something has changed.
         U) update_files=1;;             #       : Update files from server overwriting local ones (detect with -u)
         n) dry_run=1;;                  #       : Don't download any files, just report.
+        p) clean_work=0;;               #       : preserve data that failed checksum
         d) verbose=1;debug=1;;          #       : display debug information
         v) verbose=1;;                  #       : be more verbose
         q) quiet=1;;                    #       : be less verbose
@@ -425,8 +431,299 @@ remove_from_cache() {
     unset cached
 }
 
+#Download data from node using cookies and not certificates.
+download_http_sec()
+{
+  #The data to be downloaded.
+  data=" $url"
+  filename="$file"  
+
+  #Wget args.
+  if ((insecure)) 
+  then
+   wget_args=" --no-check-certificate --cookies=on  --keep-session-cookies --save-cookies $COOKIES_FOLDER/wcookies.txt " 
+  else
+   wget_args=" --ca-directory=$WGET_TRUSTED_CERTIFICATES --cookies=on --keep-session-cookies --save-cookies $COOKIES_FOLDER/wcookies.txt "  
+  fi 
+
+  if ((use_cookies_for_http_basic_auth_start)) || ((use_cookies_for_http_basic_auth)) 
+  then
+   wget_args=" $wget_args"" --load-cookies $COOKIES_FOLDER/wcookies.txt"    
+  fi
+  
+  if((force_TLSv1))
+  then
+   wget_args=" $wget_args"" --secure-protocol=TLSv1 "
+  fi
+  
+  
+  if [[ ! -z "$ESGF_WGET_OPTS" ]]
+  then
+    wget_args="$wget_args $ESGF_WGET_OPTS"
+  fi  
+  
+
+  #use cookies for the next downloads
+  use_cookies_for_http_basic_auth=1;
+   
+  #Debug message.
+  if  ((debug))
+  then
+   echo -e "\nExecuting:\n"
+   echo -e "wget $wget_args $data\n"
+  fi
+
+
+  #Try to download the data. 
+  command="wget $wget_args $data"
+  http_resp=$(eval $command  2>&1) 
+  cmd_exit_status="$?"
+  
+  if ((debug))
+  then
+   echo -e "\nHTTP response:\n $http_resp\n"
+  fi
+      
+  #Extract orp service from url ?
+  #Evaluate response.
+  #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+  #(( "$redirects" == 1 )) && 
+  if  echo "$http_resp" | grep -q "/esg-orp/"      
+  then
+   urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
+   orp_service=$(echo "$urls" | tr '\n' ' ' | cut -d' ' -f 2)
+
+
+   #Use cookies for transaction with orp.
+   wget_args=" $wget_args"" --load-cookies $COOKIES_FOLDER/wcookies.txt"    
+   
+   #Download data using either http basic auth or http login form.
+   if [[ "$openid_c" == */openid/  || "$openid_c" == */openid ]]
+   then
+    download_http_sec_open_id
+   else
+    download_http_sec_decide_service
+   fi
+  else  
+   if    echo "$http_resp" | grep -q "401 Unauthorized"  \
+      || echo "$http_resp" | grep -q "403: Forbidden"  \
+      || echo "$http_resp" | grep -q "Connection timed out."  \
+      || echo "$http_resp" | grep -q "no-check-certificate"  \
+      || (( $cmd_exit_status != 0 ))      
+   then 
+    echo "ERROR : http request to OpenID Relying Party service failed."
+    failed=1
+   fi
+  fi
+}
+
+
+#Function that decides which implementaion of idp to use.
+download_http_sec_decide_service()
+{
+  #find claimed id
+
+  pos=$(echo "$openid_c" | egrep -o '/' | wc -l)
+  username_c=$(echo "$openid_c"  | cut -d'/' -f "$(($pos + 1))")
+  esgf_uri=$(echo "$openid_c" | egrep -o '/esgf-idp/openid/')
+
+  host=$(echo "$openid_c"  | cut -d'/' -f 3)
+  #test ceda first.
+
+  if [[ -z "$esgf_uri" ]]
+  then
+   openid_c_tmp="https://""$host""/openid/"
+  else
+   openid_c_tmp="https://""$host""/esgf-idp/openid/" 
+  fi
+
+  command="wget "$openid_c_tmp" --no-check-certificate ${force_TLSv1:+--secure-protocol=TLSv1} -O-"
+        
+  if [[ ! -z "$ESGF_WGET_OPTS" ]]
+  then
+   command="$command $ESGF_WGET_OPTS"
+  fi  
+          
+  #Debug message.
+  if  ((debug))
+  then
+   echo -e "\nExecuting:\n"
+   echo -e "$command\n"
+  fi
+            
+
+  #Execution of command.
+  http_resp=$(eval $command  2>&1)
+  cmd_exit_status="$?"
+  
+  
+  if ((debug))
+  then
+   echo -e "\nHTTP response:\n $http_resp\n"
+  fi 
+  
+
+  if    echo "$http_resp" | grep -q "[application/xrds+xml]"  \
+     && echo "$http_resp" | grep -q "200 OK"  \
+     && (( cmd_exit_status == 0 ))       
+  then
+   openid_c=$openid_c_tmp
+   download_http_sec_open_id
+  else
+   if [[ -z "$esgf_uri" ]]
+   then
+    echo "ERROR : HTTP request to OpenID Relying Party service failed."
+    failed=1
+   else
+   download_http_sec_cl_id
+   fi
+  fi
+}
+
+
+download_http_sec_retry()
+{
+  echo -e "\nRetrying....\n"
+  #Retry in case that last redirect did not work, this happens with older version of wget.
+  command="wget $wget_args $data"
+      
+  #Debug message.
+  if  ((debug))
+  then
+   echo -e "Executing:\n"
+   echo -e "$command\n"
+  fi   
+   
+  http_resp=$(eval $command  2>&1) 
+  cmd_exit_status="$?"
+
+  if ((debug))
+  then
+   echo -e "\nHTTP response:\n $http_resp\n"
+  fi
+   
+  if    echo "$http_resp" | grep -q "401 Unauthorized"  \
+     || echo "$http_resp" | grep -q "403: Forbidden"  \
+     || echo "$http_resp" | grep -q "Connection timed out."  \
+     || echo "$http_resp" | grep -q "no-check-certificate"  \
+     || (( $cmd_exit_status != 0 ))      
+  then 
+   echo -e "\nERROR : Retry failed.\n"
+   #rm "$filename"
+   failed=1
+  fi #if retry failed.
+}
+
+#Function for downloading data using the claimed id.
+download_http_sec_cl_id()
+{
+  #Http request for sending openid to the orp service.
+  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\"  $wget_args -O- https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
+
+  #Debug message.
+  if  ((debug))
+  then
+   echo -e "Executing:\n"
+   echo -e "wget $command\n"
+  fi 
+  
+  
+  #Execution of command.
+  http_resp=$(eval $command  2>&1)
+  cmd_exit_status="$?"
+
+  
+  if ((debug))
+  then
+   echo -e "\nHTTP response:\n $http_resp\n"
+  fi 
+    
+  
+  #Extract orp service from openid ?
+  #Evaluate response.If redirected to idp service send the credentials.
+  #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+  #(( redirects == 2  )) && 
+  if  echo "$http_resp" | grep -q "login.htm"  && (( cmd_exit_status == 0 ))   
+  then 
+  
+   urls=$(echo "$http_resp" | egrep -o 'https://[^ ]+' | cut -d'/' -f 3)
+   idp_service=$(echo "$urls"  | tr '\n' ' ' | cut -d' ' -f 2) 
+      
+   command="wget --post-data  password=\"$password_c\" $wget_args ${quiet:+-q} ${quiet:--v} -O $filename https://$idp_service/esgf-idp/idp/login.htm"
+   
+
+   #Debug message.
+   if  ((debug))
+   then
+    echo -e "Executing:\n"
+    echo -e "wget $command\n"
+   fi 
+
+   #Execution of command.
+   http_resp=$(eval $command  2>&1)
+   cmd_exit_status="$?"
+      
+   if ((debug))
+   then
+    echo -e "\nHTTP response:\n $http_resp\n"
+   fi 
+        
+   #Evaluate response. 
+   #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+   #(( "$redirects" != 5 )) \ 
+   if    echo "$http_resp" | grep -q "text/html"  \
+      || echo "$http_resp" | grep -q "403: Forbidden"  \
+      || (( cmd_exit_status != 0 ))        
+   then 
+    rm "$filename"
+    download_http_sec_retry
+   fi
+ 
+  else
+   echo "ERROR : HTTP request to OpenID Provider service failed."
+   failed=1
+  fi #if redirected to idp.  
+}
+
+
+
+download_http_sec_open_id()
+{
+  #Http request for sending openid to the orp web service.
+  command="wget --post-data \"openid_identifier=$openid_c&rememberOpenid=on\" --header=\"esgf-idea-agent-type:basic_auth\" --http-user=\"$username_c\" --http-password=\"$password_c\"  $wget_args ${quiet:+-q} ${quiet:--v} -O $filename https://$orp_service/esg-orp/j_spring_openid_security_check.htm "
+
+
+  #Debug message.
+  if  ((debug))
+  then
+   echo -e "Executing:\n"
+   echo -e "$command\n"
+  fi 
+
+  #Execution of command.
+  http_resp=$(eval $command  2>&1)
+  cmd_exit_status="$?"
+  
+  
+  if ((debug))
+  then
+   echo -e "\nHTTP response:\n $http_resp\n"
+  fi 
+
+  #Evaluate response.
+  #redirects=$(echo "$http_resp" | egrep -c ' 302 ')
+  #(( "$redirects" != 7 )) ||
+  if   echo "$http_resp" | grep -q "text/html"  ||  (( $cmd_exit_status != 0 ))   
+  then
+   rm "$filename"
+   download_http_sec_retry     
+  fi #if error during http basic authentication. 
+  
+}
+
+
 download() {
-    wget="wget ${insecure:+--no-check-certificate} ${quiet:+-q} ${quiet:--v} -c $PKI_WGET_OPTS"
+    wget="wget ${insecure:+--no-check-certificate} ${quiet:+-q} ${quiet:--v} -c ${force_TLSv1:+--secure-protocol=TLSv1} $PKI_WGET_OPTS"
     
     while read line
     do
@@ -473,7 +770,16 @@ download() {
                 #No status will be stored
                 break
             else
-                $wget -O "$file" $url || { failed=1; break; }
+                if ((use_http_sec))
+                then
+                 download_http_sec
+                 if ((failed))
+                 then
+                  break
+                 fi
+                else
+                 $wget -O "$file" $url || { failed=1; break; }  
+                fi                
             fi
 
             #check if file is there
@@ -542,9 +848,32 @@ dedup_cache_() {
     ((debug)) && echo "(cache dedup'ed)"
 }
 
+http_basic_auth_func_info_message()
+{
+  echo  "********************************************************************************"
+  echo  "*                                                                              *"
+  echo  "* Note that new functionality to allow authentication without the need for     *"
+  echo  "* certificates is available with this version of the wget script.  To enable,  *"
+  echo  "* use the \"-H\" option and enter your OpenID and password when prompted:        *"
+  echo  "*                                                                              *"
+  echo  "* $ "$(basename "$0")" -H [options...]                                     *"
+  echo  "*                                                                              *"
+  echo  "* For a full description of the available options use the help option:         *"
+  echo  "*                                                                              *"
+  echo  "* $ "$(basename "$0")" -h                                                  *"
+  echo  "*                                                                              *"
+  echo  "********************************************************************************"
+}
+
 #
 # MAIN
 #
+
+if ((!use_http_sec))
+then 
+ http_basic_auth_func_info_message
+fi
+
 echo "Running $(basename $0) version: $version"
 ((verbose)) && echo "we use other tools in here, don't try to user their proposed 'options' directly"
 echo "Use $(basename $0) -h for help."$'\n'
@@ -567,6 +896,68 @@ sleep 1
 
 check_os
 ((!skip_security)) && find_credentials
+
+if ((use_http_sec))
+then 
+     
+ if (( ! insecure))
+ then 
+  get_certificates
+ fi
+
+ #Cookies folder.
+ COOKIES_FOLDER="$ESG_HOME/wget_cookies"
+ 
+ if (( force ))
+ then
+  if [ -d $COOKIES_FOLDER ] 
+  then
+   rm -rf $COOKIES_FOLDER
+  fi
+ fi
+
+ #Create cookies folder. 
+ if [[ ! -d $COOKIES_FOLDER ]] 
+ then
+  mkdir $COOKIES_FOLDER
+ fi
+ 
+ if((! use_cookies_for_http_basic_auth_start))
+ then
+
+  #Read openid.
+  if [[ ! -z "$openId" ]]
+  then
+   openid_c="$openId"
+  elif ( (("$#" > 1)) || (("$#" == 1)) ) 
+  then
+   openid_c=$1
+  else
+   read -p    "Enter your openid : " openid_c
+  fi
+  
+  
+  #Read username.
+  if [[ ! -z "$username_supplied" ]]
+  then
+   username_c="$username_supplied"
+  elif (("$#" == 2))
+  then
+   username_c=$2
+  elif [[ "$openid_c" == */openid/ || "$openid_c" == */openid ]]
+  then
+   read -p    "Enter username : " username_c
+  fi
+  
+  #Read password.
+  read -s -p "Enter password : " password_c
+  echo -e "\n"
+
+ fi #use cookies
+
+fi #use_http_sec 
+
+
 #do we have old results? Create the file if not
 [ ! -f $CACHE_FILE ] && echo "#filename mtime checksum" > $CACHE_FILE && chmod 666 $CACHE_FILE
 
@@ -576,4 +967,6 @@ unset force
 download
 
 dedup_cache_
+
+
 echo "done"

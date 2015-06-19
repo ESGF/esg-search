@@ -61,7 +61,7 @@ Note: Check Maven for propery dependency parameter values @
             
   <info organisation="org.esgf" module="esg-search"/>
   <dependencies>
-      
+          
     <dependency org="org.esgf" name="esgf-node-manager" rev="latest.milestone"/>
 
     <dependency org="net.sourceforge.cobertura" name="cobertura" rev="1.9.4" conf="default->default"/>
@@ -81,23 +81,20 @@ Note: Check Maven for propery dependency parameter values @
     <dependency org="org.apache.solr" name="solr-core" rev="1.4.0"/>
     <dependency org="org.apache.solr" name="solr-solrj" rev="1.4.0"/>
       
-    <dependency org="org.springframework" name="spring-core" rev="3.2.2.RELEASE" transitive="false" />
-    <dependency org="org.springframework" name="spring-web" rev="3.2.2.RELEASE" transitive="false" />
-    <dependency org="org.springframework" name="spring-webmvc" rev="3.2.2.RELEASE" transitive="false" />
-    <dependency org="org.springframework" name="spring-beans" rev="3.2.2.RELEASE" transitive="false" />
-    <dependency org="org.springframework" name="spring-context" rev="3.2.2.RELEASE" transitive="false" />
-    <dependency org="org.springframework" name="spring-context-support" rev="3.2.2.RELEASE" transitive="false" />
-    <dependency org="org.springframework" name="spring-tx" rev="3.2.2.RELEASE" transitive="false" />
-    <dependency org="org.springframework" name="spring-aop" rev="3.2.2.RELEASE" transitive="false" />
-    <dependency org="org.springframework" name="spring-expression" rev="3.2.2.RELEASE" transitive="false" />
-    <dependency org="org.springframework" name="org.springframework.web.servlet" rev="3.2.2.RELEASE" transitive="false" />
-
-    <!-- <dependency org="org.springframework" name="spring-asm" rev="3.1.4.RELEASE" transitive="false" /> -->
-    
+    <dependency org="org.springframework" name="spring-core" rev="4.1.6.RELEASE" conf="*->default" />
+    <dependency org="org.springframework" name="spring-web" rev="4.1.6.RELEASE" conf="*->default" />
+    <dependency org="org.springframework" name="spring-webmvc" rev="4.1.6.RELEASE" conf="*->default" />
+    <dependency org="org.springframework" name="spring-beans" rev="4.1.6.RELEASE" conf="*->default" />
+    <dependency org="org.springframework" name="spring-context" rev="4.1.6.RELEASE" conf="*->default" />
+    <dependency org="org.springframework" name="spring-context-support" rev="4.1.6.RELEASE" conf="*->default" />
+    <dependency org="org.springframework" name="spring-tx" rev="4.1.6.RELEASE" conf="*->default" />
+    <dependency org="org.springframework" name="spring-aop" rev="4.1.6.RELEASE" conf="*->default" />
+    <dependency org="org.springframework" name="spring-expression" rev="4.1.6.RELEASE" conf="*->default" />
+     
     <!-- security dependencies -->
-    <dependency org="org.springframework.security" name="spring-security-config" rev="3.1.4.RELEASE" transitive="false"/>
-    <dependency org="org.springframework.security" name="spring-security-core" rev="3.1.4.RELEASE" transitive="false"/>
-    <dependency org="org.springframework.security" name="spring-security-web" rev="3.1.4.RELEASE" transitive="false"/>
+    <dependency org="org.springframework.security" name="spring-security-config" rev="4.0.1.RELEASE" conf="*->default" />
+    <dependency org="org.springframework.security" name="spring-security-core" rev="4.0.1.RELEASE" conf="*->default" />
+    <dependency org="org.springframework.security" name="spring-security-web" rev="4.0.1.RELEASE" conf="*->default" />
     
     <dependency org="org.esgf" name="esg-orp" rev="latest.milestone">
             <exclude org="com.google.code.guice"/>
@@ -115,7 +112,7 @@ Note: Check Maven for propery dependency parameter values @
 
     <dependency org="aopalliance" name="aopalliance" rev="1.0"/>
     
-    <dependency org="rome" name="rome" rev="1.0"/>
+    <dependency org="com.rometools" name="rome" rev="1.5.0"/>
     
     <dependency org="org.apache.cxf" name="cxf-rt-frontend-jaxrs" rev="2.6.2" />
     
@@ -123,7 +120,9 @@ Note: Check Maven for propery dependency parameter values @
 
     <dependency org="javax.servlet" name="javax.servlet-api" rev="3.0.1"/>
     
-    <dependency org="commons-cli" name="commons-cli" rev="1.2"/>
+    <!-- NOTE: must force inclusion of xml-apis-1.4.01.jar as latest xml-apis#xml-apis;2.0.2 has no jar....-->
+    <dependency org="xml-apis" name="xml-apis" rev="1.4.01" />
+    <conflict org="xml-apis" module="xml-apis" rev="1.4.01"/>
 
   </dependencies>
    
