@@ -15,7 +15,6 @@
 	<classpathentry kind="lib" path="lib/fetched/aopalliance-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/asm-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/asm-tree-3.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/avalon-framework-4.1.3.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/backport-util-concurrent-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/bcel-5.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/cobertura-1.8.jar"/>
@@ -32,7 +31,6 @@
 	<classpathentry kind="lib" path="lib/fetched/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-jelly-tags-log-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-lang-2.5.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/commons-logging-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-pool-1.5.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/coreplugin-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/cxf-api-2.6.2.jar"/>
@@ -150,5 +148,8 @@
 	<classpathentry kind="lib" path="lib/fetched/xmltooling-1.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xom-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/XSGroupRole-1.0.0.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/avalon-framework-4.1.5.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/xml-apis-1.4.01.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
