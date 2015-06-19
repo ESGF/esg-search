@@ -13,15 +13,14 @@ import org.springframework.beans.factory.annotation.Required;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.view.feed.AbstractRssFeedView;
 
-import com.sun.syndication.feed.rss.Channel;
-import com.sun.syndication.feed.rss.Item;
+import com.rometools.rome.feed.rss.Channel;
+import com.rometools.rome.feed.rss.Item;
 
 import esg.search.core.Record;
 import esg.search.query.api.SearchOutput;
 
 /**
  * View responsible for building the RSS XML document for a list of datasets.
- * 
  * @author Luca Cinquini
  */
 public class DatasetsRssView extends AbstractRssFeedView {
@@ -79,7 +78,7 @@ public class DatasetsRssView extends AbstractRssFeedView {
     }
 
     @Override
-    protected void buildFeedMetadata(Map<String, Object> model, Channel feed, HttpServletRequest request) {
+    protected void buildFeedMetadata(Map<String, Object> model, final Channel feed, HttpServletRequest request) {
         
         // <title>ESGF-JPL Datasets RSS feed</title>
         if (StringUtils.hasText( (String)model.get(FeedController.MODEL_KEY_FEED_TITLE)) ) {
