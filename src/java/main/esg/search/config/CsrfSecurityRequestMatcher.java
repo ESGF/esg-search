@@ -12,7 +12,8 @@ import org.springframework.stereotype.Service;
 public class CsrfSecurityRequestMatcher implements RequestMatcher {
     
 	private Pattern allowedMethods = Pattern.compile("^(GET|HEAD|TRACE|OPTIONS)$");
-    private RegexRequestMatcher unprotectedMatcher = new RegexRequestMatcher("/*", null);
+    private RegexRequestMatcher unprotectedMatcher 
+    	= new RegexRequestMatcher("/remote/secure/client-cert/hessian/publishingService", null);
  
     @Override
     public boolean matches(HttpServletRequest request) {
