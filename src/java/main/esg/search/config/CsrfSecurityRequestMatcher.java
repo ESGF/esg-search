@@ -18,7 +18,8 @@ public class CsrfSecurityRequestMatcher implements RequestMatcher {
 	// true == case insensitive matching
     private RequestMatcher hessianMatcher = new RegexRequestMatcher("/remote/secure/client-cert/hessian/.*", null, true); 
     private RequestMatcher wsMatcher = new RegexRequestMatcher("/ws/.*", null, true);
-    private RequestMatcher orMatcher = new OrRequestMatcher(hessianMatcher, wsMatcher);
+    private RequestMatcher wgetMatcher = new RegexRequestMatcher("/wget.*", null, true);
+    private RequestMatcher orMatcher = new OrRequestMatcher(hessianMatcher, wsMatcher, wgetMatcher);
     
     @Override
     public boolean matches(HttpServletRequest request) {
