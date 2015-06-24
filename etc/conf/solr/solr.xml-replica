@@ -28,9 +28,14 @@
   adminPath: RequestHandler path to manage cores.  
     If 'null' (or absent), cores will not be manageable via request handler
   -->
-  <cores adminPath="/admin/cores">
+  <cores adminPath="/admin/cores" host="${host:}" hostPort="${jetty.port:8983}" hostContext="${hostContext:solr}">
     <core name="datasets" instanceDir="datasets" dataDir="/esg/solr-index/@@hostname@@-@@port@@/datasets" />
     <core name="files" instanceDir="files" dataDir="/esg/solr-index/@@hostname@@-@@port@@/files" />
     <core name="aggregations" instanceDir="aggregations" dataDir="/esg/solr-index/@@hostname@@-@@port@@/aggregations" />
+    
+    <shardHandlerFactory name="shardHandlerFactory" class="HttpShardHandlerFactory">
+      <str name="urlScheme">${urlScheme:}</str>
+    </shardHandlerFactory>
+    
   </cores>
 </solr>

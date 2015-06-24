@@ -66,7 +66,18 @@
     </lst>
   </requestHandler>  
   
-  <requestHandler name="/replication" class="solr.ReplicationHandler" startup="lazy" /> 
+  <requestHandler name="/replication" class="solr.ReplicationHandler" startup="lazy">
+    <lst name="master">
+      <str name="replicateAfter">startup</str>
+      <str name="replicateAfter">commit</str>
+      <str name="replicateAfter">optimize</str>
+      <str name="confFiles">schema.xml,stopwords.txt</str>
+    </lst>
+    <lst name="${slave:slave}">
+      <str name="masterUrl">http://localhost:8984/solr/${solr.core.name}/replication</str>
+      <str name="pollInterval">00:00:60</str>
+    </lst>
+  </requestHandler>
 
   <requestDispatcher handleSelect="true" >
     <requestParsers enableRemoteStreaming="false" multipartUploadLimitInKB="2048" formdataUploadLimitInKB="2048" />
