@@ -131,8 +131,9 @@ public class QueryParameters {
         
     /**
      * List of invalid text characters - anything that is not within square brackets.
+     * MUST NOT ALLOW" < > & % " '
      */
-    public static Pattern INVALID_CHARACTERS = Pattern.compile(".*[^a-zA-Z0-9_+\\-\\.\\@\\'\\:\\;\\,\\s/()\\*\\\"\\[\\]].*!");
+    public static Pattern INVALID_CHARACTERS = Pattern.compile(".*[^a-zA-Z0-9_+\\-\\.\\@\\:\\;\\,\\s/()\\*\\[\\]].*!");
     
     /**
      * Format for temporal queries.
