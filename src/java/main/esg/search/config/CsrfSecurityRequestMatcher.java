@@ -4,6 +4,7 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
@@ -15,9 +16,10 @@ public class CsrfSecurityRequestMatcher implements RequestMatcher {
 	
 	// null == match ALL HTTP methods
 	// true == case insensitive matching
-    private RegexRequestMatcher unprotectedMatcher 
-    	= new RegexRequestMatcher("/remote/secure/client-cert/hessian/.*", null, true); 
- 
+    private RequestMatcher hessianMatcher = new RegexRequestMatcher("/remote/secure/client-cert/hessian/.*", null, true); 
+    private RequestMatcher wsMatcher = new RegexRequestMatcher("/ws/.*", null, true);
+    private RequestMatcher orMatcher = new OrRequestMatcher(hessianMatcher, wsMatcher);
+    
     @Override
     public boolean matches(HttpServletRequest request) {
     	
@@ -28,7 +30,7 @@ public class CsrfSecurityRequestMatcher implements RequestMatcher {
  
         // exclude special URLs from CSRF validation
         // enforce CSRF validation on all others
-        return !unprotectedMatcher.matches(request);
+        return !orMatcher.matches(request);
         
     }
 }

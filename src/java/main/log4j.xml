@@ -47,7 +47,7 @@
 		<level value="DEBUG" />
 		<appender-ref ref="search_log" />
 	</logger>
-	<logger name="esg.search" addiitivity="false">
+	<logger name="esg.search" additivity="false">
 	  <level value="DEBUG" />
 	  <appender-ref ref="search_log" />
 	</logger>
