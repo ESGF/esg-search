@@ -65,7 +65,7 @@
        ESGF-v2.0: first ESGF schema version compatible with Solr4
                   addition of "geo" field for geo-spatial queries
 
-       ESGF-v2.0: addition of _timestamp to track last document update
+       ESGF-v2.1: addition of _timestamp to track last document update
      -->
 
 <fields>

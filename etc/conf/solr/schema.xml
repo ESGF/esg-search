@@ -45,7 +45,7 @@
     that avoids logging every request
 -->
 
-<schema name="ESGF-v2.0" version="1.5">
+<schema name="ESGF-v2.1" version="1.5">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        version="x.y" is Solr's version number for the schema syntax and 
        semantics.  It should not normally be changed by applications.
@@ -64,6 +64,8 @@
 
        ESGF-v2.0: first ESGF schema version compatible with Solr4
                   addition of "geo" field for geo-spatial queries
+
+       ESGF-v2.1: addition of _timestamp to track last document update
      -->
 
 <fields>
@@ -164,6 +166,9 @@
    <!-- The date the document was created or last modified - if such information is found -->
    <field name="timestamp" type="date" indexed="true" stored="true" required="false" multiValued="false"/>
 
+   <!-- The date the document was created or last modified - automatically inserted by Solr if not found already (see solrconfig.xml) -->
+   <field name="_timestamp" type="date" indexed="true" stored="true" required="false" multiValued="false"/>
+
    <!-- The date/time boundaries -->
    <field name="datetime_start" type="date" indexed="true" stored="true" multiValued="false"/>
    <field name="datetime_stop" type="date" indexed="true" stored="true" multiValued="false"/>
@@ -206,9 +211,10 @@
         unknown fields indexed and/or stored by default -->
    <!--dynamicField name="*" type="ignored" multiValued="true" /-->
 
-   <!-- All other fields ending in 'date' are assigned date type.
+   <!-- All other fields starting or ending in 'date' are assigned date type.
         Note: be careful that 'time_frequency' is a string... -->
    <dynamicField name="*date" type="date" indexed="true" stored="true" multiValued="false"/>
+   <dynamicField name="date*" type="date" indexed="true" stored="true" multiValued="false"/>
 
    <!-- All other fields are indexed and stored as-is and can have multiple values.
         No text processing is applied to enable exact retrieval of facet by field value.
@@ -228,52 +234,22 @@
   generated queries are best made explicit, or they can use the "df" request parameter
   which takes precedence over this.
   Note: Un-commenting defaultSearchField will be insufficient if your request handler
-  in solrconfig.xml defines "df", which takes precedence. That would need to be removed.
- <defaultSearchField>text</defaultSearchField> -->
+  in solrconfig.xml defines "df", which takes precedence. That would need to be removed. -->
+ <defaultSearchField>text</defaultSearchField>
 
  <!-- DEPRECATED: The defaultOperator (AND|OR) is consulted by various query parsers
   when parsing a query string to determine if a clause of the query should be marked as
   required or optional, assuming the clause isn't already marked by some operator.
   The default is OR, which is generally assumed so it is not a good idea to change it
-  globally here.  The "q.op" request parameter takes precedence over this.
- <solrQueryParser defaultOperator="OR"/> -->
+  globally here.  The "q.op" request parameter takes precedence over this. -->
+ <solrQueryParser defaultOperator="OR"/>
 
   <!-- copyField commands copy one field to another at the time a document
         is added to the index.  It's used either to index the same field differently,
         or to add multiple fields to the same field for easier/faster searching.  -->
 
-   <copyField source="cat" dest="text"/>
-   <copyField source="name" dest="text"/>
-   <copyField source="manu" dest="text"/>
-   <copyField source="features" dest="text"/>
-   <copyField source="includes" dest="text"/>
-   <copyField source="manu" dest="manu_exact"/>
-
-   <!-- Copy the price into a currency enabled field (default USD) -->
-   <copyField source="price" dest="price_c"/>
-
-   <!-- Text fields from SolrCell to search by default in our catch-all field -->
-   <copyField source="title" dest="text"/>
-   <copyField source="author" dest="text"/>
-   <copyField source="description" dest="text"/>
-   <copyField source="keywords" dest="text"/>
-   <copyField source="content" dest="text"/>
-   <copyField source="content_type" dest="text"/>
-   <copyField source="resourcename" dest="text"/>
-   <copyField source="url" dest="text"/>
-
-   <!-- Create a string version of author for faceting -->
-   <copyField source="author" dest="author_s"/>
-	
-   <!-- Above, multiple source fields are copied to the [text] field. 
-	  Another way to map multiple source fields to the same 
-	  destination field is to use the dynamic field syntax. 
-	  copyField also supports a maxChars to copy setting.  -->
-	   
-   <!-- <copyField source="*_t" dest="text" maxChars="3000"/> -->
-
-   <!-- copy name to alphaNameSort, a field designed for sorting by name -->
-   <!-- <copyField source="name" dest="alphaNameSort"/> -->
+   <!-- Copy values from ALL fields into catch-all text field. -->
+   <copyField source="*" dest="text" />
  
   <types>
     <!-- field type definitions. The "name" attribute is
