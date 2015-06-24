@@ -24,6 +24,9 @@
 	<!-- node-specific ESGF properties -->
 	<bean id="esgfProperties" class="esg.common.util.ESGFProperties" />
 
+    <!-- configuration context -->    
+    <context:component-scan base-package="esg.search.config"/>
+
 	<!-- publish context -->    
   	<context:component-scan base-package="esg.search.publish"/>
 
