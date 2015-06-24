@@ -44,11 +44,11 @@
 		<appender-ref ref="stdout" />
 	</logger>
 	<logger name="org.apache.solr" additivity="false">
-		<level value=""DEBUG"" />
+		<level value="DEBUG" />
 		<appender-ref ref="search_log" />
 	</logger>
 	<logger name="esg.search" addiitivity="false">
-	  <level value=""DEBUG"" />
+	  <level value="DEBUG" />
 	  <appender-ref ref="search_log" />
 	</logger>
 
