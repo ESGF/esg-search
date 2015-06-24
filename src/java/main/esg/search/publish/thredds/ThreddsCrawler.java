@@ -29,6 +29,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -57,6 +58,9 @@ import esg.search.query.impl.solr.SearchInputImpl;
  */
 @Service("metadataRepositoryCrawler")
 public class ThreddsCrawler implements MetadataRepositoryCrawler {
+	
+	@Value("${esg.search.thredds.publish.wait}")
+	private int waitTimeInSeconds = 0;
 	
     /**
      * Class responsible for parsing each single Thredds catalog.
@@ -164,6 +168,8 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
                         LOG.info("Catalog "+catalogRef.toString()+" matches filter regular expression, proceeding with publishing/unpubishing of records");
                     try {
                         crawl(catalogRef, filter, recursive, callback, publish, schema);
+                        LOG.debug("Waiting "+this.waitTimeInSeconds+" seconds before crawling...");
+                        Thread.sleep(waitTimeInSeconds);
                     } catch(Exception e) {
                         // print error from nested invocation
                         LOG.warn("Error parsing catalog: "+catalogRef.toString());

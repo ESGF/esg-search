@@ -92,7 +92,7 @@ public class SolrMessageBuilder {
 	 * @return
 	 */
 	public static String buildCommitMessage() {
-	    return "<commit waitfFlush=\"true\" waitSearcher=\"true\"/>";
+	    return "<commit />";
 	}
 	
 	/**
