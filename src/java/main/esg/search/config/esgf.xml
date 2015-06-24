@@ -26,11 +26,11 @@
 	<esgf:field name="timestamp" minOccurs="0" maxOccurs="1" type="date" />
 	
 	<!-- records may have 0, 1 or more "access" fields -->
-	<esgf:field name="access" minOccurs="0" maxOccurs="unbounded"/>
+	<esgf:field name="access" minOccurs="0" maxOccurs="9999"/>
 	
 	<!-- records may have 0, 1 or more "url" fields, 
 	     encoded as 3-tuple of the form: 'url|mime type|service name' -->
-	<esgf:field name="url" minOccurs="0" maxOccurs="unbounded"/>
+	<esgf:field name="url" minOccurs="0" maxOccurs="9999"/>
 	
 	<!-- "size" field is optional, if provided it must be a long -->
 	<esgf:field name="size" minOccurs="0" maxOccurs="1" type="long" minValue="0" />

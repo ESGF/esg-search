@@ -13,10 +13,11 @@
 	<esgf:field name="realm" minOccurs="1" maxOccurs="1" recordType="Dataset" />
 	<esgf:field name="time_frequency" minOccurs="1" maxOccurs="1" recordType="Dataset" />
 	
-	<esgf:field name="variable" minOccurs="0" maxOccurs="unbounded" />
-	<esgf:field name="variable_long_name" minOccurs="0" maxOccurs="unbounded" />
-	<esgf:field name="variable_units" minOccurs="0" maxOccurs="unbounded" />
-	<esgf:field name="cf_standard_name" minOccurs="0" maxOccurs="unbounded" />
+    <!-- note: must use 9999 instead of "unbounded" otherwise security scan complains of possible resource exhaustion attack -->
+	<esgf:field name="variable" minOccurs="0" maxOccurs="9999" />
+	<esgf:field name="variable_long_name" minOccurs="0" maxOccurs="9999" />
+	<esgf:field name="variable_units" minOccurs="0" maxOccurs="9999" />
+	<esgf:field name="cf_standard_name" minOccurs="0" maxOccurs="9999" />
 	
 	<!-- mandatory fields used for replica and version management -->
 	<esgf:field name="instance_id" minOccurs="1" maxOccurs="1"/>
