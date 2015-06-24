@@ -163,11 +163,11 @@
    <!-- The host indexing the data  -->
    <field name="index_node" type="string" indexed="true" stored="true" required="true" multiValued="false" />
 
-   <!-- The date the document was created or last modified - if such information is found -->
+   <!-- The date that the data object was created or last modified - if such information is found -->
    <field name="timestamp" type="date" indexed="true" stored="true" required="false" multiValued="false"/>
 
-   <!-- The date the document was created or last modified - automatically inserted by Solr if not found already (see solrconfig.xml) -->
-   <field name="_timestamp" type="date" indexed="true" stored="true" required="false" multiValued="false"/>
+   <!-- The date that the metadata object was created or last modified - automatically set by Solr to the current time -->
+   <field name="_timestamp" type="date" indexed="true" stored="true" required="false" multiValued="false" default="NOW" />
 
    <!-- The date/time boundaries -->
    <field name="datetime_start" type="date" indexed="true" stored="true" multiValued="false"/>
