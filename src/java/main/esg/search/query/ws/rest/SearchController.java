@@ -40,7 +40,7 @@ public class SearchController {
 	/**
 	 * Method to execute a generic metadata search and return the untransformed Solr/XML output document.
 	 */
-	@RequestMapping(value="/search", method={ RequestMethod.GET, RequestMethod.POST })
+	@RequestMapping(value="/search", method={ RequestMethod.GET })
 	public void search(final HttpServletRequest request, 
 			           final SearchCommand command, 
 			           final HttpServletResponse response) throws Exception {
