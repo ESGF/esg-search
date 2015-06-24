@@ -21,38 +21,35 @@
 <log4j:configuration threshold="all"
 	xmlns:log4j="http://jakarta.apache.org/log4j/">
 
-	<!--  APPENDERS  -->
+	<!-- appenders  -->
 	<appender name="stdout" class="org.apache.log4j.ConsoleAppender">
 		<layout class="org.apache.log4j.PatternLayout">
 			<param name="conversionPattern" value="[%p] %C: %m%n" />
 		</layout>
 	</appender>
-
 	<appender name="search_log" class="org.apache.log4j.RollingFileAppender">
 	  <param name="File" value="${catalina.base}/logs/esgf-search.log"/>
 	  <layout class="org.apache.log4j.PatternLayout">
-	    <!-- TODO: add datetime? -->
 	    <param name="conversionPattern" value="%d [%p] %C: %m %n"/>
 	  </layout>
 	</appender>
+  
+    <!-- loggers -->
 	<logger name="esg" additivity="false">
 		<level value="INFO" />
 		<appender-ref ref="stdout" />
 	</logger>
-	
 	<logger name="org.springframework.security" additivity="false">
-		<level value="INFO" />
+		<level value="DEBUG" />
 		<appender-ref ref="stdout" />
 	</logger>
-	
 	<logger name="org.apache.solr" additivity="false">
-		<level value="INFO" />
+		<level value="DEBUG" />
 		<appender-ref ref="search_log" />
 	</logger>
-	<logger name="esg.search" addiitivity="false">
-	  <level value="INFO" />
+	<logger name="esg.search" additivity="false">
+	  <level value="DEBUG" />
 	  <appender-ref ref="search_log" />
 	</logger>
-
 
 </log4j:configuration>

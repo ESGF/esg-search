@@ -21,6 +21,9 @@
 		    	
     	<!-- Disable anonymous authentication -->
     	<security:anonymous enabled="false" />
+      
+      <!-- custom CSRF filter to exclude specific URL patterns -->
+      <security:csrf request-matcher-ref="csrfSecurityRequestMatcher"/>
     	
 	</security:http>
 	
