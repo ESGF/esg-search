@@ -897,9 +897,9 @@ solr_init() {
     get_property index_master_port "8984"
     get_property index_slave_port "8983"
 
-    solr_version=3.6.0
+    solr_version=4.9.1
     solr_dist_url=${esg_dist_url}/thirdparty/apache-solr-${solr_version}.tgz
-    #solr_dist_url=http://mirror.metrocast.net/apache//lucene/solr/${solr_version}/apache-solr-${solr_version}.tgz
+    #solr_dist_url=http://mirror.metrocast.net/apache//lucene/solr/${solr_version}/solr-${solr_version}.tgz
     solr_workdir=${workdir}/solr-${solr_version}
 
     #The install of solr pivots on this variable
@@ -1003,7 +1003,7 @@ setup_solr() {
         fi
 
         #special files needed to complete the configuration...
-        cp ${solr_workdir}/apache-solr-${solr_version}/example/solr/conf/{stopwords.txt,synonyms.txt,protwords.txt,elevate.xml} ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/
+        cp ${solr_workdir}/solr-${solr_version}/example/solr/collection1/conf/{stopwords.txt,synonyms.txt,protwords.txt,elevate.xml} ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/
         echo "core: ${solr_cores[${i}]} - [OK]"
     done
     ((err_count == 0)) && rm -rf ${solr_install_dir}/multicore/exampledocs
