@@ -1033,7 +1033,7 @@ check_solr_version() {
 configure_solr() {
     solr_init ${1} >& /dev/null
     echo -n "Configuring solr... ${solr_config_type} port[${solr_server_port}] "
-    pushd ${solr_install_dir}/solr/conf >& /dev/null
+    pushd ${solr_install_dir}/solr/collection1/conf >& /dev/null
     [ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
 
     local suffix
