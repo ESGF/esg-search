@@ -1087,21 +1087,20 @@ configure_solr() {
     #realm.properties with values inserted at installation time from
     #/esg/config/esgf.properties
 
+    #if [ "${solr_config_type}" != "master" ]; then
+        #echo -n " - Peforming additional configuration for ${solr_config_type} "
+        #pushd ${solr_install_dir}/etc >& /dev/null
+        #curl -s -L --insecure ${esg_dist_url}/esg-search/jetty.xml-auth > ${solr_install_dir}/etc/jetty.xml && echo -n ":"
+        #curl -s -L --insecure ${esg_dist_url}/esg-search/webdefault.xml-auth > ${solr_install_dir}/etc/webdefault.xml && echo -n "-"
+        #curl -s -L --insecure ${esg_dist_url}/esg-search/realm.properties | sed -n 's/[ ]*\(solr-admin[^: ]*\):[ ]*\([^, ]*\)\(.*\)/'${installer_user}': '${security_admin_password}'\3/p' >> ${solr_install_dir}/etc/realm.properties && echo -n ")"
+        #_dedup_solr_realm ${solr_install_dir}/etc/realm.properties
+        #[ $? != 0 ] && checked_done 1
+        #chown ${installer_uid}:${installer_gid} realm.properties
 
-    if [ "${solr_config_type}" != "master" ]; then
-        echo -n " - Peforming additional configuration for ${solr_config_type} "
-        pushd ${solr_install_dir}/etc >& /dev/null
-        curl -s -L --insecure ${esg_dist_url}/esg-search/jetty.xml-auth > ${solr_install_dir}/etc/jetty.xml && echo -n ":"
-        curl -s -L --insecure ${esg_dist_url}/esg-search/webdefault.xml-auth > ${solr_install_dir}/etc/webdefault.xml && echo -n "-"
-        curl -s -L --insecure ${esg_dist_url}/esg-search/realm.properties | sed -n 's/[ ]*\(solr-admin[^: ]*\):[ ]*\([^, ]*\)\(.*\)/'${installer_user}': '${security_admin_password}'\3/p' >> ${solr_install_dir}/etc/realm.properties && echo -n ")"
-        _dedup_solr_realm ${solr_install_dir}/etc/realm.properties
-        [ $? != 0 ] && checked_done 1
-        chown ${installer_uid}:${installer_gid} realm.properties
-
-        popd >& /dev/null
+        #popd >& /dev/null
 
         #_add_myself_to_distrib_shards_list ${solr_install_dir}/solr/conf/solrconfig.xml
-    fi
+     #fi
 
     _curl "${esg_dist_url}/esg-search/solr.xml-${suffix}" "${solr_install_dir}/multicore/solr.xml" || checked_done 1
     
