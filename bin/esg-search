@@ -1203,10 +1203,14 @@ start_solr() {
         local solr_java_opts="SOLR_JAVA_OPTS_${solr_server_port}"
         solr_java_opts=${!solr_java_opts:-${SOLR_JAVA_OPTS}}
 
+	if ["${solr_config_type}" = "master" ]; then role="-Denable.master=true" 
+	elif ["${solr_config_type}" = "slave" ]; then role="-Denable.slave=true"
+	fi
+
         pushd ${solr_install_dir} >& /dev/null
         #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
-        verbose_print "java -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar"
-        java ${solr_java_opts} -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar >& /dev/null &
+        verbose_print "java -Denable.${role}=true -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar"
+        java ${solr_java_opts} ${role} -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar >& /dev/null &
         popd >& /dev/null
         
         pcheck 30 2 1 -- check_solr_process
