@@ -12,7 +12,7 @@ solr_cores=(datasets files aggregations)
 # FIXME
 solr_config_type=master
 solr_server_port=8984
-esg_search_dist=/Users/cinquini/Documents/workspace-java/esg-search
+esg_search_dist=~/src/esg-search
 
 
 
@@ -45,10 +45,9 @@ if [ ! -e ${solr_home} ]; then
   for ((i=0;i<${#solr_cores[@]};i++)) ; do
     cp -R mycore ${solr_cores[${i}]}
     core_file=${solr_cores[${i}]}/core.properties
-    sed -i .bak 's/@mycore@/'${solr_cores[${i}]}'/g' ${core_file}
-    sed -i .bak 's/@solr_config_type@/'${solr_config_type}'/g' ${core_file}
-    sed -i .bak 's/@solr_server_port@/'${solr_server_port}'/g' ${core_file}
-    rm ${core_file}.bak
+    sed --in-place 's/@mycore@/'${solr_cores[${i}]}'/g' ${core_file}
+    sed --in-place 's/@solr_config_type@/'${solr_config_type}'/g' ${core_file}
+    sed --in-place 's/@solr_server_port@/'${solr_server_port}'/g' ${core_file}
   done
   rm -rf mycore
 
