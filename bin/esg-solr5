@@ -1,0 +1,73 @@
+# ESGF SOLR5 installation script
+
+# parameters
+solr_version=5.2.1
+
+workdir=/usr/local/src/esgf/workbench/esg
+datadir=/esg/solr-index
+homedir=/usr/local/esgf-solr-${solr_version}
+
+solr_cores=(datasets files aggregations)
+
+# FIXME
+solr_config_type=master
+solr_server_port=8984
+esg_search_dist=/Users/cinquini/Documents/workspace-java/esg-search
+
+
+
+# download and install Solr
+solr_dist_file=solr-${solr_version}.tgz
+if [ ! -e ${workdir}/${solr_dist_file} ]; then
+  echo "Downloading ${solr_dist_file}"
+  solr_dist_url=http://archive.apache.org/dist/lucene/solr/${solr_version}/${solr_dist_file}
+  mkdir -p ${workdir}
+  cd ${workdir}
+  wget ${solr_dist_url}
+  tar xvzf solr-${solr_version}.tgz
+fi
+
+# install solr
+solr_install_dir=/usr/local/solr-${solr_version}
+if [ ! -e ${solr_install_dir} ]; then
+  echo "Installing solr-${solr_version}"
+  mv ${workdir}/solr-${solr_version} ${solr_install_dir}
+fi
+
+# setup solr_home
+solr_home=${homedir}/${solr_config_type}-${solr_server_port}
+if [ ! -e ${solr_home} ]; then
+  echo "Setting up sor home directory: ${solr_home}"
+  mkdir -p ${solr_home}
+  cp -R ${esg_search_dist}/etc/conf/solr-home/* ${solr_home}/.
+
+  cd ${solr_home}
+  for ((i=0;i<${#solr_cores[@]};i++)) ; do
+    cp -R mycore ${solr_cores[${i}]}
+    core_file=${solr_cores[${i}]}/core.properties
+    sed -i .bak 's/@mycore@/'${solr_cores[${i}]}'/g' ${core_file}
+    sed -i .bak 's/@solr_config_type@/'${solr_config_type}'/g' ${core_file}
+    sed -i .bak 's/@solr_server_port@/'${solr_server_port}'/g' ${core_file}
+    rm ${core_file}.bak
+  done
+  rm -rf mycore
+
+fi
+
+
+# create solr_indexes
+for ((i=0;i<${#solr_cores[@]};i++)) ; do
+  core_data_dir=${datadir}/${solr_config_type}-${solr_server_port}/${solr_cores[${i}]}
+  if [ ! -e ${core_data_dir} ]; then
+     echo "Creating solr core index directory: ${core_data_dir}"
+     mkdir -p ${core_data_dir}
+  fi
+done
+
+# start solrs
+cd ${solr_install_dir}
+bin/solr start -d ${solr_install_dir}/server -s ${solr_home} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true"
+
+# stop solrs
+#cd ${solr_install_dir}
+#bin/solr stop --all
