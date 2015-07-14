@@ -10,11 +10,11 @@ homedir=/usr/local/esgf-solr-${solr_version}
 solr_cores=(datasets files aggregations)
 
 # FIXME
-solr_config_type=master
-solr_server_port=8984
-esg_search_dist=~/src/esg-search
-
-
+#solr_config_type=master
+#solr_server_port=8984
+solr_config_type=slave
+solr_server_port=8983
+esg_search_dist=/home/cinquini/src/esg-search
 
 # download and install Solr
 solr_dist_file=solr-${solr_version}.tgz
@@ -64,8 +64,8 @@ for ((i=0;i<${#solr_cores[@]};i++)) ; do
 done
 
 # start solrs
-cd ${solr_install_dir}
-bin/solr start -d ${solr_install_dir}/server -s ${solr_home} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true"
+#cd ${solr_install_dir}
+#bin/solr start -d ${solr_install_dir}/server -s ${solr_home} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true"
 
 # stop solrs
 #cd ${solr_install_dir}
