@@ -678,11 +678,12 @@ solr_init() {
     get_property index_master_port "8984"
     get_property index_slave_port "8983"
 
-    solr_version=4.9.1
+    solr_version=5.2.1
     #solr_dist_url=${esg_dist_url}/thirdparty/apache-solr-${solr_version}.tgz
-    # http://archive.apache.org/dist/lucene/solr/4.9.1/solr-4.9.1.tgz
+    # http://archive.apache.org/dist/lucene/solr/5.2.1/solr-5.2.1.tgz
     solr_dist_url=http://archive.apache.org/dist/lucene/solr/${solr_version}/solr-${solr_version}.tgz
     solr_workdir=${workdir}/solr-${solr_version}
+    echo "Using solr_workdir=${solr_workdir}"
 
     #The install of solr pivots on this variable
     #make this config type "sticky"
@@ -696,7 +697,11 @@ solr_init() {
     fi
 
     solr_install_dir=${install_prefix}/esgf-solr-${solr_version}/${solr_config_type}-${solr_server_port}
+    echo "Using solr_install_dir=${solr_install_dir}"
     solr_data_dir=${esg_root_dir}/solr-index/${solr_config_type}-${solr_server_port}
+    echo "Using solr_data_dir=${solr_data_dir}"
+    solr_server_dir=${install_prefix}/solr-${solr_version}
+    echo "Using solr_server_dir=${solr_server_dir}"
     solr_cores=(datasets files aggregations)
     debug_print "init: ${solr_config_type} [${solr_server_port}]"
 }
@@ -706,7 +711,7 @@ setup_solr() {
     solr_init ${1}
     echo
     echo -n "Checking for solr ${solr_version}... "
-    (cd ${solr_install_dir}/multicore >& /dev/null; ls ${solr_cores[@]} >& /dev/null) && [ -e ${solr_install_dir}/start.jar ] && check_solr_version
+    (cd ${solr_install_dir} >& /dev/null; ls ${solr_cores[@]} >& /dev/null) && [ -e ${solr_server_dir}/server/start.jar ] && check_solr_version
     [ $? == 0 ] && (( ! force_install )) && echo " [OK]" && return 0
 
     echo
@@ -716,7 +721,7 @@ setup_solr() {
     echo
 
     local dosetup
-    if [ -x ${solr_install_dir}/start.jar ]; then 
+    if [ -x ${solr_server_dir}/server/start.jar ]; then 
         echo "Detected an existing esgf-solr installation for ${solr_config_type} configuration type..."
         read -p "Do you want to continue with esgf-solr installation and setup? [y/N] " dosetup
         if [ "${dosetup}" != "Y" ] && [ "${dosetup}" != "y" ]; then
@@ -771,9 +776,16 @@ setup_solr() {
         tar xzf ${solr_dist_file}
         [ $? != 0 ] && echo " ERROR: Could not extract solr [${solr_dist_file}] :-( " && popd && checked_done 1
     fi
+    
+    # move unpacked solr distribution to final location
+    if [ ! -e ${solr_server_dir} ]; then
+        echo "moving: ${solr_workdir}/solr-${solr_version} to: ${install_prefix}/."
+        mv ${solr_workdir}/solr-${solr_version} ${install_prefix}/.
+    fi
 
     [ -d ${solr_install_dir} ] && (echo "Backing up previous install... " && (backup ${solr_install_dir} || (mv ${solr_install_dir}{,.bak} || echo "Could not move aside prev install")))
     [ ! -d "${solr_install_dir}" ] && echo "Creating installation dir: ${solr_install_dir}" && mkdir -p ${solr_install_dir}
+    # GOT here
     cp -R ${solr_dist_dir}/example/* ${solr_install_dir}
     pushd ${solr_install_dir}/multicore/ >& /dev/null && tar czf ${solr_install_dir}/core0.tgz core0 && popd >& /dev/null || checked_done 1
     local err_count=0
