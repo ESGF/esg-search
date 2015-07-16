@@ -218,7 +218,7 @@ search_startup_hook() {
 # - That there is a corresponding installation directory /usr/local/solr<version>/<hostname>-<port>
 #
 # (next two not needed for local slave and master)
-# - That within that diectory the entry is present and correct in EACH of the multicore solrconfig.xml files <hostname>:8983 (where the remote master is)
+# - That within that directory the entry is present and correct in EACH of the multicore solrconfig.xml files <hostname>:8983 (where the remote master is)
 # - That within that directory under "multicore" the entry for cores are present and configured in the solr.xml <hostname>-<port> inserted in xml.
 #
 # (all)
@@ -826,6 +826,7 @@ check_solr_version() {
 #TODO: change these curls to either get certs to use ssl or use checked_get
 #Input param <hostname>[:<port>]
 configure_solr() {
+
     solr_init ${1} >& /dev/null
     echo -n "Configuring solr... ${solr_config_type} port[${solr_server_port}] "
     #pushd ${solr_install_dir}/solr/collection1/conf >& /dev/null
@@ -839,75 +840,10 @@ configure_solr() {
     fi
 
     #------------------------
-    # OBSOLETE
-    #Setting up solrconfig.xml file for all cores
-    #------------------------
-    # Modify the solrconfig.xml file in *each* of the cores' dir tree to reflect remote.
-    #for ((i=0;i<${#solr_cores[@]};i++)); do
-    #    echo -n "*"
-    #    verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml$([ "${suffix}" = "replica" ] && echo "-${suffix}" || echo "") > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml"
-    #    curl -s -L --insecure ${esg_dist_url}/esg-search/solrconfig.xml$([ "${suffix}" = "replica" ] && echo "-${suffix}" || echo "") > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
-    #    [ $? != 0 ] && echo && echo "Problem configuring (config) solr for ${solr_cores[${i}]} (2)" && return 3
-    #    chmod 755 ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
-    #    if [ "${suffix}" = "replica" ]; then
-    #        sed -i 's#\(.*masterUrl.*http://\)\(.*\)\(:'${index_slave_port}'.*\)#\1'${solr_config_type}'\3#' ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/solrconfig.xml
-    #    fi
-    #done
-
-    #------------------------
-    # OBSOLETE
-    #Setting up schema.xml file for all cores
-    #------------------------
-    #for ((i=0;i<${#solr_cores[@]};i++)); do
-    #    verbose_print "curl -s -L --insecure ${esg_dist_url}/esg-search/schema.xml > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/schema.xml"
-    #    curl -s -L --insecure ${esg_dist_url}/esg-search/schema.xml > ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/schema.xml
-    #    [ $? != 0 ] && echo && echo "Problem configuring solr for ${solr_cores[${i}]} (3)" && return 3
-    #    chmod 755 ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/schema.xml
-    #done
-
-    #------------------------
-    #Create the data (index) directories
+    # Create the data (index) directories
     #------------------------
     eval mkdir -p $(echo ${solr_data_dir}/{${solr_cores[@]}} | sed 's/ /,/g')
     chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_data_dir})
-
-    #------------------------
-    # OBSOLETE
-    # FOR THE SLAVE ONLY, override the Jetty files with new ones that support authentication:
-    #	- cp esg-search/etc/conf/jetty/jetty.xml-auth --> /usr/local/esgf-solr-3.1.0-slave/etc/jetty.xml
-    #	- cp esg-search/etc/conf/jetty/realm.properties /usr/local/esgf-solr-3.1.0-slave/etc/.
-    #	- cp esg-search/etc/conf/jetty/webdefault.xml-auth /usr/local/esgf-solr-3.1.0-slave/etc/webdefault.xml
-    #
-    #This is because the slave is available on port ${index_slave_port} to the world,
-    #and needs to be protected.
-    #
-    #NOTE: we should consider replacing the username, password in
-    #realm.properties with values inserted at installation time from
-    #/esg/config/esgf.properties
-
-    #if [ "${solr_config_type}" != "master" ]; then
-        #echo -n " - Peforming additional configuration for ${solr_config_type} "
-        #pushd ${solr_install_dir}/etc >& /dev/null
-        #curl -s -L --insecure ${esg_dist_url}/esg-search/jetty.xml-auth > ${solr_install_dir}/etc/jetty.xml && echo -n ":"
-        #curl -s -L --insecure ${esg_dist_url}/esg-search/webdefault.xml-auth > ${solr_install_dir}/etc/webdefault.xml && echo -n "-"
-        #curl -s -L --insecure ${esg_dist_url}/esg-search/realm.properties | sed -n 's/[ ]*\(solr-admin[^: ]*\):[ ]*\([^, ]*\)\(.*\)/'${installer_user}': '${security_admin_password}'\3/p' >> ${solr_install_dir}/etc/realm.properties && echo -n ")"
-        #_dedup_solr_realm ${solr_install_dir}/etc/realm.properties
-        #[ $? != 0 ] && checked_done 1
-        #chown ${installer_uid}:${installer_gid} realm.properties
-
-        #popd >& /dev/null
-
-        #_add_myself_to_distrib_shards_list ${solr_install_dir}/solr/conf/solrconfig.xml
-     #fi
-
-    #_curl "${esg_dist_url}/esg-search/solr.xml-${suffix}" "${solr_install_dir}/multicore/solr.xml" || checked_done 1
-    
-    #Just editing the single file solr.xml but multiple times (one for each core)
-    #for ((i=0;i<${#solr_cores[@]};i++)) ; do
-    #    sed -i 's#\(.*<core.*dataDir="\)\([a-zA-Z@/-]*\)\(\/\('${solr_cores[i]}'\).*\)#\1'${solr_data_dir}'\3#' ${solr_install_dir}/multicore/solr.xml
-    #    [ $? != 0 ] && echo && echo "Problem configuring (solr.xml) solr for ${solr_config_type} wth core = [${solr_cores[i]}]  (2)" && return 3
-    #done
-    #chmod 755 ${solr_install_dir}/multicore/solr.xml
 
     popd >& /dev/null
     echo " [OK]"
