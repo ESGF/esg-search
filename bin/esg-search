@@ -990,7 +990,7 @@ write_solr_install_log() {
     return 0
 }
 
-# start Solr server on port ${index_slave_port} connecting to Zookeeper on port 2181
+# start Solr server on port ${index_slave_port}
 start_solr() {
     while [ -n "$1" ]; do 
         solr_init ${1}
@@ -1001,10 +1001,11 @@ start_solr() {
         local solr_java_opts="SOLR_JAVA_OPTS_${solr_server_port}"
         solr_java_opts=${!solr_java_opts:-${SOLR_JAVA_OPTS}}
 
-        pushd ${solr_install_dir} >& /dev/null
-        #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &
-        verbose_print "java -Denable.${solr_config_type}=true -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar"
-        java ${solr_java_opts} -Denable.${solr_config_type}=true -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar >& /dev/null &
+        pushd ${solr_server_dir} >& /dev/null
+        #java -Dbootstrap_confdir=./solr/conf -Dcollection.configName=esgf-conf -DzkHost=localhost:${zookeeper_client_port} -jar start.jar >& /dev/null &      
+        verbose_print 'bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true'
+        #java ${solr_java_opts} -Denable.${solr_config_type}=true -Djetty.port=${solr_server_port} -Dsolr.solr.home=multicore -jar start.jar >& /dev/null &
+        bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true" >& /dev/null &
         popd >& /dev/null
         
         pcheck 30 2 1 -- check_solr_process
