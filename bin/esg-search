@@ -218,8 +218,8 @@ search_startup_hook() {
 # - That there is a corresponding installation directory /usr/local/solr<version>/<hostname>-<port>
 #
 # (next two not needed for local slave and master)
-# - That within that directory the entry is present and correct in EACH of the multicore solrconfig.xml files <hostname>:8983 (where the remote master is)
-# - That within that directory under "multicore" the entry for cores are present and configured in the solr.xml <hostname>-<port> inserted in xml.
+# - That within that directory the entry is present and correct in EACH of the core solrconfig.xml files <hostname>:8983 (where the remote master is)
+# - That within that directory the entry for cores are present and configured in the solr.xml <hostname>-<port> inserted in xml.
 #
 # (all)
 # - That there is data directory for physically storing the index in /esg/solr-index/<hostname-<port>
@@ -260,18 +260,11 @@ check_shards() {
         if [ -e "${solr_install_dir}" ]; then
             echo -n "*" 
             if [ "${solr_config_type}" != "master" ] && [ "${solr_config_type}" != "slave" ]; then
-                if (( $(sed -n 's/.*masterUrl.*'${solr_config_type}':'${index_slave_port}'.*/&/p' ${solr_install_dir}/multicore/*/conf/solrconfig.xml | wc -l) == ${#solr_cores[@]} )); then
+                if (( $(sed -n 's/.*masterUrl.*'${solr_config_type}':'80'.*/&/p' ${solr_install_dir}/*/conf/solrconfig.xml | wc -l) == ${#solr_cores[@]} )); then
                     echo -n "*"
                 else
                     echo -n "X"
-                    debug_print "check the files: ${solr_install_dir}/multicore/*/conf/solrconfig.xml"
-                    ((bad++))
-                fi
-                if (( $(sed -n 's/.*'${solr_config_type}'-'${solr_server_port}'.*/&/p' ${solr_install_dir}/multicore/solr.xml | wc -l)  == ${#solr_cores[@]} )); then
-                    echo -n "*"
-                else
-                    echo -n "X"
-                    debug_print "check the file: ${solr_install_dir}/multicore/solr.xml"
+                    echo "check the files: ${solr_install_dir}/*/conf/solrconfig.xml"
                     ((bad++))
                 fi
             else
