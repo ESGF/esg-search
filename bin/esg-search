@@ -702,6 +702,7 @@ solr_init() {
     echo "Using solr_data_dir=${solr_data_dir}"
     solr_server_dir=${install_prefix}/solr-${solr_version}
     echo "Using solr_server_dir=${solr_server_dir}"
+    echo "Using esg_dist_url=${esg_dist_url}"
     solr_cores=(datasets files aggregations)
     debug_print "init: ${solr_config_type} [${solr_server_port}]"
 }
@@ -779,29 +780,30 @@ setup_solr() {
     
     # move unpacked solr distribution to final location
     if [ ! -e ${solr_server_dir} ]; then
-        echo "moving: ${solr_workdir}/solr-${solr_version} to: ${install_prefix}/."
-        mv ${solr_workdir}/solr-${solr_version} ${install_prefix}/.
+        echo "copying: ${solr_workdir}/solr-${solr_version} to: ${install_prefix}/."
+        cp -R ${solr_workdir}/solr-${solr_version} ${install_prefix}/.
     fi
 
     [ -d ${solr_install_dir} ] && (echo "Backing up previous install... " && (backup ${solr_install_dir} || (mv ${solr_install_dir}{,.bak} || echo "Could not move aside prev install")))
     [ ! -d "${solr_install_dir}" ] && echo "Creating installation dir: ${solr_install_dir}" && mkdir -p ${solr_install_dir}
-    # GOT here
-    cp -R ${solr_dist_dir}/example/* ${solr_install_dir}
-    pushd ${solr_install_dir}/multicore/ >& /dev/null && tar czf ${solr_install_dir}/core0.tgz core0 && popd >& /dev/null || checked_done 1
+    # FIXME
+    my_esg_dist_url=/home/cinquini/src
+    cp -R ${my_esg_dist_url}/esg-search/etc/conf/solr-home/* ${solr_install_dir}/.
     local err_count=0
+    cd ${solr_install_dir}
     for ((i=0;i<${#solr_cores[@]};i++)) ; do
-        if [ -e ${solr_install_dir}/core0.tgz ] && [ ! -e  ${solr_install_dir}/multicore/${solr_cores[${i}]} ]; then
-            tar xzf ${solr_install_dir}/core0.tgz -C ${solr_install_dir}/multicore
-            mv ${solr_install_dir}/multicore/core0 ${solr_install_dir}/multicore/${solr_cores[${i}]}
+        if [ ! -e  ${solr_install_dir}/${solr_cores[${i}]} ]; then
+        	echo "Creating core directory: ${solr_install_dir}/${solr_cores[${i}]}"
+        	cp -R mycore ${solr_cores[${i}]}
+		    core_file=${solr_cores[${i}]}/core.properties
+		    sed --in-place 's/@mycore@/'${solr_cores[${i}]}'/g' ${core_file}
+		    sed --in-place 's/@solr_config_type@/'${solr_config_type}'/g' ${core_file}
+		    sed --in-place 's/@solr_server_port@/'${solr_server_port}'/g' ${core_file}
             [ $? != 0 ] && echo "Could not install core: ${solr_cores[${i}]} - no exemplar found" && ((err_count++)) && continue
         fi
-
-        #special files needed to complete the configuration...
-        cp ${solr_workdir}/solr-${solr_version}/example/solr/collection1/conf/{stopwords.txt,synonyms.txt,protwords.txt,elevate.xml} ${solr_install_dir}/multicore/${solr_cores[${i}]}/conf/
         echo "core: ${solr_cores[${i}]} - [OK]"
     done
-    ((err_count == 0)) && rm -rf ${solr_install_dir}/multicore/exampledocs
-    ((err_count == 0)) && rm -rf ${solr_install_dir}/multicore/core*
+    ((err_count == 0)) && rm -rf ${solr_install_dir}/mycore
     echo "${solr_version}" > ${solr_install_dir}/VERSION
 
 
