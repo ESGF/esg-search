@@ -312,23 +312,6 @@ add_shard() {
             [ -z "${answer}" ] || [ "$(tr A-Z a-z <<< ${answer})" = "n" ] && return 1
         fi
         nc -w 3 -z ${config_type%:*} ${target_index_search_port} 2> /dev/null || echo "[INFO] - The search port [${target_index_search_port}] is not available on ${config_type%:*}"
-    else
-        #Migration code to move over the old master and slave indexes into the new location.
-        #only intended to run once ever.
-        if [ "${config_type%:*}" == "master" ] && [ -e "${esg_root_dir}/solr-index-master" ] ; then
-            get_property index_master_port "8984"
-            [ "${config_type##*:}" != "master" ] && index_master_port=${config_type##*:}
-            backup ${esg_root_dir}/solr-index-master
-            mkdir -p ${esg_root_dir}/solr-index/master-${index_master_port}
-            mv ${esg_root_dir}/solr-index-master/* ${esg_root_dir}/solr-index/master-${index_master_port} && rmdir ${esg_root_dir}/solr-index-master && echo " - master index migrated [OK]"
-        fi
-        if [ "${config_type%:*}" == "slave" ] && [ -e "${esg_root_dir}/solr-index-slave" ] ; then
-            get_property index_slave_port "8983"
-            [ "${config_type##*:}" != "slave" ] && index_slave_port=${config_type##*:}
-            backup ${esg_root_dir}/solr-index-slave
-            mkdir -p ${esg_root_dir}/solr-index/slave-${index_slave_port}
-            mv ${esg_root_dir}/solr-index-slave/* ${esg_root_dir}/solr-index/slave-${index_slave_port} && rmdir ${esg_root_dir}/solr-index-slave && echo " - slave index migrated [OK]"
-        fi
     fi
     setup_solr ${config_type} && configure_solr ${config_type} && write_solr_install_log && _commit_configuration
 }
@@ -788,6 +771,9 @@ setup_solr() {
     [ ! -d "${solr_install_dir}" ] && echo "Creating installation dir: ${solr_install_dir}" && mkdir -p ${solr_install_dir}
        
     # create solr cores
+        	# FIXME
+    	esg_dist_url=http://distrib-coffee.ipsl.jussieu.fr/pub/esgf/dist/devel
+    
     pushd ${solr_workdir} >& /dev/null
   		rm -rf solr-home*
     	echo 'Downloading ${esg_dist_url}/esg-search/solr-home.tar'
@@ -836,14 +822,20 @@ configure_solr() {
 
     solr_init ${1} >& /dev/null
     echo -n "Configuring solr... ${solr_config_type} port[${solr_server_port}] "
-    #pushd ${solr_install_dir}/solr/collection1/conf >& /dev/null
-    #[ $? != 0 ] && echo "Could not locate directory ${solr_install_dir}/solr/conf :-( " && return 1
-
+    
+    pushd ${solr_install_dir} >& /dev/null
     local suffix
-    if [ "${solr_config_type}" = "master" ] || [ "${solr_config_type}" = "slave" ]; then
-        suffix="${solr_config_type}"
-    else
-        suffix="replica"
+    if [ ! "${solr_config_type}" = "master" ] && [ ! "${solr_config_type}" = "slave" ]; then
+ 		
+ 		
+ 		# configure replication handler for all cores
+ 		for ((i=0;i<${#solr_cores[@]};i++)) ; do
+ 			echo "Configuring replication handler for ${hostname}:${solr_server_port}"
+ 			solr_config_file=${solr_cores[${i}]}/conf/solrconfig.xml
+ 			# NOTE: replicates from port 80
+			sed --in-place 's/localhost:8984/'${solr_config_type}:80'/g' ${solr_config_file}
+ 			sed --in-place 's/00:00:60/'01:00:00'/g' ${solr_config_file}
+ 		done
     fi
 
     #------------------------
