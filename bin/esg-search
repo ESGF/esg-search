@@ -786,9 +786,15 @@ setup_solr() {
 
     [ -d ${solr_install_dir} ] && (echo "Backing up previous install... " && (backup ${solr_install_dir} || (mv ${solr_install_dir}{,.bak} || echo "Could not move aside prev install")))
     [ ! -d "${solr_install_dir}" ] && echo "Creating installation dir: ${solr_install_dir}" && mkdir -p ${solr_install_dir}
+       
     # FIXME
     my_esg_dist_url=/home/cinquini/src
-    cp -R ${my_esg_dist_url}/esg-search/etc/conf/solr-home/* ${solr_install_dir}/.
+    pushd ${solr_workdir} >& /dev/null
+    	cp -R ${my_esg_dist_url}/solr-home.tar .
+    	tar xvf solr-home.tar
+    	cp -R solr-home/* ${solr_install_dir}/.
+    popd >& /dev/null
+    
     local err_count=0
     cd ${solr_install_dir}
     for ((i=0;i<${#solr_cores[@]};i++)) ; do
