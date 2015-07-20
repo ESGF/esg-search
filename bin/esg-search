@@ -757,9 +757,11 @@ setup_solr() {
     
     # move unpacked solr distribution to final location
     if [ ! -e ${solr_server_dir} ]; then
+    	pushd ${install_prefix} >& /dev/null
         echo "copying: ${solr_workdir}/solr-${solr_version} to: ${install_prefix}/solr-${solr_version}"
-        cp -R ${solr_workdir}/solr-${solr_version} ${install_prefix}/solr-${solr_version}
-        ln -s ${install_prefix}/solr-${solr_version} ${install_prefix}/solr
+        cp -R ${solr_workdir}/solr-${solr_version} .
+        ln -s ./solr-${solr_version} ./solr
+        popd  >& /dev/null
     fi
 
     [ -d ${solr_install_dir} ] && (echo "Backing up previous install... " && (backup ${solr_install_dir} || (mv ${solr_install_dir}{,.bak} || echo "Could not move aside prev install")))
