@@ -95,10 +95,13 @@ date_format=${date_format:-"+%Y_%m_%d_%H%M%S"}
 compress_extensions=${compress_extensions:-".tar.gz|.tar.bz2|.tgz|.bz2"}
 force_install=${force_install:-0}
 
-installer_uid=${installer_uid:-$(id ${HOME##*/} | sed 's/.*uid=\([0-9]*\).*/\1/')}
-[ $? != 0 ] || [ -z "$installer_uid" ] && echo "installer_uid is not set" && exit 1
-installer_gid=${installer_gid:-$(id ${HOME##*/} | sed 's/.*gid=\([0-9]*\).*/\1/')}
-[ $? != 0 ] || [ -z "$installer_gid" ] && echo "installer_gid is not set" && exit 1
+#installer_uid=${installer_uid:-$(id ${HOME##*/} | sed 's/.*uid=\([0-9]*\).*/\1/')}
+#[ $? != 0 ] || [ -z "$installer_uid" ] && echo "installer_uid is not set" && exit 1
+#installer_gid=${installer_gid:-$(id ${HOME##*/} | sed 's/.*gid=\([0-9]*\).*/\1/')}
+#[ $? != 0 ] || [ -z "$installer_gid" ] && echo "installer_gid is not set" && exit 1
+# FIXME
+installer_uid=tomcat
+installer_gid=tomcat
 installer_home=${HOME}
 
 esg_search_version=${esg_search_version:-"1.2.0"}
@@ -760,7 +763,9 @@ setup_solr() {
     	pushd ${install_prefix} >& /dev/null
         echo "copying: ${solr_workdir}/solr-${solr_version} to: ${install_prefix}/solr-${solr_version}"
         cp -R ${solr_workdir}/solr-${solr_version} .
+        chown -R ${installer_uid}:${installer_guid} solr-${solr_version}
         ln -s ./solr-${solr_version} ./solr
+        chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_server_dir})
         popd >& /dev/null
     fi
 
@@ -768,8 +773,8 @@ setup_solr() {
     [ ! -d "${solr_install_dir}" ] && echo "Creating installation dir: ${solr_install_dir}" && mkdir -p ${solr_install_dir}
        
     # create solr cores
-        	# FIXME
-    	esg_dist_url=http://distrib-coffee.ipsl.jussieu.fr/pub/esgf/dist/devel
+    # FIXME
+    esg_dist_url=http://distrib-coffee.ipsl.jussieu.fr/pub/esgf/dist/devel
     
     pushd ${solr_workdir} >& /dev/null
   		rm -rf solr-home*
@@ -798,8 +803,8 @@ setup_solr() {
 
 
     (($DEBUG)) && echo "chown -R ${installer_uid}:${installer_gid} ${solr_install_dir}"
-    chown    ${installer_uid}:${installer_gid} ${solr_install_dir}
-    chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_install_dir})
+    chown    ${installer_uid}:${installer_gid} "$(dirname "${solr_install_dir}")"
+    chown -R ${installer_uid}:${installer_gid} $(readlink -f "$(dirname "${solr_install_dir}")")
     
     popd >& /dev/null
     echo -n "solr-home setup "
@@ -839,7 +844,7 @@ configure_solr() {
     # Create the data (index) directories
     #------------------------
     eval mkdir -p $(echo ${solr_data_dir}/{${solr_cores[@]}} | sed 's/ /,/g')
-    chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_data_dir})
+    chown -R ${installer_uid}:${installer_gid} $(readlink -f "$(dirname "${solr_data_dir}")")
 
     popd >& /dev/null
     echo " [OK]"
@@ -934,8 +939,8 @@ start_solr() {
         solr_java_opts=${!solr_java_opts:-${SOLR_JAVA_OPTS}}
 
         pushd ${solr_server_dir} >& /dev/null
-        echo "bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a '-Denable.${solr_config_type}=true'"
-        bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true" >& /dev/null &
+        echo "sudo -u ${installer_uid} bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a '-Denable.${solr_config_type}=true'"
+        sudo -u ${installer_uid} bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true" >& /dev/null &
         popd >& /dev/null
         
         pcheck 30 2 1 -- check_solr_process
@@ -953,7 +958,7 @@ stop_solr() {
 	
 	# stops all Solrs at once
 	pushd ${solr_server_dir} >& /dev/null
-	bin/solr stop -all
+	sudo -u ${installer_uid} bin/solr stop -all
 	popd >& /dev/null
 	
 }
