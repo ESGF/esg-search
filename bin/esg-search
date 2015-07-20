@@ -677,11 +677,17 @@ solr_init() {
 
     solr_install_dir=${install_prefix}/solr-home/${solr_config_type}-${solr_server_port}
     echo "Using solr_install_dir=${solr_install_dir}"
+    
     solr_data_dir=${esg_root_dir}/solr-index/${solr_config_type}-${solr_server_port}
     echo "Using solr_data_dir=${solr_data_dir}"
+    
     #solr_server_dir=${install_prefix}/solr-${solr_version}
     solr_server_dir=${install_prefix}/solr
     echo "Using solr_server_dir=${solr_server_dir}"
+    
+    solr_logs_dir=${esg_root_dir}/solr-logs
+    echo "Using solr_logs_dir=${solr_logs_dir}"
+    
     echo "Using esg_dist_url=${esg_dist_url}"
     solr_cores=(datasets files aggregations)
     debug_print "init: ${solr_config_type} [${solr_server_port}]"
@@ -761,11 +767,21 @@ setup_solr() {
     # move unpacked solr distribution to final location
     if [ ! -e ${solr_server_dir} ]; then
     	pushd ${install_prefix} >& /dev/null
+    	
         echo "copying: ${solr_workdir}/solr-${solr_version} to: ${install_prefix}/solr-${solr_version}"
         cp -R ${solr_workdir}/solr-${solr_version} .
-        chown -R ${installer_uid}:${installer_guid} solr-${solr_version}
         ln -s ./solr-${solr_version} ./solr
+       
+        # override log4j.properties file
+        # FIXME
+        cp /home/cinquini/src/esg-search/etc/conf/solr/log4j.properties ${solr_server_dir}/server/resources/log4j.properties
+        mkdir -p ${solr_logs_dir}
+        
+        # change owner:group
+        chown -R ${installer_uid}:${installer_guid} solr-${solr_version}
         chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_server_dir})
+        chown -R ${installer_uid}:${installer_guid} ${solr_logs_dir}
+        
         popd >& /dev/null
     fi
 
@@ -777,11 +793,11 @@ setup_solr() {
     esg_dist_url=http://distrib-coffee.ipsl.jussieu.fr/pub/esgf/dist/devel
     
     pushd ${solr_workdir} >& /dev/null
-  		rm -rf solr-home*
-    	echo 'Downloading ${esg_dist_url}/esg-search/solr-home.tar'
-    	wget ${esg_dist_url}/esg-search/solr-home.tar
-    	tar xvf solr-home.tar
-    	cp -R solr-home/* ${solr_install_dir}/.
+  	rm -rf solr-home*
+    echo 'Downloading ${esg_dist_url}/esg-search/solr-home.tar'
+    wget ${esg_dist_url}/esg-search/solr-home.tar
+    tar xvf solr-home.tar
+    cp -R solr-home/* ${solr_install_dir}/.
     popd >& /dev/null
     
     local err_count=0
