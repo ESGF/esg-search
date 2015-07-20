@@ -761,7 +761,7 @@ setup_solr() {
         echo "copying: ${solr_workdir}/solr-${solr_version} to: ${install_prefix}/solr-${solr_version}"
         cp -R ${solr_workdir}/solr-${solr_version} .
         ln -s ./solr-${solr_version} ./solr
-        popd  >& /dev/null
+        popd >& /dev/null
     fi
 
     [ -d ${solr_install_dir} ] && (echo "Backing up previous install... " && (backup ${solr_install_dir} || (mv ${solr_install_dir}{,.bak} || echo "Could not move aside prev install")))
@@ -934,7 +934,7 @@ start_solr() {
         solr_java_opts=${!solr_java_opts:-${SOLR_JAVA_OPTS}}
 
         pushd ${solr_server_dir} >& /dev/null
-        verbose_print 'bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true'
+        echo "bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a '-Denable.${solr_config_type}=true'"
         bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true" >& /dev/null &
         popd >& /dev/null
         
