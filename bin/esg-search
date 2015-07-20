@@ -688,6 +688,10 @@ solr_init() {
     solr_logs_dir=${esg_root_dir}/solr-logs
     echo "Using solr_logs_dir=${solr_logs_dir}"
     
+    # SOLR JAVA MEMORY - defaults to 512m
+    # example: export SOLR_HEAP=1g
+    SOLR_HEAP="${SOLR_HEAP:-512m}"
+    
     echo "Using esg_dist_url=${esg_dist_url}"
     solr_cores=(datasets files aggregations)
     debug_print "init: ${solr_config_type} [${solr_server_port}]"
@@ -955,8 +959,8 @@ start_solr() {
         solr_java_opts=${!solr_java_opts:-${SOLR_JAVA_OPTS}}
 
         pushd ${solr_server_dir} >& /dev/null
-        echo "sudo -u ${installer_uid} bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a '-Denable.${solr_config_type}=true'"
-        sudo -u ${installer_uid} bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true" >& /dev/null &
+        echo "sudo -u ${installer_uid} bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a '-Denable.${solr_config_type}=true' -m ${SOLR_HEAP}"
+        sudo -u ${installer_uid} bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true" -m ${SOLR_HEAP} >& /dev/null &
         popd >& /dev/null
         
         pcheck 30 2 1 -- check_solr_process
