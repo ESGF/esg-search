@@ -676,7 +676,8 @@ solr_init() {
     echo "Using solr_install_dir=${solr_install_dir}"
     solr_data_dir=${esg_root_dir}/solr-index/${solr_config_type}-${solr_server_port}
     echo "Using solr_data_dir=${solr_data_dir}"
-    solr_server_dir=${install_prefix}/solr-${solr_version}
+    #solr_server_dir=${install_prefix}/solr-${solr_version}
+    solr_server_dir=${install_prefix}/solr
     echo "Using solr_server_dir=${solr_server_dir}"
     echo "Using esg_dist_url=${esg_dist_url}"
     solr_cores=(datasets files aggregations)
@@ -756,8 +757,9 @@ setup_solr() {
     
     # move unpacked solr distribution to final location
     if [ ! -e ${solr_server_dir} ]; then
-        echo "copying: ${solr_workdir}/solr-${solr_version} to: ${install_prefix}/."
-        cp -R ${solr_workdir}/solr-${solr_version} ${install_prefix}/.
+        echo "copying: ${solr_workdir}/solr-${solr_version} to: ${install_prefix}/solr-${solr_version}"
+        cp -R ${solr_workdir}/solr-${solr_version} ${install_prefix}/solr-${solr_version}
+        ln -s ${install_prefix}/solr-${solr_version} ${install_prefix}/solr
     fi
 
     [ -d ${solr_install_dir} ] && (echo "Backing up previous install... " && (backup ${solr_install_dir} || (mv ${solr_install_dir}{,.bak} || echo "Could not move aside prev install")))
