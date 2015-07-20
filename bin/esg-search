@@ -672,7 +672,7 @@ solr_init() {
         solr_server_port=${suggested_port}
     fi
 
-    solr_install_dir=${install_prefix}/esgf-solr-${solr_version}/${solr_config_type}-${solr_server_port}
+    solr_install_dir=${install_prefix}/solr-home/${solr_config_type}-${solr_server_port}
     echo "Using solr_install_dir=${solr_install_dir}"
     solr_data_dir=${esg_root_dir}/solr-index/${solr_config_type}-${solr_server_port}
     echo "Using solr_data_dir=${solr_data_dir}"
@@ -700,10 +700,10 @@ setup_solr() {
 
     local dosetup
     if [ -x ${solr_server_dir}/server/start.jar ]; then 
-        echo "Detected an existing esgf-solr installation for ${solr_config_type} configuration type..."
-        read -p "Do you want to continue with esgf-solr installation and setup? [y/N] " dosetup
+        echo "Detected an existing solr-home installation for ${solr_config_type} configuration type..."
+        read -p "Do you want to continue with solr-home installation and setup? [y/N] " dosetup
         if [ "${dosetup}" != "Y" ] && [ "${dosetup}" != "y" ]; then
-            echo "Skipping esgf-solr installation and setup - will assume esgf-solr is setup properly"
+            echo "Skipping solr-home installation and setup - will assume solr-home is setup properly"
             return 0
         fi
         echo
@@ -716,7 +716,7 @@ setup_solr() {
         [ -z "${answer}" ] || [ "$(tr A-Z a-z <<< ${answer})" = "n" ] && return 1
     fi
 
-    echo "Installing esgf-solr ${solr_version} ${solr_config_type} on port[${solr_server_port}]..."
+    echo "Installing solr-home ${solr_config_type} on port[${solr_server_port}]..."
     mkdir -p ${solr_workdir}
     pushd ${solr_workdir} >& /dev/null
 
@@ -802,13 +802,13 @@ setup_solr() {
     chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_install_dir})
     
     popd >& /dev/null
-    echo -n "esgf-solr setup "
+    echo -n "solr-home setup "
     (( err_count == 0 )) && echo "[OK]" && return 0
     (( (err_count > 0) && (err_count < ${#solr_cores[@]}) )) && echo "[PARTIAL]" && return 1
     (( err_count == ${#solr_cores[@]} )) && echo "[FAIL]" && return 2
 }
 
-#Helper Method to figure out the version of esgf-solr installation
+#Helper Method to figure out the version of solr-home installation
 check_solr_version() {
     [ "$(cat ${solr_install_dir}/VERSION)" = "${solr_version}" ]
 }
