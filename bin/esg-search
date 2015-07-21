@@ -959,8 +959,10 @@ start_solr() {
         solr_java_opts=${!solr_java_opts:-${SOLR_JAVA_OPTS}}
 
         pushd ${solr_server_dir} >& /dev/null
-        echo "sudo -u ${installer_uid} bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a '-Denable.${solr_config_type}=true' -m ${SOLR_HEAP}"
-        sudo -u ${installer_uid} bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true" -m ${SOLR_HEAP} >& /dev/null &
+        command="SOLR_INCLUDE=${solr_install_dir}/solr.in.sh bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a '-Denable.${solr_config_type}=true'"
+        echo "Starting solr: sudo -H -u ${installer_uid} bash -c $command"
+        sudo -H -u ${installer_uid} bash -c "$command"
+        #sudo -u ${installer_uid} bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true" -m ${SOLR_HEAP} >& /dev/null &
         popd >& /dev/null
         
         pcheck 30 2 1 -- check_solr_process
