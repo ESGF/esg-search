@@ -76,6 +76,8 @@ VERBOSE=${VERBOSE:-0}
 #User Defined / Settable (public)
 #--------------
 install_prefix=${install_prefix:-"/usr/local"}
+esg_solr_user=${SOLR_USER:-"solr"}
+esg_solr_group=${SOLR_GROUP:-"solr"}
 esg_functions_file=${install_prefix}/bin/esg-functions
 esg_root_dir=${esg_root_dir:-"/esg"}
 esg_config_dir=${esg_config_dir:-"${esg_root_dir}/config"}
@@ -136,7 +138,19 @@ setup_search() {
     local upgrade=${1:-0}
     shift
     solr_config_types=$@
-
+    #check for solr user and group existence; create if necessary
+    id $esg_solr_user
+    if [ $? != 0 ]; then
+        echo " WARNING: There is no solr user \"$esg_solr_user\" present on system"
+        #NOTE: "useradd/groupadd" are a RedHat/CentOS thing... to make this cross distro compatible clean this up.
+        if [ ! $(getent group ${esg_solr_group}) ]; then
+            /usr/sbin/groupadd -r ${esg_solr_group}
+            [ $? != 0 ] && [ $? != 9 ] && echo "ERROR: Could not add solr system group: ${esg_solr_group}" && popd && checked_done 1
+        fi
+        echo "/usr/sbin/useradd -r -c"SOLR User" -g $esg_solr_group $esg_solr_user"
+        /usr/sbin/useradd -r -c"SOLR User" -g $esg_solr_group $esg_solr_user
+        [ $? != 0 ] && [ $? != 9 ] && echo "ERROR: Could not add SOLR system account user \"$esg_solr_user\"" && popd && checked_done 1
+    fi
     #setup_zookeeper && configure_zookeeper && write_zookeeper_install_log
     #[ $? != 0 ] && echo " ERROR: Could not fully install zookeeper :-( " && checked_done 1
 
