@@ -101,8 +101,6 @@ force_install=${force_install:-0}
 #[ $? != 0 ] || [ -z "$installer_uid" ] && echo "installer_uid is not set" && exit 1
 #installer_gid=${installer_gid:-$(id ${HOME##*/} | sed 's/.*gid=\([0-9]*\).*/\1/')}
 #[ $? != 0 ] || [ -z "$installer_gid" ] && echo "installer_gid is not set" && exit 1
-installer_uid=solr
-installer_gid=solr
 installer_home=${HOME}
 
 esg_search_version=${esg_search_version:-"1.2.0"}
@@ -794,9 +792,9 @@ setup_solr() {
         mkdir -p ${solr_logs_dir}
         
         # change owner:group
-        chown -R ${installer_uid}:${installer_guid} solr-${solr_version}
-        chown -R ${installer_uid}:${installer_gid} $(readlink -f ${solr_server_dir})
-        chown -R ${installer_uid}:${installer_guid} ${solr_logs_dir}
+        chown -R ${esg_solr_user}:${esg_solr_group} solr-${solr_version}
+        chown -R ${esg_solr_user}:${esg_solr_group} $(readlink -f ${solr_server_dir})
+        chown -R ${esg_solr_user}:${esg_solr_group} ${solr_logs_dir}
         
         popd >& /dev/null
     fi
@@ -831,9 +829,9 @@ setup_solr() {
     echo "${solr_version}" > ${solr_install_dir}/VERSION
 
 
-    (($DEBUG)) && echo "chown -R ${installer_uid}:${installer_gid} ${solr_install_dir}"
-    chown    ${installer_uid}:${installer_gid} "$(dirname "${solr_install_dir}")"
-    chown -R ${installer_uid}:${installer_gid} $(readlink -f "$(dirname "${solr_install_dir}")")
+    (($DEBUG)) && echo "chown -R ${esg_solr_user}:${esg_solr_group} ${solr_install_dir}"
+    chown    ${esg_solr_user}:${esg_solr_group} "$(dirname "${solr_install_dir}")"
+    chown -R ${esg_solr_user}:${esg_solr_group} $(readlink -f "$(dirname "${solr_install_dir}")")
     
     popd >& /dev/null
     echo -n "solr-home setup "
@@ -873,7 +871,7 @@ configure_solr() {
     # Create the data (index) directories
     #------------------------
     eval mkdir -p $(echo ${solr_data_dir}/{${solr_cores[@]}} | sed 's/ /,/g')
-    chown -R ${installer_uid}:${installer_gid} $(readlink -f "$(dirname "${solr_data_dir}")")
+    chown -R ${esg_solr_user}:${esg_solr_group} $(readlink -f "$(dirname "${solr_data_dir}")")
 
     popd >& /dev/null
     echo " [OK]"
