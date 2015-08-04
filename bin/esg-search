@@ -97,10 +97,10 @@ date_format=${date_format:-"+%Y_%m_%d_%H%M%S"}
 compress_extensions=${compress_extensions:-".tar.gz|.tar.bz2|.tgz|.bz2"}
 force_install=${force_install:-0}
 
-#installer_uid=${installer_uid:-$(id ${HOME##*/} | sed 's/.*uid=\([0-9]*\).*/\1/')}
-#[ $? != 0 ] || [ -z "$installer_uid" ] && echo "installer_uid is not set" && exit 1
-#installer_gid=${installer_gid:-$(id ${HOME##*/} | sed 's/.*gid=\([0-9]*\).*/\1/')}
-#[ $? != 0 ] || [ -z "$installer_gid" ] && echo "installer_gid is not set" && exit 1
+installer_uid=${installer_uid:-$(id ${HOME##*/} | sed 's/.*uid=\([0-9]*\).*/\1/')}
+[ $? != 0 ] || [ -z "$installer_uid" ] && echo "installer_uid is not set" && exit 1
+installer_gid=${installer_gid:-$(id ${HOME##*/} | sed 's/.*gid=\([0-9]*\).*/\1/')}
+[ $? != 0 ] || [ -z "$installer_gid" ] && echo "installer_gid is not set" && exit 1
 installer_home=${HOME}
 
 esg_search_version=${esg_search_version:-"1.2.0"}
