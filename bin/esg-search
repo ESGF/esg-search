@@ -967,9 +967,8 @@ start_solr() {
 
         pushd ${solr_server_dir} >& /dev/null
         command="SOLR_INCLUDE=${solr_install_dir}/solr.in.sh bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a '-Denable.${solr_config_type}=true'"
-        echo "Starting solr: sudo -H -u ${installer_uid} bash -c $command"
-        sudo -H -u ${installer_uid} bash -c "$command"
-        #sudo -u ${installer_uid} bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a "-Denable.${solr_config_type}=true" -m ${SOLR_HEAP} >& /dev/null &
+        echo "Starting solr: sudo -H -u ${esg_solr_user} bash -c $command"
+        sudo -H -u ${esg_solr_user} bash -c "$command"
         popd >& /dev/null
         
         pcheck 30 2 1 -- check_solr_process
@@ -987,7 +986,7 @@ stop_solr() {
 	
 	# stops all Solrs at once
 	pushd ${solr_server_dir} >& /dev/null
-	sudo -u ${installer_uid} bin/solr stop -all
+	sudo -u ${esg_solr_user} bin/solr stop -all
 	popd >& /dev/null
 	
 }
