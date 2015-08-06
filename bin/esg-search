@@ -966,7 +966,7 @@ start_solr() {
         solr_java_opts=${!solr_java_opts:-${SOLR_JAVA_OPTS}}
 
         pushd ${solr_server_dir} >& /dev/null
-        command="SOLR_INCLUDE=${solr_install_dir}/solr.in.sh bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a '-Denable.${solr_config_type}=true'"
+        command="source /etc/esg.env; SOLR_INCLUDE=${solr_install_dir}/solr.in.sh bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a '-Denable.${solr_config_type}=true'"
         echo "Starting solr: sudo -H -u ${esg_solr_user} bash -c $command"
         sudo -H -u ${esg_solr_user} bash -c "$command"
         popd >& /dev/null
