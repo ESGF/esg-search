@@ -985,6 +985,7 @@ stop_solr() {
 	solr_init ${1}
 	
 	# stops all Solrs at once
+	source /etc/esg.env;
 	pushd ${solr_server_dir} >& /dev/null
 	sudo -u ${esg_solr_user} bin/solr stop -all
 	popd >& /dev/null
