@@ -115,7 +115,7 @@ Builds the project via ant (obviously).
   <property name="ivy.esgf-repo-local.default.root.dir" value="${user.home}/.ivy2/local"/>
   <property name="ivy_retrieve_type" value="jar, bundle"/>
   <property name="filter" value="false"/>
-  <property name="java.version.val" value="1.7"/>
+  <property name="java.version.val" value="1.8"/>
 
   <!-- **static defines** -->
   <property name="version_num" value="0.0.0"/>
