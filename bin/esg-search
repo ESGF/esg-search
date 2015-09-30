@@ -304,7 +304,7 @@ check_shards() {
 
 add_shard() {
     local config_type=${1:?"Must specify shard host or type"}
-    local target_index_search_port=8983
+    local target_index_search_port=80
     if [ "${config_type%:*}" != "master" ] && [ "${config_type%:*}" != "slave" ]; then
         if grep -q ${config_type%:*} ${esgf_shards_config_file} ; then
             local answer="y"
