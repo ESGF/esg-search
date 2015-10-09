@@ -1124,13 +1124,10 @@ fetch_index_optimization_launcher() {
 }
 
 fetch_static_shards_file() {
-    local project_name=${1}
-    [[ ! $project_name ]] && echo "Please specify project. Ex: cmip5, test, cssef" && return 1
-    
     local fetch_file=esgf_shards_static.xml
     local force=1
     local make_backup=1
-    checked_get ${esg_config_dir}/${fetch_file} ${esg_dist_url}/lists/${fetch_file%_*}_${project_name}.xml ${force} ${make_backup}
+    checked_get ${esg_config_dir}/${fetch_file} ${esg_dist_url}/lists/${fetch_file} ${force} ${make_backup}
     (( $? > 1 )) && [FAIL] && return 2
     [OK]
 }
