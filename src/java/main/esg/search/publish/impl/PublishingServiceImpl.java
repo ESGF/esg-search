@@ -47,8 +47,8 @@ public class PublishingServiceImpl implements PublishingService {
 
     @Autowired
     public PublishingServiceImpl(
-            final @Qualifier("publisherCrawler") PublisherCrawlerManagerImpl publisherCrawler,
-            final @Qualifier("unpublisherCrawler") UnpublisherCrawlerManagerImpl unpublisherCrawler,
+            final @Qualifier("publisherCrawler") MetadataRepositoryCrawlerManager publisherCrawler,
+            final @Qualifier("unpublisherCrawler") MetadataRepositoryCrawlerManager unpublisherCrawler,
             final @Qualifier("recordRemover") MetadataDeletionService recordRemover) {
 
         this.publisherCrawler = publisherCrawler;

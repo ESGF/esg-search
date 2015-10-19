@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import esg.search.publish.api.MetadataDeletionService;
+import esg.search.publish.api.MetadataRepositoryCrawlerManager;
 import esg.search.publish.api.PublishingService;
 
 /**
@@ -18,8 +19,8 @@ public class PublishingServiceImplLocal extends PublishingServiceImpl {
 
     @Autowired
     public PublishingServiceImplLocal(
-            final @Qualifier("publisherCrawlerLocal") PublisherCrawlerManagerImpl publisherCrawler,
-            final @Qualifier("unpublisherCrawlerLocal") UnpublisherCrawlerManagerImpl unpublisherCrawler,
+            final @Qualifier("publisherCrawlerLocal") MetadataRepositoryCrawlerManager publisherCrawler,
+            final @Qualifier("unpublisherCrawlerLocal") MetadataRepositoryCrawlerManager unpublisherCrawler,
             final @Qualifier("recordRemoverLocal") MetadataDeletionService recordRemover) {
 
 
