@@ -29,7 +29,7 @@
  http://wiki.apache.org/solr/SchemaXml
 -->
 
-<schema name="ESGF-v2.2" version="1.5">
+<schema name="ESGF-v2.3" version="1.5">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        version="x.y" is Solr's version number for the schema syntax and 
        semantics.  It should not normally be changed by applications.
@@ -52,6 +52,8 @@
        ESGF-v2.1: addition of _timestamp to track last document update
        
        ESGF-v2.2: built from Solr5 "basic_configs" schema.xml with the addition of ESGF fields
+       
+       ESGF-v2.3: added 'shard' field (single-valued)
      -->
 
 
@@ -154,8 +156,11 @@
    <!-- The host serving the data  -->
    <field name="data_node" type="string" indexed="true" stored="true" required="true" multiValued="false" />
 
-   <!-- The host indexing the data  -->
+   <!-- The server hosting the ESGF search services  -->
    <field name="index_node" type="string" indexed="true" stored="true" required="true" multiValued="false" />
+   
+   <!-- The optional local shard on the index_node (if not the default master/slave shard)  -->
+   <field name="shard" type="string" indexed="true" stored="true" required="false" multiValued="false" />
 
    <!-- The date that the data object was created or last modified - if such information is found -->
    <field name="timestamp" type="date" indexed="true" stored="true" required="false" multiValued="false"/>
