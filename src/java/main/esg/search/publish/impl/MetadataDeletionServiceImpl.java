@@ -18,7 +18,7 @@ import esg.search.publish.api.RecordConsumer;
  * @author luca.cinquini
  *
  */
-@Component
+@Component("recordRemover")
 public class MetadataDeletionServiceImpl extends RecordProducerImpl implements MetadataDeletionService {
 	
 	@Autowired

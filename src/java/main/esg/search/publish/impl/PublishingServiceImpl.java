@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import esg.search.publish.api.MetadataDeletionService;
@@ -46,9 +47,9 @@ public class PublishingServiceImpl implements PublishingService {
 
     @Autowired
     public PublishingServiceImpl(
-            final PublisherCrawlerManagerImpl publisherCrawler,
-            final UnpublisherCrawlerManagerImpl unpublisherCrawler,
-            final MetadataDeletionService recordRemover) {
+            final @Qualifier("publisherCrawler") PublisherCrawlerManagerImpl publisherCrawler,
+            final @Qualifier("unpublisherCrawler") UnpublisherCrawlerManagerImpl unpublisherCrawler,
+            final @Qualifier("recordRemover") MetadataDeletionService recordRemover) {
 
         this.publisherCrawler = publisherCrawler;
         this.unpublisherCrawler = unpublisherCrawler;

@@ -43,10 +43,16 @@
 	</bean>
 	
 	<!-- secondary search service that uses the master Solr instance on port 8984 - used during publication -->
-	<bean name="searchService2" class="esg.search.query.impl.solr.SearchServiceImpl">
+	<bean name="searchServiceMaster" class="esg.search.query.impl.solr.SearchServiceImpl">
 		<constructor-arg index="0" value="${esg.search.solr.publish.url}"/>
 		<constructor-arg index="1" ref="esgfProperties"/>
 	</bean>
+  
+    <!-- search service that uses the local Solr instance on port 8982 -->
+    <bean name="searchServiceLocal" class="esg.search.query.impl.solr.SearchServiceImpl">
+      <constructor-arg index="0" value="${esg.search.solr.local.url}"/>
+      <constructor-arg index="1" ref="esgfProperties"/>
+    </bean>
 	
   	<!-- Facet profile example -->
 	<bean name="wsFacetProfile" class="esg.search.query.impl.solr.PropertiesFileFacetProfileImpl">

@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import esg.search.publish.api.MetadataRepositoryType;
@@ -32,7 +33,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
     //private final Log LOG = LogFactory.getLog(this.getClass());
 
     @Autowired
-    public SecurePublishingServiceImpl(final PublishingService publishingService) {
+    public SecurePublishingServiceImpl(final @Qualifier("publishingService") PublishingService publishingService) {
         this.publishingService = publishingService;
     }
     

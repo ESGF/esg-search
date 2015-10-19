@@ -8,16 +8,16 @@ import esg.search.publish.api.MetadataRepositoryCrawler;
 import esg.search.publish.api.RecordConsumer;
 
 /**
- * Subclass of {@link MetadataRepositoryCrawlerManagerImpl} configured for publishing.
+ * Subclass of {@link MetadataRepositoryCrawlerManagerImpl} configured for publishing to the local Solr index.
  * 
  * @author luca.cinquini
  */
-@Component("publisherCrawler")
-public class PublisherCrawlerManagerImpl extends MetadataRepositoryCrawlerManagerImpl {
+@Component("publisherCrawlerLocal")
+public class PublisherCrawlerManagerImplLocal extends MetadataRepositoryCrawlerManagerImpl {
 	
 	@Autowired
-	public PublisherCrawlerManagerImpl(final MetadataRepositoryCrawler[] _crawlers, 
-			                            final @Qualifier("indexer") RecordConsumer indexer) {
+	public PublisherCrawlerManagerImplLocal(final MetadataRepositoryCrawler[] _crawlers, 
+			                            final @Qualifier("indexerLocal") RecordConsumer indexer) {
 		super(_crawlers);
 		this.subscribe(indexer);
 	}

@@ -40,7 +40,7 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
     
     // Identifier of SearchService bean deployed in Spring context
     // The SearchService is needed to query for all datasets matching a given "instance_id" or "master_id".
-    private final static String SEARCH_SERVICE_BEAN = "searchService2";
+    private final static String SEARCH_SERVICE_BEAN = "searchServiceMaster";
 
     /**
      * For the legacy methods, only harvest THREDDS metadata repositories.
@@ -160,7 +160,7 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
      * Retrieves the configured {@link PublishingService} from the Spring application context.
      * @return
      */
-    private PublishingService getPublishingService() {
+    protected PublishingService getPublishingService() {
         return ApplicationContextProvider.getApplicationContext().getBean(PUBLISHING_SERVICE_BEAN, PublishingService.class);
     }
     
@@ -168,7 +168,7 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
      * Retrieves the configured {@link SearchService} from the Spring application context.
      * @return
      */
-    private SearchService getSearchService() {
+    protected SearchService getSearchService() {
         return ApplicationContextProvider.getApplicationContext().getBean(SEARCH_SERVICE_BEAN, SearchService.class);
     }
 }

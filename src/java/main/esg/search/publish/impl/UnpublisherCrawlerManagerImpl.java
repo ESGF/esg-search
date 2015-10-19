@@ -12,7 +12,7 @@ import esg.search.publish.api.RecordConsumer;
  * 
  * @author luca.cinquini
  */
-@Component
+@Component("unpublisherCrawler")
 public class UnpublisherCrawlerManagerImpl extends MetadataRepositoryCrawlerManagerImpl {
 	
 	@Autowired

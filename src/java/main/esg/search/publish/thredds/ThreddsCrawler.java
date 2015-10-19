@@ -83,7 +83,7 @@ public class ThreddsCrawler implements MetadataRepositoryCrawler {
 	 * @param searchService
 	 */
 	@Autowired
-	public ThreddsCrawler(final ThreddsParserStrategy parser, final @Qualifier("searchService2") SearchService searchService) {
+	public ThreddsCrawler(final ThreddsParserStrategy parser, final @Qualifier("searchServiceMaster") SearchService searchService) {
 		this.parser = parser;
 		this.searchService = searchService;
 	}
