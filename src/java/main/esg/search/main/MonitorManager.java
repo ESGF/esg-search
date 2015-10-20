@@ -25,7 +25,7 @@ public class MonitorManager {
                                                          // Europe
                                                          "adm07.cmcc.it",
                                                          "euclipse1.dkrz.de",
-                                                         "esgf-node.ipsl.fr",
+                                                         "esgf-node.ipsl.upmc.fr",
                                                         };
     
     // query parameters
