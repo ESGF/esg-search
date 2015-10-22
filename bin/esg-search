@@ -638,6 +638,38 @@ setup_search_service() {
     $JAVA_HOME/bin/jar xf ${search_service_war_file}
     set_aside_web_app_cleanup ${search_web_service_dir} $?
 
+    # update Solr schema.xml file
+    echo "Checking for Solr schema update"
+	
+    new_solr_xml=${search_web_service_dir}/WEB-INF/solr-home/mycore/conf/schema.xml
+    echo "up-to-date Solr schema: ${new_solr_xml}"
+	
+    solr_home_dir="${localhost-8982}/solr-home"
+    solr_shards=(master-8984 localhost-8982)
+    solr_cores=(datasets files aggregations)
+	
+    # loop over shards
+    for ((j=0;j<${#solr_shards[@]};j++)) ; do
+	
+       # loop over solr cores
+       for ((i=0;i<${#solr_cores[@]};i++)) ; do
+	
+	    old_solr_xml="/usr/local/solr-home/${solr_shards[${j}]}/${solr_cores[${i}]}/conf/schema.xml"
+	    #echo "Checking ${old_solr_xml}"
+	    if [ -e  ${old_solr_xml} ]; then
+	      if diff ${old_solr_xml} ${new_solr_xml} >/dev/null ; then
+	  	    echo "Files: ${old_solr_xml}, ${new_solr_xml} are identical, not upgrading"
+	      else
+	  	    echo "cp ${new_solr_xml} ${old_solr_xml}"
+	  	    cp ${new_solr_xml} ${old_solr_xml}
+	      fi
+	    fi
+	    
+       done
+	
+    done
+
+    
     chown -R ${tomcat_user}  ${search_web_service_dir}
     chgrp -R ${tomcat_group} ${search_web_service_dir} 
     popd >& /dev/null
@@ -970,9 +1002,9 @@ start_solr() {
         if [ "${solr_config_type}" == "master" ] ; then
             master_or_slave='master'
         else
-        	if [ "${solr_config_type}" == "localhost" ] ; then
+            if [ "${solr_config_type}" == "localhost" ] ; then
             	master_or_slave='localhost'
-        	fi
+            fi
         fi
         command="source /etc/esg.env; SOLR_INCLUDE=${solr_install_dir}/solr.in.sh bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a '-Denable.${master_or_slave}=true'"
         echo "Starting solr: sudo -H -u ${esg_solr_user} bash -c $command"
