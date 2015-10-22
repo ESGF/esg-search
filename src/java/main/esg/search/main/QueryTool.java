@@ -39,7 +39,7 @@ public class QueryTool {
                             + "&shards=pcmdi11.llnl.gov:8983/solr/files";
         //solrPostData ="q=master_id%3Acmip5.output2.*&fq=type%3ADataset&fq=latest%3ATrue&fq=replica%3AFalse"
         //             +"&start=1000&rows=1"
-        //             +"&shards=pcmdi11.llnl.gov:8983/solr/datasets,esg-datanode.jpl.nasa.gov:8983/solr/datasets,esg.ccs.ornl.gov:8983/solr/datasets,esgf.nccs.nasa.gov:8983/solr/datasets,euclipse1.dkrz.de:8983/solr/datasets,adm07.cmcc.it:8983/solr/datasets,esgf-node.ipsl.fr:8983/solr/datasets";
+        //             +"&shards=pcmdi11.llnl.gov:8983/solr/datasets,esg-datanode.jpl.nasa.gov:8983/solr/datasets,esg.ccs.ornl.gov:8983/solr/datasets,esgf.nccs.nasa.gov:8983/solr/datasets,euclipse1.dkrz.de:8983/solr/datasets,adm07.cmcc.it:8983/solr/datasets,esgf-node.ipsl.upmc.fr:8983/solr/datasets";
         
         MonitorThread mt = new MonitorThread(apiUrl, apiPostdata);
         //MonitorThread mt = new MonitorThread(solrUrl, solrPostData);

@@ -18,7 +18,7 @@
 			<esgf:datasets pattern="obs4MIPs.NASA-GSFC.MODIS.*"/>
 			<esgf:datasets pattern="obs4MIPs.NASA-GSFC.TRMM.*"/>
 		</esgf:index_node>
-		<esgf:index_node hostname="esgf-node.ipsl.fr">
+		<esgf:index_node hostname="esgf-node.ipsl.upmc.fr">
 			<esgf:datasets pattern="obs4MIPs.IPSL.CALIOP.*"/>
 			<esgf:datasets pattern="obs4MIPs.LOA_IPSL.PARASOL.*"/>
 		</esgf:index_node>
