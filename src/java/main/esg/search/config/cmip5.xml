@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <esgf:schema xmlns:esgf="http://www.esgf.org/#" version="0.1">
     
-    <!-- DRS facets -->
-    <esgf:field name="project" minOccurs="1" maxOccurs="1" recordType="Dataset" />
+<!-- DRS mandatory fields (not already defined in upstream schemas) -->
+    
 	<esgf:field name="model" minOccurs="1" maxOccurs="1" recordType="Dataset" >
 		<!-- <esgf:value>ACCESS1.0</esgf:value> -->
 		<!-- <esgf:value>CCSM4</esgf:value> -->
@@ -12,26 +12,16 @@
 	<esgf:field name="product" minOccurs="1" maxOccurs="1" recordType="Dataset" />
 	<esgf:field name="realm" minOccurs="1" maxOccurs="1" recordType="Dataset" />
 	<esgf:field name="time_frequency" minOccurs="1" maxOccurs="1" recordType="Dataset" />
-	
-    <!-- note: must use 9999 instead of "unbounded" otherwise security scan complains of possible resource exhaustion attack -->
-	<esgf:field name="variable" minOccurs="0" maxOccurs="9999" />
-	<esgf:field name="variable_long_name" minOccurs="0" maxOccurs="9999" />
-	<esgf:field name="variable_units" minOccurs="0" maxOccurs="9999" />
-	<esgf:field name="cf_standard_name" minOccurs="0" maxOccurs="9999" />
-	
-	<!-- mandatory fields used for replica and version management -->
-	<esgf:field name="instance_id" minOccurs="1" maxOccurs="1"/>
-	<esgf:field name="master_id" minOccurs="1" maxOccurs="1"/>
-	<esgf:field name="replica" minOccurs="0" maxOccurs="1" type="boolean" default="false" />
-	
+			     
 	<esgf:field name="tracking_id" minOccurs="1" maxOccurs="1" type="uuid" recordType="File" />
-	
-	<!-- data_node, index_node are used by ESGF web portal for file retrieval -->
-	<esgf:field name="data_node" minOccurs="1" maxOccurs="1"/>
-	<esgf:field name="index_node" minOccurs="1" maxOccurs="1"/>
-	
-	<!-- fields used by ESGF web portal data cart -->
-	<esgf:field name="number_of_files" minOccurs="1" maxOccurs="1" type="int" minValue="0" recordType="Dataset" />
-	<esgf:field name="number_of_aggregations" minOccurs="1" maxOccurs="1" type="int" minValue="0" recordType="Dataset" />
-	
+  
+<!-- Optional fields -->
+
+    <esgf:field name="ensemble" minOccurs="0" maxOccurs="1" recordType="Dataset" />
+    <esgf:field name="experiment_family" minOccurs="0" maxOccurs="9999" recordType="Dataset" />
+    <esgf:field name="cmor_table" minOccurs="0" maxOccurs="1" recordType="Dataset" />
+    <esgf:field name="dataset_id_template_" minOccurs="0" maxOccurs="1" recordType="Dataset" />
+    <esgf:field name="drs_id" minOccurs="0" maxOccurs="1" recordType="Dataset" />
+    <esgf:field name="forcing" minOccurs="0" maxOccurs="1" recordType="Dataset" />
+		
 </esgf:schema>
