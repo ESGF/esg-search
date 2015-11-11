@@ -32,6 +32,7 @@ TAGS
 semantic.cache*
 generated/
 /build
+/target
 /dist
 /docs-generated
 /lib/fetched
