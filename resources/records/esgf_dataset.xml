@@ -10,5 +10,20 @@
   <field name="index_node">esgf-node.jpl.nasa.gov</field>
 
   <!-- optional fields -->
+  <field name="version">1</field>
+  <field name="master_id">mydata.dataset</field>
+  <field name="instance_id">mydata.dataset.v1</field>
+  <field name="replica">false</field>
+  <field name="latest">true</field>
+  <field name="description">Example minimum ESGF dataset metadata record</field>
+  <field name="timestamp">2015-01-01T01:34:15Z</field>
+  <field name="access">LAS</field>
+  <field name="access">HTTPServer</field>
+  <field name="access">OPENDAP</field>
+  <field name="url">http://esgf-node.jpl.nasa.gov/thredds/mydata.xml#mydata.dataset.v1|application/xml+thredds|Catalog</field>
+  <field name="url">http://esgf-node.jpl.nasa.gov/las/getUI.do?catid=D9C519D5A310E197819B7197215FD574_ns_mydata.dataset.v1|application/las|LAS</field> 
+  <field name="size">123456789</field>
+  <field name="number_of_aggregations">0</field>
+  <field name="number_of_files">1</field>
 
 </doc>
