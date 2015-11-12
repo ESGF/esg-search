@@ -2,26 +2,26 @@
 <!-- ESGF schema for geospatial data -->
 <esgf:schema xmlns:esgf="http://www.esgf.org/#" version="0.1">
 
-    <!-- optional physical fields -->
-    <!-- note: must use 9999 instead of "unbounded" otherwise security scan complains of possible resource exhaustion attack -->
-    <esgf:field name="variable" minOccurs="0" maxOccurs="9999" />
-    <esgf:field name="variable_long_name" minOccurs="0" maxOccurs="9999" />
-    <esgf:field name="variable_units" minOccurs="0" maxOccurs="9999" />
-    <esgf:field name="cf_standard_name" minOccurs="0" maxOccurs="9999" />
+  <!-- optional physical fields -->
+  <!-- note: must use 9999 instead of "unbounded" otherwise security scan complains of possible resource exhaustion attack -->
+  <esgf:field name="variable" minOccurs="0" maxOccurs="9999" />
+  <esgf:field name="variable_long_name" minOccurs="0" maxOccurs="9999" />
+  <esgf:field name="variable_units" minOccurs="0" maxOccurs="9999" />
+  <esgf:field name="cf_standard_name" minOccurs="0" maxOccurs="9999" />
 
-	<!-- optional date-time coverage fields, must have format: yyyy-MM-dd'T'HH:mm:ss'Z' -->
-	<esgf:field name="datetime_start" minOccurs="0" maxOccurs="1" type="date" />
-	<esgf:field name="datetime_stop" minOccurs="0" maxOccurs="1" type="date" />
-	
-	<!-- optional geospatial coverage fields, mst be floats -->
-	<esgf:field name="east_degrees" minOccurs="0" maxOccurs="1" type="float" minValue="-180" maxValue="360" />
-	<esgf:field name="west_degrees" minOccurs="0" maxOccurs="1" type="float" minValue="-180" maxValue="360" />
-	<esgf:field name="north_degrees" minOccurs="0" maxOccurs="1" type="float" minValue="-90" maxValue="90" />
-	<esgf:field name="south_degrees" minOccurs="0" maxOccurs="1" type="float" minValue="-90" maxValue="90" />
-	
-	<!-- optional altitude coverage fields, must be floats with units -->
-	<esgf:field name="height_bottom" minOccurs="0" maxOccurs="1" type="float" />
-	<esgf:field name="height_top" minOccurs="0" maxOccurs="1" type="float"  />
-	<esgf:field name="height_units" minOccurs="0" maxOccurs="1" type="string" />
-		
+  <!-- optional date-time coverage fields, must have format: yyyy-MM-dd'T'HH:mm:ss'Z' -->
+  <esgf:field name="datetime_start" minOccurs="0" maxOccurs="1" type="date" />
+  <esgf:field name="datetime_stop" minOccurs="0" maxOccurs="1" type="date" />
+
+  <!-- optional geospatial coverage fields, mst be floats -->
+  <esgf:field name="east_degrees" minOccurs="0" maxOccurs="1" type="float" minValue="-180" maxValue="360" />
+  <esgf:field name="west_degrees" minOccurs="0" maxOccurs="1" type="float" minValue="-180" maxValue="360" />
+  <esgf:field name="north_degrees" minOccurs="0" maxOccurs="1" type="float" minValue="-90" maxValue="90" />
+  <esgf:field name="south_degrees" minOccurs="0" maxOccurs="1" type="float" minValue="-90" maxValue="90" />
+
+  <!-- optional altitude coverage fields, must be floats with units -->
+  <esgf:field name="height_bottom" minOccurs="0" maxOccurs="1" type="float" />
+  <esgf:field name="height_top" minOccurs="0" maxOccurs="1" type="float" />
+  <esgf:field name="height_units" minOccurs="0" maxOccurs="1" type="string" />
+
 </esgf:schema>

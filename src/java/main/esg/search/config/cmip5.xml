@@ -1,27 +1,2569 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<esgf:schema xmlns:esgf="http://www.esgf.org/#" version="0.1">
-    
-<!-- DRS mandatory fields (not already defined in upstream schemas) -->
-    
-	<esgf:field name="model" minOccurs="1" maxOccurs="1" recordType="Dataset" >
-		<!-- <esgf:value>ACCESS1.0</esgf:value> -->
-		<!-- <esgf:value>CCSM4</esgf:value> -->
-	</esgf:field>
-	<esgf:field name="experiment" minOccurs="1" maxOccurs="1" recordType="Dataset" />
-	<esgf:field name="institute" minOccurs="1" maxOccurs="1" recordType="Dataset" />
-	<esgf:field name="product" minOccurs="1" maxOccurs="1" recordType="Dataset" />
-	<esgf:field name="realm" minOccurs="1" maxOccurs="1" recordType="Dataset" />
-	<esgf:field name="time_frequency" minOccurs="1" maxOccurs="1" recordType="Dataset" />
-			     
-	<esgf:field name="tracking_id" minOccurs="1" maxOccurs="1" type="uuid" recordType="File" />
-  
-<!-- Optional fields -->
+<esgf:schema xmlns:esgf="http://www.esgf.org/#" version="0.2">
 
-    <esgf:field name="ensemble" minOccurs="0" maxOccurs="1" recordType="Dataset" />
-    <esgf:field name="experiment_family" minOccurs="0" maxOccurs="9999" recordType="Dataset" />
-    <esgf:field name="cmor_table" minOccurs="0" maxOccurs="1" recordType="Dataset" />
-    <esgf:field name="dataset_id_template_" minOccurs="0" maxOccurs="1" recordType="Dataset" />
-    <esgf:field name="drs_id" minOccurs="0" maxOccurs="1" recordType="Dataset" />
-    <esgf:field name="forcing" minOccurs="0" maxOccurs="1" recordType="Dataset" />
-		
+  <!-- CMIP5 search facets -->
+  <esgf:field name="project" minOccurs="1" maxOccurs="1" recordType="Dataset">
+    <esgf:value>CMIP5</esgf:value>
+  </esgf:field>
+  <esgf:field name="model" minOccurs="1" maxOccurs="1" recordType="Dataset">
+    <esgf:value>ACCESS1.0</esgf:value>
+    <esgf:value>ACCESS1.3</esgf:value>
+    <esgf:value>BCC-CSM1.1</esgf:value>
+    <esgf:value>BCC-CSM1.1(m)</esgf:value>
+    <esgf:value>BNU-ESM</esgf:value>
+    <esgf:value>CCSM4</esgf:value>
+    <esgf:value>CESM1(BGC)</esgf:value>
+    <esgf:value>CESM1(CAM5)</esgf:value>
+    <esgf:value>CESM1(CAM5.1,FV2)</esgf:value>
+    <esgf:value>CESM1(FASTCHEM)</esgf:value>
+    <esgf:value>CESM1(WACCM)</esgf:value>
+    <esgf:value>CFSv2-2011</esgf:value>
+    <esgf:value>CMCC-CESM</esgf:value>
+    <esgf:value>CMCC-CM</esgf:value>
+    <esgf:value>CMCC-CMS</esgf:value>
+    <esgf:value>CNRM-CM5</esgf:value>
+    <esgf:value>CNRM-CM5-2</esgf:value>
+    <esgf:value>CSIRO-Mk3.6.0</esgf:value>
+    <esgf:value>CSIRO-Mk3L-1-2</esgf:value>
+    <esgf:value>CanAM4</esgf:value>
+    <esgf:value>CanCM4</esgf:value>
+    <esgf:value>CanESM2</esgf:value>
+    <esgf:value>EC-EARTH</esgf:value>
+    <esgf:value>FGOALS-g2</esgf:value>
+    <esgf:value>FGOALS-gl</esgf:value>
+    <esgf:value>FGOALS-s2</esgf:value>
+    <esgf:value>FIO-ESM</esgf:value>
+    <esgf:value>GEOS-5</esgf:value>
+    <esgf:value>GFDL-CM2.1</esgf:value>
+    <esgf:value>GFDL-CM3</esgf:value>
+    <esgf:value>GFDL-ESM2G</esgf:value>
+    <esgf:value>GFDL-ESM2M</esgf:value>
+    <esgf:value>GFDL-HIRAM-C180</esgf:value>
+    <esgf:value>GFDL-HIRAM-C360</esgf:value>
+    <esgf:value>GISS-E2-H</esgf:value>
+    <esgf:value>GISS-E2-H-CC</esgf:value>
+    <esgf:value>GISS-E2-R</esgf:value>
+    <esgf:value>GISS-E2-R-CC</esgf:value>
+    <esgf:value>HadCM3</esgf:value>
+    <esgf:value>HadGEM2-A</esgf:value>
+    <esgf:value>HadGEM2-AO</esgf:value>
+    <esgf:value>HadGEM2-CC</esgf:value>
+    <esgf:value>HadGEM2-ES</esgf:value>
+    <esgf:value>INM-CM4</esgf:value>
+    <esgf:value>IPSL-CM5A-LR</esgf:value>
+    <esgf:value>IPSL-CM5A-MR</esgf:value>
+    <esgf:value>IPSL-CM5B-LR</esgf:value>
+    <esgf:value>MIROC-ESM</esgf:value>
+    <esgf:value>MIROC-ESM-CHEM</esgf:value>
+    <esgf:value>MIROC4h</esgf:value>
+    <esgf:value>MIROC5</esgf:value>
+    <esgf:value>MPI-ESM-LR</esgf:value>
+    <esgf:value>MPI-ESM-MR</esgf:value>
+    <esgf:value>MPI-ESM-P</esgf:value>
+    <esgf:value>MRI-AGCM3.2H</esgf:value>
+    <esgf:value>MRI-AGCM3.2S</esgf:value>
+    <esgf:value>MRI-CGCM3</esgf:value>
+    <esgf:value>MRI-ESM1</esgf:value>
+    <esgf:value>NICAM-09</esgf:value>
+    <esgf:value>NorESM1-M</esgf:value>
+    <esgf:value>NorESM1-ME</esgf:value>
+  </esgf:field>
+  <esgf:field name="experiment" minOccurs="1" maxOccurs="1" recordType="Dataset">
+    <esgf:value>1pctCO2</esgf:value>
+    <esgf:value>abrupt4xCO2</esgf:value>
+    <esgf:value>amip</esgf:value>
+    <esgf:value>amip4K</esgf:value>
+    <esgf:value>amip4xCO2</esgf:value>
+    <esgf:value>amipFuture</esgf:value>
+    <esgf:value>aqua4K</esgf:value>
+    <esgf:value>aqua4xCO2</esgf:value>
+    <esgf:value>aquaControl</esgf:value>
+    <esgf:value>decadal1959</esgf:value>
+    <esgf:value>decadal1960</esgf:value>
+    <esgf:value>decadal1961</esgf:value>
+    <esgf:value>decadal1962</esgf:value>
+    <esgf:value>decadal1963</esgf:value>
+    <esgf:value>decadal1964</esgf:value>
+    <esgf:value>decadal1965</esgf:value>
+    <esgf:value>decadal1966</esgf:value>
+    <esgf:value>decadal1967</esgf:value>
+    <esgf:value>decadal1968</esgf:value>
+    <esgf:value>decadal1969</esgf:value>
+    <esgf:value>decadal1970</esgf:value>
+    <esgf:value>decadal1971</esgf:value>
+    <esgf:value>decadal1972</esgf:value>
+    <esgf:value>decadal1973</esgf:value>
+    <esgf:value>decadal1974</esgf:value>
+    <esgf:value>decadal1975</esgf:value>
+    <esgf:value>decadal1976</esgf:value>
+    <esgf:value>decadal1977</esgf:value>
+    <esgf:value>decadal1978</esgf:value>
+    <esgf:value>decadal1979</esgf:value>
+    <esgf:value>decadal1980</esgf:value>
+    <esgf:value>decadal1981</esgf:value>
+    <esgf:value>decadal1982</esgf:value>
+    <esgf:value>decadal1983</esgf:value>
+    <esgf:value>decadal1984</esgf:value>
+    <esgf:value>decadal1985</esgf:value>
+    <esgf:value>decadal1986</esgf:value>
+    <esgf:value>decadal1987</esgf:value>
+    <esgf:value>decadal1988</esgf:value>
+    <esgf:value>decadal1989</esgf:value>
+    <esgf:value>decadal1990</esgf:value>
+    <esgf:value>decadal1991</esgf:value>
+    <esgf:value>decadal1992</esgf:value>
+    <esgf:value>decadal1993</esgf:value>
+    <esgf:value>decadal1994</esgf:value>
+    <esgf:value>decadal1995</esgf:value>
+    <esgf:value>decadal1996</esgf:value>
+    <esgf:value>decadal1997</esgf:value>
+    <esgf:value>decadal1998</esgf:value>
+    <esgf:value>decadal1999</esgf:value>
+    <esgf:value>decadal2000</esgf:value>
+    <esgf:value>decadal2001</esgf:value>
+    <esgf:value>decadal2002</esgf:value>
+    <esgf:value>decadal2003</esgf:value>
+    <esgf:value>decadal2004</esgf:value>
+    <esgf:value>decadal2005</esgf:value>
+    <esgf:value>decadal2006</esgf:value>
+    <esgf:value>decadal2007</esgf:value>
+    <esgf:value>decadal2008</esgf:value>
+    <esgf:value>decadal2009</esgf:value>
+    <esgf:value>decadal2010</esgf:value>
+    <esgf:value>decadal2011</esgf:value>
+    <esgf:value>decadal2012</esgf:value>
+    <esgf:value>esmControl</esgf:value>
+    <esgf:value>esmFdbk1</esgf:value>
+    <esgf:value>esmFdbk2</esgf:value>
+    <esgf:value>esmFixClim1</esgf:value>
+    <esgf:value>esmFixClim2</esgf:value>
+    <esgf:value>esmHistorical</esgf:value>
+    <esgf:value>esmrcp85</esgf:value>
+    <esgf:value>historical</esgf:value>
+    <esgf:value>historicalExt</esgf:value>
+    <esgf:value>historicalGHG</esgf:value>
+    <esgf:value>historicalMisc</esgf:value>
+    <esgf:value>historicalNat</esgf:value>
+    <esgf:value>lgm</esgf:value>
+    <esgf:value>midHolocene</esgf:value>
+    <esgf:value>noVolc1960</esgf:value>
+    <esgf:value>noVolc1965</esgf:value>
+    <esgf:value>noVolc1970</esgf:value>
+    <esgf:value>noVolc1975</esgf:value>
+    <esgf:value>noVolc1980</esgf:value>
+    <esgf:value>noVolc1985</esgf:value>
+    <esgf:value>noVolc1990</esgf:value>
+    <esgf:value>noVolc1995</esgf:value>
+    <esgf:value>noVolc2000</esgf:value>
+    <esgf:value>noVolc2005</esgf:value>
+    <esgf:value>past1000</esgf:value>
+    <esgf:value>piControl</esgf:value>
+    <esgf:value>rcp26</esgf:value>
+    <esgf:value>rcp45</esgf:value>
+    <esgf:value>rcp60</esgf:value>
+    <esgf:value>rcp85</esgf:value>
+    <esgf:value>sst2030</esgf:value>
+    <esgf:value>sst2090</esgf:value>
+    <esgf:value>sst2090rcp45</esgf:value>
+    <esgf:value>sstClim</esgf:value>
+    <esgf:value>sstClim4xCO2</esgf:value>
+    <esgf:value>sstClimAerosol</esgf:value>
+    <esgf:value>sstClimSulfate</esgf:value>
+    <esgf:value>volcIn2010</esgf:value>
+  </esgf:field>
+  <esgf:field name="experiment_family" minOccurs="0" maxOccurs="unbounded" recordType="Dataset">
+    <esgf:value>All</esgf:value>
+    <esgf:value>Atmos-only</esgf:value>
+    <esgf:value>Control</esgf:value>
+    <esgf:value>Decadal</esgf:value>
+    <esgf:value>ESM</esgf:value>
+    <esgf:value>Historical</esgf:value>
+    <esgf:value>Idealized</esgf:value>
+    <esgf:value>Paleo</esgf:value>
+    <esgf:value>RCP</esgf:value>
+  </esgf:field>
+  <esgf:field name="ensemble" minOccurs="1" maxOccurs="1" recordType="Dataset">
+    <esgf:value>r0i0p0</esgf:value>
+    <esgf:value>r0i0p1</esgf:value>
+    <esgf:value>r0i0p141</esgf:value>
+    <esgf:value>r0i0p142</esgf:value>
+    <esgf:value>r0i0p150</esgf:value>
+    <esgf:value>r0i0p151</esgf:value>
+    <esgf:value>r0i0p2</esgf:value>
+    <esgf:value>r0i0p3</esgf:value>
+    <esgf:value>r0i0p4</esgf:value>
+    <esgf:value>r0i0p5</esgf:value>
+    <esgf:value>r0i0p6</esgf:value>
+    <esgf:value>r10i1p1</esgf:value>
+    <esgf:value>r10i2p1</esgf:value>
+    <esgf:value>r10i3p1</esgf:value>
+    <esgf:value>r11i1p1</esgf:value>
+    <esgf:value>r12i1p1</esgf:value>
+    <esgf:value>r13i1p1</esgf:value>
+    <esgf:value>r14i1p1</esgf:value>
+    <esgf:value>r15i1p1</esgf:value>
+    <esgf:value>r16i1p1</esgf:value>
+    <esgf:value>r17i1p1</esgf:value>
+    <esgf:value>r18i1p1</esgf:value>
+    <esgf:value>r19i1p1</esgf:value>
+    <esgf:value>r1i1p1</esgf:value>
+    <esgf:value>r1i1p10</esgf:value>
+    <esgf:value>r1i1p102</esgf:value>
+    <esgf:value>r1i1p103</esgf:value>
+    <esgf:value>r1i1p104</esgf:value>
+    <esgf:value>r1i1p105</esgf:value>
+    <esgf:value>r1i1p107</esgf:value>
+    <esgf:value>r1i1p108</esgf:value>
+    <esgf:value>r1i1p109</esgf:value>
+    <esgf:value>r1i1p11</esgf:value>
+    <esgf:value>r1i1p114</esgf:value>
+    <esgf:value>r1i1p12</esgf:value>
+    <esgf:value>r1i1p121</esgf:value>
+    <esgf:value>r1i1p122</esgf:value>
+    <esgf:value>r1i1p1221</esgf:value>
+    <esgf:value>r1i1p123</esgf:value>
+    <esgf:value>r1i1p124</esgf:value>
+    <esgf:value>r1i1p125</esgf:value>
+    <esgf:value>r1i1p126</esgf:value>
+    <esgf:value>r1i1p127</esgf:value>
+    <esgf:value>r1i1p128</esgf:value>
+    <esgf:value>r1i1p13</esgf:value>
+    <esgf:value>r1i1p14</esgf:value>
+    <esgf:value>r1i1p141</esgf:value>
+    <esgf:value>r1i1p142</esgf:value>
+    <esgf:value>r1i1p15</esgf:value>
+    <esgf:value>r1i1p150</esgf:value>
+    <esgf:value>r1i1p151</esgf:value>
+    <esgf:value>r1i1p16</esgf:value>
+    <esgf:value>r1i1p17</esgf:value>
+    <esgf:value>r1i1p2</esgf:value>
+    <esgf:value>r1i1p3</esgf:value>
+    <esgf:value>r1i1p3001</esgf:value>
+    <esgf:value>r1i1p302</esgf:value>
+    <esgf:value>r1i1p303</esgf:value>
+    <esgf:value>r1i1p309</esgf:value>
+    <esgf:value>r1i1p310</esgf:value>
+    <esgf:value>r1i1p311</esgf:value>
+    <esgf:value>r1i1p312</esgf:value>
+    <esgf:value>r1i1p313</esgf:value>
+    <esgf:value>r1i1p4</esgf:value>
+    <esgf:value>r1i1p5</esgf:value>
+    <esgf:value>r1i1p6</esgf:value>
+    <esgf:value>r1i1p7</esgf:value>
+    <esgf:value>r1i1p8</esgf:value>
+    <esgf:value>r1i2p1</esgf:value>
+    <esgf:value>r1i2p2</esgf:value>
+    <esgf:value>r1i3p1</esgf:value>
+    <esgf:value>r2-0i1p1</esgf:value>
+    <esgf:value>r20i1p1</esgf:value>
+    <esgf:value>r21i1p1</esgf:value>
+    <esgf:value>r22i1p1</esgf:value>
+    <esgf:value>r23i1p1</esgf:value>
+    <esgf:value>r2i1p1</esgf:value>
+    <esgf:value>r2i1p102</esgf:value>
+    <esgf:value>r2i1p103</esgf:value>
+    <esgf:value>r2i1p104</esgf:value>
+    <esgf:value>r2i1p105</esgf:value>
+    <esgf:value>r2i1p107</esgf:value>
+    <esgf:value>r2i1p108</esgf:value>
+    <esgf:value>r2i1p109</esgf:value>
+    <esgf:value>r2i1p11</esgf:value>
+    <esgf:value>r2i1p114</esgf:value>
+    <esgf:value>r2i1p2</esgf:value>
+    <esgf:value>r2i1p3</esgf:value>
+    <esgf:value>r2i1p3001</esgf:value>
+    <esgf:value>r2i1p302</esgf:value>
+    <esgf:value>r2i1p303</esgf:value>
+    <esgf:value>r2i1p309</esgf:value>
+    <esgf:value>r2i1p310</esgf:value>
+    <esgf:value>r2i1p311</esgf:value>
+    <esgf:value>r2i1p312</esgf:value>
+    <esgf:value>r2i1p313</esgf:value>
+    <esgf:value>r2i1p4</esgf:value>
+    <esgf:value>r2i1p5</esgf:value>
+    <esgf:value>r2i1p6</esgf:value>
+    <esgf:value>r2i2p1</esgf:value>
+    <esgf:value>r2i3p1</esgf:value>
+    <esgf:value>r3i1p1</esgf:value>
+    <esgf:value>r3i1p10</esgf:value>
+    <esgf:value>r3i1p102</esgf:value>
+    <esgf:value>r3i1p103</esgf:value>
+    <esgf:value>r3i1p104</esgf:value>
+    <esgf:value>r3i1p105</esgf:value>
+    <esgf:value>r3i1p107</esgf:value>
+    <esgf:value>r3i1p108</esgf:value>
+    <esgf:value>r3i1p109</esgf:value>
+    <esgf:value>r3i1p114</esgf:value>
+    <esgf:value>r3i1p13</esgf:value>
+    <esgf:value>r3i1p2</esgf:value>
+    <esgf:value>r3i1p3</esgf:value>
+    <esgf:value>r3i1p3001</esgf:value>
+    <esgf:value>r3i1p302</esgf:value>
+    <esgf:value>r3i1p303</esgf:value>
+    <esgf:value>r3i1p309</esgf:value>
+    <esgf:value>r3i1p310</esgf:value>
+    <esgf:value>r3i1p311</esgf:value>
+    <esgf:value>r3i1p312</esgf:value>
+    <esgf:value>r3i1p313</esgf:value>
+    <esgf:value>r3i1p4</esgf:value>
+    <esgf:value>r3i1p5</esgf:value>
+    <esgf:value>r3i1p6</esgf:value>
+    <esgf:value>r3i2p1</esgf:value>
+    <esgf:value>r3i3p1</esgf:value>
+    <esgf:value>r4i1p1</esgf:value>
+    <esgf:value>r4i1p10</esgf:value>
+    <esgf:value>r4i1p102</esgf:value>
+    <esgf:value>r4i1p103</esgf:value>
+    <esgf:value>r4i1p104</esgf:value>
+    <esgf:value>r4i1p105</esgf:value>
+    <esgf:value>r4i1p107</esgf:value>
+    <esgf:value>r4i1p108</esgf:value>
+    <esgf:value>r4i1p109</esgf:value>
+    <esgf:value>r4i1p11</esgf:value>
+    <esgf:value>r4i1p114</esgf:value>
+    <esgf:value>r4i1p14</esgf:value>
+    <esgf:value>r4i1p16</esgf:value>
+    <esgf:value>r4i1p17</esgf:value>
+    <esgf:value>r4i1p2</esgf:value>
+    <esgf:value>r4i1p3</esgf:value>
+    <esgf:value>r4i1p3001</esgf:value>
+    <esgf:value>r4i1p302</esgf:value>
+    <esgf:value>r4i1p303</esgf:value>
+    <esgf:value>r4i1p309</esgf:value>
+    <esgf:value>r4i1p310</esgf:value>
+    <esgf:value>r4i1p311</esgf:value>
+    <esgf:value>r4i1p312</esgf:value>
+    <esgf:value>r4i1p313</esgf:value>
+    <esgf:value>r4i1p4</esgf:value>
+    <esgf:value>r4i1p5</esgf:value>
+    <esgf:value>r4i1p6</esgf:value>
+    <esgf:value>r4i2p1</esgf:value>
+    <esgf:value>r4i3p1</esgf:value>
+    <esgf:value>r5i1p1</esgf:value>
+    <esgf:value>r5i1p102</esgf:value>
+    <esgf:value>r5i1p103</esgf:value>
+    <esgf:value>r5i1p104</esgf:value>
+    <esgf:value>r5i1p105</esgf:value>
+    <esgf:value>r5i1p107</esgf:value>
+    <esgf:value>r5i1p108</esgf:value>
+    <esgf:value>r5i1p109</esgf:value>
+    <esgf:value>r5i1p114</esgf:value>
+    <esgf:value>r5i1p2</esgf:value>
+    <esgf:value>r5i1p3</esgf:value>
+    <esgf:value>r5i1p3001</esgf:value>
+    <esgf:value>r5i1p302</esgf:value>
+    <esgf:value>r5i1p303</esgf:value>
+    <esgf:value>r5i1p309</esgf:value>
+    <esgf:value>r5i1p310</esgf:value>
+    <esgf:value>r5i1p311</esgf:value>
+    <esgf:value>r5i1p312</esgf:value>
+    <esgf:value>r5i1p313</esgf:value>
+    <esgf:value>r5i1p4</esgf:value>
+    <esgf:value>r5i1p5</esgf:value>
+    <esgf:value>r5i1p6</esgf:value>
+    <esgf:value>r5i2p1</esgf:value>
+    <esgf:value>r5i3p1</esgf:value>
+    <esgf:value>r6i1p1</esgf:value>
+    <esgf:value>r6i1p10</esgf:value>
+    <esgf:value>r6i1p11</esgf:value>
+    <esgf:value>r6i1p13</esgf:value>
+    <esgf:value>r6i1p14</esgf:value>
+    <esgf:value>r6i1p16</esgf:value>
+    <esgf:value>r6i1p17</esgf:value>
+    <esgf:value>r6i1p2</esgf:value>
+    <esgf:value>r6i1p3</esgf:value>
+    <esgf:value>r6i2p1</esgf:value>
+    <esgf:value>r6i3p1</esgf:value>
+    <esgf:value>r7i1p1</esgf:value>
+    <esgf:value>r7i2p1</esgf:value>
+    <esgf:value>r7i3p1</esgf:value>
+    <esgf:value>r8i1p1</esgf:value>
+    <esgf:value>r8i2p1</esgf:value>
+    <esgf:value>r8i3p1</esgf:value>
+    <esgf:value>r9-0i1p1</esgf:value>
+    <esgf:value>r9i1p1</esgf:value>
+    <esgf:value>r9i2p1</esgf:value>
+    <esgf:value>r9i3p1</esgf:value>
+  </esgf:field>
+  <esgf:field name="institute" minOccurs="1" maxOccurs="1" recordType="Dataset">
+    <esgf:value>BCC</esgf:value>
+    <esgf:value>BNU</esgf:value>
+    <esgf:value>CCCMA</esgf:value>
+    <esgf:value>CMCC</esgf:value>
+    <esgf:value>CNRM-CERFACS</esgf:value>
+    <esgf:value>COLA-CFS</esgf:value>
+    <esgf:value>CSIRO-BOM</esgf:value>
+    <esgf:value>CSIRO-QCCCE</esgf:value>
+    <esgf:value>FIO</esgf:value>
+    <esgf:value>ICHEC</esgf:value>
+    <esgf:value>INM</esgf:value>
+    <esgf:value>INPE</esgf:value>
+    <esgf:value>IPSL</esgf:value>
+    <esgf:value>LASG-CESS</esgf:value>
+    <esgf:value>LASG-IAP</esgf:value>
+    <esgf:value>MIROC</esgf:value>
+    <esgf:value>MOHC</esgf:value>
+    <esgf:value>MPI-M</esgf:value>
+    <esgf:value>MRI</esgf:value>
+    <esgf:value>NASA-GISS</esgf:value>
+    <esgf:value>NASA-GMAO</esgf:value>
+    <esgf:value>NCAR</esgf:value>
+    <esgf:value>NCC</esgf:value>
+    <esgf:value>NCEP</esgf:value>
+    <esgf:value>NICAM</esgf:value>
+    <esgf:value>NIMR-KMA</esgf:value>
+    <esgf:value>NOAA-GFDL</esgf:value>
+    <esgf:value>NSF-DOE-NCAR</esgf:value>
+    <esgf:value>UNSW</esgf:value>
+  </esgf:field>
+  <esgf:field name="product" minOccurs="1" maxOccurs="1" recordType="Dataset">
+    <esgf:value>output</esgf:value>
+    <esgf:value>output1</esgf:value>
+    <esgf:value>output2</esgf:value>
+    <esgf:value>restricted</esgf:value>
+    <esgf:value>unsolicited</esgf:value>
+  </esgf:field>
+  <esgf:field name="realm" minOccurs="1" maxOccurs="1" recordType="Dataset">
+    <esgf:value>aerosol</esgf:value>
+    <esgf:value>atmos</esgf:value>
+    <esgf:value>land</esgf:value>
+    <esgf:value>landIce</esgf:value>
+    <esgf:value>ocean</esgf:value>
+    <esgf:value>ocnBgchem</esgf:value>
+    <esgf:value>seaIce</esgf:value>
+  </esgf:field>
+  <esgf:field name="cmor_table" minOccurs="1" maxOccurs="1" recordType="Dataset">
+    <esgf:value>3hr</esgf:value>
+    <esgf:value>3hrExtras</esgf:value>
+    <esgf:value>6hrLev</esgf:value>
+    <esgf:value>6hrPlev</esgf:value>
+    <esgf:value>Aclim</esgf:value>
+    <esgf:value>Amon</esgf:value>
+    <esgf:value>AmonExtras</esgf:value>
+    <esgf:value>LIclim</esgf:value>
+    <esgf:value>LImon</esgf:value>
+    <esgf:value>Lclim</esgf:value>
+    <esgf:value>Lmon</esgf:value>
+    <esgf:value>LmonExtras</esgf:value>
+    <esgf:value>OImon</esgf:value>
+    <esgf:value>Oclim</esgf:value>
+    <esgf:value>Omon</esgf:value>
+    <esgf:value>OmonExtras</esgf:value>
+    <esgf:value>Oyr</esgf:value>
+    <esgf:value>OyrExtras</esgf:value>
+    <esgf:value>aero</esgf:value>
+    <esgf:value>cf3hr</esgf:value>
+    <esgf:value>cfDay</esgf:value>
+    <esgf:value>cfMon</esgf:value>
+    <esgf:value>cfOff</esgf:value>
+    <esgf:value>cfSites</esgf:value>
+    <esgf:value>day</esgf:value>
+    <esgf:value>dayExtras</esgf:value>
+    <esgf:value>fx</esgf:value>
+  </esgf:field>
+  <esgf:field name="time_frequency" minOccurs="1" maxOccurs="1" recordType="Dataset">
+    <esgf:value>3hr</esgf:value>
+    <esgf:value>6hr</esgf:value>
+    <esgf:value>day</esgf:value>
+    <esgf:value>fx</esgf:value>
+    <esgf:value>mon</esgf:value>
+    <esgf:value>monClim</esgf:value>
+    <esgf:value>subhr</esgf:value>
+    <esgf:value>yr</esgf:value>
+  </esgf:field>
+  <esgf:field name="variable" minOccurs="0" maxOccurs="unbounded">
+    <esgf:value>abs550aer</esgf:value>
+    <esgf:value>ageice</esgf:value>
+    <esgf:value>agessc</esgf:value>
+    <esgf:value>albisccp</esgf:value>
+    <esgf:value>albs</esgf:value>
+    <esgf:value>arag</esgf:value>
+    <esgf:value>areacella</esgf:value>
+    <esgf:value>areacello</esgf:value>
+    <esgf:value>atb532</esgf:value>
+    <esgf:value>bacc</esgf:value>
+    <esgf:value>baresoilFrac</esgf:value>
+    <esgf:value>basin</esgf:value>
+    <esgf:value>bddtalk</esgf:value>
+    <esgf:value>bddtdic</esgf:value>
+    <esgf:value>bddtdife</esgf:value>
+    <esgf:value>bddtdin</esgf:value>
+    <esgf:value>bddtdip</esgf:value>
+    <esgf:value>bddtdisi</esgf:value>
+    <esgf:value>bfe</esgf:value>
+    <esgf:value>bmelt</esgf:value>
+    <esgf:value>boxptopisccp</esgf:value>
+    <esgf:value>boxtauisccp</esgf:value>
+    <esgf:value>bsi</esgf:value>
+    <esgf:value>burntArea</esgf:value>
+    <esgf:value>c3PftFrac</esgf:value>
+    <esgf:value>c4PftFrac</esgf:value>
+    <esgf:value>cCwd</esgf:value>
+    <esgf:value>cLeaf</esgf:value>
+    <esgf:value>cLitter</esgf:value>
+    <esgf:value>cLitterAbove</esgf:value>
+    <esgf:value>cLitterBelow</esgf:value>
+    <esgf:value>cMisc</esgf:value>
+    <esgf:value>cProduct</esgf:value>
+    <esgf:value>cRoot</esgf:value>
+    <esgf:value>cSoil</esgf:value>
+    <esgf:value>cSoilFast</esgf:value>
+    <esgf:value>cSoilMedium</esgf:value>
+    <esgf:value>cSoilSlow</esgf:value>
+    <esgf:value>cVeg</esgf:value>
+    <esgf:value>cWood</esgf:value>
+    <esgf:value>calc</esgf:value>
+    <esgf:value>ccb</esgf:value>
+    <esgf:value>ccbClim</esgf:value>
+    <esgf:value>cct</esgf:value>
+    <esgf:value>cctClim</esgf:value>
+    <esgf:value>cdnc</esgf:value>
+    <esgf:value>cfadDbze94</esgf:value>
+    <esgf:value>cfadLidarsr532</esgf:value>
+    <esgf:value>cfc11</esgf:value>
+    <esgf:value>cfc113global</esgf:value>
+    <esgf:value>cfc11global</esgf:value>
+    <esgf:value>cfc12global</esgf:value>
+    <esgf:value>ch4</esgf:value>
+    <esgf:value>ch4global</esgf:value>
+    <esgf:value>chl</esgf:value>
+    <esgf:value>chlcalc</esgf:value>
+    <esgf:value>chldiat</esgf:value>
+    <esgf:value>chldiaz</esgf:value>
+    <esgf:value>chlmisc</esgf:value>
+    <esgf:value>chlpico</esgf:value>
+    <esgf:value>ci</esgf:value>
+    <esgf:value>ciClim</esgf:value>
+    <esgf:value>cl</esgf:value>
+    <esgf:value>clClim</esgf:value>
+    <esgf:value>clMISR</esgf:value>
+    <esgf:value>clc</esgf:value>
+    <esgf:value>clcalipso</esgf:value>
+    <esgf:value>clcalipso2</esgf:value>
+    <esgf:value>cldnci</esgf:value>
+    <esgf:value>cldncl</esgf:value>
+    <esgf:value>cldnvi</esgf:value>
+    <esgf:value>clhcalipso</esgf:value>
+    <esgf:value>clhmodis</esgf:value>
+    <esgf:value>cli</esgf:value>
+    <esgf:value>cliClim</esgf:value>
+    <esgf:value>clic</esgf:value>
+    <esgf:value>climodis</esgf:value>
+    <esgf:value>clis</esgf:value>
+    <esgf:value>clisccp</esgf:value>
+    <esgf:value>clivi</esgf:value>
+    <esgf:value>cliviClim</esgf:value>
+    <esgf:value>cllcalipso</esgf:value>
+    <esgf:value>cllmodis</esgf:value>
+    <esgf:value>clmcalipso</esgf:value>
+    <esgf:value>clmmodis</esgf:value>
+    <esgf:value>clmodis</esgf:value>
+    <esgf:value>cls</esgf:value>
+    <esgf:value>clt</esgf:value>
+    <esgf:value>cltClim</esgf:value>
+    <esgf:value>cltc</esgf:value>
+    <esgf:value>cltcalipso</esgf:value>
+    <esgf:value>cltisccp</esgf:value>
+    <esgf:value>cltlidarradar</esgf:value>
+    <esgf:value>cltmodis</esgf:value>
+    <esgf:value>clw</esgf:value>
+    <esgf:value>clwClim</esgf:value>
+    <esgf:value>clwc</esgf:value>
+    <esgf:value>clwmodis</esgf:value>
+    <esgf:value>clws</esgf:value>
+    <esgf:value>clwvi</esgf:value>
+    <esgf:value>clwviClim</esgf:value>
+    <esgf:value>co2</esgf:value>
+    <esgf:value>co2mass</esgf:value>
+    <esgf:value>co3</esgf:value>
+    <esgf:value>co3satarag</esgf:value>
+    <esgf:value>co3satcalc</esgf:value>
+    <esgf:value>concaerh2o</esgf:value>
+    <esgf:value>concbb</esgf:value>
+    <esgf:value>concbc</esgf:value>
+    <esgf:value>conccn</esgf:value>
+    <esgf:value>concdms</esgf:value>
+    <esgf:value>concdust</esgf:value>
+    <esgf:value>concnh4</esgf:value>
+    <esgf:value>concno3</esgf:value>
+    <esgf:value>concoa</esgf:value>
+    <esgf:value>concpoa</esgf:value>
+    <esgf:value>concso2</esgf:value>
+    <esgf:value>concso4</esgf:value>
+    <esgf:value>concsoa</esgf:value>
+    <esgf:value>concss</esgf:value>
+    <esgf:value>cropFrac</esgf:value>
+    <esgf:value>darag</esgf:value>
+    <esgf:value>dbze94</esgf:value>
+    <esgf:value>dcalc</esgf:value>
+    <esgf:value>demc</esgf:value>
+    <esgf:value>dems</esgf:value>
+    <esgf:value>deptho</esgf:value>
+    <esgf:value>detoc</esgf:value>
+    <esgf:value>dfe</esgf:value>
+    <esgf:value>difmxybo</esgf:value>
+    <esgf:value>difmxylo</esgf:value>
+    <esgf:value>diftrblo</esgf:value>
+    <esgf:value>diftrelo</esgf:value>
+    <esgf:value>difvho</esgf:value>
+    <esgf:value>difvmbo</esgf:value>
+    <esgf:value>difvmo</esgf:value>
+    <esgf:value>difvmto</esgf:value>
+    <esgf:value>difvso</esgf:value>
+    <esgf:value>difvtrbo</esgf:value>
+    <esgf:value>difvtrto</esgf:value>
+    <esgf:value>dispkevfo</esgf:value>
+    <esgf:value>dispkexyfo</esgf:value>
+    <esgf:value>dissic</esgf:value>
+    <esgf:value>dissoc</esgf:value>
+    <esgf:value>divice</esgf:value>
+    <esgf:value>dmc</esgf:value>
+    <esgf:value>dms</esgf:value>
+    <esgf:value>dpco2</esgf:value>
+    <esgf:value>dpo2</esgf:value>
+    <esgf:value>dpocdtdiaz</esgf:value>
+    <esgf:value>dpocdtpico</esgf:value>
+    <esgf:value>drybc</esgf:value>
+    <esgf:value>drydms</esgf:value>
+    <esgf:value>drydust</esgf:value>
+    <esgf:value>drynh3</esgf:value>
+    <esgf:value>drynh4</esgf:value>
+    <esgf:value>dryoa</esgf:value>
+    <esgf:value>drypoa</esgf:value>
+    <esgf:value>dryso2</esgf:value>
+    <esgf:value>dryso4</esgf:value>
+    <esgf:value>drysoa</esgf:value>
+    <esgf:value>dryss</esgf:value>
+    <esgf:value>dtauc</esgf:value>
+    <esgf:value>dtaus</esgf:value>
+    <esgf:value>ec550aer</esgf:value>
+    <esgf:value>edt</esgf:value>
+    <esgf:value>emibb</esgf:value>
+    <esgf:value>emibc</esgf:value>
+    <esgf:value>emidms</esgf:value>
+    <esgf:value>emidust</esgf:value>
+    <esgf:value>eminh3</esgf:value>
+    <esgf:value>emioa</esgf:value>
+    <esgf:value>emipoa</esgf:value>
+    <esgf:value>emiso2</esgf:value>
+    <esgf:value>emiso4</esgf:value>
+    <esgf:value>emiss</esgf:value>
+    <esgf:value>eparag100</esgf:value>
+    <esgf:value>epc100</esgf:value>
+    <esgf:value>epcalc100</esgf:value>
+    <esgf:value>epfe100</esgf:value>
+    <esgf:value>epn100</esgf:value>
+    <esgf:value>epp100</esgf:value>
+    <esgf:value>epsi100</esgf:value>
+    <esgf:value>evap</esgf:value>
+    <esgf:value>evisct</esgf:value>
+    <esgf:value>eviscu</esgf:value>
+    <esgf:value>evs</esgf:value>
+    <esgf:value>evspsbl</esgf:value>
+    <esgf:value>evspsblClim</esgf:value>
+    <esgf:value>evspsblsoi</esgf:value>
+    <esgf:value>evspsblsoiClim</esgf:value>
+    <esgf:value>evspsblveg</esgf:value>
+    <esgf:value>evspsblvegClim</esgf:value>
+    <esgf:value>evu</esgf:value>
+    <esgf:value>exparag</esgf:value>
+    <esgf:value>expc</esgf:value>
+    <esgf:value>expcalc</esgf:value>
+    <esgf:value>expcfe</esgf:value>
+    <esgf:value>expn</esgf:value>
+    <esgf:value>expp</esgf:value>
+    <esgf:value>expsi</esgf:value>
+    <esgf:value>fFire</esgf:value>
+    <esgf:value>fGrazing</esgf:value>
+    <esgf:value>fHarvest</esgf:value>
+    <esgf:value>fLitterSoil</esgf:value>
+    <esgf:value>fLuc</esgf:value>
+    <esgf:value>fVegLitter</esgf:value>
+    <esgf:value>fVegSoil</esgf:value>
+    <esgf:value>fbddtalk</esgf:value>
+    <esgf:value>fbddtdic</esgf:value>
+    <esgf:value>fbddtdife</esgf:value>
+    <esgf:value>fbddtdin</esgf:value>
+    <esgf:value>fbddtdip</esgf:value>
+    <esgf:value>fbddtdisi</esgf:value>
+    <esgf:value>fco2antt</esgf:value>
+    <esgf:value>fco2fos</esgf:value>
+    <esgf:value>fco2nat</esgf:value>
+    <esgf:value>fddtalk</esgf:value>
+    <esgf:value>fddtdic</esgf:value>
+    <esgf:value>fddtdife</esgf:value>
+    <esgf:value>fddtdin</esgf:value>
+    <esgf:value>fddtdip</esgf:value>
+    <esgf:value>fddtdisi</esgf:value>
+    <esgf:value>fediss</esgf:value>
+    <esgf:value>fescav</esgf:value>
+    <esgf:value>fgco2</esgf:value>
+    <esgf:value>fgdms</esgf:value>
+    <esgf:value>fgo2</esgf:value>
+    <esgf:value>ficeberg</esgf:value>
+    <esgf:value>fracout</esgf:value>
+    <esgf:value>frc</esgf:value>
+    <esgf:value>frfe</esgf:value>
+    <esgf:value>friver</esgf:value>
+    <esgf:value>frn</esgf:value>
+    <esgf:value>fsc</esgf:value>
+    <esgf:value>fsfe</esgf:value>
+    <esgf:value>fsitherm</esgf:value>
+    <esgf:value>fsn</esgf:value>
+    <esgf:value>gpp</esgf:value>
+    <esgf:value>grCongel</esgf:value>
+    <esgf:value>grFrazil</esgf:value>
+    <esgf:value>grLateral</esgf:value>
+    <esgf:value>grassFrac</esgf:value>
+    <esgf:value>graz</esgf:value>
+    <esgf:value>gridspec</esgf:value>
+    <esgf:value>h2o</esgf:value>
+    <esgf:value>hcfc22global</esgf:value>
+    <esgf:value>hcice</esgf:value>
+    <esgf:value>hfbasin</esgf:value>
+    <esgf:value>hfbasinba</esgf:value>
+    <esgf:value>hfbasindiff</esgf:value>
+    <esgf:value>hfcorr</esgf:value>
+    <esgf:value>hfds</esgf:value>
+    <esgf:value>hfdsn</esgf:value>
+    <esgf:value>hfevapds</esgf:value>
+    <esgf:value>hfgeou</esgf:value>
+    <esgf:value>hfibthermds</esgf:value>
+    <esgf:value>hfls</esgf:value>
+    <esgf:value>hflsClim</esgf:value>
+    <esgf:value>hflssi</esgf:value>
+    <esgf:value>hfrainds</esgf:value>
+    <esgf:value>hfrunoffds</esgf:value>
+    <esgf:value>hfsifrazil</esgf:value>
+    <esgf:value>hfsifrazil2d</esgf:value>
+    <esgf:value>hfsithermds</esgf:value>
+    <esgf:value>hfsithermds2d</esgf:value>
+    <esgf:value>hfsnthermds</esgf:value>
+    <esgf:value>hfss</esgf:value>
+    <esgf:value>hfssClim</esgf:value>
+    <esgf:value>hfssi</esgf:value>
+    <esgf:value>hfx</esgf:value>
+    <esgf:value>hfxba</esgf:value>
+    <esgf:value>hfxdiff</esgf:value>
+    <esgf:value>hfy</esgf:value>
+    <esgf:value>hfyba</esgf:value>
+    <esgf:value>hfydiff</esgf:value>
+    <esgf:value>htovgyre</esgf:value>
+    <esgf:value>htovovrt</esgf:value>
+    <esgf:value>hur</esgf:value>
+    <esgf:value>hurClim</esgf:value>
+    <esgf:value>hurs</esgf:value>
+    <esgf:value>hursClim</esgf:value>
+    <esgf:value>hus</esgf:value>
+    <esgf:value>husClim</esgf:value>
+    <esgf:value>huss</esgf:value>
+    <esgf:value>hussClim</esgf:value>
+    <esgf:value>ialb</esgf:value>
+    <esgf:value>inc</esgf:value>
+    <esgf:value>intdic</esgf:value>
+    <esgf:value>intparag</esgf:value>
+    <esgf:value>intpbfe</esgf:value>
+    <esgf:value>intpbp</esgf:value>
+    <esgf:value>intpbsi</esgf:value>
+    <esgf:value>intpcalc</esgf:value>
+    <esgf:value>intpcalcite</esgf:value>
+    <esgf:value>intpdiat</esgf:value>
+    <esgf:value>intpdiaz</esgf:value>
+    <esgf:value>intpmisc</esgf:value>
+    <esgf:value>intpn2</esgf:value>
+    <esgf:value>intpnitrate</esgf:value>
+    <esgf:value>intpp</esgf:value>
+    <esgf:value>intppico</esgf:value>
+    <esgf:value>iwpmodis</esgf:value>
+    <esgf:value>lai</esgf:value>
+    <esgf:value>laiClim</esgf:value>
+    <esgf:value>landCoverFrac</esgf:value>
+    <esgf:value>lidarBetaMol532</esgf:value>
+    <esgf:value>loadbc</esgf:value>
+    <esgf:value>loaddust</esgf:value>
+    <esgf:value>loadnh4</esgf:value>
+    <esgf:value>loadno3</esgf:value>
+    <esgf:value>loadoa</esgf:value>
+    <esgf:value>loadpoa</esgf:value>
+    <esgf:value>loadso4</esgf:value>
+    <esgf:value>loadsoa</esgf:value>
+    <esgf:value>loadss</esgf:value>
+    <esgf:value>lon_vertices</esgf:value>
+    <esgf:value>lwpmodis</esgf:value>
+    <esgf:value>lwsnl</esgf:value>
+    <esgf:value>masscello</esgf:value>
+    <esgf:value>masso</esgf:value>
+    <esgf:value>mc</esgf:value>
+    <esgf:value>mcd</esgf:value>
+    <esgf:value>mcu</esgf:value>
+    <esgf:value>meantbclrisccp</esgf:value>
+    <esgf:value>meantbisccp</esgf:value>
+    <esgf:value>mfo</esgf:value>
+    <esgf:value>mlotst</esgf:value>
+    <esgf:value>mlotstsq</esgf:value>
+    <esgf:value>mrfso</esgf:value>
+    <esgf:value>mrfsoClim</esgf:value>
+    <esgf:value>mrlsl</esgf:value>
+    <esgf:value>mrlslClim</esgf:value>
+    <esgf:value>mrlso</esgf:value>
+    <esgf:value>mrro</esgf:value>
+    <esgf:value>mrroClim</esgf:value>
+    <esgf:value>mrros</esgf:value>
+    <esgf:value>mrrosClim</esgf:value>
+    <esgf:value>mrso</esgf:value>
+    <esgf:value>mrsoClim</esgf:value>
+    <esgf:value>mrsofc</esgf:value>
+    <esgf:value>mrsos</esgf:value>
+    <esgf:value>mrsosClim</esgf:value>
+    <esgf:value>msftbarot</esgf:value>
+    <esgf:value>msftmrhoz</esgf:value>
+    <esgf:value>msftmrhozba</esgf:value>
+    <esgf:value>msftmyz</esgf:value>
+    <esgf:value>msftmyzba</esgf:value>
+    <esgf:value>msftyrhoz</esgf:value>
+    <esgf:value>msftyrhozba</esgf:value>
+    <esgf:value>msftyyz</esgf:value>
+    <esgf:value>msftyyzba</esgf:value>
+    <esgf:value>n2o</esgf:value>
+    <esgf:value>n2oglobal</esgf:value>
+    <esgf:value>nbp</esgf:value>
+    <esgf:value>nep</esgf:value>
+    <esgf:value>nh4</esgf:value>
+    <esgf:value>no3</esgf:value>
+    <esgf:value>npp</esgf:value>
+    <esgf:value>nppLeaf</esgf:value>
+    <esgf:value>nppRoot</esgf:value>
+    <esgf:value>nppWood</esgf:value>
+    <esgf:value>o2</esgf:value>
+    <esgf:value>o2min</esgf:value>
+    <esgf:value>od550aer</esgf:value>
+    <esgf:value>od550lt1aer</esgf:value>
+    <esgf:value>od870aer</esgf:value>
+    <esgf:value>omldamax</esgf:value>
+    <esgf:value>omlmax</esgf:value>
+    <esgf:value>orog</esgf:value>
+    <esgf:value>parag</esgf:value>
+    <esgf:value>parasolRefl</esgf:value>
+    <esgf:value>pastureFrac</esgf:value>
+    <esgf:value>pbfe</esgf:value>
+    <esgf:value>pbo</esgf:value>
+    <esgf:value>pbp</esgf:value>
+    <esgf:value>pbsi</esgf:value>
+    <esgf:value>pcalc</esgf:value>
+    <esgf:value>pctisccp</esgf:value>
+    <esgf:value>pctmodis</esgf:value>
+    <esgf:value>pdi</esgf:value>
+    <esgf:value>pfull</esgf:value>
+    <esgf:value>ph</esgf:value>
+    <esgf:value>phalf</esgf:value>
+    <esgf:value>phyc</esgf:value>
+    <esgf:value>phycalc</esgf:value>
+    <esgf:value>phydiat</esgf:value>
+    <esgf:value>phydiaz</esgf:value>
+    <esgf:value>phyfe</esgf:value>
+    <esgf:value>phymisc</esgf:value>
+    <esgf:value>phyn</esgf:value>
+    <esgf:value>phyp</esgf:value>
+    <esgf:value>phypico</esgf:value>
+    <esgf:value>phypmisc</esgf:value>
+    <esgf:value>physi</esgf:value>
+    <esgf:value>pnitrate</esgf:value>
+    <esgf:value>po4</esgf:value>
+    <esgf:value>pon</esgf:value>
+    <esgf:value>pop</esgf:value>
+    <esgf:value>pp</esgf:value>
+    <esgf:value>pr</esgf:value>
+    <esgf:value>prAdjust</esgf:value>
+    <esgf:value>prClim</esgf:value>
+    <esgf:value>prc</esgf:value>
+    <esgf:value>prcClim</esgf:value>
+    <esgf:value>prcprof</esgf:value>
+    <esgf:value>prlsns</esgf:value>
+    <esgf:value>prlsprof</esgf:value>
+    <esgf:value>prsn</esgf:value>
+    <esgf:value>prsnClim</esgf:value>
+    <esgf:value>prsnc</esgf:value>
+    <esgf:value>prveg</esgf:value>
+    <esgf:value>prw</esgf:value>
+    <esgf:value>prwClim</esgf:value>
+    <esgf:value>ps</esgf:value>
+    <esgf:value>psClim</esgf:value>
+    <esgf:value>psl</esgf:value>
+    <esgf:value>pslAdjust</esgf:value>
+    <esgf:value>pslClim</esgf:value>
+    <esgf:value>pso</esgf:value>
+    <esgf:value>rGrowth</esgf:value>
+    <esgf:value>rMaint</esgf:value>
+    <esgf:value>ra</esgf:value>
+    <esgf:value>reffclic</esgf:value>
+    <esgf:value>reffclimodis</esgf:value>
+    <esgf:value>reffclis</esgf:value>
+    <esgf:value>reffclwc</esgf:value>
+    <esgf:value>reffclwmodis</esgf:value>
+    <esgf:value>reffclws</esgf:value>
+    <esgf:value>reffclwtop</esgf:value>
+    <esgf:value>reffrainc</esgf:value>
+    <esgf:value>reffrains</esgf:value>
+    <esgf:value>reffsnowc</esgf:value>
+    <esgf:value>reffsnows</esgf:value>
+    <esgf:value>residualFrac</esgf:value>
+    <esgf:value>rh</esgf:value>
+    <esgf:value>rhopoto</esgf:value>
+    <esgf:value>rhs</esgf:value>
+    <esgf:value>rhsmax</esgf:value>
+    <esgf:value>rhsmin</esgf:value>
+    <esgf:value>ridgice</esgf:value>
+    <esgf:value>rld</esgf:value>
+    <esgf:value>rld4co2</esgf:value>
+    <esgf:value>rldcs</esgf:value>
+    <esgf:value>rldcs4co2</esgf:value>
+    <esgf:value>rlds</esgf:value>
+    <esgf:value>rldsClim</esgf:value>
+    <esgf:value>rldscs</esgf:value>
+    <esgf:value>rldscsClim</esgf:value>
+    <esgf:value>rldssi</esgf:value>
+    <esgf:value>rlu</esgf:value>
+    <esgf:value>rlu4co2</esgf:value>
+    <esgf:value>rlucs</esgf:value>
+    <esgf:value>rlucs4co2</esgf:value>
+    <esgf:value>rlus</esgf:value>
+    <esgf:value>rlusClim</esgf:value>
+    <esgf:value>rluscs</esgf:value>
+    <esgf:value>rlussi</esgf:value>
+    <esgf:value>rlut</esgf:value>
+    <esgf:value>rlut4co2</esgf:value>
+    <esgf:value>rlutClim</esgf:value>
+    <esgf:value>rlutcs</esgf:value>
+    <esgf:value>rlutcs4co2</esgf:value>
+    <esgf:value>rlutcsClim</esgf:value>
+    <esgf:value>rootd</esgf:value>
+    <esgf:value>rsd</esgf:value>
+    <esgf:value>rsd4co2</esgf:value>
+    <esgf:value>rsdcs</esgf:value>
+    <esgf:value>rsdcs4co2</esgf:value>
+    <esgf:value>rsds</esgf:value>
+    <esgf:value>rsdsClim</esgf:value>
+    <esgf:value>rsdscs</esgf:value>
+    <esgf:value>rsdscsClim</esgf:value>
+    <esgf:value>rsdscsdiff</esgf:value>
+    <esgf:value>rsdsdiff</esgf:value>
+    <esgf:value>rsdssi</esgf:value>
+    <esgf:value>rsdt</esgf:value>
+    <esgf:value>rsdtClim</esgf:value>
+    <esgf:value>rsntds</esgf:value>
+    <esgf:value>rsu</esgf:value>
+    <esgf:value>rsu4co2</esgf:value>
+    <esgf:value>rsucs</esgf:value>
+    <esgf:value>rsucs4co2</esgf:value>
+    <esgf:value>rsus</esgf:value>
+    <esgf:value>rsusClim</esgf:value>
+    <esgf:value>rsuscs</esgf:value>
+    <esgf:value>rsuscsClim</esgf:value>
+    <esgf:value>rsussi</esgf:value>
+    <esgf:value>rsut</esgf:value>
+    <esgf:value>rsut4co2</esgf:value>
+    <esgf:value>rsutClim</esgf:value>
+    <esgf:value>rsutcs</esgf:value>
+    <esgf:value>rsutcs4co2</esgf:value>
+    <esgf:value>rsutcsClim</esgf:value>
+    <esgf:value>rtmt</esgf:value>
+    <esgf:value>rtmtClim</esgf:value>
+    <esgf:value>rtoa</esgf:value>
+    <esgf:value>sbl</esgf:value>
+    <esgf:value>sblsi</esgf:value>
+    <esgf:value>sci</esgf:value>
+    <esgf:value>sconcbc</esgf:value>
+    <esgf:value>sconcdust</esgf:value>
+    <esgf:value>sconcnh4</esgf:value>
+    <esgf:value>sconcno3</esgf:value>
+    <esgf:value>sconcoa</esgf:value>
+    <esgf:value>sconcpoa</esgf:value>
+    <esgf:value>sconcso4</esgf:value>
+    <esgf:value>sconcsoa</esgf:value>
+    <esgf:value>sconcss</esgf:value>
+    <esgf:value>sfcWind</esgf:value>
+    <esgf:value>sfcWindClim</esgf:value>
+    <esgf:value>sfcWindmax</esgf:value>
+    <esgf:value>sfdsi</esgf:value>
+    <esgf:value>sfriver</esgf:value>
+    <esgf:value>sftgif</esgf:value>
+    <esgf:value>sftlf</esgf:value>
+    <esgf:value>sftof</esgf:value>
+    <esgf:value>shrubFrac</esgf:value>
+    <esgf:value>si</esgf:value>
+    <esgf:value>sic</esgf:value>
+    <esgf:value>sim</esgf:value>
+    <esgf:value>sit</esgf:value>
+    <esgf:value>smc</esgf:value>
+    <esgf:value>snc</esgf:value>
+    <esgf:value>snd</esgf:value>
+    <esgf:value>snm</esgf:value>
+    <esgf:value>snmClim</esgf:value>
+    <esgf:value>snoToIce</esgf:value>
+    <esgf:value>snomelt</esgf:value>
+    <esgf:value>snw</esgf:value>
+    <esgf:value>snwClim</esgf:value>
+    <esgf:value>so</esgf:value>
+    <esgf:value>soga</esgf:value>
+    <esgf:value>sootsn</esgf:value>
+    <esgf:value>sos</esgf:value>
+    <esgf:value>spco2</esgf:value>
+    <esgf:value>ssi</esgf:value>
+    <esgf:value>strairx</esgf:value>
+    <esgf:value>strairy</esgf:value>
+    <esgf:value>streng</esgf:value>
+    <esgf:value>strocnx</esgf:value>
+    <esgf:value>strocny</esgf:value>
+    <esgf:value>swit</esgf:value>
+    <esgf:value>ta</esgf:value>
+    <esgf:value>ta700</esgf:value>
+    <esgf:value>taClim</esgf:value>
+    <esgf:value>talk</esgf:value>
+    <esgf:value>tas</esgf:value>
+    <esgf:value>tasAdjust</esgf:value>
+    <esgf:value>tasClim</esgf:value>
+    <esgf:value>tasmax</esgf:value>
+    <esgf:value>tasmaxClim</esgf:value>
+    <esgf:value>tasmin</esgf:value>
+    <esgf:value>tasminClim</esgf:value>
+    <esgf:value>tauilogmodis</esgf:value>
+    <esgf:value>tauimodis</esgf:value>
+    <esgf:value>tauisccp</esgf:value>
+    <esgf:value>tautlogmodis</esgf:value>
+    <esgf:value>tautmodis</esgf:value>
+    <esgf:value>tauu</esgf:value>
+    <esgf:value>tauuClim</esgf:value>
+    <esgf:value>tauucorr</esgf:value>
+    <esgf:value>tauuo</esgf:value>
+    <esgf:value>tauv</esgf:value>
+    <esgf:value>tauvClim</esgf:value>
+    <esgf:value>tauvcorr</esgf:value>
+    <esgf:value>tauvo</esgf:value>
+    <esgf:value>tauwlogmodis</esgf:value>
+    <esgf:value>tauwmodis</esgf:value>
+    <esgf:value>thetao</esgf:value>
+    <esgf:value>thetaoga</esgf:value>
+    <esgf:value>thkcello</esgf:value>
+    <esgf:value>tmelt</esgf:value>
+    <esgf:value>tnhus</esgf:value>
+    <esgf:value>tnhusa</esgf:value>
+    <esgf:value>tnhusc</esgf:value>
+    <esgf:value>tnhusd</esgf:value>
+    <esgf:value>tnhusmp</esgf:value>
+    <esgf:value>tnhusscpbl</esgf:value>
+    <esgf:value>tnkebto</esgf:value>
+    <esgf:value>tnpeo</esgf:value>
+    <esgf:value>tnpeot</esgf:value>
+    <esgf:value>tnpeotb</esgf:value>
+    <esgf:value>tnsccw</esgf:value>
+    <esgf:value>tnsccwa</esgf:value>
+    <esgf:value>tnsccwacr</esgf:value>
+    <esgf:value>tnsccwacs</esgf:value>
+    <esgf:value>tnsccwbl</esgf:value>
+    <esgf:value>tnsccwce</esgf:value>
+    <esgf:value>tnsccwcm</esgf:value>
+    <esgf:value>tnsccwif</esgf:value>
+    <esgf:value>tnscli</esgf:value>
+    <esgf:value>tnsclia</esgf:value>
+    <esgf:value>tnscliag</esgf:value>
+    <esgf:value>tnsclias</esgf:value>
+    <esgf:value>tnsclibfpcl</esgf:value>
+    <esgf:value>tnsclibl</esgf:value>
+    <esgf:value>tnsclicd</esgf:value>
+    <esgf:value>tnsclicm</esgf:value>
+    <esgf:value>tnsclids</esgf:value>
+    <esgf:value>tnscliemi</esgf:value>
+    <esgf:value>tnsclihencl</esgf:value>
+    <esgf:value>tnsclihenv</esgf:value>
+    <esgf:value>tnsclihon</esgf:value>
+    <esgf:value>tnscliif</esgf:value>
+    <esgf:value>tnsclimcl</esgf:value>
+    <esgf:value>tnsclimr</esgf:value>
+    <esgf:value>tnscliricl</esgf:value>
+    <esgf:value>tnsclirir</esgf:value>
+    <esgf:value>tnsclw</esgf:value>
+    <esgf:value>tnsclwa</esgf:value>
+    <esgf:value>tnsclwac</esgf:value>
+    <esgf:value>tnsclwar</esgf:value>
+    <esgf:value>tnsclwas</esgf:value>
+    <esgf:value>tnsclwbfpcli</esgf:value>
+    <esgf:value>tnsclwcd</esgf:value>
+    <esgf:value>tnsclwce</esgf:value>
+    <esgf:value>tnsclwcm</esgf:value>
+    <esgf:value>tnsclwhen</esgf:value>
+    <esgf:value>tnsclwhon</esgf:value>
+    <esgf:value>tnsclwmi</esgf:value>
+    <esgf:value>tnsclwri</esgf:value>
+    <esgf:value>tnt</esgf:value>
+    <esgf:value>tnta</esgf:value>
+    <esgf:value>tntc</esgf:value>
+    <esgf:value>tntmp</esgf:value>
+    <esgf:value>tntr</esgf:value>
+    <esgf:value>tntscpbl</esgf:value>
+    <esgf:value>toffset</esgf:value>
+    <esgf:value>tos</esgf:value>
+    <esgf:value>tossq</esgf:value>
+    <esgf:value>tran</esgf:value>
+    <esgf:value>tranClim</esgf:value>
+    <esgf:value>transifs</esgf:value>
+    <esgf:value>transix</esgf:value>
+    <esgf:value>transiy</esgf:value>
+    <esgf:value>treeFrac</esgf:value>
+    <esgf:value>treeFracPrimDec</esgf:value>
+    <esgf:value>treeFracPrimEver</esgf:value>
+    <esgf:value>treeFracSecDec</esgf:value>
+    <esgf:value>treeFracSecEver</esgf:value>
+    <esgf:value>tro3</esgf:value>
+    <esgf:value>tro3Clim</esgf:value>
+    <esgf:value>ts</esgf:value>
+    <esgf:value>tsAdjust</esgf:value>
+    <esgf:value>tsClim</esgf:value>
+    <esgf:value>tsice</esgf:value>
+    <esgf:value>tsl</esgf:value>
+    <esgf:value>tslClim</esgf:value>
+    <esgf:value>tslsi</esgf:value>
+    <esgf:value>tsn</esgf:value>
+    <esgf:value>tsnint</esgf:value>
+    <esgf:value>tso</esgf:value>
+    <esgf:value>ua</esgf:value>
+    <esgf:value>uaClim</esgf:value>
+    <esgf:value>uas</esgf:value>
+    <esgf:value>uasClim</esgf:value>
+    <esgf:value>umo</esgf:value>
+    <esgf:value>uo</esgf:value>
+    <esgf:value>usi</esgf:value>
+    <esgf:value>va</esgf:value>
+    <esgf:value>vaClim</esgf:value>
+    <esgf:value>vas</esgf:value>
+    <esgf:value>vasClim</esgf:value>
+    <esgf:value>vmo</esgf:value>
+    <esgf:value>vo</esgf:value>
+    <esgf:value>volcello</esgf:value>
+    <esgf:value>volo</esgf:value>
+    <esgf:value>vsf</esgf:value>
+    <esgf:value>vsfcorr</esgf:value>
+    <esgf:value>vsfevap</esgf:value>
+    <esgf:value>vsfpr</esgf:value>
+    <esgf:value>vsfriver</esgf:value>
+    <esgf:value>vsfsit</esgf:value>
+    <esgf:value>vsi</esgf:value>
+    <esgf:value>wap</esgf:value>
+    <esgf:value>wap500</esgf:value>
+    <esgf:value>wapClim</esgf:value>
+    <esgf:value>wetbc</esgf:value>
+    <esgf:value>wetdms</esgf:value>
+    <esgf:value>wetdust</esgf:value>
+    <esgf:value>wetnh4</esgf:value>
+    <esgf:value>wetoa</esgf:value>
+    <esgf:value>wetpoa</esgf:value>
+    <esgf:value>wetso2</esgf:value>
+    <esgf:value>wetso4</esgf:value>
+    <esgf:value>wetsoa</esgf:value>
+    <esgf:value>wetss</esgf:value>
+    <esgf:value>wfcorr</esgf:value>
+    <esgf:value>wfo</esgf:value>
+    <esgf:value>wfonocorr</esgf:value>
+    <esgf:value>wmo</esgf:value>
+    <esgf:value>wmosq</esgf:value>
+    <esgf:value>wo</esgf:value>
+    <esgf:value>zfull</esgf:value>
+    <esgf:value>zg</esgf:value>
+    <esgf:value>zgClim</esgf:value>
+    <esgf:value>zhalf</esgf:value>
+    <esgf:value>zmeso</esgf:value>
+    <esgf:value>zmicro</esgf:value>
+    <esgf:value>zo2min</esgf:value>
+    <esgf:value>zooc</esgf:value>
+    <esgf:value>zoocmisc</esgf:value>
+    <esgf:value>zos</esgf:value>
+    <esgf:value>zosga</esgf:value>
+    <esgf:value>zossga</esgf:value>
+    <esgf:value>zossq</esgf:value>
+    <esgf:value>zostoga</esgf:value>
+    <esgf:value>zsatarag</esgf:value>
+    <esgf:value>zsatcalc</esgf:value>
+  </esgf:field>
+  <esgf:field name="variable_long_name" minOccurs="0" maxOccurs="unbounded">
+    <esgf:value>Aerosol Number Concentration</esgf:value>
+    <esgf:value>Age of Sea Ice</esgf:value>
+    <esgf:value>Air Pressure at Convective Cloud Base</esgf:value>
+    <esgf:value>Air Pressure at Convective Cloud Top</esgf:value>
+    <esgf:value>Air Temperature</esgf:value>
+    <esgf:value>Altitude of Model Full-Levels</esgf:value>
+    <esgf:value>Altitude of Model Half-Levels</esgf:value>
+    <esgf:value>Ambient Aerosol Absorption Optical Thickness at 550 nm</esgf:value>
+    <esgf:value>Ambient Aerosol Extinction Optical Thickness at 550 nm</esgf:value>
+    <esgf:value>Ambient Aerosol Extinction at 550 nm</esgf:value>
+    <esgf:value>Ambient Aerosol Opitical Thickness at 550 nm</esgf:value>
+    <esgf:value>Ambient Aerosol Opitical Thickness at 870 nm</esgf:value>
+    <esgf:value>Ambient Aerosol Optical Thickness at 550 nm</esgf:value>
+    <esgf:value>Ambient Aerosol Optical Thickness at 870 nm</esgf:value>
+    <esgf:value>Ambient Fine Aerosol Opitical Thickness at 550 nm</esgf:value>
+    <esgf:value>Ambient Fine Aerosol Optical Thickness at 550 nm</esgf:value>
+    <esgf:value>Anthropogenic Pasture Fraction</esgf:value>
+    <esgf:value>Aragonite Concentration</esgf:value>
+    <esgf:value>Aragonite Concentration at Surface</esgf:value>
+    <esgf:value>Aragonite Dissolution</esgf:value>
+    <esgf:value>Aragonite Production</esgf:value>
+    <esgf:value>Aragonite Saturation Depth</esgf:value>
+    <esgf:value>Atmosphere Grid-Cell Area</esgf:value>
+    <esgf:value>Bacterial Carbon Concentration</esgf:value>
+    <esgf:value>Bacterial Carbon Concentration at Surface</esgf:value>
+    <esgf:value>Bare Sea Ice Albedo</esgf:value>
+    <esgf:value>Bare Soil Fraction</esgf:value>
+    <esgf:value>Bias-Corrected Near-Surface Air Temperature</esgf:value>
+    <esgf:value>Bias-Corrected Precipitation</esgf:value>
+    <esgf:value>Bias-Corrected Sea Level Pressure</esgf:value>
+    <esgf:value>Bias-Corrected Surface Temperature</esgf:value>
+    <esgf:value>Biogenic Iron Production</esgf:value>
+    <esgf:value>Biogenic Phosphorus Production</esgf:value>
+    <esgf:value>Biogenic Silica Production</esgf:value>
+    <esgf:value>Burnt Area Fraction</esgf:value>
+    <esgf:value>CALIPSO Cloud Area Fraction</esgf:value>
+    <esgf:value>CALIPSO Cloud Fraction</esgf:value>
+    <esgf:value>CALIPSO Cloud Fraction Undetected by CloudSat</esgf:value>
+    <esgf:value>CALIPSO High Level Cloud Fraction</esgf:value>
+    <esgf:value>CALIPSO Low Level Cloud Fraction</esgf:value>
+    <esgf:value>CALIPSO Mid Level Cloud Fraction</esgf:value>
+    <esgf:value>CALIPSO Scattering Ratio</esgf:value>
+    <esgf:value>CALIPSO Scattering Ratio CFAD</esgf:value>
+    <esgf:value>CALIPSO Total Cloud Fraction</esgf:value>
+    <esgf:value>Calcite Concentration</esgf:value>
+    <esgf:value>Calcite Concentration at Surface</esgf:value>
+    <esgf:value>Calcite Dissolution</esgf:value>
+    <esgf:value>Calcite Production</esgf:value>
+    <esgf:value>Calcite Saturation Depth</esgf:value>
+    <esgf:value>Capacity of Soil to Store Water</esgf:value>
+    <esgf:value>Carbon Mass Flux due to NPP Allocation to Leaf</esgf:value>
+    <esgf:value>Carbon Mass Flux due to NPP Allocation to Roots</esgf:value>
+    <esgf:value>Carbon Mass Flux due to NPP Allocation to Wood</esgf:value>
+    <esgf:value>Carbon Mass Flux into Atmosphere Due to All Anthropogenic Emissions of CO2</esgf:value>
+    <esgf:value>Carbon Mass Flux into Atmosphere Due to Fossil Fuel Emissions of CO2</esgf:value>
+    <esgf:value>Carbon Mass Flux into Atmosphere due to Autotrophic (Plant) Respiration on Land</esgf:value>
+    <esgf:value>Carbon Mass Flux into Atmosphere due to CO2 Emission from Fire</esgf:value>
+    <esgf:value>Carbon Mass Flux into Atmosphere due to Crop Harvesting</esgf:value>
+    <esgf:value>Carbon Mass Flux into Atmosphere due to Grazing on Land</esgf:value>
+    <esgf:value>Carbon Mass Flux into Atmosphere due to Growth Autotrophic Respiration on Land</esgf:value>
+    <esgf:value>Carbon Mass Flux into Atmosphere due to Heterotrophic Respiration on Land</esgf:value>
+    <esgf:value>Carbon Mass Flux into Atmosphere due to Maintenance Autotrophic Respiration on Land</esgf:value>
+    <esgf:value>Carbon Mass Flux out of Atmosphere due to Gross Primary Production on Land</esgf:value>
+    <esgf:value>Carbon Mass Flux out of Atmosphere due to Net Biospheric Production on Land</esgf:value>
+    <esgf:value>Carbon Mass Flux out of Atmosphere due to Net Primary Production on Land</esgf:value>
+    <esgf:value>Carbon Mass in Above-Ground Litter</esgf:value>
+    <esgf:value>Carbon Mass in Below-Ground Litter</esgf:value>
+    <esgf:value>Carbon Mass in Coarse Woody Debris</esgf:value>
+    <esgf:value>Carbon Mass in Fast Soil Pool</esgf:value>
+    <esgf:value>Carbon Mass in Leaves</esgf:value>
+    <esgf:value>Carbon Mass in Litter Pool</esgf:value>
+    <esgf:value>Carbon Mass in Medium Soil Pool</esgf:value>
+    <esgf:value>Carbon Mass in Other Living Compartments on Land</esgf:value>
+    <esgf:value>Carbon Mass in Products of Land Use Change</esgf:value>
+    <esgf:value>Carbon Mass in Roots</esgf:value>
+    <esgf:value>Carbon Mass in Slow Soil Pool</esgf:value>
+    <esgf:value>Carbon Mass in Soil Pool</esgf:value>
+    <esgf:value>Carbon Mass in Vegetation</esgf:value>
+    <esgf:value>Carbon Mass in Wood</esgf:value>
+    <esgf:value>Carbon in Soil Pool</esgf:value>
+    <esgf:value>Cloud Area Fraction</esgf:value>
+    <esgf:value>Cloud Area Fraction in Atmosphere Layer</esgf:value>
+    <esgf:value>Cloud Droplet Number Concentration</esgf:value>
+    <esgf:value>Cloud Droplet Number Concentration of Cloud Tops</esgf:value>
+    <esgf:value>Cloud Fraction as Calculated by the MISR Simulator</esgf:value>
+    <esgf:value>Cloud Top Pressure in Each Column as Calculated by the ISCCP Simulator</esgf:value>
+    <esgf:value>Cloud-Top Effective Droplet Radius</esgf:value>
+    <esgf:value>CloudSat Radar Reflectivity</esgf:value>
+    <esgf:value>CloudSat Radar Reflectivity CFAD</esgf:value>
+    <esgf:value>Column Integrated Cloud Droplet Number</esgf:value>
+    <esgf:value>Compressive Sea Ice Strength</esgf:value>
+    <esgf:value>Concentration of Aerosol Water</esgf:value>
+    <esgf:value>Concentration of Biomass Burning Aerosol</esgf:value>
+    <esgf:value>Concentration of Black Carbon Aerosol</esgf:value>
+    <esgf:value>Concentration of Dry Aerosol Organic Matter</esgf:value>
+    <esgf:value>Concentration of Dry Aerosol Primary Organic Matter</esgf:value>
+    <esgf:value>Concentration of Dry Aerosol Secondary Organic Matter</esgf:value>
+    <esgf:value>Concentration of Dust</esgf:value>
+    <esgf:value>Concentration of NH4</esgf:value>
+    <esgf:value>Concentration of NO3 Aerosol</esgf:value>
+    <esgf:value>Concentration of SO4</esgf:value>
+    <esgf:value>Concentration of Seasalt</esgf:value>
+    <esgf:value>Condensed Water Path</esgf:value>
+    <esgf:value>Congelation Sea Ice Growth Rate</esgf:value>
+    <esgf:value>Convective Cloud Area Fraction</esgf:value>
+    <esgf:value>Convective Cloud Droplet Effective Radius</esgf:value>
+    <esgf:value>Convective Cloud Emissivity</esgf:value>
+    <esgf:value>Convective Cloud Fraction</esgf:value>
+    <esgf:value>Convective Cloud Optical Depth</esgf:value>
+    <esgf:value>Convective Mass Flux</esgf:value>
+    <esgf:value>Convective Precipitation</esgf:value>
+    <esgf:value>Convective Rainfall Flux</esgf:value>
+    <esgf:value>Convective Snowfall Flux</esgf:value>
+    <esgf:value>Crop Fraction</esgf:value>
+    <esgf:value>Daily Maximum Near-Surface Air Temperature</esgf:value>
+    <esgf:value>Daily Maximum Near-Surface Wind Speed</esgf:value>
+    <esgf:value>Daily Maximum Ocean Mixed Layer Thickness Defined by Mixing Scheme</esgf:value>
+    <esgf:value>Daily Maximum Wind Speed</esgf:value>
+    <esgf:value>Daily Minimum Near-Surface Air Temperature</esgf:value>
+    <esgf:value>Daily-Mean Near-Surface Wind Speed</esgf:value>
+    <esgf:value>Daily-Mean Wind Speed</esgf:value>
+    <esgf:value>Deep Convective Mass Flux</esgf:value>
+    <esgf:value>Delta PCO2</esgf:value>
+    <esgf:value>Delta PO2</esgf:value>
+    <esgf:value>Depth of Oxygen Minimum Concentration</esgf:value>
+    <esgf:value>Detrital Organic Carbon Concentration</esgf:value>
+    <esgf:value>Detrital Organic Carbon Concentration at Surface</esgf:value>
+    <esgf:value>Diatom Chlorophyll Mass Concentration</esgf:value>
+    <esgf:value>Diatom Chlorophyll Mass Concentration at Surface</esgf:value>
+    <esgf:value>Diatom Primary Carbon Production</esgf:value>
+    <esgf:value>Dimethyl Sulphide Concentration at Surface</esgf:value>
+    <esgf:value>Dissolve Oxygen Concentration</esgf:value>
+    <esgf:value>Dissolve Oxygen Concentration at Surface</esgf:value>
+    <esgf:value>Dissolved Ammonium Concentration</esgf:value>
+    <esgf:value>Dissolved Ammonium Concentration at Surface</esgf:value>
+    <esgf:value>Dissolved Inorganic Carbon Concentration</esgf:value>
+    <esgf:value>Dissolved Inorganic Carbon Concentration at Surface</esgf:value>
+    <esgf:value>Dissolved Inorganic Carbon Content</esgf:value>
+    <esgf:value>Dissolved Iron Concentration</esgf:value>
+    <esgf:value>Dissolved Iron Concentration at Surface</esgf:value>
+    <esgf:value>Dissolved Nitrate Concentration</esgf:value>
+    <esgf:value>Dissolved Nitrate Concentration at Surface</esgf:value>
+    <esgf:value>Dissolved Organic Carbon Concentration</esgf:value>
+    <esgf:value>Dissolved Organic Carbon Concentration at Surface</esgf:value>
+    <esgf:value>Dissolved Oxygen Concentration</esgf:value>
+    <esgf:value>Dissolved Oxygen Concentration at Surface</esgf:value>
+    <esgf:value>Dissolved Phosphate Concentration</esgf:value>
+    <esgf:value>Dissolved Phosphate Concentration at Surface</esgf:value>
+    <esgf:value>Dissolved Silicate Concentration</esgf:value>
+    <esgf:value>Dissolved Silicate Concentration at Surface</esgf:value>
+    <esgf:value>Downdraft Convective Mass Flux</esgf:value>
+    <esgf:value>Downdraught Convective Mass Flux</esgf:value>
+    <esgf:value>Downward Carbon Flux at Ocean Bottom</esgf:value>
+    <esgf:value>Downward Flux of Aragonite</esgf:value>
+    <esgf:value>Downward Flux of Calcite</esgf:value>
+    <esgf:value>Downward Flux of Particle Organic Carbon</esgf:value>
+    <esgf:value>Downward Flux of Particulate Iron</esgf:value>
+    <esgf:value>Downward Flux of Particulate Organic Nitrogen</esgf:value>
+    <esgf:value>Downward Flux of Particulate Phosphorus</esgf:value>
+    <esgf:value>Downward Flux of Particulate Silica</esgf:value>
+    <esgf:value>Downward Heat Flux at Sea Water Surface</esgf:value>
+    <esgf:value>Downward Heat Flux into Snow Where Land over Land</esgf:value>
+    <esgf:value>Downward Sea Ice Basal Salt Flux</esgf:value>
+    <esgf:value>Downward Shortwave over Sea Ice</esgf:value>
+    <esgf:value>Downwelling Clear-Sky Longwave Radiation</esgf:value>
+    <esgf:value>Downwelling Clear-Sky Longwave Radiation 4XCO2 Atmosphere</esgf:value>
+    <esgf:value>Downwelling Clear-Sky Shortwave Radiation</esgf:value>
+    <esgf:value>Downwelling Clear-Sky Shortwave Radiation 4XCO2 Atmosphere</esgf:value>
+    <esgf:value>Downwelling Long Wave over Sea Ice</esgf:value>
+    <esgf:value>Downwelling Longwave Radiation</esgf:value>
+    <esgf:value>Downwelling Longwave Radiation 4XCO2 Atmosphere</esgf:value>
+    <esgf:value>Downwelling Shortwave Radiation</esgf:value>
+    <esgf:value>Downwelling Shortwave Radiation 4XCO2 Atmosphere</esgf:value>
+    <esgf:value>Downwelling Shortwave Radiation in Sea Water</esgf:value>
+    <esgf:value>Downwelling Shortwave over Sea Ice</esgf:value>
+    <esgf:value>Dry Deposition Rate of Black Carbon Aerosol Mass</esgf:value>
+    <esgf:value>Dry Deposition Rate of DMS</esgf:value>
+    <esgf:value>Dry Deposition Rate of Dry Aerosol Organic Matter</esgf:value>
+    <esgf:value>Dry Deposition Rate of Dry Aerosol Primary Organic Matter</esgf:value>
+    <esgf:value>Dry Deposition Rate of Dry Aerosol Secondary Organic Matter</esgf:value>
+    <esgf:value>Dry Deposition Rate of Dust</esgf:value>
+    <esgf:value>Dry Deposition Rate of NH3</esgf:value>
+    <esgf:value>Dry Deposition Rate of NH4</esgf:value>
+    <esgf:value>Dry Deposition Rate of SO2</esgf:value>
+    <esgf:value>Dry Deposition Rate of SO4</esgf:value>
+    <esgf:value>Dry Deposition Rate of Seasalt</esgf:value>
+    <esgf:value>Eastward Near-Surface Wind</esgf:value>
+    <esgf:value>Eastward Near-Surface Wind Speed</esgf:value>
+    <esgf:value>Eastward Ocean Stress On Sea Ice</esgf:value>
+    <esgf:value>Eastward Sea Ice Transport</esgf:value>
+    <esgf:value>Eastward Sea Ice Velocity</esgf:value>
+    <esgf:value>Eastward Wind</esgf:value>
+    <esgf:value>Eastward atmospheric stress on sea ice</esgf:value>
+    <esgf:value>Eddy Diffusivity Coefficient for Temperature Variable</esgf:value>
+    <esgf:value>Eddy Diffusivity Coefficients for Temperature</esgf:value>
+    <esgf:value>Eddy Viscosity Coefficient for Momentum Variables</esgf:value>
+    <esgf:value>Eddy Viscosity Coefficients for Momentum</esgf:value>
+    <esgf:value>Emission Rate of Black Carbon Aerosol Mass</esgf:value>
+    <esgf:value>Emission Rate of Dry Aerosol Primary Organic Matter</esgf:value>
+    <esgf:value>Evaporation</esgf:value>
+    <esgf:value>Evaporation from Canopy</esgf:value>
+    <esgf:value>Flux of Carbon Into Ocean Surface by Runoff and Sediment Dissolution</esgf:value>
+    <esgf:value>Fraction of Grid Cell Covered with Glacier</esgf:value>
+    <esgf:value>Fraction of Grid Cell that is Land but Neither Vegetation-Covered nor Bare Soil</esgf:value>
+    <esgf:value>Fraction of Time Convection Occurs</esgf:value>
+    <esgf:value>Fraction of Time Shallow Convection Occurs</esgf:value>
+    <esgf:value>Frazil Sea Ice Growth (Leads) Rate</esgf:value>
+    <esgf:value>Geopotential Height</esgf:value>
+    <esgf:value>Global Average Sea Level Change</esgf:value>
+    <esgf:value>Global Average Sea Water Potential Temperature</esgf:value>
+    <esgf:value>Global Average Steric Sea Level Change</esgf:value>
+    <esgf:value>Global Average Thermosteric Sea Level Change</esgf:value>
+    <esgf:value>Global Mean Mole Fraction of CFC11</esgf:value>
+    <esgf:value>Global Mean Mole Fraction of CFC113</esgf:value>
+    <esgf:value>Global Mean Mole Fraction of CFC12</esgf:value>
+    <esgf:value>Global Mean Mole Fraction of CH4</esgf:value>
+    <esgf:value>Global Mean Mole Fraction of HCFC22</esgf:value>
+    <esgf:value>Global Mean Mole Fraction of N2O</esgf:value>
+    <esgf:value>Global Mean Sea Water Salinity</esgf:value>
+    <esgf:value>Global mean mole fraction of CFC-11</esgf:value>
+    <esgf:value>Global mean mole fraction of CFC-113</esgf:value>
+    <esgf:value>Global mean mole fraction of CFC-12</esgf:value>
+    <esgf:value>Global mean mole fraction of HCFC-22</esgf:value>
+    <esgf:value>Heat Flux Correction</esgf:value>
+    <esgf:value>Heat Flux into Sea Water due to Frazil Ice Formation</esgf:value>
+    <esgf:value>Heat Flux into Sea Water due to Iceberg Thermodynamics</esgf:value>
+    <esgf:value>Heat Flux into Sea Water due to Sea Ice Thermodynamics</esgf:value>
+    <esgf:value>Heat Flux into Sea Water due to Snow Thermodynamics</esgf:value>
+    <esgf:value>Hydrometeor Effective Radius of Convective Cloud Ice</esgf:value>
+    <esgf:value>Hydrometeor Effective Radius of Convective Cloud Liquid Water</esgf:value>
+    <esgf:value>Hydrometeor Effective Radius of Convective Rainfall</esgf:value>
+    <esgf:value>Hydrometeor Effective Radius of Convective Snowfall</esgf:value>
+    <esgf:value>Hydrometeor Effective Radius of Stratiform Cloud Ice</esgf:value>
+    <esgf:value>Hydrometeor Effective Radius of Stratiform Cloud Liquid Water</esgf:value>
+    <esgf:value>Hydrometeor Effective Radius of Stratiform Rainfall</esgf:value>
+    <esgf:value>Hydrometeor Effective Radius of Stratiform Snowfall</esgf:value>
+    <esgf:value>ISCCP Cloud Area Fraction</esgf:value>
+    <esgf:value>ISCCP Mean Cloud Albedo</esgf:value>
+    <esgf:value>ISCCP Mean Cloud Top Pressure</esgf:value>
+    <esgf:value>ISCCP Total Cloud Fraction</esgf:value>
+    <esgf:value>ISCCP Total Total Cloud Fraction</esgf:value>
+    <esgf:value>ISSCP Cloud Area Fraction</esgf:value>
+    <esgf:value>ISSCP Mean Cloud Albedo</esgf:value>
+    <esgf:value>ISSCP Mean Cloud Top Pressure</esgf:value>
+    <esgf:value>ISSCP Total Cloud Fraction</esgf:value>
+    <esgf:value>Ice Crystal Number Concentration</esgf:value>
+    <esgf:value>Ice Crystal Number Concentration of Cloud Tops</esgf:value>
+    <esgf:value>Ice Water Path</esgf:value>
+    <esgf:value>Iron Loss to Sediments</esgf:value>
+    <esgf:value>Iron Production</esgf:value>
+    <esgf:value>Land Area Fraction</esgf:value>
+    <esgf:value>Lateral Sea Ice Growth Rate</esgf:value>
+    <esgf:value>Leaf Area Index</esgf:value>
+    <esgf:value>Lidar Attenuated Total Backscatter (532 nm)</esgf:value>
+    <esgf:value>Lidar Molecular Backscatter (532 nm)</esgf:value>
+    <esgf:value>Lidar and Radar Total Cloud Fraction</esgf:value>
+    <esgf:value>Liquid Water Content of Snow Layer</esgf:value>
+    <esgf:value>Load of Black Carbon Aerosol</esgf:value>
+    <esgf:value>Load of Dry Aerosol Organic Matter</esgf:value>
+    <esgf:value>Load of Dry Aerosol Primary Organic Matter</esgf:value>
+    <esgf:value>Load of Dry Aerosol Secondary Organic Matter</esgf:value>
+    <esgf:value>Load of Dust</esgf:value>
+    <esgf:value>Load of NH4</esgf:value>
+    <esgf:value>Load of NO3</esgf:value>
+    <esgf:value>Load of SO4</esgf:value>
+    <esgf:value>Load of Seasalt</esgf:value>
+    <esgf:value>MODIS Cloud Area Fraction</esgf:value>
+    <esgf:value>MODIS Cloud Ice Water Path</esgf:value>
+    <esgf:value>MODIS Cloud Liquid Water Path</esgf:value>
+    <esgf:value>MODIS Cloud Top Pressure</esgf:value>
+    <esgf:value>MODIS High Level Cloud Fraction</esgf:value>
+    <esgf:value>MODIS Ice Cloud Fraction</esgf:value>
+    <esgf:value>MODIS Ice Cloud Optical Thickness</esgf:value>
+    <esgf:value>MODIS Ice Cloud Optical Thickness (Log10 Mean)</esgf:value>
+    <esgf:value>MODIS Ice Cloud Particle Size</esgf:value>
+    <esgf:value>MODIS Liquid Cloud Fraction</esgf:value>
+    <esgf:value>MODIS Liquid Cloud Optical Thickness</esgf:value>
+    <esgf:value>MODIS Liquid Cloud Optical Thickness (Log10 Mean)</esgf:value>
+    <esgf:value>MODIS Liquid Cloud Particle Size</esgf:value>
+    <esgf:value>MODIS Low Level Cloud Fraction</esgf:value>
+    <esgf:value>MODIS Mid Level Cloud Fraction</esgf:value>
+    <esgf:value>MODIS Total Cloud Fraction</esgf:value>
+    <esgf:value>MODIS Total Cloud Optical Thickness</esgf:value>
+    <esgf:value>MODIS Total Cloud Optical Thickness (Log10 Mean)</esgf:value>
+    <esgf:value>Mass Concentration of Calcareous Phytoplankton expressed as Chlorophyll in Sea Water</esgf:value>
+    <esgf:value>Mass Concentration of Calcareous Phytoplankton expressed as Chlorophyll in Sea Water at Surface</esgf:value>
+    <esgf:value>Mass Concentration of Diazotrophs expressed as Chlorophyll in Sea Water</esgf:value>
+    <esgf:value>Mass Concentration of Diazotrophs expressed as Chlorophyll in Sea Water at Surface</esgf:value>
+    <esgf:value>Mass Concentration of Picophytoplankton expressed as Chlorophyll in Sea Water</esgf:value>
+    <esgf:value>Mass Concentration of Picophytoplankton expressed as Chlorophyll in Sea Water at Surface</esgf:value>
+    <esgf:value>Mass Fraction of Cloud Ice</esgf:value>
+    <esgf:value>Mass Fraction of Cloud Liquid Water</esgf:value>
+    <esgf:value>Mass Fraction of Convective Cloud Ice</esgf:value>
+    <esgf:value>Mass Fraction of Convective Cloud Liquid Water</esgf:value>
+    <esgf:value>Mass Fraction of Stratiform Cloud Ice</esgf:value>
+    <esgf:value>Mass Fraction of Stratiform Cloud Liquid Water</esgf:value>
+    <esgf:value>Mass Fraction of Water</esgf:value>
+    <esgf:value>Maximum Root Depth</esgf:value>
+    <esgf:value>Mean Daily Maximum Ocean Mixed Layer Thickness Defined by Mixing Scheme</esgf:value>
+    <esgf:value>Mean Optical Depth as Calculated by the ISCCP Simulator</esgf:value>
+    <esgf:value>Mean all-sky 10.5 micron brightness temperature as calculated by the ISCCP Simulator</esgf:value>
+    <esgf:value>Mean clear-sky 10.5 micron brightness temperature as calculated by the ISCCP Simulator</esgf:value>
+    <esgf:value>Moisture in Upper 0.1 m of Soil Column</esgf:value>
+    <esgf:value>Moisture in Upper Portion of Soil Column</esgf:value>
+    <esgf:value>Mole Concentration of Aragonite expressed as Carbon in Sea Water at Saturation</esgf:value>
+    <esgf:value>Mole Concentration of Aragonite expressed as Carbon in Sea Water at Saturation at Surface</esgf:value>
+    <esgf:value>Mole Concentration of Calcareous Phytoplankton expressed as Carbon in Sea Water</esgf:value>
+    <esgf:value>Mole Concentration of Calcareous Phytoplankton expressed as Carbon in Sea Water at Surface</esgf:value>
+    <esgf:value>Mole Concentration of Calcite expressed as Carbon in Sea Water at Saturation</esgf:value>
+    <esgf:value>Mole Concentration of Calcite expressed as Carbon in Sea Water at Saturation at Surface</esgf:value>
+    <esgf:value>Mole Concentration of Carbonate expressed as Carbon in Sea Water</esgf:value>
+    <esgf:value>Mole Concentration of Carbonate expressed as Carbon in Sea Water at Surface</esgf:value>
+    <esgf:value>Mole Concentration of Diatoms expressed as Carbon in Sea Water</esgf:value>
+    <esgf:value>Mole Concentration of Diatoms expressed as Carbon in Sea Water at Surface</esgf:value>
+    <esgf:value>Mole Concentration of Diazotrophs Expressed as Carbon in Sea Water</esgf:value>
+    <esgf:value>Mole Concentration of Diazotrophs Expressed as Carbon in Sea Water at Surface</esgf:value>
+    <esgf:value>Mole Concentration of Mesozooplankton expressed as Carbon in Sea Water</esgf:value>
+    <esgf:value>Mole Concentration of Mesozooplankton expressed as Carbon in Sea Water at Surface</esgf:value>
+    <esgf:value>Mole Concentration of Microzooplankton expressed as Carbon in Sea Water</esgf:value>
+    <esgf:value>Mole Concentration of Microzooplankton expressed as Carbon in Sea Water at Surface</esgf:value>
+    <esgf:value>Mole Concentration of Miscellaneous Phytoplankton expressed as Carbon in Sea Water</esgf:value>
+    <esgf:value>Mole Concentration of Miscellaneous Phytoplankton expressed as Carbon in Sea Water at Surface</esgf:value>
+    <esgf:value>Mole Concentration of Picophytoplankton expressed as Carbon in Sea Water</esgf:value>
+    <esgf:value>Mole Concentration of Picophytoplankton expressed as Carbon in Sea Water at Surface</esgf:value>
+    <esgf:value>Mole Fraction of CH4</esgf:value>
+    <esgf:value>Mole Fraction of CO2</esgf:value>
+    <esgf:value>Mole Fraction of DMS</esgf:value>
+    <esgf:value>Mole Fraction of N2O</esgf:value>
+    <esgf:value>Mole Fraction of O3</esgf:value>
+    <esgf:value>Mole Fraction of SO2</esgf:value>
+    <esgf:value>Moles Per Unit Mass of CFC-11 in Sea Water</esgf:value>
+    <esgf:value>Monthly Maximum Ocean Mixed Layer Thickness Defined by Mixing Scheme</esgf:value>
+    <esgf:value>Natural Grass Fraction</esgf:value>
+    <esgf:value>Near-Surface Air Temperature</esgf:value>
+    <esgf:value>Near-Surface Air Temperature Where Land</esgf:value>
+    <esgf:value>Near-Surface Relative Humidity</esgf:value>
+    <esgf:value>Near-Surface Specific Humidity</esgf:value>
+    <esgf:value>Near-Surface Wind Speed</esgf:value>
+    <esgf:value>Net Carbon Mass Flux into Atmosphere due to Land Use Change</esgf:value>
+    <esgf:value>Net Carbon Mass Flux out of Atmophere due to Net Ecosystem Productivity on Land.</esgf:value>
+    <esgf:value>Net Downward Flux at Top of Model</esgf:value>
+    <esgf:value>Net Downward Shortwave Radiation at Sea Water Surface</esgf:value>
+    <esgf:value>Net Primary Mole Productivity of Carbon by Calcareous Phytoplankton</esgf:value>
+    <esgf:value>Net Primary Mole Productivity of Carbon by Diazotrophs</esgf:value>
+    <esgf:value>Net Primary Mole Productivity of Carbon by Picophytoplankton</esgf:value>
+    <esgf:value>Nitrogen Fixation Rate in Ocean</esgf:value>
+    <esgf:value>Nitrogen Loss to Sediments and through Denitrification</esgf:value>
+    <esgf:value>Nonbiogenic Iron Scavenging</esgf:value>
+    <esgf:value>Northward Atmospheric Stress On Sea Ice</esgf:value>
+    <esgf:value>Northward Near-Surface Wind</esgf:value>
+    <esgf:value>Northward Near-Surface Wind Speed</esgf:value>
+    <esgf:value>Northward Ocean Heat Transport</esgf:value>
+    <esgf:value>Northward Ocean Heat Transport due to Bolus Advection</esgf:value>
+    <esgf:value>Northward Ocean Heat Transport due to Diffussion</esgf:value>
+    <esgf:value>Northward Ocean Heat Transport due to Gyre</esgf:value>
+    <esgf:value>Northward Ocean Heat Transport due to Overturning</esgf:value>
+    <esgf:value>Northward Ocean Stress On Sea Ice</esgf:value>
+    <esgf:value>Northward Sea Ice Transport</esgf:value>
+    <esgf:value>Northward Sea Ice Velocity</esgf:value>
+    <esgf:value>Northward Wind</esgf:value>
+    <esgf:value>Northward sea ice transport</esgf:value>
+    <esgf:value>Ocean Barotropic Mass Streamfunction</esgf:value>
+    <esgf:value>Ocean Grid-Cell Area</esgf:value>
+    <esgf:value>Ocean Grid-Cell Volume</esgf:value>
+    <esgf:value>Ocean Heat X Transport</esgf:value>
+    <esgf:value>Ocean Heat X Transport due to Bolus Advection</esgf:value>
+    <esgf:value>Ocean Heat X Transport due to Diffusion</esgf:value>
+    <esgf:value>Ocean Heat Y Transport</esgf:value>
+    <esgf:value>Ocean Heat Y Transport due to Bolus Advection</esgf:value>
+    <esgf:value>Ocean Heat Y Transport due to Diffussion</esgf:value>
+    <esgf:value>Ocean Kinetic Energy Dissipation Per Unit Area due to Vertical Friction</esgf:value>
+    <esgf:value>Ocean Kinetic Energy Dissipation Per Unit Area due to XY Friction</esgf:value>
+    <esgf:value>Ocean Mass X Transport</esgf:value>
+    <esgf:value>Ocean Mass Y Transport</esgf:value>
+    <esgf:value>Ocean Meridional Overturning Mass Streamfunction</esgf:value>
+    <esgf:value>Ocean Meridional Overturning Mass Streamfunction due to Bolus Advection</esgf:value>
+    <esgf:value>Ocean Mixed Layer Thickness Defined by Sigma T</esgf:value>
+    <esgf:value>Ocean Model Cell Thickness</esgf:value>
+    <esgf:value>Ocean Momentum XY Biharmonic Diffusivity</esgf:value>
+    <esgf:value>Ocean Momentum XY Laplacian Diffusivity</esgf:value>
+    <esgf:value>Ocean Tracer Bolus Laplacian Diffusivity</esgf:value>
+    <esgf:value>Ocean Tracer Epineutral Laplacian Diffusivity</esgf:value>
+    <esgf:value>Ocean Vertical Heat Diffusivity</esgf:value>
+    <esgf:value>Ocean Vertical Momentum Diffusivity</esgf:value>
+    <esgf:value>Ocean Vertical Momentum Diffusivity due to Background</esgf:value>
+    <esgf:value>Ocean Vertical Momentum Diffusivity due to Tides</esgf:value>
+    <esgf:value>Ocean Vertical Salt Diffusivity</esgf:value>
+    <esgf:value>Ocean Vertical Tracer Diffusivity due to Background</esgf:value>
+    <esgf:value>Ocean Vertical Tracer Diffusivity due to Tides</esgf:value>
+    <esgf:value>Ocean Y Overturning Mass Streamfunction</esgf:value>
+    <esgf:value>Ocean Y Overturning Mass Streamfunction due to Bolus Advection</esgf:value>
+    <esgf:value>Offset Time</esgf:value>
+    <esgf:value>Optical Depth in Each Column as Calculated by the ISCCP Simulator</esgf:value>
+    <esgf:value>Other Phytoplankton Carbon Production</esgf:value>
+    <esgf:value>Other Phytoplankton Chlorophyll Mass Concentration</esgf:value>
+    <esgf:value>Other Phytoplankton Chlorophyll Mass Concentration at Surface</esgf:value>
+    <esgf:value>Other Zooplankton Carbon Concentration</esgf:value>
+    <esgf:value>Other Zooplankton Carbon Concentration at Surface</esgf:value>
+    <esgf:value>Oxygen Minimum Concentration</esgf:value>
+    <esgf:value>PARASOL Reflectance</esgf:value>
+    <esgf:value>Particle Source of Dissolved Iron</esgf:value>
+    <esgf:value>Particulate Biogenic Iron Concentration</esgf:value>
+    <esgf:value>Particulate Biogenic Iron Concentration at Surface</esgf:value>
+    <esgf:value>Particulate Biogenic Silica Concentration</esgf:value>
+    <esgf:value>Particulate Biogenic Silica Concentration at Surface</esgf:value>
+    <esgf:value>Particulate Organic Nitrogen Concentration</esgf:value>
+    <esgf:value>Particulate Organic Nitrogen Concentration at Surface</esgf:value>
+    <esgf:value>Particulate Organic Phosphorus Concentration</esgf:value>
+    <esgf:value>Particulate Organic Phosphorus Concentration at Surface</esgf:value>
+    <esgf:value>Phosphorus Production</esgf:value>
+    <esgf:value>Phytoplankton Carbon Concentration</esgf:value>
+    <esgf:value>Phytoplankton Carbon Concentration at Surface</esgf:value>
+    <esgf:value>Phytoplankton Iron Concentration</esgf:value>
+    <esgf:value>Phytoplankton Iron Concentration at Surface</esgf:value>
+    <esgf:value>Phytoplankton Nitrogen Concentration</esgf:value>
+    <esgf:value>Phytoplankton Nitrogen Concentration at Surface</esgf:value>
+    <esgf:value>Phytoplankton Phosphorus Concentration</esgf:value>
+    <esgf:value>Phytoplankton Phosphorus Concentration at Surface</esgf:value>
+    <esgf:value>Phytoplankton Silica Concentration</esgf:value>
+    <esgf:value>Phytoplankton Silica Concentration at Surface</esgf:value>
+    <esgf:value>Plant Functional Type Grid Fraction</esgf:value>
+    <esgf:value>Precipitation</esgf:value>
+    <esgf:value>Precipitation onto Canopy</esgf:value>
+    <esgf:value>Pressure at Model Full-Levels</esgf:value>
+    <esgf:value>Pressure at Model Half-Levels</esgf:value>
+    <esgf:value>Pressure on Model Half-Levels</esgf:value>
+    <esgf:value>Pressure on Model Levels</esgf:value>
+    <esgf:value>Primary Carbon Production by Phytoplankton</esgf:value>
+    <esgf:value>Primary Carbon Production by Phytoplankton due to Nitrate Uptake Alone</esgf:value>
+    <esgf:value>Primary Organic Carbon Production by All Types of Phytoplankton</esgf:value>
+    <esgf:value>Primary Organic Carbon Production by Diatoms</esgf:value>
+    <esgf:value>Primary Organic Carbon Production by Other Phytoplankton</esgf:value>
+    <esgf:value>Primary Organic Carbon Production by Phytoplankton Based on Nitrate Uptake Alone</esgf:value>
+    <esgf:value>Rainfall Flux where Ice Free Ocean over Sea</esgf:value>
+    <esgf:value>Rate of Change in Upper 100 m of Dissolved Inorganic Carbon due to Biological Activity</esgf:value>
+    <esgf:value>Rate of Change in Upper 100 m of Dissolved Inorganic Nitrogen due to Biological Activity</esgf:value>
+    <esgf:value>Rate of Change in Upper 100 m of Dissolved Inorganic Phosphate due to Biological Activity</esgf:value>
+    <esgf:value>Rate of Change of Alkalinity</esgf:value>
+    <esgf:value>Rate of Change of Alkalinity due to Biological Activity</esgf:value>
+    <esgf:value>Rate of Change of Biological Alkalinity due to Biological Activity</esgf:value>
+    <esgf:value>Rate of Change of Dissolved Inorganic Carbon due to Biological Activity</esgf:value>
+    <esgf:value>Rate of Change of Dissolved Inorganic Iron due to Biological Activity</esgf:value>
+    <esgf:value>Rate of Change of Dissolved Inorganic Nitrogen due to Biological Activity</esgf:value>
+    <esgf:value>Rate of Change of Dissolved Inorganic Phosphate due to Biological Activity</esgf:value>
+    <esgf:value>Rate of Change of Dissolved Inorganic Silicate due to Biological Activity</esgf:value>
+    <esgf:value>Rate of Change of Dissolved Phosphate due to Biological Activity</esgf:value>
+    <esgf:value>Rate of Change of Net Dissolved Inorganic Carbon</esgf:value>
+    <esgf:value>Rate of Change of Net Dissolved Inorganic Iron</esgf:value>
+    <esgf:value>Rate of Change of Net Dissolved Inorganic Nitrogen</esgf:value>
+    <esgf:value>Rate of Change of Net Dissolved Inorganic Phosphate</esgf:value>
+    <esgf:value>Rate of Change of Net Dissolved Inorganic Silicate</esgf:value>
+    <esgf:value>Rate of Change of Nitrogen Nutrient due to Biological Activity</esgf:value>
+    <esgf:value>Rate of Emission and Production of Dry Aerosol Total Organic Matter</esgf:value>
+    <esgf:value>Rate of Melt at Sea Ice Base</esgf:value>
+    <esgf:value>Rate of Melt at Upper Surface of Sea Ice</esgf:value>
+    <esgf:value>Region Selection Index</esgf:value>
+    <esgf:value>Relative Humidity</esgf:value>
+    <esgf:value>Salt Flux into Sea Water from Rivers</esgf:value>
+    <esgf:value>Sea Area Fraction</esgf:value>
+    <esgf:value>Sea Floor Depth</esgf:value>
+    <esgf:value>Sea Ice Albedo</esgf:value>
+    <esgf:value>Sea Ice Area Fraction</esgf:value>
+    <esgf:value>Sea Ice Heat Content</esgf:value>
+    <esgf:value>Sea Ice Mass Transport Through Fram Strait</esgf:value>
+    <esgf:value>Sea Ice Plus Surface Snow Amount</esgf:value>
+    <esgf:value>Sea Ice Ridging Rate</esgf:value>
+    <esgf:value>Sea Ice Salinity</esgf:value>
+    <esgf:value>Sea Ice Thickness</esgf:value>
+    <esgf:value>Sea Level Pressure</esgf:value>
+    <esgf:value>Sea Surface Height Above Geoid</esgf:value>
+    <esgf:value>Sea Surface Salinity</esgf:value>
+    <esgf:value>Sea Surface Temperature</esgf:value>
+    <esgf:value>Sea Water Age Since Surface Contact</esgf:value>
+    <esgf:value>Sea Water Mass</esgf:value>
+    <esgf:value>Sea Water Mass Per Unit Area</esgf:value>
+    <esgf:value>Sea Water Potential Density</esgf:value>
+    <esgf:value>Sea Water Potential Temperature</esgf:value>
+    <esgf:value>Sea Water Pressure at Sea Water Surface</esgf:value>
+    <esgf:value>Sea Water Pressure at Sea floor</esgf:value>
+    <esgf:value>Sea Water Salinity</esgf:value>
+    <esgf:value>Sea Water Transport</esgf:value>
+    <esgf:value>Sea Water Volume</esgf:value>
+    <esgf:value>Sea Water X Velocity</esgf:value>
+    <esgf:value>Sea Water Y Velocity</esgf:value>
+    <esgf:value>Shallow Convective Mass Flux</esgf:value>
+    <esgf:value>Shrub Fraction</esgf:value>
+    <esgf:value>Silica Production</esgf:value>
+    <esgf:value>Sinking Aragonite Flux</esgf:value>
+    <esgf:value>Sinking Calcite Flux</esgf:value>
+    <esgf:value>Sinking Particulate Iron Flux</esgf:value>
+    <esgf:value>Sinking Particulate Organic Carbon Flux</esgf:value>
+    <esgf:value>Sinking Particulate Organic Nitrogen Flux</esgf:value>
+    <esgf:value>Sinking Particulate Organic Phosphorus Flux</esgf:value>
+    <esgf:value>Sinking Particulate Silica Flux</esgf:value>
+    <esgf:value>Snow Area Fraction</esgf:value>
+    <esgf:value>Snow Depth</esgf:value>
+    <esgf:value>Snow Internal Temperature</esgf:value>
+    <esgf:value>Snow Melt Rate</esgf:value>
+    <esgf:value>Snow Soot Content</esgf:value>
+    <esgf:value>Snow-Ice Formation Rate</esgf:value>
+    <esgf:value>Snowfall Flux</esgf:value>
+    <esgf:value>Snowfall Flux where Ice Free Ocean over Sea</esgf:value>
+    <esgf:value>Soil Frozen Water Content</esgf:value>
+    <esgf:value>Solid Precipitation</esgf:value>
+    <esgf:value>Specific Humidity</esgf:value>
+    <esgf:value>Square of Ocean Mixed Layer Thickness Defined by Sigma T</esgf:value>
+    <esgf:value>Square of Sea Surface Height Above Geoid</esgf:value>
+    <esgf:value>Square of Sea Surface Temperature</esgf:value>
+    <esgf:value>Square of Upward Ocean Mass Transport</esgf:value>
+    <esgf:value>Strain Rate Divergence of Sea Ice</esgf:value>
+    <esgf:value>Stratiform Cloud Area Fraction</esgf:value>
+    <esgf:value>Stratiform Cloud Droplet Effective Radius</esgf:value>
+    <esgf:value>Stratiform Cloud Emissivity</esgf:value>
+    <esgf:value>Stratiform Cloud Optical Depth</esgf:value>
+    <esgf:value>Stratiform Rainfall Flux</esgf:value>
+    <esgf:value>Stratiform Snowfall Flux</esgf:value>
+    <esgf:value>Streamfunction</esgf:value>
+    <esgf:value>Subcolumn output from SCOPS</esgf:value>
+    <esgf:value>Sublimation over Sea Ice</esgf:value>
+    <esgf:value>Surface Air Pressure</esgf:value>
+    <esgf:value>Surface Albedo as simulated by ISBA</esgf:value>
+    <esgf:value>Surface Altitude</esgf:value>
+    <esgf:value>Surface Aqueous Partial Pressure of CO2</esgf:value>
+    <esgf:value>Surface Carbon Mass Flux into the Atmosphere Due to Natural Sources</esgf:value>
+    <esgf:value>Surface Concentration of Black Carbon Aerosol</esgf:value>
+    <esgf:value>Surface Concentration of Dry Aerosol Organic Matter</esgf:value>
+    <esgf:value>Surface Concentration of Dry Aerosol Primary Organic Matter</esgf:value>
+    <esgf:value>Surface Concentration of Dry Aerosol Secondary Organic Matter</esgf:value>
+    <esgf:value>Surface Concentration of Dust</esgf:value>
+    <esgf:value>Surface Concentration of NH4</esgf:value>
+    <esgf:value>Surface Concentration of NO3</esgf:value>
+    <esgf:value>Surface Concentration of SO4</esgf:value>
+    <esgf:value>Surface Concentration of Seasalt</esgf:value>
+    <esgf:value>Surface Daily Maximum Relative Humidity</esgf:value>
+    <esgf:value>Surface Daily Minimum Relative Humidity</esgf:value>
+    <esgf:value>Surface Diffuse Downward Clear Sky Shortwave Radiation</esgf:value>
+    <esgf:value>Surface Diffuse Downwelling Clear Sky Shortwave Radiation</esgf:value>
+    <esgf:value>Surface Diffuse Downwelling Shortwave Radiation</esgf:value>
+    <esgf:value>Surface Downward CO2 Flux</esgf:value>
+    <esgf:value>Surface Downward Diffuse Shortwave Radiation</esgf:value>
+    <esgf:value>Surface Downward Eastward Wind Stress</esgf:value>
+    <esgf:value>Surface Downward Latent Heat Flux</esgf:value>
+    <esgf:value>Surface Downward Net Flux of Iron</esgf:value>
+    <esgf:value>Surface Downward Net Flux of Nitrogen</esgf:value>
+    <esgf:value>Surface Downward Northward Wind Stress</esgf:value>
+    <esgf:value>Surface Downward O2 Flux</esgf:value>
+    <esgf:value>Surface Downward Sensible Heat Flux</esgf:value>
+    <esgf:value>Surface Downward X Stress</esgf:value>
+    <esgf:value>Surface Downward X Stress Correction</esgf:value>
+    <esgf:value>Surface Downward Y Stress</esgf:value>
+    <esgf:value>Surface Downward Y Stress Correction</esgf:value>
+    <esgf:value>Surface Downwelling Clear-Sky Longwave Radiation</esgf:value>
+    <esgf:value>Surface Downwelling Clear-Sky Shortwave Radiation</esgf:value>
+    <esgf:value>Surface Downwelling Longwave Radiation</esgf:value>
+    <esgf:value>Surface Downwelling Shortwave Radiation</esgf:value>
+    <esgf:value>Surface Net Downward Longwave Radiation</esgf:value>
+    <esgf:value>Surface Pressure</esgf:value>
+    <esgf:value>Surface Rainfall Rate into the Sea Ice Portion of the Grid Cell</esgf:value>
+    <esgf:value>Surface Runoff</esgf:value>
+    <esgf:value>Surface Snow Amount</esgf:value>
+    <esgf:value>Surface Snow Area Fraction</esgf:value>
+    <esgf:value>Surface Snow Melt</esgf:value>
+    <esgf:value>Surface Snow and Ice Sublimation Flux</esgf:value>
+    <esgf:value>Surface Snowfall Rate into the Sea Ice Portion of the Grid Cell</esgf:value>
+    <esgf:value>Surface Temperature</esgf:value>
+    <esgf:value>Surface Temperature Where Land or Sea Ice</esgf:value>
+    <esgf:value>Surface Temperature of Sea Ice</esgf:value>
+    <esgf:value>Surface Upward DMS Flux</esgf:value>
+    <esgf:value>Surface Upward Latent Heat Flux</esgf:value>
+    <esgf:value>Surface Upward Latent Heat Flux over Sea Ice</esgf:value>
+    <esgf:value>Surface Upward Sensible Heat Flux</esgf:value>
+    <esgf:value>Surface Upward Sensible Heat Flux over Sea Ice</esgf:value>
+    <esgf:value>Surface Upwelling Clear-Sky Shortwave Radiation</esgf:value>
+    <esgf:value>Surface Upwelling Longwave Radiation</esgf:value>
+    <esgf:value>Surface Upwelling Shortwave Radiation</esgf:value>
+    <esgf:value>TOA Incident Shortwave Radiation</esgf:value>
+    <esgf:value>TOA Net Downward Radiation</esgf:value>
+    <esgf:value>TOA Outgoing Clear-Sky Longwave Radiation</esgf:value>
+    <esgf:value>TOA Outgoing Clear-Sky Longwave Radiation 4XCO2 Atmosphere</esgf:value>
+    <esgf:value>TOA Outgoing Clear-Sky Shortwave Radiation</esgf:value>
+    <esgf:value>TOA Outgoing Clear-Sky Shortwave Radiation 4XCO2 Atmosphere</esgf:value>
+    <esgf:value>TOA Outgoing Longwave Radiation</esgf:value>
+    <esgf:value>TOA Outgoing Longwave Radiation 4XCO2 Atmosphere</esgf:value>
+    <esgf:value>TOA Outgoing Shortwave Radiation</esgf:value>
+    <esgf:value>TOA Outgoing Shortwave Radiation in 4XCO2 Atmosphere</esgf:value>
+    <esgf:value>Temperature Flux due to Evaporation Expressed as Heat Flux Out of Sea Water</esgf:value>
+    <esgf:value>Temperature Flux due to Rainfall Expressed as Heat Flux into Sea Water</esgf:value>
+    <esgf:value>Temperature Flux due to Runoff Expressed as Heat Flux into Sea Water</esgf:value>
+    <esgf:value>Temperature at Interface Between Sea Ice and Snow</esgf:value>
+    <esgf:value>Temperature of Soil</esgf:value>
+    <esgf:value>Tendency of Air Temperature</esgf:value>
+    <esgf:value>Tendency of Air Temperature Due to Stratiform Cloud and Precipitation and Boundary Layer Mixing</esgf:value>
+    <esgf:value>Tendency of Air Temperature due to Advection</esgf:value>
+    <esgf:value>Tendency of Air Temperature due to Diabatic Processes</esgf:value>
+    <esgf:value>Tendency of Air Temperature due to Moist Convection</esgf:value>
+    <esgf:value>Tendency of Air Temperature due to Radiative Heating</esgf:value>
+    <esgf:value>Tendency of Air Temperature due to Stratiform Cloud Condensation and Evaporation</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Condensed Water In Air</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Condensed Water In Air Due To Boundary Layer Mixing</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Condensed Water In Air Due To Cloud Microphysics</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Condensed Water due to Advection</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Condensed Water due to Autoconversion to Rain</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Condensed Water due to Autoconversion to Snow</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Condensed Water due to Condensation and Evaporation</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Condensed Water due to Icefall</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice Due Convective Detrainment</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice In Air</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice In Air Due To Bergeron Findeisen Process from Cloud Liquid</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice In Air Due To Boundary Layer Mixing</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice In Air Due To Cloud Microphysics</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice due to Accretion to Snow</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice due to Advection</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice due to Aggregation</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice due to Deposition and Sublimation</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice due to Evaporation of Melting Ice</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice due to Heterogeneous Nucleation From Cloud Liquid</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice due to Heterogeneous Nucleation From Water Vapor</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice due to Homogeneous Nucleation</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice due to Icefall</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice due to Melting to Cloud Liquid</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice due to Melting to Rain</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice due to Riming From Cloud Liquid</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Ice due to Riming From Rain</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Liquid Water Due to Convective Detrainment</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Liquid Water In Air</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Liquid Water In Air Due To Bergeron Findeisen Process To Cloud Ice</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Liquid Water In Air Due To Cloud Microphysics</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Liquid Water due to Accretion to Rain</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Liquid Water due to Accretion to Snow</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Liquid Water due to Advection</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Liquid Water due to Autoconversion</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Liquid Water due to Condensation and Evaporation</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Liquid Water due to Heterogeneous Nucleation</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Liquid Water due to Homogeneous Nucleation</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Liquid Water due to Melting From Cloud Ice</esgf:value>
+    <esgf:value>Tendency of Mass Fraction of Stratiform Cloud Liquid Water due to Riming</esgf:value>
+    <esgf:value>Tendency of Mole Concentration of Organic Carbon in Sea Water due to Net Primary Production by Diazotrophs</esgf:value>
+    <esgf:value>Tendency of Mole Concentration of Organic Carbon in Sea Water due to Net Primary Production by Picophytoplankton</esgf:value>
+    <esgf:value>Tendency of Ocean Eddy Kinetic Energy Content due to Bolus Transport</esgf:value>
+    <esgf:value>Tendency of Ocean Potential Energy Content</esgf:value>
+    <esgf:value>Tendency of Ocean Potential Energy Content due to Background</esgf:value>
+    <esgf:value>Tendency of Ocean Potential Energy Content due to Tides</esgf:value>
+    <esgf:value>Tendency of Specific Humidity</esgf:value>
+    <esgf:value>Tendency of Specific Humidity due to Advection</esgf:value>
+    <esgf:value>Tendency of Specific Humidity due to Convection</esgf:value>
+    <esgf:value>Tendency of Specific Humidity due to Diffusion</esgf:value>
+    <esgf:value>Tendency of Specific Humidity due to Model Physics</esgf:value>
+    <esgf:value>Tendency of Specific Humidity due to Stratiform Cloud Condensation and Evaporation</esgf:value>
+    <esgf:value>Total Alkalinity</esgf:value>
+    <esgf:value>Total Alkalinity at Surface</esgf:value>
+    <esgf:value>Total Atmospheric Mass of CO2</esgf:value>
+    <esgf:value>Total C3 PFT Cover Fraction</esgf:value>
+    <esgf:value>Total C4 PFT Cover Fraction</esgf:value>
+    <esgf:value>Total Carbon Mass Flux from Litter to Soil</esgf:value>
+    <esgf:value>Total Carbon Mass Flux from Vegetation Directly to Soil</esgf:value>
+    <esgf:value>Total Carbon Mass Flux from Vegetation to Litter</esgf:value>
+    <esgf:value>Total Chlorophyll Mass Concentration</esgf:value>
+    <esgf:value>Total Chlorophyll Mass Concentration at Surface</esgf:value>
+    <esgf:value>Total Cloud Fraction</esgf:value>
+    <esgf:value>Total Direct Emission Rate of SO4</esgf:value>
+    <esgf:value>Total Emission Rate of DMS</esgf:value>
+    <esgf:value>Total Emission Rate of Dust</esgf:value>
+    <esgf:value>Total Emission Rate of NH3</esgf:value>
+    <esgf:value>Total Emission Rate of SO2</esgf:value>
+    <esgf:value>Total Emission Rate of Seasalt</esgf:value>
+    <esgf:value>Total Emission of Primary Aerosol from Biomass Burning</esgf:value>
+    <esgf:value>Total Grazing of Phytoplankton by Zooplankton</esgf:value>
+    <esgf:value>Total Primary Deciduous Tree Fraction</esgf:value>
+    <esgf:value>Total Primary Evergreen Tree Cover Fraction</esgf:value>
+    <esgf:value>Total Runoff</esgf:value>
+    <esgf:value>Total Secondary Deciduous Tree Cover Fraction</esgf:value>
+    <esgf:value>Total Secondary Evergreen Tree Cover Fraction</esgf:value>
+    <esgf:value>Total Soil Moisture Content</esgf:value>
+    <esgf:value>Total Soil Wetness Index</esgf:value>
+    <esgf:value>Transpiration</esgf:value>
+    <esgf:value>Tree Cover Fraction</esgf:value>
+    <esgf:value>Updraft Convective Mass Flux</esgf:value>
+    <esgf:value>Updraught Convective Mass Flux</esgf:value>
+    <esgf:value>Upward Geothermal Heat Flux at Sea Floor</esgf:value>
+    <esgf:value>Upward Long Wave over Sea Ice</esgf:value>
+    <esgf:value>Upward Ocean Mass Transport</esgf:value>
+    <esgf:value>Upward Sea Water Velocity</esgf:value>
+    <esgf:value>Upward Shortwave over Sea Ice</esgf:value>
+    <esgf:value>Upwelling Clear-Sky Longwave Radiation</esgf:value>
+    <esgf:value>Upwelling Clear-Sky Longwave Radiation 4XCO2 Atmosphere</esgf:value>
+    <esgf:value>Upwelling Clear-Sky Shortwave Radiation</esgf:value>
+    <esgf:value>Upwelling Clear-Sky Shortwave Radiation 4XCO2 Atmosphere</esgf:value>
+    <esgf:value>Upwelling Longwave Radiation</esgf:value>
+    <esgf:value>Upwelling Longwave Radiation 4XCO2 Atmosphere</esgf:value>
+    <esgf:value>Upwelling Shortwave Radiation</esgf:value>
+    <esgf:value>Upwelling Shortwave Radiation 4XCO2 Atmosphere</esgf:value>
+    <esgf:value>Virtual Salt Flux Correction</esgf:value>
+    <esgf:value>Virtual Salt Flux into Sea Water</esgf:value>
+    <esgf:value>Virtual Salt Flux into Sea Water From Rivers</esgf:value>
+    <esgf:value>Virtual Salt Flux into Sea Water due to Evaporation</esgf:value>
+    <esgf:value>Virtual Salt Flux into Sea Water due to Rainfall</esgf:value>
+    <esgf:value>Virtual Salt Flux into Sea Water due to Sea Ice Thermodynamics</esgf:value>
+    <esgf:value>Water Content of Soil Layer</esgf:value>
+    <esgf:value>Water Evaporation Flux Where Ice Free Ocean over Sea</esgf:value>
+    <esgf:value>Water Evaporation Flux from Sea Ice</esgf:value>
+    <esgf:value>Water Evaporation from Soil</esgf:value>
+    <esgf:value>Water Flux Correction</esgf:value>
+    <esgf:value>Water Flux Into Sea Water</esgf:value>
+    <esgf:value>Water Flux into Sea Water</esgf:value>
+    <esgf:value>Water Flux into Sea Water From Icebergs</esgf:value>
+    <esgf:value>Water Flux into Sea Water From Rivers</esgf:value>
+    <esgf:value>Water Flux into Sea Water Without Flux Correction</esgf:value>
+    <esgf:value>Water Flux into Sea Water due to Sea Ice Thermodynamics</esgf:value>
+    <esgf:value>Water Vapor Path</esgf:value>
+    <esgf:value>Wet Deposition Rate of Black Carbon Aerosol Mass</esgf:value>
+    <esgf:value>Wet Deposition Rate of DMS</esgf:value>
+    <esgf:value>Wet Deposition Rate of Dry Aerosol Organic Matter</esgf:value>
+    <esgf:value>Wet Deposition Rate of Dry Aerosol Primary Organic Matter</esgf:value>
+    <esgf:value>Wet Deposition Rate of Dry Aerosol Secondary Organic Matter</esgf:value>
+    <esgf:value>Wet Deposition Rate of Dust</esgf:value>
+    <esgf:value>Wet Deposition Rate of NH4+NH3</esgf:value>
+    <esgf:value>Wet Deposition Rate of SO2</esgf:value>
+    <esgf:value>Wet Deposition Rate of SO4</esgf:value>
+    <esgf:value>Wet Deposition Rate of Seasalt</esgf:value>
+    <esgf:value>X-Component of Atmospheric Stress On Sea Ice</esgf:value>
+    <esgf:value>X-Component of Ocean Stress On Sea Ice</esgf:value>
+    <esgf:value>X-Component of Sea Ice Mass Transport</esgf:value>
+    <esgf:value>X-Component of Sea Ice Velocity</esgf:value>
+    <esgf:value>Y-Component of Atmospheric Stress On Sea Ice</esgf:value>
+    <esgf:value>Y-Component of Ocean Stress On Sea Ice</esgf:value>
+    <esgf:value>Y-Component of Sea Ice Mass Transport</esgf:value>
+    <esgf:value>Y-Component of Sea Ice Transport</esgf:value>
+    <esgf:value>Y-Component of Sea Ice Velocity</esgf:value>
+    <esgf:value>Zooplankton Carbon Concentration</esgf:value>
+    <esgf:value>Zooplankton Carbon Concentration at Surface</esgf:value>
+    <esgf:value>omega (=dp/dt)</esgf:value>
+    <esgf:value>pH</esgf:value>
+    <esgf:value>pH at Surface</esgf:value>
+    <esgf:value>surface pressure</esgf:value>
+    <esgf:value>wap</esgf:value>
+  </esgf:field>
+  <esgf:field name="variable_units" minOccurs="0" maxOccurs="unbounded" />
+  <esgf:field name="cf_standard_name" minOccurs="0" maxOccurs="unbounded">
+    <esgf:value>aerosol_number_concentration</esgf:value>
+    <esgf:value>age_of_sea_ice</esgf:value>
+    <esgf:value>air_pressure</esgf:value>
+    <esgf:value>air_pressure_at_cloud_top</esgf:value>
+    <esgf:value>air_pressure_at_convective_cloud_base</esgf:value>
+    <esgf:value>air_pressure_at_convective_cloud_top</esgf:value>
+    <esgf:value>air_pressure_at_sea_level</esgf:value>
+    <esgf:value>air_temperature</esgf:value>
+    <esgf:value>ambient_aerosol_extinction_at_550_nm</esgf:value>
+    <esgf:value>ambient_aerosol_extinction_optical_thickness_at_550_nm</esgf:value>
+    <esgf:value>area_fraction</esgf:value>
+    <esgf:value>atmosphere_absorption_optical_thickness_due_to_ambient_aerosol</esgf:value>
+    <esgf:value>atmosphere_cloud_condensed_water_content</esgf:value>
+    <esgf:value>atmosphere_cloud_ice_content</esgf:value>
+    <esgf:value>atmosphere_cloud_liquid_water_content</esgf:value>
+    <esgf:value>atmosphere_downdraft_convective_mass_flux</esgf:value>
+    <esgf:value>atmosphere_heat_diffusivity</esgf:value>
+    <esgf:value>atmosphere_mass_content_of_ammonium_dry_aerosol</esgf:value>
+    <esgf:value>atmosphere_mass_content_of_black_carbon_dry_aerosol</esgf:value>
+    <esgf:value>atmosphere_mass_content_of_dust_dry_aerosol</esgf:value>
+    <esgf:value>atmosphere_mass_content_of_nitrate_dry_aerosol</esgf:value>
+    <esgf:value>atmosphere_mass_content_of_particulate_organic_matter_dry_aerosol</esgf:value>
+    <esgf:value>atmosphere_mass_content_of_primary_particulate_organic_matter_dry_aerosol</esgf:value>
+    <esgf:value>atmosphere_mass_content_of_seasalt_dry_aerosol</esgf:value>
+    <esgf:value>atmosphere_mass_content_of_secondary_particulate_organic_matter_dry_aerosol</esgf:value>
+    <esgf:value>atmosphere_mass_content_of_sulfate_dry_aerosol</esgf:value>
+    <esgf:value>atmosphere_mass_of_carbon_dioxide</esgf:value>
+    <esgf:value>atmosphere_momentum_diffusivity</esgf:value>
+    <esgf:value>atmosphere_net_upward_convective_mass_flux</esgf:value>
+    <esgf:value>atmosphere_net_upward_deep_convective_mass_flux</esgf:value>
+    <esgf:value>atmosphere_net_upward_shallow_convective_mass_flux</esgf:value>
+    <esgf:value>atmosphere_number_content_of_cloud_droplets</esgf:value>
+    <esgf:value>atmosphere_optical_thickness_due_to_ambient_aerosol</esgf:value>
+    <esgf:value>atmosphere_optical_thickness_due_to_cloud</esgf:value>
+    <esgf:value>atmosphere_optical_thickness_due_to_convective_cloud</esgf:value>
+    <esgf:value>atmosphere_optical_thickness_due_to_pm1_ambient_aerosol</esgf:value>
+    <esgf:value>atmosphere_optical_thickness_due_to_stratiform_cloud</esgf:value>
+    <esgf:value>atmosphere_updraft_convective_mass_flux</esgf:value>
+    <esgf:value>atmosphere_water_vapor_content</esgf:value>
+    <esgf:value>bare_sea_ice_albedo</esgf:value>
+    <esgf:value>biogenic_phosphorus_production</esgf:value>
+    <esgf:value>calipso_cloud_fraction</esgf:value>
+    <esgf:value>calipso_high_level_cloud_fraction</esgf:value>
+    <esgf:value>calipso_low_level_cloud_fraction</esgf:value>
+    <esgf:value>calipso_mid_level_cloud_fraction</esgf:value>
+    <esgf:value>calipso_total_cloud_fraction</esgf:value>
+    <esgf:value>carbon_content_of_products_of_anthropogenic_land_use_change</esgf:value>
+    <esgf:value>carbon_mass_flux_due_to_npp_allocation_to_leaf</esgf:value>
+    <esgf:value>carbon_mass_flux_due_to_npp_allocation_to_roots</esgf:value>
+    <esgf:value>carbon_mass_flux_due_to_npp_allocation_to_wood</esgf:value>
+    <esgf:value>carbon_mass_flux_into_atmosphere_due_to_all_anthropogenic_emissions_of_co2</esgf:value>
+    <esgf:value>carbon_mass_flux_into_atmosphere_due_to_co2_emission_from_fire</esgf:value>
+    <esgf:value>carbon_mass_flux_into_atmosphere_due_to_crop_harvesting</esgf:value>
+    <esgf:value>carbon_mass_flux_into_atmosphere_due_to_growth_autotrophic_respiration_on_land</esgf:value>
+    <esgf:value>carbon_mass_flux_into_atmosphere_due_to_maintenance_autotrophic_respiration_on_land</esgf:value>
+    <esgf:value>carbon_mass_flux_into_soil_from_litter</esgf:value>
+    <esgf:value>carbon_mass_flux_into_soil_from_vegetation_excluding_litter</esgf:value>
+    <esgf:value>carbon_mass_flux_out_of_atmosphere_due_to_net_biospheric_production_on_land</esgf:value>
+    <esgf:value>carbon_mass_in_above-ground_litter</esgf:value>
+    <esgf:value>carbon_mass_in_below-ground_litter</esgf:value>
+    <esgf:value>carbon_mass_in_coarse_woody_debris</esgf:value>
+    <esgf:value>carbon_mass_in_fast_soil_pool</esgf:value>
+    <esgf:value>carbon_mass_in_leaves</esgf:value>
+    <esgf:value>carbon_mass_in_medium_soil_pool</esgf:value>
+    <esgf:value>carbon_mass_in_other_living_compartments_on_land</esgf:value>
+    <esgf:value>carbon_mass_in_products_of_land_use_change</esgf:value>
+    <esgf:value>carbon_mass_in_roots</esgf:value>
+    <esgf:value>carbon_mass_in_slow_soil_pool</esgf:value>
+    <esgf:value>carbon_mass_in_wood</esgf:value>
+    <esgf:value>cell_area</esgf:value>
+    <esgf:value>cell_thickness</esgf:value>
+    <esgf:value>cloud-top_effective_droplet_radius</esgf:value>
+    <esgf:value>cloud_albedo</esgf:value>
+    <esgf:value>cloud_area_fraction</esgf:value>
+    <esgf:value>cloud_area_fraction_in_atmosphere_layer</esgf:value>
+    <esgf:value>cloud_droplet_number_concentration</esgf:value>
+    <esgf:value>cloud_droplet_number_concentration_of_cloud_tops</esgf:value>
+    <esgf:value>compressive_sea_ice_strength</esgf:value>
+    <esgf:value>compressive_strength_of_sea_ice</esgf:value>
+    <esgf:value>concentration_of_biomass_burning_aerosol</esgf:value>
+    <esgf:value>concentration_of_dust</esgf:value>
+    <esgf:value>concentration_of_no3_aerosol</esgf:value>
+    <esgf:value>congelation_sea_ice_growth_rate</esgf:value>
+    <esgf:value>convection_time_fraction</esgf:value>
+    <esgf:value>convective_cloud_area_fraction</esgf:value>
+    <esgf:value>convective_cloud_area_fraction_in_atmosphere_layer</esgf:value>
+    <esgf:value>convective_cloud_longwave_emissivity</esgf:value>
+    <esgf:value>convective_precipitation_flux</esgf:value>
+    <esgf:value>convective_rainfall_flux</esgf:value>
+    <esgf:value>convective_snowfall_flux</esgf:value>
+    <esgf:value>depth_at_shallowest_local_minimum_in_vertical_profile_of_mole_concentration_of_dissolved_molecular_oxygen_in_sea_water</esgf:value>
+    <esgf:value>diffuse_downwelling_shortwave_flux_in_air_assuming_clear_sky</esgf:value>
+    <esgf:value>dissolve_oxygen_concentration</esgf:value>
+    <esgf:value>dissolve_oxygen_concentration_at_surface</esgf:value>
+    <esgf:value>dissolved_inorganic_carbon_concentration</esgf:value>
+    <esgf:value>dissolved_oxygen_concentration</esgf:value>
+    <esgf:value>dissolved_oxygen_concentration_at_surface</esgf:value>
+    <esgf:value>divergence_of_sea_ice_velocity</esgf:value>
+    <esgf:value>downward_flux_of_particulate_phosphorus</esgf:value>
+    <esgf:value>downward_heat_flux_at_sea_water_surface</esgf:value>
+    <esgf:value>downward_heat_flux_into_snow_where_land_over_land</esgf:value>
+    <esgf:value>downward_sea_ice_basal_salt_flux</esgf:value>
+    <esgf:value>downwelling_longwave_flux_in_air</esgf:value>
+    <esgf:value>downwelling_longwave_flux_in_air_assuming_clear_sky</esgf:value>
+    <esgf:value>downwelling_shortwave_flux_in_air</esgf:value>
+    <esgf:value>downwelling_shortwave_flux_in_air_assuming_clear_sky</esgf:value>
+    <esgf:value>downwelling_shortwave_flux_in_sea_water</esgf:value>
+    <esgf:value>eastward_sea_ice_transport</esgf:value>
+    <esgf:value>eastward_sea_ice_velocity</esgf:value>
+    <esgf:value>eastward_wind</esgf:value>
+    <esgf:value>effective_radius_of_cloud_liquid_water_particle_at_liquid_water_cloud_top</esgf:value>
+    <esgf:value>effective_radius_of_convective_cloud_ice_particle</esgf:value>
+    <esgf:value>effective_radius_of_convective_cloud_liquid_water_particle</esgf:value>
+    <esgf:value>effective_radius_of_convective_cloud_rain_particle</esgf:value>
+    <esgf:value>effective_radius_of_convective_cloud_snow_particle</esgf:value>
+    <esgf:value>effective_radius_of_stratiform_cloud_ice_particle</esgf:value>
+    <esgf:value>effective_radius_of_stratiform_cloud_liquid_water_particle</esgf:value>
+    <esgf:value>effective_radius_of_stratiform_cloud_rain_particle</esgf:value>
+    <esgf:value>effective_radius_of_stratiform_cloud_snow_particle</esgf:value>
+    <esgf:value>emission_rate_of_dry_aerosol_primary_organic_matter</esgf:value>
+    <esgf:value>equivalent_reflectivity_factor</esgf:value>
+    <esgf:value>fast_soil_pool_carbon_content</esgf:value>
+    <esgf:value>fraction_of_time_convection_occurs</esgf:value>
+    <esgf:value>fraction_of_time_shallow_convection_occurs</esgf:value>
+    <esgf:value>frazil_sea_ice_growth_(leads)_rate</esgf:value>
+    <esgf:value>geopotential_height</esgf:value>
+    <esgf:value>global_average_sea_level_change</esgf:value>
+    <esgf:value>global_average_steric_sea_level_change</esgf:value>
+    <esgf:value>global_average_thermosteric_sea_level_change</esgf:value>
+    <esgf:value>gridspec</esgf:value>
+    <esgf:value>gross_primary_productivity_of_carbon</esgf:value>
+    <esgf:value>heat_flux_correction</esgf:value>
+    <esgf:value>heat_flux_into_sea_water_due_to_frazil_ice_formation</esgf:value>
+    <esgf:value>heat_flux_into_sea_water_due_to_freezing_of_frazil_ice</esgf:value>
+    <esgf:value>heat_flux_into_sea_water_due_to_iceberg_thermodynamics</esgf:value>
+    <esgf:value>heat_flux_into_sea_water_due_to_sea_ice_thermodynamics</esgf:value>
+    <esgf:value>heat_flux_into_sea_water_due_to_snow_thermodynamics</esgf:value>
+    <esgf:value>height_above_reference_ellipsoid</esgf:value>
+    <esgf:value>heterotrophic_respiration_carbon_flux</esgf:value>
+    <esgf:value>histogram_of_backscattering_ratio_over_height_above_reference_ellipsoid</esgf:value>
+    <esgf:value>histogram_of_equivalent_reflectivity_factor_over_height_above_reference_ellipsoid</esgf:value>
+    <esgf:value>integral_of_sea_ice_temperature_wrt_depth_expressed_as_heat_content</esgf:value>
+    <esgf:value>integral_wrt_depth_of_tendency_of_sea_water_alkalinity_expressed_as_mole_equivalent</esgf:value>
+    <esgf:value>integral_wrt_depth_of_tendency_of_sea_water_alkalinity_expressed_as_mole_equivalent_due_to_biological_processes</esgf:value>
+    <esgf:value>isccp_cloud_area_fraction</esgf:value>
+    <esgf:value>isccp_mean_cloud_albedo</esgf:value>
+    <esgf:value>isccp_mean_cloud_top_pressure</esgf:value>
+    <esgf:value>isccp_total_total_cloud_fraction</esgf:value>
+    <esgf:value>lagrangian_tendency_of_air_pressure</esgf:value>
+    <esgf:value>land_area_fraction</esgf:value>
+    <esgf:value>land_ice_area_fraction</esgf:value>
+    <esgf:value>large_scale_rainfall_flux</esgf:value>
+    <esgf:value>large_scale_snowfall_flux</esgf:value>
+    <esgf:value>lateral_sea_ice_growth_rate</esgf:value>
+    <esgf:value>leaf_area_index</esgf:value>
+    <esgf:value>leaf_carbon_content</esgf:value>
+    <esgf:value>liquid_water_content_of_snow_layer</esgf:value>
+    <esgf:value>litter_carbon_content</esgf:value>
+    <esgf:value>litter_carbon_flux</esgf:value>
+    <esgf:value>lon_vertices</esgf:value>
+    <esgf:value>mass_concentration_of_ammonium_dry_aerosol_in_air</esgf:value>
+    <esgf:value>mass_concentration_of_biomass_burning_dry_aerosol_in_air</esgf:value>
+    <esgf:value>mass_concentration_of_black_carbon_dry_aerosol_in_air</esgf:value>
+    <esgf:value>mass_concentration_of_calcareous_phytoplankton_expressed_as_chlorophyll_in_sea_water</esgf:value>
+    <esgf:value>mass_concentration_of_diatoms_expressed_as_chlorophyll_in_sea_water</esgf:value>
+    <esgf:value>mass_concentration_of_diazotrophs_expressed_as_chlorophyll_in_sea_water</esgf:value>
+    <esgf:value>mass_concentration_of_dust_dry_aerosol_in_air</esgf:value>
+    <esgf:value>mass_concentration_of_miscellaneous_phytoplankton_expressed_as_chlorophyll_in_sea_water</esgf:value>
+    <esgf:value>mass_concentration_of_nitrate_dry_aerosol_in_air</esgf:value>
+    <esgf:value>mass_concentration_of_particulate_organic_matter_dry_aerosol_in_air</esgf:value>
+    <esgf:value>mass_concentration_of_phytoplankton_expressed_as_chlorophyll_in_sea_water</esgf:value>
+    <esgf:value>mass_concentration_of_picophytoplankton_expressed_as_chlorophyll_in_sea_water</esgf:value>
+    <esgf:value>mass_concentration_of_primary_particulate_organic_matter_dry_aerosol_in_air</esgf:value>
+    <esgf:value>mass_concentration_of_seasalt_dry_aerosol_in_air</esgf:value>
+    <esgf:value>mass_concentration_of_secondary_particulate_organic_matter_dry_aerosol_in_air</esgf:value>
+    <esgf:value>mass_concentration_of_sulfate_dry_aerosol_in_air</esgf:value>
+    <esgf:value>mass_concentration_of_water_in_ambient_aerosol_in_air</esgf:value>
+    <esgf:value>mass_fraction_of_cloud_ice_in_air</esgf:value>
+    <esgf:value>mass_fraction_of_cloud_liquid_water_in_air</esgf:value>
+    <esgf:value>mass_fraction_of_convective_cloud_ice_in_air</esgf:value>
+    <esgf:value>mass_fraction_of_convective_cloud_liquid_water_in_air</esgf:value>
+    <esgf:value>mass_fraction_of_stratiform_cloud_ice_in_air</esgf:value>
+    <esgf:value>mass_fraction_of_stratiform_cloud_liquid_water_in_air</esgf:value>
+    <esgf:value>mass_fraction_of_water_in_air</esgf:value>
+    <esgf:value>medium_soil_pool_carbon_content</esgf:value>
+    <esgf:value>minimum_depth_of_aragonite_undersaturation_in_sea_water</esgf:value>
+    <esgf:value>minimum_depth_of_calcite_undersaturation_in_sea_water</esgf:value>
+    <esgf:value>miscellaneous_living_matter_carbon_content</esgf:value>
+    <esgf:value>modis_cloud_ice_water_path</esgf:value>
+    <esgf:value>modis_ice_cloud_particle_size</esgf:value>
+    <esgf:value>modis_liquid_cloud_particle_size</esgf:value>
+    <esgf:value>moisture_content_of_soil_layer</esgf:value>
+    <esgf:value>mole_concentration_of_ammonium_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_aragonite_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_aragonite_expressed_as_carbon_in_sea_water_at_saturation</esgf:value>
+    <esgf:value>mole_concentration_of_bacteria_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_calcareous_phytoplankton_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_calcite_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_calcite_expressed_as_carbon_in_sea_water_at_saturation</esgf:value>
+    <esgf:value>mole_concentration_of_carbonate_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_diatoms_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_diazotrophs_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_dimethyl_sulfide_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_dissolved_inorganic_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_dissolved_iron_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_dissolved_molecular_oxygen_in_sea_water_at_shallowest_local_minimum_in_vertical_profile</esgf:value>
+    <esgf:value>mole_concentration_of_dissolved_organic_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_mesozooplankton_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_microzooplankton_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_miscellaneous_phytoplankton_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_miscellaneous_zooplankton_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_molecular_oxygen_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_nitrate_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_organic_detritus_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_particulate_matter_expressed_as_silicon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_particulate_organic_matter_expressed_as_iron_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_particulate_organic_matter_expressed_as_nitrogen_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_particulate_organic_matter_expressed_as_phosphorus_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_phosphate_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_phytoplankton_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_phytoplankton_expressed_as_iron_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_phytoplankton_expressed_as_nitrogen_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_phytoplankton_expressed_as_phosphorus_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_phytoplankton_expressed_as_silicon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_picophytoplankton_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_silicate_in_sea_water</esgf:value>
+    <esgf:value>mole_concentration_of_zooplankton_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>mole_fraction_of_carbon_dioxide_in_air</esgf:value>
+    <esgf:value>mole_fraction_of_cfc113_in_air</esgf:value>
+    <esgf:value>mole_fraction_of_cfc11_in_air</esgf:value>
+    <esgf:value>mole_fraction_of_cfc12_in_air</esgf:value>
+    <esgf:value>mole_fraction_of_dimethyl_sulfide_in_air</esgf:value>
+    <esgf:value>mole_fraction_of_hcfc22_in_air</esgf:value>
+    <esgf:value>mole_fraction_of_methane_in_air</esgf:value>
+    <esgf:value>mole_fraction_of_nitrous_oxide_in_air</esgf:value>
+    <esgf:value>mole_fraction_of_ozone_in_air</esgf:value>
+    <esgf:value>mole_fraction_of_sulfur_dioxide_in_air</esgf:value>
+    <esgf:value>moles_of_cfc11_per_unit_mass_in_sea_water</esgf:value>
+    <esgf:value>moles_per_unit_mass_of_cfc11_in_sea_water</esgf:value>
+    <esgf:value>net_carbon_mass_flux_into_atmosphere_due_to_land_use_change</esgf:value>
+    <esgf:value>net_carbon_mass_flux_out_of_atmophere_due_to_net_ecosystem_productivity_on_land.</esgf:value>
+    <esgf:value>net_downward_radiative_flux_at_top_of_atmosphere_model</esgf:value>
+    <esgf:value>net_downward_shortwave_flux_at_sea_water_surface</esgf:value>
+    <esgf:value>net_downward_shortwave_radiation_at_sea_water_surface</esgf:value>
+    <esgf:value>net_primary_mole_productivity_of_carbon_by_calcareous_phytoplankton</esgf:value>
+    <esgf:value>net_primary_mole_productivity_of_carbon_by_diatoms</esgf:value>
+    <esgf:value>net_primary_mole_productivity_of_carbon_by_diazotrophs</esgf:value>
+    <esgf:value>net_primary_mole_productivity_of_carbon_by_miscellaneous_phytoplankton</esgf:value>
+    <esgf:value>net_primary_mole_productivity_of_carbon_by_phytoplankton</esgf:value>
+    <esgf:value>net_primary_mole_productivity_of_carbon_by_picophytoplankton</esgf:value>
+    <esgf:value>net_primary_mole_productivity_of_carbon_due_to_nitrate_utilization</esgf:value>
+    <esgf:value>net_primary_productivity_of_carbon</esgf:value>
+    <esgf:value>net_primary_productivity_of_carbon_accumulated_in_leaves</esgf:value>
+    <esgf:value>net_primary_productivity_of_carbon_accumulated_in_roots</esgf:value>
+    <esgf:value>net_primary_productivity_of_carbon_accumulated_in_wood</esgf:value>
+    <esgf:value>northward_ocean_heat_transport</esgf:value>
+    <esgf:value>northward_ocean_heat_transport_due_to_bolus_advection</esgf:value>
+    <esgf:value>northward_ocean_heat_transport_due_to_diffusion</esgf:value>
+    <esgf:value>northward_ocean_heat_transport_due_to_gyre</esgf:value>
+    <esgf:value>northward_ocean_heat_transport_due_to_overturning</esgf:value>
+    <esgf:value>northward_sea_ice_transport</esgf:value>
+    <esgf:value>northward_sea_ice_velocity</esgf:value>
+    <esgf:value>northward_wind</esgf:value>
+    <esgf:value>number_concentration_of_ambient_aerosol_in_air</esgf:value>
+    <esgf:value>number_concentration_of_cloud_liquid_water_particles_in_air</esgf:value>
+    <esgf:value>number_concentration_of_cloud_liquid_water_particles_in_air_at_liquid_water_cloud_top</esgf:value>
+    <esgf:value>number_concentration_of_ice_crystals_in_air</esgf:value>
+    <esgf:value>number_concentration_of_ice_crystals_in_air_at_ice_cloud_top</esgf:value>
+    <esgf:value>ocean_barotropic_mass_streamfunction</esgf:value>
+    <esgf:value>ocean_heat_x_transport</esgf:value>
+    <esgf:value>ocean_heat_x_transport_due_to_bolus_advection</esgf:value>
+    <esgf:value>ocean_heat_x_transport_due_to_diffusion</esgf:value>
+    <esgf:value>ocean_heat_y_transport</esgf:value>
+    <esgf:value>ocean_heat_y_transport_due_to_bolus_advection</esgf:value>
+    <esgf:value>ocean_heat_y_transport_due_to_diffusion</esgf:value>
+    <esgf:value>ocean_kinetic_energy_dissipation_per_unit_area_due_to_vertical_friction</esgf:value>
+    <esgf:value>ocean_kinetic_energy_dissipation_per_unit_area_due_to_xy_friction</esgf:value>
+    <esgf:value>ocean_mass_content_of_dissolved_inorganic_carbon</esgf:value>
+    <esgf:value>ocean_mass_x_transport</esgf:value>
+    <esgf:value>ocean_mass_y_transport</esgf:value>
+    <esgf:value>ocean_meridional_overturning_mass_streamfunction</esgf:value>
+    <esgf:value>ocean_meridional_overturning_mass_streamfunction_due_to_bolus_advection</esgf:value>
+    <esgf:value>ocean_mixed_layer_thickness_defined_by_mixing_scheme</esgf:value>
+    <esgf:value>ocean_mixed_layer_thickness_defined_by_sigma_t</esgf:value>
+    <esgf:value>ocean_momentum_xy_biharmonic_diffusivity</esgf:value>
+    <esgf:value>ocean_momentum_xy_laplacian_diffusivity</esgf:value>
+    <esgf:value>ocean_tracer_bolus_laplacian_diffusivity</esgf:value>
+    <esgf:value>ocean_tracer_epineutral_laplacian_diffusivity</esgf:value>
+    <esgf:value>ocean_vertical_heat_diffusivity</esgf:value>
+    <esgf:value>ocean_vertical_momentum_diffusivity</esgf:value>
+    <esgf:value>ocean_vertical_momentum_diffusivity_due_to_background</esgf:value>
+    <esgf:value>ocean_vertical_momentum_diffusivity_due_to_tides</esgf:value>
+    <esgf:value>ocean_vertical_salt_diffusivity</esgf:value>
+    <esgf:value>ocean_vertical_tracer_diffusivity_due_to_background</esgf:value>
+    <esgf:value>ocean_vertical_tracer_diffusivity_due_to_tides</esgf:value>
+    <esgf:value>ocean_volume</esgf:value>
+    <esgf:value>ocean_y_overturning_mass_streamfunction</esgf:value>
+    <esgf:value>ocean_y_overturning_mass_streamfunction_due_to_bolus_advection</esgf:value>
+    <esgf:value>parasol_reflectance</esgf:value>
+    <esgf:value>phosphorus_production</esgf:value>
+    <esgf:value>plant_respiration_carbon_flux</esgf:value>
+    <esgf:value>precipitation_flux</esgf:value>
+    <esgf:value>precipitation_flux_onto_canopy</esgf:value>
+    <esgf:value>rainfall_flux</esgf:value>
+    <esgf:value>rate_of_melt_at_sea_ice_base</esgf:value>
+    <esgf:value>rate_of_melt_at_upper_surface_of_sea_ice</esgf:value>
+    <esgf:value>region</esgf:value>
+    <esgf:value>relative_humidity</esgf:value>
+    <esgf:value>root_carbon_content</esgf:value>
+    <esgf:value>root_depth</esgf:value>
+    <esgf:value>runoff_flux</esgf:value>
+    <esgf:value>salt_flux_into_sea_water_from_rivers</esgf:value>
+    <esgf:value>sea_area_fraction</esgf:value>
+    <esgf:value>sea_floor_depth_below_geoid</esgf:value>
+    <esgf:value>sea_ice_albedo</esgf:value>
+    <esgf:value>sea_ice_and_surface_snow_amount</esgf:value>
+    <esgf:value>sea_ice_area_fraction</esgf:value>
+    <esgf:value>sea_ice_heat_content</esgf:value>
+    <esgf:value>sea_ice_plus_surface_snow_amount</esgf:value>
+    <esgf:value>sea_ice_salinity</esgf:value>
+    <esgf:value>sea_ice_surface_temperature</esgf:value>
+    <esgf:value>sea_ice_thickness</esgf:value>
+    <esgf:value>sea_ice_transport_across_line</esgf:value>
+    <esgf:value>sea_ice_x_transport</esgf:value>
+    <esgf:value>sea_ice_x_velocity</esgf:value>
+    <esgf:value>sea_ice_y_transport</esgf:value>
+    <esgf:value>sea_ice_y_velocity</esgf:value>
+    <esgf:value>sea_surface_height_above_geoid</esgf:value>
+    <esgf:value>sea_surface_salinity</esgf:value>
+    <esgf:value>sea_surface_temperature</esgf:value>
+    <esgf:value>sea_water_age_since_surface_contact</esgf:value>
+    <esgf:value>sea_water_alkalinity_expressed_as_mole_equivalent</esgf:value>
+    <esgf:value>sea_water_mass</esgf:value>
+    <esgf:value>sea_water_mass_per_unit_area</esgf:value>
+    <esgf:value>sea_water_ph_reported_on_total_scale</esgf:value>
+    <esgf:value>sea_water_potential_density</esgf:value>
+    <esgf:value>sea_water_potential_temperature</esgf:value>
+    <esgf:value>sea_water_pressure_at_sea_floor</esgf:value>
+    <esgf:value>sea_water_pressure_at_sea_water_surface</esgf:value>
+    <esgf:value>sea_water_salinity</esgf:value>
+    <esgf:value>sea_water_transport</esgf:value>
+    <esgf:value>sea_water_transport_across_line</esgf:value>
+    <esgf:value>sea_water_volume</esgf:value>
+    <esgf:value>sea_water_x_velocity</esgf:value>
+    <esgf:value>sea_water_y_velocity</esgf:value>
+    <esgf:value>shallow_convection_time_fraction</esgf:value>
+    <esgf:value>sinking_mole_flux_of_aragonite_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>sinking_mole_flux_of_calcite_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>sinking_mole_flux_of_particulate_iron_in_sea_water</esgf:value>
+    <esgf:value>sinking_mole_flux_of_particulate_organic_matter_expressed_as_carbon_in_sea_water</esgf:value>
+    <esgf:value>sinking_mole_flux_of_particulate_organic_nitrogen_in_sea_water</esgf:value>
+    <esgf:value>sinking_mole_flux_of_particulate_organic_phosphorus_in_sea_water</esgf:value>
+    <esgf:value>sinking_mole_flux_of_particulate_silicon_in_sea_water</esgf:value>
+    <esgf:value>slow_soil_pool_carbon_content</esgf:value>
+    <esgf:value>snow-ice_formation_rate</esgf:value>
+    <esgf:value>snow_internal_temperature</esgf:value>
+    <esgf:value>snow_melt_rate</esgf:value>
+    <esgf:value>snow_soot_content</esgf:value>
+    <esgf:value>snow_temperature</esgf:value>
+    <esgf:value>snowfall_flux</esgf:value>
+    <esgf:value>soil_carbon_content</esgf:value>
+    <esgf:value>soil_frozen_water_content</esgf:value>
+    <esgf:value>soil_moisture_content</esgf:value>
+    <esgf:value>soil_moisture_content_at_field_capacity</esgf:value>
+    <esgf:value>soil_temperature</esgf:value>
+    <esgf:value>soot_content_of_surface_snow</esgf:value>
+    <esgf:value>specific_humidity</esgf:value>
+    <esgf:value>square_of_ocean_mixed_layer_thickness_defined_by_sigma_t</esgf:value>
+    <esgf:value>square_of_sea_surface_height_above_geoid</esgf:value>
+    <esgf:value>square_of_sea_surface_temperature</esgf:value>
+    <esgf:value>square_of_upward_ocean_mass_transport</esgf:value>
+    <esgf:value>strain_rate_divergence_of_sea_ice</esgf:value>
+    <esgf:value>stratiform_cloud_area_fraction_in_atmosphere_layer</esgf:value>
+    <esgf:value>stratiform_cloud_longwave_emissivity</esgf:value>
+    <esgf:value>subcolumn_output_from_scops</esgf:value>
+    <esgf:value>subsurface_litter_carbon_content</esgf:value>
+    <esgf:value>surface_air_pressure</esgf:value>
+    <esgf:value>surface_albedo</esgf:value>
+    <esgf:value>surface_altitude</esgf:value>
+    <esgf:value>surface_carbon_dioxide_partial_pressure_difference_between_sea_water_and_air</esgf:value>
+    <esgf:value>surface_carbon_mass_flux_into_the_atmosphere_due_to_natural_sources</esgf:value>
+    <esgf:value>surface_diffuse_downwelling_shortwave_flux_in_air</esgf:value>
+    <esgf:value>surface_diffuse_downwelling_shortwave_flux_in_air_assuming_clear_sky</esgf:value>
+    <esgf:value>surface_diffuse_downwelling_shortwave_radiation</esgf:value>
+    <esgf:value>surface_downward_co2_flux</esgf:value>
+    <esgf:value>surface_downward_diffuse_shortwave_radiation</esgf:value>
+    <esgf:value>surface_downward_eastward_stress</esgf:value>
+    <esgf:value>surface_downward_heat_flux_in_sea_water</esgf:value>
+    <esgf:value>surface_downward_heat_flux_in_snow</esgf:value>
+    <esgf:value>surface_downward_latent_heat_flux</esgf:value>
+    <esgf:value>surface_downward_mass_flux_of_carbon_dioxide_expressed_as_carbon</esgf:value>
+    <esgf:value>surface_downward_mole_flux_of_molecular_oxygen</esgf:value>
+    <esgf:value>surface_downward_northward_stress</esgf:value>
+    <esgf:value>surface_downward_sensible_heat_flux</esgf:value>
+    <esgf:value>surface_downward_x_stress</esgf:value>
+    <esgf:value>surface_downward_x_stress_correction</esgf:value>
+    <esgf:value>surface_downward_y_stress</esgf:value>
+    <esgf:value>surface_downward_y_stress_correction</esgf:value>
+    <esgf:value>surface_downwelling_longwave_flux_in_air</esgf:value>
+    <esgf:value>surface_downwelling_longwave_flux_in_air_assuming_clear_sky</esgf:value>
+    <esgf:value>surface_downwelling_shortwave_flux_in_air</esgf:value>
+    <esgf:value>surface_downwelling_shortwave_flux_in_air_assuming_clear_sky</esgf:value>
+    <esgf:value>surface_litter_carbon_content</esgf:value>
+    <esgf:value>surface_molecular_oxygen_partial_pressure_difference_between_sea_water_and_air</esgf:value>
+    <esgf:value>surface_net_downward_longwave_flux</esgf:value>
+    <esgf:value>surface_net_downward_mass_flux_of_carbon_dioxide_expressed_as_carbon_due_to_all_land_processes</esgf:value>
+    <esgf:value>surface_net_downward_mass_flux_of_carbon_dioxide_expressed_as_carbon_due_to_all_land_processes_excluding_anthropogenic_land_use_change
+    </esgf:value>
+    <esgf:value>surface_net_upward_mass_flux_of_carbon_dioxide_expressed_as_carbon_due_to_emission_from_anthropogenic_land_use_change</esgf:value>
+    <esgf:value>surface_partial_pressure_of_carbon_dioxide_in_sea_water</esgf:value>
+    <esgf:value>surface_rainfall_rate_into_the_sea_ice_portion_of_the_grid_cell</esgf:value>
+    <esgf:value>surface_runoff_flux</esgf:value>
+    <esgf:value>surface_snow_amount</esgf:value>
+    <esgf:value>surface_snow_and_ice_sublimation_flux</esgf:value>
+    <esgf:value>surface_snow_area_fraction</esgf:value>
+    <esgf:value>surface_snow_melt_flux</esgf:value>
+    <esgf:value>surface_snow_thickness</esgf:value>
+    <esgf:value>surface_snowfall_rate_into_the_sea_ice_portion_of_the_grid_cell</esgf:value>
+    <esgf:value>surface_temperature</esgf:value>
+    <esgf:value>surface_temperature_of_sea_ice</esgf:value>
+    <esgf:value>surface_upward_carbon_mass_flux_due_to_plant_respiration_for_biomass_growth</esgf:value>
+    <esgf:value>surface_upward_carbon_mass_flux_due_to_plant_respiration_for_biomass_maintenance</esgf:value>
+    <esgf:value>surface_upward_latent_heat_flux</esgf:value>
+    <esgf:value>surface_upward_mass_flux_of_carbon_dioxide_expressed_as_carbon_due_to_emission_from_crop_harvesting</esgf:value>
+    <esgf:value>surface_upward_mass_flux_of_carbon_dioxide_expressed_as_carbon_due_to_emission_from_fires_excluding_anthropogenic_land_use_change
+    </esgf:value>
+    <esgf:value>surface_upward_mass_flux_of_carbon_dioxide_expressed_as_carbon_due_to_emission_from_grazing</esgf:value>
+    <esgf:value>surface_upward_mass_flux_of_carbon_dioxide_expressed_as_carbon_due_to_emission_from_natural_sources</esgf:value>
+    <esgf:value>surface_upward_mole_flux_of_dimethyl_sulfide</esgf:value>
+    <esgf:value>surface_upward_sensible_heat_flux</esgf:value>
+    <esgf:value>surface_upwelling_longwave_flux_in_air</esgf:value>
+    <esgf:value>surface_upwelling_shortwave_flux_in_air</esgf:value>
+    <esgf:value>surface_upwelling_shortwave_flux_in_air_assuming_clear_sky</esgf:value>
+    <esgf:value>temperature_at_interface_between_sea_ice_and_snow</esgf:value>
+    <esgf:value>temperature_flux_due_to_evaporation_expressed_as_heat_flux_out_of_sea_water</esgf:value>
+    <esgf:value>temperature_flux_due_to_rainfall_expressed_as_heat_flux_into_sea_water</esgf:value>
+    <esgf:value>temperature_flux_due_to_runoff_expressed_as_heat_flux_into_sea_water</esgf:value>
+    <esgf:value>temperature_in_surface_snow</esgf:value>
+    <esgf:value>tendency_of_air_temperature</esgf:value>
+    <esgf:value>tendency_of_air_temperature_due_to_advection</esgf:value>
+    <esgf:value>tendency_of_air_temperature_due_to_convection</esgf:value>
+    <esgf:value>tendency_of_air_temperature_due_to_model_physics</esgf:value>
+    <esgf:value>tendency_of_air_temperature_due_to_radiative_heating</esgf:value>
+    <esgf:value>tendency_of_air_temperature_due_to_stratiform_cloud_and_precipitation_and_boundary_layer_mixing</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_ammonia_due_to_dry_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_ammonia_due_to_emission</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_ammonium_dry_aerosol_due_to_dry_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_ammonium_dry_aerosol_due_to_wet_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_black_carbon_dry_aerosol_due_to_dry_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_black_carbon_dry_aerosol_due_to_emission</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_black_carbon_dry_aerosol_due_to_wet_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_carbon_dioxide_expressed_as_carbon_due_to_anthropogenic_emission</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_carbon_dioxide_expressed_as_carbon_due_to_emission_from_fossil_fuel_combustion</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_dimethyl_sulfide_due_to_dry_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_dimethyl_sulfide_due_to_emission</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_dimethyl_sulfide_due_to_wet_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_dust_dry_aerosol_due_to_dry_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_dust_dry_aerosol_due_to_emission</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_dust_dry_aerosol_due_to_wet_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_particulate_organic_matter_dry_aerosol_due_to_dry_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_particulate_organic_matter_dry_aerosol_due_to_net_chemical_production_and_emission</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_particulate_organic_matter_dry_aerosol_due_to_wet_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_primary_particulate_organic_matter_dry_aerosol_due_to_dry_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_primary_particulate_organic_matter_dry_aerosol_due_to_emission</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_primary_particulate_organic_matter_dry_aerosol_due_to_wet_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_seasalt_dry_aerosol_due_to_dry_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_seasalt_dry_aerosol_due_to_emission</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_seasalt_dry_aerosol_due_to_wet_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_secondary_particulate_organic_matter_dry_aerosol_due_to_dry_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_secondary_particulate_organic_matter_dry_aerosol_due_to_wet_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_sulfate_dry_aerosol_due_to_dry_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_sulfate_dry_aerosol_due_to_emission</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_sulfate_expressed_as_sulfur_dry_aerosol_due_to_wet_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_sulfur_dioxide_due_to_dry_deposition</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_sulfur_dioxide_due_to_emission</esgf:value>
+    <esgf:value>tendency_of_atmosphere_mass_content_of_sulfur_dioxide_due_to_wet_deposition</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_condensed_water_in_air</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_condensed_water_in_air_due_to_advection</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_condensed_water_in_air_due_to_autoconversion_to_rain</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_condensed_water_in_air_due_to_autoconversion_to_snow</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_condensed_water_in_air_due_to_boundary_layer_mixing</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_condensed_water_in_air_due_to_cloud_microphysics</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_condensed_water_in_air_due_to_condensation_and_evaporation</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_condensed_water_in_air_due_to_icefall</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_accretion_to_snow</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_advection</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_aggregation</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_bergeron_findeisen_process_from_cloud_liquid</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_boundary_layer_mixing</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_cloud_microphysics</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_convective_detrainment</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_deposition_and_sublimation</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_evaporation_of_melting_ice</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_heterogeneous_nucleation_from_cloud_liquid_water</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_heterogeneous_nucleation_from_water_vapor</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_homogeneous_nucleation</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_icefall</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_melting_to_cloud_liquid_water</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_melting_to_rain</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_riming_from_cloud_liquid_water</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_ice_in_air_due_to_riming_from_rain</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_liquid_water_in_air</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_liquid_water_in_air_due_to_accretion_to_rain</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_liquid_water_in_air_due_to_accretion_to_snow</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_liquid_water_in_air_due_to_advection</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_liquid_water_in_air_due_to_autoconversion</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_liquid_water_in_air_due_to_bergeron_findeisen_process_to_cloud_ice</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_liquid_water_in_air_due_to_cloud_microphysics</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_liquid_water_in_air_due_to_condensation_and_evaporation</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_liquid_water_in_air_due_to_convective_detrainment</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_liquid_water_in_air_due_to_heterogeneous_nucleation</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_liquid_water_in_air_due_to_homogeneous_nucleation</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_liquid_water_in_air_due_to_melting_from_cloud_ice</esgf:value>
+    <esgf:value>tendency_of_mass_fraction_of_stratiform_cloud_liquid_water_in_air_due_to_riming</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_aragonite_expressed_as_carbon_in_sea_water_due_to_biological_production</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_aragonite_expressed_as_carbon_in_sea_water_due_to_dissolution</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_calcite_expressed_as_carbon_in_sea_water_due_to_biological_production</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_calcite_expressed_as_carbon_in_sea_water_due_to_dissolution</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_dissolved_inorganic_carbon_in_sea_water_due_to_biological_processes</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_dissolved_inorganic_iron_in_sea_water_due_to_biological_processes</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_dissolved_inorganic_nitrogen_in_sea_water_due_to_biological_processes</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_dissolved_inorganic_phosphate_in_sea_water_due_to_biological_processes</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_dissolved_inorganic_silicate_in_sea_water_due_to_biological_processes</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_dissolved_iron_in_sea_water_due_to_dissolution_from_inorganic_particles</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_dissolved_iron_in_sea_water_due_to_grazing_of_phytoplankton</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_dissolved_iron_in_sea_water_due_to_scavenging_by_inorganic_particles</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_iron_in_sea_water_due_to_biological_production</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_particulate_organic_matter_expressed_as_carbon_in_sea_water_due_to_net_primary_production
+    </esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_particulate_organic_matter_expressed_as_carbon_in_sea_water_due_to_net_primary_production_by_diatoms
+    </esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_particulate_organic_matter_expressed_as_carbon_in_sea_water_due_to_net_primary_production_by_diazotrophs
+    </esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_particulate_organic_matter_expressed_as_carbon_in_sea_water_due_to_net_primary_production_by_miscellaneous_phytoplankton
+    </esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_particulate_organic_matter_expressed_as_carbon_in_sea_water_due_to_net_primary_production_by_picophytoplankton
+    </esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_particulate_organic_matter_expressed_as_carbon_in_sea_water_due_to_nitrate_utilization</esgf:value>
+    <esgf:value>tendency_of_mole_concentration_of_silicon_in_sea_water_due_to_biological_production</esgf:value>
+    <esgf:value>tendency_of_ocean_eddy_kinetic_energy_content_due_to_bolus_transport</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_aragonite_expressed_as_carbon_due_to_biological_production</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_calcite_expressed_as_carbon_due_to_biological_production</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_carbon_due_to_runoff_and_sediment_dissolution</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_carbon_due_to_sedimentation</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_dissolved_inorganic_carbon</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_dissolved_inorganic_carbon_due_to_biological_processes</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_dissolved_inorganic_iron</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_dissolved_inorganic_iron_due_to_biological_processes</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_dissolved_inorganic_nitrogen</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_dissolved_inorganic_nitrogen_due_to_biological_processes</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_dissolved_inorganic_phosphorus</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_dissolved_inorganic_phosphorus_due_to_biological_processes</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_dissolved_inorganic_silicon</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_dissolved_inorganic_silicon_due_to_biological_processes</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_elemental_nitrogen_due_to_denitrification_and_sedimentation</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_elemental_nitrogen_due_to_deposition_and_fixation_and_runoff</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_elemental_nitrogen_due_to_fixation</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_iron_due_to_biological_production</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_iron_due_to_deposition_and_runoff_and_sediment_dissolution</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_iron_due_to_sedimentation</esgf:value>
+    <esgf:value>tendency_of_ocean_mole_content_of_silicon_due_to_biological_production</esgf:value>
+    <esgf:value>tendency_of_ocean_potential_energy_content</esgf:value>
+    <esgf:value>tendency_of_ocean_potential_energy_content_due_to_background</esgf:value>
+    <esgf:value>tendency_of_ocean_potential_energy_content_due_to_tides</esgf:value>
+    <esgf:value>tendency_of_sea_ice_amount_due_to_basal_melting</esgf:value>
+    <esgf:value>tendency_of_sea_ice_amount_due_to_congelation_ice_accumulation</esgf:value>
+    <esgf:value>tendency_of_sea_ice_amount_due_to_frazil_ice_accumulation_in_leads</esgf:value>
+    <esgf:value>tendency_of_sea_ice_amount_due_to_lateral_growth_of_ice_floes</esgf:value>
+    <esgf:value>tendency_of_sea_ice_amount_due_to_snow_conversion</esgf:value>
+    <esgf:value>tendency_of_sea_ice_amount_due_to_surface_melting</esgf:value>
+    <esgf:value>tendency_of_sea_ice_area_fraction_due_to_ridging</esgf:value>
+    <esgf:value>tendency_of_sea_water_alkalinity_expressed_as_mole_equivalent_due_to_biological_processes</esgf:value>
+    <esgf:value>tendency_of_specific_humidity</esgf:value>
+    <esgf:value>tendency_of_specific_humidity_due_to_advection</esgf:value>
+    <esgf:value>tendency_of_specific_humidity_due_to_convection</esgf:value>
+    <esgf:value>tendency_of_specific_humidity_due_to_diffusion</esgf:value>
+    <esgf:value>tendency_of_specific_humidity_due_to_model_physics</esgf:value>
+    <esgf:value>tendency_of_specific_humidity_due_to_stratiform_cloud_and_precipitation_and_boundary_layer_mixing</esgf:value>
+    <esgf:value>time</esgf:value>
+    <esgf:value>toa_bidirectional_reflectance</esgf:value>
+    <esgf:value>toa_brightness_temperature</esgf:value>
+    <esgf:value>toa_brightness_temperature_assuming_clear_sky</esgf:value>
+    <esgf:value>toa_incoming_shortwave_flux</esgf:value>
+    <esgf:value>toa_net_downward_radiative_flux</esgf:value>
+    <esgf:value>toa_outgoing_longwave_flux</esgf:value>
+    <esgf:value>toa_outgoing_longwave_flux_assuming_clear_sky</esgf:value>
+    <esgf:value>toa_outgoing_shortwave_flux</esgf:value>
+    <esgf:value>toa_outgoing_shortwave_flux_assuming_clear_sky</esgf:value>
+    <esgf:value>total_atmospheric_mass_of_co2</esgf:value>
+    <esgf:value>total_c3_pft_cover_fraction</esgf:value>
+    <esgf:value>total_c4_pft_cover_fraction</esgf:value>
+    <esgf:value>total_carbon_mass_flux_from_litter_to_soil</esgf:value>
+    <esgf:value>total_carbon_mass_flux_from_vegetation_directly_to_soil</esgf:value>
+    <esgf:value>total_primary_evergreen_tree_cover_fraction</esgf:value>
+    <esgf:value>total_soil_wetness_index</esgf:value>
+    <esgf:value>transpiration_flux</esgf:value>
+    <esgf:value>upward_geothermal_heat_flux_at_sea_floor</esgf:value>
+    <esgf:value>upward_ocean_mass_transport</esgf:value>
+    <esgf:value>upward_sea_water_velocity</esgf:value>
+    <esgf:value>upward_x_stress_at_sea_ice_base</esgf:value>
+    <esgf:value>upward_y_stress_at_sea_ice_base</esgf:value>
+    <esgf:value>upwelling_longwave_flux_in_air</esgf:value>
+    <esgf:value>upwelling_longwave_flux_in_air_assuming_clear_sky</esgf:value>
+    <esgf:value>upwelling_shortwave_flux_in_air</esgf:value>
+    <esgf:value>upwelling_shortwave_flux_in_air_assuming_clear_sky</esgf:value>
+    <esgf:value>vegetation_carbon_content</esgf:value>
+    <esgf:value>virtual_salt_flux_correction</esgf:value>
+    <esgf:value>virtual_salt_flux_into_sea_water</esgf:value>
+    <esgf:value>virtual_salt_flux_into_sea_water_due_to_evaporation</esgf:value>
+    <esgf:value>virtual_salt_flux_into_sea_water_due_to_rainfall</esgf:value>
+    <esgf:value>virtual_salt_flux_into_sea_water_due_to_sea_ice_thermodynamics</esgf:value>
+    <esgf:value>virtual_salt_flux_into_sea_water_from_rivers</esgf:value>
+    <esgf:value>volume_attenuated_backwards_scattering_function_in_air</esgf:value>
+    <esgf:value>volume_attenuated_backwards_scattering_function_in_air_assuming_no_aerosol_or_cloud</esgf:value>
+    <esgf:value>volume_extinction_coefficient_in_air_due_to_ambient_aerosol</esgf:value>
+    <esgf:value>water_evaporation_flux</esgf:value>
+    <esgf:value>water_evaporation_flux_from_canopy</esgf:value>
+    <esgf:value>water_evaporation_flux_from_soil</esgf:value>
+    <esgf:value>water_flux_correction</esgf:value>
+    <esgf:value>water_flux_into_sea_water</esgf:value>
+    <esgf:value>water_flux_into_sea_water_due_to_sea_ice_thermodynamics</esgf:value>
+    <esgf:value>water_flux_into_sea_water_from_icebergs</esgf:value>
+    <esgf:value>water_flux_into_sea_water_from_rivers</esgf:value>
+    <esgf:value>water_flux_into_sea_water_without_flux_correction</esgf:value>
+    <esgf:value>water_sublimation_flux</esgf:value>
+    <esgf:value>wind_speed</esgf:value>
+    <esgf:value>wood_carbon_content</esgf:value>
+    <esgf:value>wood_debris_carbon_content</esgf:value>
+    <esgf:value>x-component_of_ocean_stress_on_sea_ice</esgf:value>
+    <esgf:value>x-component_of_sea_ice_mass_transport</esgf:value>
+    <esgf:value>y-component_of_ocean_stress_on_sea_ice</esgf:value>
+    <esgf:value>y-component_of_sea_ice_mass_transport</esgf:value>
+    <esgf:value>y-component_of_sea_ice_transport</esgf:value>
+  </esgf:field>
+
+  <esgf:field name="tracking_id" minOccurs="1" maxOccurs="1" type="uuid" recordType="File" />
+
+  <!-- Other Optional fields -->
+
+  <esgf:field name="dataset_id_template_" minOccurs="0" maxOccurs="1" recordType="Dataset" />
+  <esgf:field name="drs_id" minOccurs="0" maxOccurs="1" recordType="Dataset" />
+  <esgf:field name="forcing" minOccurs="0" maxOccurs="1" recordType="Dataset" />
+  
 </esgf:schema>
