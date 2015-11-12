@@ -1,0 +1,14 @@
+<doc>
+  <!-- example minimum ESGF file metadata record -->
+
+  <!-- mandatory fields -->
+  <field name="id">mydata.dataset.file.v1|esgf-node.jpl.nasa.gov</field>
+  <field name="dataset_id">mydata.dataset.v1|esgf-node.jpl.nasa.gov</field>
+  <field name="type">File</field>
+  <field name="title">My File</field>
+  <field name="data_node">esgf-node.jpl.nasa.gov</field>
+  <field name="index_node">esgf-node.jpl.nasa.gov</field>
+
+  <!-- optional fields -->
+
+</doc>
