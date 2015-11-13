@@ -92,6 +92,7 @@ public class PublishResource {
      * @return
      */
     @GET
+    @Path("ping/")
     @Produces("text/plain")
     public String index() {
         return "ESGF REST Publishing Service";
