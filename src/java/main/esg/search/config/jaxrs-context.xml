@@ -16,9 +16,11 @@ http://cxf.apache.org/schemas/jaxrs.xsd">
   <jaxrs:server id="jaxrsPublishService">
     <jaxrs:serviceBeans>
       <ref bean="publishResource" />
+      <ref bean="publishResourceLocal" />
     </jaxrs:serviceBeans>
   </jaxrs:server>
 
   <bean id="publishResource" class="esg.search.publish.jaxrs.PublishResource" />
+  <bean id="publishResourceLocal" class="esg.search.publish.jaxrs.PublishResourceLocal" />
   
 </beans>
