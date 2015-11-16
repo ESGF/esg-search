@@ -45,8 +45,6 @@
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-filters-0.7.1.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.5.2.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-test-2.5.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/findbugs-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/findbugs-ant-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/findbugsGUI-1.0.0.jar"/>
@@ -139,7 +137,6 @@
 	<classpathentry kind="lib" path="lib/fetched/woodstox-core-asl-4.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/wsdl4j-1.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/wstx-asl-3.2.7.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/xalan-2.7.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xercesImpl-2.10.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xml-resolver-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xmlParserAPIs-2.6.2.jar"/>
@@ -151,5 +148,8 @@
 	<classpathentry kind="lib" path="lib/fetched/avalon-framework-4.1.5.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-logging-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xml-apis-1.4.01.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.5.10.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-test-2.5.10.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/xalan-2.7.2.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
