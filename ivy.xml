@@ -120,9 +120,14 @@ Note: Check Maven for propery dependency parameter values @
 
     <dependency org="javax.servlet" name="javax.servlet-api" rev="3.0.1"/>
     
+    <!-- needed to avoid transitive dependency on javax.persistence-2.0.0.jar which is NOT found -->
+    <dependency org="org.eclipse.persistence" name="javax.persistence" rev="2.0.5"/>
+    
     <!-- NOTE: must force inclusion of xml-apis-1.4.01.jar as latest xml-apis#xml-apis;2.0.2 has no jar....-->
     <dependency org="xml-apis" name="xml-apis" rev="1.4.01" />
+    
     <conflict org="xml-apis" module="xml-apis" rev="1.4.01"/>
+    
 
   </dependencies>
    
