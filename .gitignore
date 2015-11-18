@@ -39,6 +39,9 @@ generated/
 /lib/endorsed
 /WebContent
 /.cobertura.ser
+**/*.tgz
+**/*.zip
+**/*.tar
 
 ################################
 #Generated from templated files
