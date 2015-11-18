@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="maven-antrun-" default="main"  >
+<target name="main">
+  <symlink overwrite="true" link="/usr/local/solr-cloud/solr" resource="/usr/local/solr-cloud/solr-5.3.1"/>
+</target>
+</project>

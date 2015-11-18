@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<!-- Author: Luca Cinquini
+     Description: downloads Solr distribution and installs ESGF Solr Cloud.
+  -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>solr-cloud-installation</artifactId>
+  <packaging>pom</packaging>
+  <name>ESGF Solr Cloud Installation</name>
+
+  <parent>
+    <groupId>org.esgf.search</groupId>
+    <artifactId>solr-cloud</artifactId>
+    <version>0.1</version>
+    <relativePath>../pom.xml</relativePath>
+  </parent>
+
+  <build>
+    <plugins>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+        
+          <!-- download Solr distribution to current directory -->
+          <execution>
+            <id>download-solr</id>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <!-- run Ant "get" task to download the file -->
+                <get src="${solr.repo}/${solr.version}/solr-${solr.version}.tgz" dest="." verbose="false" usetimestamp="true" />
+              </target>
+            </configuration>
+          </execution>
+          
+          <!-- unpack Solr distribution to installation directory -->
+          <execution>
+            <id>unpack-solr</id>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <!-- run Ant "untar" task to expand the file -->
+                <untar src="./solr-${solr.version}.tgz" dest="${solr.dir}/" compression="gzip" overwrite="false" />
+              </target>
+            </configuration>
+          </execution>
+          
+          <!-- make the Solr startup scrupt and Zookeeper client script executable -->
+          <execution>
+            <id>chmod-scripts</id>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <!-- run Ant "chmod" task to make scripts executable -->
+                <chmod file="${solr.dir}/solr-${solr.version}/bin/solr" perm="a+x" />
+                <chmod file="${solr.dir}/solr-${solr.version}/server/scripts/cloud-scripts/zkcli.sh" perm="a+x" />
+              </target>
+            </configuration>
+          </execution>
+          
+          <!-- create ./solr symlink -->
+          <execution>
+            <id>symlink-solr</id>
+            <phase>install</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <symlink resource="${solr.dir}/solr-${solr.version}" link="${solr.dir}/solr" overwrite="true" />
+              </target>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <!-- instantiate Solr nodes -->
+      <plugin>
+        <groupId>com.soebes.maven.plugins</groupId>
+        <artifactId>iterator-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>clone-nodes</id>
+            <phase>install</phase>
+            <goals>
+              <goal>iterator</goal>
+            </goals>
+            <configuration>
+              <items>
+                <item>8983</item>
+                <item>8984</item>
+                <item>8985</item>
+              </items>
+              <pluginExecutors>
+                <pluginExecutor>
+                  <plugin>
+                    <artifactId>maven-resources-plugin</artifactId>
+                  </plugin>
+                  <goal>copy-resources</goal>
+                  <configuration>
+                    <outputDirectory>${solr.dir}/node@item@</outputDirectory>
+                    <resources>
+                      <resource>
+                        <directory>${project.parent.basedir}/node0</directory>
+                      </resource>
+                    </resources>
+                  </configuration>
+                </pluginExecutor>
+              </pluginExecutors>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+    </plugins>
+  </build>
+
+</project>

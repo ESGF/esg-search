@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Author: Luca Cinquini
+  Description: Maven project descriptor for ESGF Solr-Cloud setup.
+  Requires Maven 3.
+  Run as: mvn install
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.esgf.search</groupId>
+  <artifactId>solr-cloud</artifactId>
+  <name>ESGF Solr Cloud</name>
+  <version>0.1</version>
+  <packaging>pom</packaging>
+
+  <licenses>
+    <license>
+      <name>The Apache Software License, Version 2.0</name>
+      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <!-- configuration properties -->
+  <properties>
+    <solr.repo>http://apache.mirrors.lucidnetworks.net/lucene/solr</solr.repo>
+    <solr.version>5.3.1</solr.version>
+    <solr.dir>${env.SOLR_CLOUD_HOME}</solr.dir>
+    <solr.solr.home>${env.SOLR_CLOUD_HOME}/solr-home</solr.solr.home>
+    <solr.data.dir>${env.SOLR_CLOUD_HOME}/solr-index</solr.data.dir>
+  </properties>
+
+  <build>
+
+    <!-- plugins used and their versions -->
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-antrun-plugin</artifactId>
+          <version>1.7</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>2.7</version>
+        </plugin>
+        <plugin>
+          <groupId>com.soebes.maven.plugins</groupId>
+          <artifactId>maven-iterator-plugin</artifactId>
+          <version>0.3</version>
+        </plugin>
+        <plugin>
+          <groupId>org.codehaus.mojo</groupId>
+          <artifactId>exec-maven-plugin</artifactId>
+          <version>1.4.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+    
+  </build>
+  
+  <modules>
+    <module>solr-cloud-installation</module>
+    <module>solr-cloud-configuration</module>
+  </modules>
+
+</project>

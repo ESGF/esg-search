@@ -31,9 +31,9 @@ TAGS
 *.md5
 semantic.cache*
 generated/
-/build
-/target
-/dist
+**/build
+**/target
+**/dist
 /docs-generated
 /lib/fetched
 /lib/endorsed
