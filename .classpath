@@ -144,15 +144,6 @@
 	<classpathentry kind="lib" path="lib/fetched/woodstox-core-asl-4.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/wstx-asl-3.2.7.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xalan-2.7.2.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/xercesImpl-2.10.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/xml-apis-1.4.01.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/xml-resolver-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/xmlParserAPIs-2.6.2.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/xmlschema-core-2.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/xmlsec-1.4.2.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/xmltooling-1.2.2.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/xom-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/XSGroupRole-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-beanutils-1.9.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.8.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esg-orp-test-2.8.4.jar"/>
