@@ -111,6 +111,7 @@ public class SolrXmlPars {
 	final public static String FIELD_HEIGHT_TOP = "height_top";
 	final public static String FIELD_HEIGHT_UNITS = "height_units";
 	final public static String FIELD_GEO = "geo";
+	final public static String FIELD_BBOX = "bbox";
 	
 	final public static String FIELD_DATA_FORMAT = "format";
 	final public static String FIELD_FILE_NAME = "file_name";

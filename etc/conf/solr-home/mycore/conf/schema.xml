@@ -55,7 +55,7 @@
        
        ESGF-v2.3: added 'shard' field (single-valued)
        
-       ESGF-v2.4: changed definition of 'location_rpt' field
+       ESGF-v2.4: added "bbox" field, type for higher performance geo-spatial searches
      -->
 
 
@@ -180,9 +180,9 @@
    <field name="south_degrees" type="float" indexed="true" stored="true" multiValued="false"/>
    <field name="west_degrees" type="float" indexed="true" stored="true" multiValued="false"/>
 
-   <!-- New: geospatial search -->
-   <field name="geo" 
-          type="location_rpt" indexed="true" stored="true" multiValued="true" />
+   <!-- geospatial search -->
+   <field name="geo" type="location_rpt" indexed="true" stored="true" multiValued="true" />
+   <field name="bbox" type="bbox" indexed="true" stored="true" multiValued="false"/>
 
    <!-- Altitude range -->
    <field name="height_bottom" type="float" indexed="true" stored="true" multiValued="false"/>
@@ -583,7 +583,7 @@
      special relevancy modes: score=overlapRatio|area|area2D (local-param to the query).  DocValues is recommended for
      relevancy. -->
     <fieldType name="bbox" class="solr.BBoxField"
-               geo="true" distanceUnits="kilometers" numberType="_bbox_coord" />
+               geo="true" distanceUnits="degrees" numberType="_bbox_coord" storeSubFields="false" />
     <fieldType name="_bbox_coord" class="solr.TrieDoubleField" precisionStep="8" docValues="true" stored="false"/>
 
    <!-- Money/currency field type. See http://wiki.apache.org/solr/MoneyFieldType

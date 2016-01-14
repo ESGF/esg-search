@@ -170,16 +170,16 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             record.addField(SolrXmlPars.FIELD_HEIGHT_TOP, Double.toString(ds.heightTop) );
 	    if (record.getFieldValue(SolrXmlPars.FIELD_HEIGHT_UNITS)==null && StringUtils.hasText(ds.heightUnits))
             record.addField(SolrXmlPars.FIELD_HEIGHT_UNITS, ds.heightUnits );
-	    LOG.info("Looking for GEO field");
 	    if (   record.getFieldValue(SolrXmlPars.FIELD_NORTH)!=null && record.getFieldValue(SolrXmlPars.FIELD_SOUTH)!=null
 	    	&& record.getFieldValue(SolrXmlPars.FIELD_EAST) !=null && record.getFieldValue(SolrXmlPars.FIELD_WEST) !=null ) {
-	    	// minLon, minLat, maxLon, maxLat
+	    	// minX, maxX, maxY, minY 
+	    	// example:  ENVELOPE(-10, 20, 15, 10)
 	    	float minLon = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_WEST));
 	    	float minLat = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_SOUTH));
 	    	float maxLon = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_EAST));
 	    	float maxLat = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_NORTH));
-	    	record.addField(SolrXmlPars.FIELD_GEO, "" + minLon + " " + minLat + " " + maxLon + " " + maxLat );
-	    	LOG.info("Added GEO field: "+record.getFieldValue(SolrXmlPars.FIELD_GEO));
+	    	record.addField(SolrXmlPars.FIELD_BBOX, "ENVELOPE("+minLon+", "+maxLon+", "+maxLat+", "+minLat+")");
+	    	LOG.info("Added BBOX field: "+record.getFieldValue(SolrXmlPars.FIELD_GEO));
 	    }
 	    
 	    // set summary access types
