@@ -29,7 +29,7 @@
  http://wiki.apache.org/solr/SchemaXml
 -->
 
-<schema name="ESGF-v2.3" version="1.5">
+<schema name="ESGF-v2.4" version="1.5">
   <!-- attribute "name" is the name of this schema and is only used for display purposes.
        version="x.y" is Solr's version number for the schema syntax and 
        semantics.  It should not normally be changed by applications.
@@ -54,6 +54,8 @@
        ESGF-v2.2: built from Solr5 "basic_configs" schema.xml with the addition of ESGF fields
        
        ESGF-v2.3: added 'shard' field (single-valued)
+       
+       ESGF-v2.4: changed definition of 'location_rpt' field
      -->
 
 
@@ -575,7 +577,7 @@
       http://wiki.apache.org/solr/SolrAdaptersForLuceneSpatial4
     -->
     <fieldType name="location_rpt" class="solr.SpatialRecursivePrefixTreeFieldType"
-        geo="true" distErrPct="0.025" maxDistErr="0.001" distanceUnits="kilometers" />
+        geo="true" distErrPct="0.025" maxDistErr="0.001" distanceUnits="degrees" />
 
     <!-- Spatial rectangle (bounding box) field. It supports most spatial predicates, and has
      special relevancy modes: score=overlapRatio|area|area2D (local-param to the query).  DocValues is recommended for
