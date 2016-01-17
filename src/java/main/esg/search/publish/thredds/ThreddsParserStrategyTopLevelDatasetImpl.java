@@ -170,17 +170,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
             record.addField(SolrXmlPars.FIELD_HEIGHT_TOP, Double.toString(ds.heightTop) );
 	    if (record.getFieldValue(SolrXmlPars.FIELD_HEIGHT_UNITS)==null && StringUtils.hasText(ds.heightUnits))
             record.addField(SolrXmlPars.FIELD_HEIGHT_UNITS, ds.heightUnits );
-	    if (   record.getFieldValue(SolrXmlPars.FIELD_NORTH)!=null && record.getFieldValue(SolrXmlPars.FIELD_SOUTH)!=null
-	    	&& record.getFieldValue(SolrXmlPars.FIELD_EAST) !=null && record.getFieldValue(SolrXmlPars.FIELD_WEST) !=null ) {
-	    	// minX, maxX, maxY, minY 
-	    	// example:  ENVELOPE(-10, 20, 15, 10)
-	    	float minLon = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_WEST));
-	    	float minLat = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_SOUTH));
-	    	float maxLon = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_EAST));
-	    	float maxLat = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_NORTH));
-	    	record.addField(SolrXmlPars.FIELD_BBOX, "ENVELOPE("+minLon+", "+maxLon+", "+maxLat+", "+minLat+")");
-	    	LOG.info("Added BBOX field: "+record.getFieldValue(SolrXmlPars.FIELD_GEO));
-	    }
+	    // add bbox field for geospatial searches
+	    ThreddsUtils.addBbox(record);
 	    
 	    // set summary access types
 	    for (String accessType : ds.access) {

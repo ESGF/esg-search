@@ -4,11 +4,13 @@ import java.net.URI;
 
 import org.springframework.util.StringUtils;
 
+import esg.search.core.Record;
+import esg.search.query.api.QueryParameters;
+import esg.search.query.impl.solr.SolrXmlPars;
 import thredds.catalog.InvAccess;
 import thredds.catalog.InvCatalogRef;
 import thredds.catalog.InvDataset;
 import thredds.catalog.InvDatasetImpl;
-import esg.search.query.api.QueryParameters;
 
 /**
  * Class containing utilities for parsing THREDDS catalogs.
@@ -118,6 +120,31 @@ public class ThreddsUtils {
         uri.normalize();
         return uri;
         
+    }
+    
+    /**
+     * Utility to add a "bbox" element to the metadata parsed from a THREDDS catalog.
+     */
+    public static void addBbox(Record record) {
+    	
+	    if (   record.getFieldValue(SolrXmlPars.FIELD_NORTH)!=null && record.getFieldValue(SolrXmlPars.FIELD_SOUTH)!=null
+		    	&& record.getFieldValue(SolrXmlPars.FIELD_EAST) !=null && record.getFieldValue(SolrXmlPars.FIELD_WEST) !=null ) {
+		    	// minX, maxX, maxY, minY 
+		    	// example:  ENVELOPE(-10, 20, 15, 10)
+		    	float minLon = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_WEST));
+		    	float minLat = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_SOUTH));
+		    	float maxLon = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_EAST));
+		    	float maxLat = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_NORTH));
+		    	if (minLon>180.) minLon -= 360.;
+		    	if (maxLon>180.) maxLon -= 360.;
+		    	if (minLon>maxLon) {
+		    		float tmp = minLon;
+		    		minLon = maxLon;
+		    		maxLon = tmp;
+		    	}
+		    	record.addField(SolrXmlPars.FIELD_BBOX, "ENVELOPE("+minLon+", "+maxLon+", "+maxLat+", "+minLat+")");
+		  }
+    	
     }
     
     private ThreddsUtils() {}

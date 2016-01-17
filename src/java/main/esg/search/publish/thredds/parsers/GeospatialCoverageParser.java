@@ -7,6 +7,7 @@ import org.springframework.util.StringUtils;
 import thredds.catalog.InvDataset;
 import thredds.catalog.ThreddsMetadata.GeospatialCoverage;
 import esg.search.core.Record;
+import esg.search.publish.thredds.ThreddsUtils;
 import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
@@ -58,18 +59,8 @@ public class GeospatialCoverageParser implements ThreddsElementParser {
                 record.addField(SolrXmlPars.FIELD_HEIGHT_TOP, Double.toString(gsc.getUpDownRange().getStart()+gsc.getUpDownRange().getSize()));
                 record.addField(SolrXmlPars.FIELD_HEIGHT_UNITS, gsc.getHeightUnits());
             }
-    	    if (   record.getFieldValue(SolrXmlPars.FIELD_NORTH)!=null && record.getFieldValue(SolrXmlPars.FIELD_SOUTH)!=null
-    		    	&& record.getFieldValue(SolrXmlPars.FIELD_EAST) !=null && record.getFieldValue(SolrXmlPars.FIELD_WEST) !=null ) {
-    		    	// minX, maxX, maxY, minY 
-    		    	// example:  ENVELOPE(-10, 20, 15, 10)
-    		    	float minLon = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_WEST));
-    		    	float minLat = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_SOUTH));
-    		    	float maxLon = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_EAST));
-    		    	float maxLat = Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_NORTH));
-    		    	record.addField(SolrXmlPars.FIELD_BBOX, "ENVELOPE("+minLon+", "+maxLon+", "+maxLat+", "+minLat+")");
-    		    	LOG.info("Added BBOX field: "+record.getFieldValue(SolrXmlPars.FIELD_GEO));
-    		}
-
+    	    // add bbox field for geospatial searches
+    	    ThreddsUtils.addBbox(record);
             
             // summary metadata
             if (gsc.getNorthSouthRange()!=null) {        
