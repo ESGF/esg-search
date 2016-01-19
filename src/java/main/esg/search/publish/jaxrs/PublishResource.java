@@ -98,6 +98,15 @@ public class PublishResource {
         return "ESGF REST Publishing Service";
     }
     
+    @POST
+    @Path("update/")
+    public String update(String document) {
+
+    	if (LOG.isInfoEnabled()) LOG.info("UPDATE DOCUMENT="+document);
+    	return "UPDATE DOCUMENT="+document;
+    	
+    }
+    
     /**
      * POST push publishing method: pushes XML records to be published to the server.
      * This method authorization is based on the record identifier.
