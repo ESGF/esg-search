@@ -77,64 +77,23 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 	            Element resultElement = (Element)xPath1.selectSingleNode(xmlDoc);
 	            numFound = Integer.parseInt( resultElement.getAttributeValue("numFound") );
 	            
-	            // build XML update document
-	            //<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-	            //<add>
-	            //	<doc>
-	            //		<field name="id">cmip5.output1.CSIRO-BOM.ACCESS1-3.historical.mon.ocean.Omon.r1i1p1.v2|aims3.llnl.gov</field>
-	            //		<field name="xlink" update="add">ccc</field>
-	            //	</doc>
-	            //</add>
+	            // build the XML update document
+	            /**
+	             <?xml version="1.0" encoding="UTF-8" standalone="no"?>
+				 <add>
+				 	<doc>...</doc>
+				 	<doc>...</doc>
+				 	..............
+				 </add>
+	             */
 	            Element _addElement = new Element("add");
-	            
-	            // loop over results across this response
-	            for (Object obj : xPath2.selectNodes(xmlDoc)) {
-	            	
-	            	start += 1; // will start from next record
-	            	Element idElement = (Element)obj;
-	            	String id = idElement.getText();
-	            	
-	            	Element _docElement = new Element("doc");
-	            	Element _idElement = new Element("field");
-	            	_idElement.setAttribute("name", "id");
-	            	_idElement.setText(id);
-	            	_docElement.addContent(_idElement);
-	            	
-	            	// loop over metadata keys to set/add/remove
-	            	for (String key : metadata.keySet()) {
-	            		String[] values = metadata.get(key);
-	            		
-	            		if (values.length>0) {
-	            		
-		            		// set all new values
-		            		for (String value : values) {	
-		            			Element _fieldElement = new Element("field");
-		            			_fieldElement.setAttribute("name", key);
-		            			_fieldElement.setAttribute("update", action.toLowerCase());
-		            			_fieldElement.setText(value);
-		            			_docElement.addContent(_fieldElement);
-		            		}
-		            		
-	            		} else {
-	            			
-	            			// remove all values
-	            			// <field name="xlink" update="set" null="true"/>
-	            			Element _fieldElement = new Element("field");
-	            			_fieldElement.setAttribute("name", key);
-	            			_fieldElement.setAttribute("update", action.toLowerCase());
-	            			_fieldElement.setAttribute("null", "true");
-	            			_docElement.addContent(_fieldElement);
-
-	            		}
-	            		
-	            	}
-	            	
-	            	_addElement.addContent(_docElement);
-	            	
-	            } // loop over results within one HTTP response
-	            
-				Document _jdoc = new Document(_addElement);
+	            List<Element> _docElements = _buildUpdateDocuments(xmlDoc, action, metadata);
+	            _addElement.addContent(_docElements);
+	            Document _jdoc = new Document(_addElement);
 				xmlDocs.add( Serializer.JDOMtoString(_jdoc) );
+				
+				// increment counter for next request
+				start += _docElements.size();
 				
 			} // loop over multiple HTTP query request/response
 			
@@ -146,12 +105,66 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 			}
 					
 		} // loop over queries
-
 		
 	}
 	
-	private String _buildUpdateDocument(String id, String action, Map<String,String[]> metadata) {
-		return "";
+    // Method to build an XML update document snippet
+    //	<doc>
+    //		<field name="id">cmip5.output1.CSIRO-BOM.ACCESS1-3.historical.mon.ocean.Omon.r1i1p1.v2|aims3.llnl.gov</field>
+    //		<field name="xlink" update="add">ccc</field>
+    //	</doc>
+	private List<Element> _buildUpdateDocuments(Document xmlDoc, String action, Map<String,String[]> metadata) throws Exception {
+        
+		List<Element> _docElements = new ArrayList<Element>();
+		
+        // loop over results across this response
+        for (Object obj : xPath2.selectNodes(xmlDoc)) {
+        	
+        	//start += 1; // will start from next record
+        	Element idElement = (Element)obj;
+        	String id = idElement.getText();
+        	
+        	Element _docElement = new Element("doc");
+        	Element _idElement = new Element("field");
+        	_idElement.setAttribute("name", "id");
+        	_idElement.setText(id);
+        	_docElement.addContent(_idElement);
+        	
+        	// loop over metadata keys to set/add/remove
+        	for (String key : metadata.keySet()) {
+        		String[] values = metadata.get(key);
+        		
+        		if (values.length>0) {
+        		
+            		// set all new values
+            		for (String value : values) {	
+            			Element _fieldElement = new Element("field");
+            			_fieldElement.setAttribute("name", key);
+            			_fieldElement.setAttribute("update", action.toLowerCase());
+            			_fieldElement.setText(value);
+            			_docElement.addContent(_fieldElement);
+            		}
+            		
+        		} else {
+        			
+        			// remove all values
+        			// <field name="xlink" update="set" null="true"/>
+        			Element _fieldElement = new Element("field");
+        			_fieldElement.setAttribute("name", key);
+        			_fieldElement.setAttribute("update", action.toLowerCase());
+        			_fieldElement.setAttribute("null", "true");
+        			_docElement.addContent(_fieldElement);
+
+        		}
+        		
+        	}
+        	
+        	_docElements.add(_docElement);
+         	
+        } // loop over results within one HTTP response		
+        
+        return _docElements;
+
 	}
 	
 	/**
@@ -180,8 +193,8 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 			</doc>
 			</add>
 		 */
-		//String action = QueryParameters.ACTION_SET;
-		//metadata.put("xlink", new String[] {"abc", "cde"} );
+		String action = QueryParameters.ACTION_SET;
+		metadata.put("xlink", new String[] {"abc", "cde"} );
 		
 		/** ADD example
 		 <?xml version="1.0" encoding="UTF-8"?>
@@ -218,8 +231,8 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 				</doc>
 			</add>
 		 */
-		String action = QueryParameters.ACTION_SET;
-		metadata.put("xlink", new String[] {} );
+		//String action = QueryParameters.ACTION_SET;
+		//metadata.put("xlink", new String[] {} );
 		
 		MetadataUpdateServiceImpl self = new MetadataUpdateServiceImpl();
 		self.update(url, action, doc);
