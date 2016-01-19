@@ -209,6 +209,10 @@ public class QueryParameters {
     // /esg/config/esgf.properties: esgf.host=....
     public final static String HOSTNAME_PROPERTY = "esgf.host";
 
+    // possible metadata update actions
+    public final static String ACTION_SET = "set";
+    public final static String ACTION_ADD = "add";
+    public final static String ACTION_REMOVE = "remove";
     
     private QueryParameters() {};
 
