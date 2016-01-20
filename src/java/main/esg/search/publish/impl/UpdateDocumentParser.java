@@ -114,7 +114,7 @@ public class UpdateDocumentParser {
 		String queryUri = "http://esgf-dev.jpl.nasa.gov:8984/solr";
 		
 		// execute update
-		MetadataUpdateService updateService = new MetadataUpdateServiceImpl();
+		MetadataUpdateService updateService = new MetadataUpdateServiceImpl(null); // no authorization
 		updateService.update(queryUri, core, action, doc);
 
 	}

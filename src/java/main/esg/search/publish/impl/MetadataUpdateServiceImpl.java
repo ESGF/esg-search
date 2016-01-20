@@ -265,7 +265,7 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 		//String action = QueryParameters.ACTION_SET;
 		//metadata.put("xlink", new String[] {} );
 		
-		MetadataUpdateServiceImpl self = new MetadataUpdateServiceImpl(null);
+		MetadataUpdateServiceImpl self = new MetadataUpdateServiceImpl(null); // no authorization
 		self.update(url, core, action, doc);
 		
 	}
