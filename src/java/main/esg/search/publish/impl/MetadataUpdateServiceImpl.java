@@ -60,21 +60,21 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 			while (start < numFound) {
 								
 				// build query URL
-				String _url = url + "/" + core + "/select?"
-				            + "q="+URLEncoder.encode("*:*","UTF-8")
-				            + "&fl=id"
-				            + "&wt=xml"
-				            + "&indent=true"
-				            + "&start="+start
-				            + "&rows="+LIMIT;
+				String selectUrl = url + "/" + core + "/select?"
+				            	 + "q="+URLEncoder.encode("*:*","UTF-8")
+				            	 + "&fl=id"
+				            	 + "&wt=xml"
+				            	 + "&indent=true"
+				            	 + "&start="+start
+				            	 + "&rows="+LIMIT;
 				for (String constraint : constraints) {
 					String[] kv = constraint.split("=");
-					_url += "&fq="+kv[0]+":"+URLEncoder.encode(kv[1],"UTF-8"); // must URL-encode the values
+					selectUrl += "&fq="+kv[0]+":"+URLEncoder.encode(kv[1],"UTF-8"); // must URL-encode the values
 				}
 				
 				// execute HTTP query request
-				LOG.debug("HTTP request: "+_url);
-			    String response = httpClient.doGet(new URL(_url));
+				LOG.debug("HTTP request: "+selectUrl);
+			    String response = httpClient.doGet(new URL(selectUrl));
 			    LOG.debug("HTTP respose:" +response);
 			    
 			    // parse HTTP query response
@@ -106,10 +106,10 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 			} // loop over multiple HTTP query request/response
 			
 			// send all updates, commit each time
-			String solrUrl = "http://esgf-dev.jpl.nasa.gov:8984/solr/datasets/update?commit=true"; // FIXME
+			String updateUrl = url + "/" + core + "/update?commit=true";
 			for (String xmlDoc : xmlDocs) {
 				LOG.debug(xmlDoc);
-				httpClient.doPost(new URL(solrUrl), xmlDoc, true); // xml=true
+				httpClient.doPost(new URL(updateUrl), xmlDoc, true); // xml=true
 			}
 					
 		} // loop over queries
@@ -181,7 +181,7 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		// FIXME: parse arguments from command line
+		// TODO: parse arguments from command line
 		String url = "http://esgf-dev.jpl.nasa.gov:8984/solr";
 		String core = "datasets";
 		
