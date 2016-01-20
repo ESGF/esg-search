@@ -22,7 +22,9 @@ public interface MetadataUpdateService {
      *                     'xlink':['http://esg-datanode.jpl.nasa.gov/.../zosTechNote_AVISO_L4_199210-201012.pdf|AVISO Sea Surface Height Technical Note|summary']
      *                    }
      *                  }
+	 *
+	 * @return: number of documents that matched the query (and therefore updated - across all queries combined)
 	 */
-	public void update(String url, String core, String action, HashMap<String, Map<String,String[]>> doc) throws Exception;
+	public int update(String url, String core, String action, HashMap<String, Map<String,String[]>> doc) throws Exception;
 
 }

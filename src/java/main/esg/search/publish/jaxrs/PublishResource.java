@@ -129,6 +129,7 @@ public class PublishResource {
     	// parse input document
     	if (LOG.isDebugEnabled()) LOG.debug("Received update document="+document);
     	
+    	int numRecordsUpdated = 0;
     	try {
     		UpdateDocumentParser parser = new UpdateDocumentParser(document);
     		
@@ -137,7 +138,7 @@ public class PublishResource {
     		HashMap<String, Map<String,String[]>> doc = parser.getDoc();
     		    		
     		// execute update
-    		updateService.update(this.url.toString(), core, action, doc);
+    		numRecordsUpdated = updateService.update(this.url.toString(), core, action, doc);
     		
     	} catch(Exception e) {
     		e.printStackTrace();
@@ -145,7 +146,7 @@ public class PublishResource {
     		throw newWebApplicationException(e.getMessage(), Response.Status.BAD_REQUEST);
     	}
     	
-    	return newXmlResponse("OK"); // FIXME: return ids of objects updated
+    	return newXmlResponse("Number of records updated: "+numRecordsUpdated); // FIXME: return ids of objects updated
     	
     }
     

@@ -35,7 +35,7 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 		xPath2 = XPath.newInstance(XPATH2);
 	}
 
-	public void update(String url, String core, String action, HashMap<String, Map<String,String[]>> doc) throws Exception {
+	public int update(String url, String core, String action, HashMap<String, Map<String,String[]>> doc) throws Exception {
 
 		HttpClient httpClient = new HttpClient();
 		XmlParser xmlParser = new XmlParser(false);
@@ -43,6 +43,7 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 		LOG.debug("Metadata update: url="+url+" action="+action);
 		
 		// process each query separately
+		int numRecordsUpdated = 0;
 		for (String query : doc.keySet()) {
 		
 			Map<String,String[]> metadata = doc.get(query);
@@ -111,8 +112,12 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 				LOG.debug(xmlDoc);
 				httpClient.doPost(new URL(updateUrl), xmlDoc, true); // xml=true
 			}
+			
+			numRecordsUpdated += numFound;
 					
 		} // loop over queries
+		
+		return numRecordsUpdated;
 		
 	}
 	
