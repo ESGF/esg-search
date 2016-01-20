@@ -11,7 +11,8 @@ public interface MetadataUpdateService {
 	
 	/**
 	 * Method to change/add/remove metadata fields to/from existing records.
-	 * @param url: base esg-search URL (example: "http://esgf-dev.jpl.nasa.gov/esg-search/search")
+	 * @param url: base Solr URL (example: "http://localhost:8984/solr")
+	 * @param core: Solr core (example: "datasets")
 	 * @param action: one of "set", "add", "remove"
 	 * @param metadata: dictionary of queries to map of field name and values to be updated for all matching results
 	 *                  example:
@@ -22,6 +23,6 @@ public interface MetadataUpdateService {
      *                    }
      *                  }
 	 */
-	public void update(String url, String action, HashMap<String, Map<String,String[]>> doc) throws Exception;
+	public void update(String url, String core, String action, HashMap<String, Map<String,String[]>> doc) throws Exception;
 
 }

@@ -35,18 +35,18 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 		xPath2 = XPath.newInstance(XPATH2);
 	}
 
-	public void update(String url, String action, HashMap<String, Map<String,String[]>> doc) throws Exception {
+	public void update(String url, String core, String action, HashMap<String, Map<String,String[]>> doc) throws Exception {
 
 		HttpClient httpClient = new HttpClient();
 		XmlParser xmlParser = new XmlParser(false);
 		
-		if (LOG.isDebugEnabled()) LOG.debug("Metadata update: url="+url+" action="+action);
+		System.out.println("Metadata update: url="+url+" action="+action);
 		
 		// process each query separately
 		for (String query : doc.keySet()) {
 		
 			Map<String,String[]> metadata = doc.get(query);
-			if (LOG.isDebugEnabled()) LOG.debug("Processing query: "+query);
+			System.out.println("Processing query: "+query);
 			String[] constraints = query.split("&");
 			
 	        // VERY IMPORTANT: MUST FIRST CREATE ALL THE UPDATE DOCUMENTS, 
@@ -58,18 +58,24 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 			int start = 0;
 			int numFound = start + 1;
 			while (start < numFound) {
-				
+								
 				// build query URL
-				String _url = url + "?fields=id&distrib=false&limit="+LIMIT+"&offset="+start;
+				String _url = url + "/" + core + "/select?"
+				            + "q="+URLEncoder.encode("*:*","UTF-8")
+				            + "&fl=id"
+				            + "&wt=xml"
+				            + "&indent=true"
+				            + "&start="+start
+				            + "&rows="+LIMIT;
 				for (String constraint : constraints) {
 					String[] kv = constraint.split("=");
-					_url += "&"+kv[0]+"="+URLEncoder.encode(kv[1],"UTF-8"); // must URL-encode the values
+					_url += "&fq="+kv[0]+":"+URLEncoder.encode(kv[1],"UTF-8"); // must URL-encode the values
 				}
 				
 				// execute HTTP query request
-				if (LOG.isDebugEnabled()) LOG.debug("HTTP request: "+_url);
+				System.out.println("HTTP request: "+_url);
 			    String response = httpClient.doGet(new URL(_url));
-			    if (LOG.isDebugEnabled()) LOG.debug("HTTP respose:" +response);
+			    System.out.println("HTTP respose:" +response);
 			    
 			    // parse HTTP query response
 			    final Document xmlDoc = xmlParser.parseString(response);
@@ -102,7 +108,7 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 			// send all updates, commit each time
 			String solrUrl = "http://esgf-dev.jpl.nasa.gov:8984/solr/datasets/update?commit=true"; // FIXME
 			for (String xmlDoc : xmlDocs) {
-				if (LOG.isDebugEnabled()) LOG.debug(xmlDoc);
+				System.out.println(xmlDoc);
 				httpClient.doPost(new URL(solrUrl), xmlDoc, true); // xml=true
 			}
 					
@@ -176,11 +182,12 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 	public static void main(String[] args) throws Exception {
 		
 		// FIXME: parse arguments from command line
-		String url = "http://esgf-dev.jpl.nasa.gov/esg-search/search";
+		String url = "http://esgf-dev.jpl.nasa.gov:8984/solr";
+		String core = "datasets";
 		
 		HashMap<String, Map<String,String[]>> doc = new HashMap<String, Map<String,String[]>>();
 		Map<String,String[]> metadata = new HashMap<String,String[]>();
-		String query = "id=cmip5.output1.CSIRO-BOM.ACCESS1-3.historical.mon.ocean.Omon.r1i1p1.v2|aims3.llnl.gov&type=Dataset";
+		String query = "id=cmip5.output1.CSIRO-BOM.ACCESS1-3.historical.mon.ocean.Omon.r1i1p1.v2|aims3.llnl.gov";
 		//String query = "variable=bacc&type=Dataset";
 		//String query = "variable=areacella&type=Dataset";
 		doc.put(query, metadata);
@@ -237,7 +244,7 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 		//metadata.put("xlink", new String[] {} );
 		
 		MetadataUpdateServiceImpl self = new MetadataUpdateServiceImpl();
-		self.update(url, action, doc);
+		self.update(url, core, action, doc);
 		
 	}
 

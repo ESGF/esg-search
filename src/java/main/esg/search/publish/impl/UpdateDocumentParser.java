@@ -9,6 +9,7 @@ import java.util.Map;
 import org.jdom.Document;
 import org.jdom.Element;
 
+import esg.search.publish.api.MetadataUpdateService;
 import esg.search.utils.Serializer;
 import esg.search.utils.XmlParser;
 
@@ -32,6 +33,7 @@ import esg.search.utils.XmlParser;
 public class UpdateDocumentParser {
 	
 	private String action;
+	private String core;
 	private HashMap<String, Map<String,String[]>> doc = new HashMap<String, Map<String,String[]>>();
 	
 	public UpdateDocumentParser(String xmlString) throws Exception {
@@ -40,6 +42,9 @@ public class UpdateDocumentParser {
 		XmlParser xmlParser = new XmlParser(false);
 		Document xmlDoc = xmlParser.parseString(xmlString);
 		Element root = xmlDoc.getRootElement();
+		
+		// Solr core
+		this.core = root.getAttributeValue("core");
 		
 		// action=set/add/remove
 		this.action = root.getAttributeValue("action");
@@ -77,39 +82,41 @@ public class UpdateDocumentParser {
 	public String getAction() {
 		return action;
 	}
+	
+	public String getCore() {
+		return core;
+	}
 
 	public HashMap<String, Map<String, String[]>> getDoc() {
 		return doc;
 	}
 	
-	
-	/** Debug method
+	/**
+	 * Debug method: 
+	 * parses an existing XML update document
+	 * then sends it to the master Solr
 	 * 
 	 * @param args
 	 * @throws Exception
 	 */
 	public static void main(String[] args) throws Exception {
 		
-		File file = new File("/Users/cinquini/tmp/update.xml");
+		File file = new File("/Users/cinquini/tmp/update_record_set.xml");
 		XmlParser xmlParser = new XmlParser(false);
 		Document xmlDoc = xmlParser.parseFile(file);
 		String xmlString = Serializer.JDOMtoString(xmlDoc);
-		UpdateDocumentParser self = new UpdateDocumentParser(xmlString);
-		System.out.println("action="+self.action);
+
+		UpdateDocumentParser parser = new UpdateDocumentParser(xmlString);
+		String action = parser.getAction();
+		String core = parser.getCore();
+		HashMap<String, Map<String,String[]>> doc = parser.getDoc();
 		
-		HashMap<String, Map<String,String[]>> doc = self.doc;
-		for (String query : doc.keySet()) {
-			System.out.println("Query="+query);
-			
-			Map<String,String[]> metadata = doc.get(query);
-			for (String name : metadata.keySet()) {
-				for (String value : metadata.get(name)) {
-					System.out.println("Field name="+name+" value="+value);
-				}
-			}
-			
-		}
+		String queryUri = "http://esgf-dev.jpl.nasa.gov:8984/solr";
 		
+		// execute update
+		MetadataUpdateService updateService = new MetadataUpdateServiceImpl();
+		updateService.update(queryUri, core, action, doc);
+
 	}
 	
 }
