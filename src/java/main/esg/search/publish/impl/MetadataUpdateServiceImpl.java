@@ -21,7 +21,7 @@ import esg.search.utils.XmlParser;
 
 public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 	
-	private final Log LOG = LogFactory.getLog(this.getClass()); // FIXME: stdout --> LOG
+	private final Log LOG = LogFactory.getLog(this.getClass());
 	
 	private final static String XPATH1 = "/response/result";
 	private final static String XPATH2 = "/response/result/doc/str[@name='id']";
@@ -67,9 +67,9 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 				}
 				
 				// execute HTTP query request
-				System.out.println("HTTP request: "+_url);
+				if (LOG.isDebugEnabled()) LOG.debug("HTTP request: "+_url);
 			    String response = httpClient.doGet(new URL(_url));
-			    System.out.println("HTTP respose:" +response);
+			    if (LOG.isDebugEnabled()) LOG.debug("HTTP respose:" +response);
 			    
 			    // parse HTTP query response
 			    final Document xmlDoc = xmlParser.parseString(response);
@@ -102,7 +102,7 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 			// send all updates, commit each time
 			String solrUrl = "http://esgf-dev.jpl.nasa.gov:8984/solr/datasets/update?commit=true"; // FIXME
 			for (String xmlDoc : xmlDocs) {
-				System.out.println(xmlDoc);
+				if (LOG.isDebugEnabled()) LOG.debug(xmlDoc);
 				httpClient.doPost(new URL(solrUrl), xmlDoc, true); // xml=true
 			}
 					

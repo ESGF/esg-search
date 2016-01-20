@@ -123,15 +123,15 @@ public class PublishResource {
     		
     		// build ESGF query URL
     		URI updateUri = uriInfo.getRequestUri();
-    		LOG.info("ESGF query URL="+updateUri.toString());
+    		LOG.info("ESGF update URL="+updateUri.toString());
     		String queryUri = updateUri.toString().replace("/ws/update", "/search");
     		
     		// execute update
     		updateService.update(queryUri, action, doc);
     		
-    		
     	} catch(Exception e) {
     		e.printStackTrace();
+    		if (LOG.isWarnEnabled()) LOG.warn(e.getMessage());
     		throw newWebApplicationException(e.getMessage(), Response.Status.BAD_REQUEST);
     	}
     	
