@@ -40,11 +40,13 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 		HttpClient httpClient = new HttpClient();
 		XmlParser xmlParser = new XmlParser(false);
 		
+		if (LOG.isDebugEnabled()) LOG.debug("Metadata update: url="+url+" action="+action);
+		
 		// process each query separately
 		for (String query : doc.keySet()) {
 		
 			Map<String,String[]> metadata = doc.get(query);
-			System.out.println("Processing query: "+query);
+			if (LOG.isDebugEnabled()) LOG.debug("Processing query: "+query);
 			String[] constraints = query.split("&");
 			
 	        // VERY IMPORTANT: MUST FIRST CREATE ALL THE UPDATE DOCUMENTS, 

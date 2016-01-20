@@ -131,6 +131,7 @@ public class PublishResource {
     		
     		
     	} catch(Exception e) {
+    		e.printStackTrace();
     		throw newWebApplicationException(e.getMessage(), Response.Status.BAD_REQUEST);
     	}
     	
