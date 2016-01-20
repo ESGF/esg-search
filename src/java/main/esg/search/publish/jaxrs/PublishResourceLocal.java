@@ -54,6 +54,17 @@ public class PublishResourceLocal extends PublishResource {
     }
     
     /**
+     * Update record in local shard.
+     * @param record
+     * @return
+     */
+    @POST
+    @Path("updateLocal/")
+    public String update(String record) {
+    	return super.update(record);
+    }
+    
+    /**
      * Publish record to local shard.
      * @param record
      * @return
