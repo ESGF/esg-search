@@ -152,7 +152,7 @@ public class PublishResource {
     		throw newWebApplicationException(e.getMessage(), Response.Status.BAD_REQUEST);
     	}
     	
-    	return newXmlResponse("Number of records updated: "+numRecordsUpdated); // FIXME: return ids of objects updated
+    	return newXmlResponse("Number of records updated: "+numRecordsUpdated);
     	
     }
     
