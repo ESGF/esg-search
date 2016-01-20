@@ -40,13 +40,13 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 		HttpClient httpClient = new HttpClient();
 		XmlParser xmlParser = new XmlParser(false);
 		
-		System.out.println("Metadata update: url="+url+" action="+action);
+		LOG.debug("Metadata update: url="+url+" action="+action);
 		
 		// process each query separately
 		for (String query : doc.keySet()) {
 		
 			Map<String,String[]> metadata = doc.get(query);
-			System.out.println("Processing query: "+query);
+			LOG.debug("Processing query: "+query);
 			String[] constraints = query.split("&");
 			
 	        // VERY IMPORTANT: MUST FIRST CREATE ALL THE UPDATE DOCUMENTS, 
@@ -73,9 +73,9 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 				}
 				
 				// execute HTTP query request
-				System.out.println("HTTP request: "+_url);
+				LOG.debug("HTTP request: "+_url);
 			    String response = httpClient.doGet(new URL(_url));
-			    System.out.println("HTTP respose:" +response);
+			    LOG.debug("HTTP respose:" +response);
 			    
 			    // parse HTTP query response
 			    final Document xmlDoc = xmlParser.parseString(response);
@@ -108,7 +108,7 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 			// send all updates, commit each time
 			String solrUrl = "http://esgf-dev.jpl.nasa.gov:8984/solr/datasets/update?commit=true"; // FIXME
 			for (String xmlDoc : xmlDocs) {
-				System.out.println(xmlDoc);
+				LOG.debug(xmlDoc);
 				httpClient.doPost(new URL(solrUrl), xmlDoc, true); // xml=true
 			}
 					

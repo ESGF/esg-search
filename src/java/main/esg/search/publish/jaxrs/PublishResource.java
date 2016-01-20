@@ -54,6 +54,9 @@ public class PublishResource {
     
     private final Log LOG = LogFactory.getLog(this.getClass());
     
+    // base Solr URL (example: "http://localhost:8984/solr")
+    private URL url;
+    
     // client that sends XML requests to the Solr server
     // (for push operations)
     private SolrClient solrClient; 
@@ -85,7 +88,9 @@ public class PublishResource {
                            final AuthorizerAdapter authorizer,
                            final @Qualifier("recordValidatorManager") RecordValidator validator) throws Exception {
         
-        this.solrClient = new SolrClient(url);
+    	this.url = url;
+    	
+        this.solrClient = new SolrClient(this.url);
         
         this.publishingService = publishingService;
         
@@ -108,9 +113,18 @@ public class PublishResource {
         return "ESGF REST Publishing Service";
     }
     
+    /**
+     * POST bulk-update method: parses an XML update document in ESGF syntax,
+     * queries Solr for all matching records, 
+     * and sends set/add/remove requests to the Solr index.
+     * 
+     * @param document
+     * @param uriInfo
+     * @return
+     */
     @POST
     @Path("update/")
-    public String update(String document, @Context UriInfo uriInfo) {
+    public String update(String document) {
 
     	// parse input document
     	if (LOG.isDebugEnabled()) LOG.debug("Received update document="+document);
@@ -119,15 +133,11 @@ public class PublishResource {
     		UpdateDocumentParser parser = new UpdateDocumentParser(document);
     		
     		String action = parser.getAction();
+    		String core = parser.getCore();
     		HashMap<String, Map<String,String[]>> doc = parser.getDoc();
-    		
-    		// build ESGF query URL
-    		URI updateUri = uriInfo.getRequestUri();
-    		LOG.info("ESGF update URL="+updateUri.toString());
-    		String queryUri = updateUri.toString().replace("/ws/update", "/search");
-    		
+    		    		
     		// execute update
-    		updateService.update(queryUri, action, doc);
+    		updateService.update(this.url.toString(), core, action, doc);
     		
     	} catch(Exception e) {
     		e.printStackTrace();
