@@ -5,7 +5,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.FormParam;
@@ -14,7 +16,9 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,6 +34,7 @@ import esg.search.core.RecordSerializer;
 import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.PublishingException;
 import esg.search.publish.api.PublishingService;
+import esg.search.publish.impl.UpdateDocumentParser;
 import esg.search.publish.impl.solr.SolrClient;
 import esg.search.publish.impl.solr.SolrRecordSerializer;
 import esg.search.publish.security.AuthorizerAdapter;
@@ -100,10 +105,26 @@ public class PublishResource {
     
     @POST
     @Path("update/")
-    public String update(String document) {
+    public String update(String document, @Context UriInfo uriInfo) {
 
-    	if (LOG.isInfoEnabled()) LOG.info("UPDATE DOCUMENT="+document);
-    	return "UPDATE DOCUMENT="+document;
+    	// parse input document
+    	if (LOG.isDebugEnabled()) LOG.debug("Received update document="+document);
+    	
+    	try {
+    		UpdateDocumentParser parser = new UpdateDocumentParser(document);
+    		
+    		String action = parser.getAction();
+    		HashMap<String, Map<String,String[]>> doc = parser.getDoc();
+    		
+    		// ESGF query URL
+    		URI uri = uriInfo.getRequestUri();
+    		LOG.info("ESGF query URL="+uri.toString());
+    		
+    	} catch(Exception e) {
+    		throw newWebApplicationException(e.getMessage(), Response.Status.BAD_REQUEST);
+    	}
+    	
+    	return newXmlResponse("OK"); // FIXME: return ids of objects updated
     	
     }
     

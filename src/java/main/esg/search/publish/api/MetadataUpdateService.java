@@ -22,6 +22,6 @@ public interface MetadataUpdateService {
      *                    }
      *                  }
 	 */
-	public void update(String url, String action, HashMap<String, Map<String,String[]>> metadata) throws Exception;
+	public void update(String url, String action, HashMap<String, Map<String,String[]>> doc) throws Exception;
 
 }
