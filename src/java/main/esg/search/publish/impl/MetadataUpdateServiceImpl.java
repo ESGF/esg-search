@@ -14,6 +14,7 @@ import org.jdom.Element;
 import org.jdom.xpath.XPath;
 
 import esg.search.publish.api.MetadataUpdateService;
+import esg.search.publish.security.AuthorizerAdapter;
 import esg.search.query.api.QueryParameters;
 import esg.search.utils.HttpClient;
 import esg.search.utils.Serializer;
@@ -30,9 +31,23 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 	private XPath xPath1;
 	private XPath xPath2;
 	
-	public MetadataUpdateServiceImpl() throws Exception {
+    // class used to authorize the publishing calls
+    // no authorization takes place if null
+    private AuthorizerAdapter authorizer = null;
+
+    /**
+     * Implementation of {@link MetadataUpdateService} 
+     * that uses an optional {@link AuthorizerAdapter} to authorize publishing operations.
+     * 
+     * @param authorizer
+     * @throws Exception
+     */
+	public MetadataUpdateServiceImpl(AuthorizerAdapter authorizer) throws Exception {
+		
 		xPath1 = XPath.newInstance(XPATH1);
 		xPath2 = XPath.newInstance(XPATH2);
+		
+		this.authorizer = authorizer;
 	}
 
 	public int update(String url, String core, String action, HashMap<String, Map<String,String[]>> doc) throws Exception {
@@ -109,7 +124,6 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 			// send all updates, commit each time
 			String updateUrl = url + "/" + core + "/update?commit=true";
 			for (String xmlDoc : xmlDocs) {
-				LOG.debug(xmlDoc);
 				httpClient.doPost(new URL(updateUrl), xmlDoc, true); // xml=true
 			}
 			
@@ -133,9 +147,12 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
         // loop over results across this response
         for (Object obj : xPath2.selectNodes(xmlDoc)) {
         	
-        	//start += 1; // will start from next record
+        	// will start from next record
         	Element idElement = (Element)obj;
         	String id = idElement.getText();
+        	
+            // authorization
+            if (authorizer!=null) authorizer.checkAuthorization(id);
         	
         	Element _docElement = new Element("doc");
         	Element _idElement = new Element("field");
@@ -192,7 +209,7 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 		
 		HashMap<String, Map<String,String[]>> doc = new HashMap<String, Map<String,String[]>>();
 		Map<String,String[]> metadata = new HashMap<String,String[]>();
-		String query = "id=cmip5.output1.CSIRO-BOM.ACCESS1-3.historical.mon.ocean.Omon.r1i1p1.v2|aims3.llnl.gov";
+		String query = "id=obs4MIPs.NASA-JPL.AIRS.mon.v1|esg-datanode.jpl.nasa.gov";
 		//String query = "variable=bacc&type=Dataset";
 		//String query = "variable=areacella&type=Dataset";
 		doc.put(query, metadata);
@@ -208,7 +225,7 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 			</add>
 		 */
 		String action = QueryParameters.ACTION_SET;
-		metadata.put("xlink", new String[] {"abc", "cde"} );
+		metadata.put("xlink", new String[] {"abc", "123"} );
 		
 		/** ADD example
 		 <?xml version="1.0" encoding="UTF-8"?>
@@ -248,7 +265,7 @@ public class MetadataUpdateServiceImpl implements MetadataUpdateService {
 		//String action = QueryParameters.ACTION_SET;
 		//metadata.put("xlink", new String[] {} );
 		
-		MetadataUpdateServiceImpl self = new MetadataUpdateServiceImpl();
+		MetadataUpdateServiceImpl self = new MetadataUpdateServiceImpl(null);
 		self.update(url, core, action, doc);
 		
 	}

@@ -72,7 +72,7 @@ public class PublishResource {
     private final PublishingService publishingService;
     
     // service that updates already published metadata records
-    private MetadataUpdateService updateService = new MetadataUpdateServiceImpl();
+    private MetadataUpdateService updateService;
     
     // class used to authorize the publishing calls
     // no authorization takes place if null
@@ -100,6 +100,8 @@ public class PublishResource {
         
         this.serializer = new SolrRecordSerializer();
         
+        this.updateService = new MetadataUpdateServiceImpl(this.authorizer);
+        
     }
     
     /**
@@ -125,6 +127,10 @@ public class PublishResource {
     @POST
     @Path("update/")
     public String update(String document) {
+    	
+        // validate HTTP request
+        if (!StringUtils.hasText(document)) 
+            throw newWebApplicationException("Request body must contain the update documemnt", Response.Status.BAD_REQUEST);
 
     	// parse input document
     	if (LOG.isDebugEnabled()) LOG.debug("Received update document="+document);
