@@ -130,6 +130,11 @@ public abstract class AbstractPublishResource {
     		// execute update
     		numRecordsUpdated = updateService.update(this.url.toString(), core, action, doc);
     		
+    	} catch(SecurityException se) {
+    		se.printStackTrace();
+    		if (LOG.isWarnEnabled()) LOG.warn(se.getMessage());
+    		throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
+    		
     	} catch(Exception e) {
     		e.printStackTrace();
     		if (LOG.isWarnEnabled()) LOG.warn(e.getMessage());
