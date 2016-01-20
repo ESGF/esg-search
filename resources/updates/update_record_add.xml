@@ -1,6 +1,6 @@
 <updates core="datasets" action="add">
    <update>
-      <query>id=cmip5.output1.CSIRO-BOM.ACCESS1-3.historical.mon.ocean.Omon.r1i1p1.v2|aims3.llnl.gov</query>
+      <query>id=obs4MIPs.NASA-JPL.AIRS.mon.v1|esg-datanode.jpl.nasa.gov</query>
       <field name="xlink">
          <value>xyz</value>
          <value>456</value>
