@@ -32,8 +32,10 @@ import org.springframework.util.StringUtils;
 import esg.search.core.Record;
 import esg.search.core.RecordSerializer;
 import esg.search.publish.api.MetadataRepositoryType;
+import esg.search.publish.api.MetadataUpdateService;
 import esg.search.publish.api.PublishingException;
 import esg.search.publish.api.PublishingService;
+import esg.search.publish.impl.MetadataUpdateServiceImpl;
 import esg.search.publish.impl.UpdateDocumentParser;
 import esg.search.publish.impl.solr.SolrClient;
 import esg.search.publish.impl.solr.SolrRecordSerializer;
@@ -65,6 +67,9 @@ public class PublishResource {
     // service that parses remote metadata repositories
     // (for pull operations)
     private final PublishingService publishingService;
+    
+    // service that updates already published metadata records
+    private MetadataUpdateService updateService = new MetadataUpdateServiceImpl();
     
     // class used to authorize the publishing calls
     // no authorization takes place if null
@@ -116,9 +121,14 @@ public class PublishResource {
     		String action = parser.getAction();
     		HashMap<String, Map<String,String[]>> doc = parser.getDoc();
     		
-    		// ESGF query URL
-    		URI uri = uriInfo.getRequestUri();
-    		LOG.info("ESGF query URL="+uri.toString());
+    		// build ESGF query URL
+    		URI updateUri = uriInfo.getRequestUri();
+    		LOG.info("ESGF query URL="+updateUri.toString());
+    		String queryUri = updateUri.toString().replace("/ws/update", "/search");
+    		
+    		// execute update
+    		updateService.update(queryUri, action, doc);
+    		
     		
     	} catch(Exception e) {
     		throw newWebApplicationException(e.getMessage(), Response.Status.BAD_REQUEST);
