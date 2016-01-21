@@ -113,6 +113,8 @@ public abstract class AbstractPublishResource {
      */
     public String updateById(String core, String action, String id, String field, String[] values) {
     	
+    	LOG.debug("UpdateById request: core="+core+" action="+action+" id="+id+" field="+field+" values="+values);
+    	
     	// check authorization
     	if (authorizer!=null) {
     		try {
@@ -132,7 +134,7 @@ public abstract class AbstractPublishResource {
 	    	HashMap<String, Map<String,String[]>> doc = new HashMap<String, Map<String,String[]>>();
 	    	Map<String,String[]> metadata = new HashMap<String,String[]>();
 	    	metadata.put(field, values);
-	    	doc.put(id, metadata);
+	    	doc.put("id="+id, metadata);
 	    	
 	    	// invoke metadata update service
 	    	numRecordsUpdated = updateService.update(this.url.toString(), core, action, doc);
