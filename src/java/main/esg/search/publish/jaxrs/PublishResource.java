@@ -45,6 +45,17 @@ public class PublishResource extends AbstractPublishResource {
     	return "ESGF DEFAULT REST Publishing Service";
     }
     
+    @GET
+    @Path("updateById/")
+    public String updateById(
+    		@FormParam("core") String core,
+    		@FormParam("action") String action,
+    		@FormParam("id") String id,
+    		@FormParam("field") String field,
+    		@FormParam("value") String[] values) {
+    	return super.updateById(core, action, id, field, values);
+    }
+    
     @POST
     @Path("update/")
     public String update(String document) {

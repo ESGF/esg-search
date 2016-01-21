@@ -102,7 +102,54 @@ public abstract class AbstractPublishResource {
     }
     
     /**
-     * POST bulk-update method: parses an XML update document in ESGF syntax,
+     * GET method to update one single metadata record.
+     * 
+     * @param core
+     * @param action
+     * @param id
+     * @param field
+     * @param values
+     * @return
+     */
+    public String updateById(String core, String action, String id, String field, String[] values) {
+    	
+    	// check authorization
+    	if (authorizer!=null) {
+    		try {
+    			authorizer.checkAuthorization(id);
+    		} catch(SecurityException se) {
+        		se.printStackTrace();
+        		if (LOG.isWarnEnabled()) LOG.warn(se.getMessage());
+        		throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
+    		}
+    	}
+    	
+    	// execute update
+    	int numRecordsUpdated = 0;
+    	try {
+    		
+    		// build metadata content
+	    	HashMap<String, Map<String,String[]>> doc = new HashMap<String, Map<String,String[]>>();
+	    	Map<String,String[]> metadata = new HashMap<String,String[]>();
+	    	metadata.put(field, values);
+	    	doc.put(id, metadata);
+	    	
+	    	// invoke metadata update service
+	    	numRecordsUpdated = updateService.update(this.url.toString(), core, action, doc);
+	    	
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    		if (LOG.isWarnEnabled()) LOG.warn(e.getMessage());
+    		throw newWebApplicationException(e.getMessage(), Response.Status.BAD_REQUEST);
+    	}
+    	
+    	return newXmlResponse("Number of records updated: "+numRecordsUpdated);
+    	
+    }
+    
+    /**
+     * POST method to bulk-update many metadata records at once: 
+     * parses an XML update document in ESGF syntax,
      * queries Solr for all matching records, 
      * and sends set/add/remove requests to the Solr index.
      * 
@@ -121,7 +168,7 @@ public abstract class AbstractPublishResource {
     	
     	int numRecordsUpdated = 0;
     	try {
-    		UpdateDocumentParser parser = new UpdateDocumentParser(document);
+			UpdateDocumentParser parser = new UpdateDocumentParser(document);
     		
     		String action = parser.getAction();
     		String core = parser.getCore();

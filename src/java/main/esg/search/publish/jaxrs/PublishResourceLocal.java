@@ -45,6 +45,17 @@ public class PublishResourceLocal extends AbstractPublishResource {
         return "ESGF LOCAL REST Publishing Service";
     }
     
+    @GET
+    @Path("updateByIdLocal/")
+    public String updateById(
+    		@FormParam("core") String core,
+    		@FormParam("action") String action,
+    		@FormParam("id") String id,
+    		@FormParam("field") String field,
+    		@FormParam("value") String[] values) {
+    	return super.updateById(core, action, id, field, values);
+    }
+    
     @POST
     @Path("updateLocal/")
     public String update(String record) {
