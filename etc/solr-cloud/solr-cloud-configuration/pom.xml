@@ -20,7 +20,7 @@
   <!-- specific module parameters -->
   <properties>
     <esgf.router.field>index_node</esgf.router.field>
-    <esgf.shards>esgf-node.jpl.nasa.gov,pcmdi9.llnl.gov,others</esgf.shards>
+    <esgf.shards>esgf-node.jpl.nasa.gov,pcmdi.llnl.gov,others</esgf.shards>
   </properties>
 
   <build>
