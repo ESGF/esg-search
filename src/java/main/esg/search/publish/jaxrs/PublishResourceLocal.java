@@ -19,19 +19,15 @@ import esg.search.publish.security.AuthorizerAdapter;
 import esg.search.publish.validation.RecordValidator;
 
 /**
- * JAXRS Resource that executes PUSH/PULL publishing operations versus the "local shard" Solr on port 8982.
+ * RESTful publishing service that targets the "local shard" Solr on port 8982.
  * 
  * @author Luca Cinquini
  *
  */
 @Path("/")
 @Produces("application/xml")
-public class PublishResourceLocal extends PublishResource {
+public class PublishResourceLocal extends AbstractPublishResource {
 	
-    /**
-     * Constructor is configured to interact with the local shard Solr server.
-     * @param url
-     */
     @Autowired
     public PublishResourceLocal(final @Value("${esg.search.solr.local.url}") URL url,
                            final @Qualifier("publishingServiceLocal") PublishingService publishingService,
@@ -42,10 +38,6 @@ public class PublishResourceLocal extends PublishResource {
         
     }
     
-    /**
-     * Test GET method.
-     * @return
-     */
     @GET
     @Path("pingLocal/")
     @Produces("text/plain")
@@ -53,31 +45,35 @@ public class PublishResourceLocal extends PublishResource {
         return "ESGF LOCAL REST Publishing Service";
     }
     
-    /**
-     * Publish record to local shard.
-     * @param record
-     * @return
-     */
+    @GET
+    @Path("updateByIdLocal/")
+    public String updateById(
+    		@FormParam("core") String core,
+    		@FormParam("action") String action,
+    		@FormParam("id") String id,
+    		@FormParam("field") String field,
+    		@FormParam("value") String[] values) {
+    	return super.updateById(core, action, id, field, values);
+    }
+    
+    @POST
+    @Path("updateLocal/")
+    public String update(String record) {
+    	return super.update(record);
+    }
+    
     @POST
     @Path("publishLocal/")
     public String publish(String record) {
     	return super.publish(record);
     }
     
-    /**
-     * Unpublish record from local shard.
-     * @param record
-     * @return
-     */
     @POST
     @Path("unpublishLocal/")
     public String unpublish(String record) {
     	return super.unpublish(record);
     }
 
-    /**
-     * Harvest a catalog to the local shard.
-     */
     @POST
     @Path("harvestLocal/")
     public String harvest(@FormParam("uri") String uri, 
@@ -88,9 +84,6 @@ public class PublishResourceLocal extends PublishResource {
     	return super.harvest(uri, recursive, filter, metadataRepositoryType, schema);
     }
     
-    /**
-     * Unharvest a catalog from the local shard.
-     */
     @POST
     @Path("unharvestLocal/")
     public String unharvest(@FormParam("uri") String uri, 
@@ -101,9 +94,6 @@ public class PublishResourceLocal extends PublishResource {
     	return super.unharvest(uri, recursive, filter, metadataRepositoryType, schema);
     }
     
-    /**
-     * Delete records from the local shard.
-     */
     @POST
     @Path("deleteLocal/")
     public String delete(@FormParam("id") List<String> ids) {
