@@ -378,7 +378,9 @@ _commit_configuration() {
             sed -i '/'${solr_config_type}':8983/Id' ${esgf_shards_static_file%_*}.xml
             
             #Put the Entry in for this local replica index of the remote index @ ${solr_config_type}
-            sed -i '/<[/]shards>/i \ <value>localhost:'${solr_server_port}'/solr</value>' ${esgf_shards_static_file}
+	    if [ ${solr_server_port} != 8983 ]; then
+            	sed -i '/<[/]shards>/i \ <value>localhost:'${solr_server_port}'/solr</value>' ${esgf_shards_static_file}
+	    fi
         fi
     fi
 
