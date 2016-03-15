@@ -394,7 +394,7 @@ check_chksum() {
 
     case $chk_type in
         md5) local_chksum=$(md5sum_ $file | cut -f1 -d" ");;
-        sha256) local_chksum=$(sha256sum $file|awk '{print $1}'|cut -d ' ' -f1);;
+        sha256) local_chksum=$(sha256sum_ $file|awk '{print $1}'|cut -d ' ' -f1);;
         *) echo "Can't verify checksum." && return 0;;
     esac
 
@@ -410,6 +410,16 @@ md5sum_() {
         echo $(md5sum $@)
     else
         echo $(md5 $@ | sed -n 's/MD5[ ]*\(.*\)[^=]*=[ ]*\(.*$\)/\2 \1/p')
+    fi
+}
+
+#Our own sha256sum function call that takes into account machines that don't have sha256sum but do have sha2 (i.e. mac os x)
+sha256sum_() {
+    hash -r
+    if type sha256sum >& /dev/null; then
+        echo $(sha256sum $@)
+    else
+        echo $(sha2 -q -256 $@)
     fi
 }
 
