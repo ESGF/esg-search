@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.net.URL;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -35,6 +36,7 @@ import esg.search.query.api.FacetProfile;
 import esg.search.query.api.QueryParameters;
 import esg.search.utils.HttpClient;
 import esg.search.utils.XmlParser;
+import esg.security.registry.service.api.RegistryService;
 
 /**
  * Base implementation of {@link FacetProfile} that builds the list of available facets directly from a query to Solr,
@@ -57,14 +59,14 @@ public class LukeHandlerFacetProfileImpl implements FacetProfile, Serializable {
 
 	private final static String XPATH = "/response/lst[@name='fields']/lst";
 	private XPath xPath = null;
-	private String url = null;
+	private RegistryService registryService = null;
 		
 	/**
 	 * Constructor that builds the list of facets from a properties file.
 	 * @param propertisFile
 	 */
-	public LukeHandlerFacetProfileImpl(final String url) {
-		this.url = url;
+	public LukeHandlerFacetProfileImpl(final RegistryService registryService) {
+		this.registryService = registryService;
 	}
 		
 	/**
@@ -74,20 +76,27 @@ public class LukeHandlerFacetProfileImpl implements FacetProfile, Serializable {
 		
 		Map<String, Facet> _facets = new LinkedHashMap<String, Facet>();
 		
-		final String fullUrl = url + "/datasets/admin/luke/?numTerms=0";
-		if (LOG.isInfoEnabled()) LOG.info("Querying all available facets from URL="+fullUrl);
-		String response = httpClient.doGet(new URL(fullUrl));
-		final Document doc = xmlParser.parseString(response);
-		xPath = XPath.newInstance(XPATH);
-		for (final Object obj : xPath.selectNodes(doc)) {
-			
-			String facetKey = ((Element)obj).getAttributeValue("name");
-			// avoid faceting on fields that have too many values to improve performance
-			if (!QueryParameters.NOT_FACETS.contains(facetKey)) {
-				_facets.put(facetKey, new FacetImpl(facetKey, facetKey, "")); // facet key = facet name
-				 if (LOG.isInfoEnabled()) LOG.info("Using facet:"+facetKey);
+		LinkedHashSet<String> shards = this.registryService.getShards();
+		
+		for (String shard : shards) {
+		
+			final String fullUrl = "http://" + shard + "/datasets/admin/luke/?numTerms=0";
+			if (LOG.isInfoEnabled()) LOG.info("Querying all available facets from URL="+fullUrl);
+			String response = httpClient.doGet(new URL(fullUrl));
+			final Document doc = xmlParser.parseString(response);
+			xPath = XPath.newInstance(XPATH);
+			for (final Object obj : xPath.selectNodes(doc)) {
+				
+				String facetKey = ((Element)obj).getAttributeValue("name");
+				if (!_facets.containsKey(facetKey)) {  // already counted
+					// avoid faceting on fields that have too many values to improve performance
+					if (!QueryParameters.NOT_FACETS.contains(facetKey)) {
+						_facets.put(facetKey, new FacetImpl(facetKey, facetKey, "")); // facet key = facet name
+						 if (LOG.isInfoEnabled()) LOG.info("Using facet:"+facetKey);
+					}
+				}
+				
 			}
-			
 		}
 		
 		return _facets;

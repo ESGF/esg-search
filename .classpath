@@ -40,10 +40,6 @@
 	<classpathentry kind="lib" path="lib/fetched/cxf-rt-transports-http-3.1.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/dom4j-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/el-api-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-accesslog-client-0.7.9.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.7.9.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.7.9.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-filters-0.7.9.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/findbugs-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/findbugs-ant-1.0.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/findbugsGUI-1.0.0.jar"/>
@@ -147,7 +143,10 @@
 	<classpathentry kind="lib" path="lib/fetched/commons-beanutils-1.9.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.8.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esg-orp-test-2.8.4.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.7.1.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-test-2.7.1.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-accesslog-client-0.7.13.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.7.13.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.7.13.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-filters-0.7.13.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.7.5.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

@@ -38,6 +38,7 @@ public class QueryParameters {
     final public static String FIELD_TITLE = "title";
     final public static String FIELD_DESCRIPTION = "description";
     final public static String FIELD_TIMESTAMP = "timestamp";
+    final public static String FIELD_TIMESTAMP_ = "_timestamp";
     final public static String FIELD_URL = "url";
     final public static String FIELD_ACCESS = "access";
     final public static String FIELD_XLINK = "xlink";
@@ -45,6 +46,8 @@ public class QueryParameters {
     final public static String FIELD_DATASET_ID = "dataset_id"; // note: generic notation to allow parent-child relations beyond just datasets   
     final public static String FIELD_TRACKING_ID = "tracking_id";
     final public static String FIELD_VERSION = "version";
+    final public static String FIELD_VERSION_ = "_version_";
+    
     final public static String FIELD_CHECKSUM = "checksum";
     final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
     final public static String FIELD_INDEX_NODE = "index_node";
@@ -109,7 +112,8 @@ public class QueryParameters {
     	FIELD_TEXT,
     	FIELD_TYPE,
     	FIELD_VARIABLE_UNITS,
-    	FIELD_METADATA_FORMAT, FIELD_METADATA_URL
+    	FIELD_METADATA_FORMAT, FIELD_METADATA_URL,
+    	FIELD_TIMESTAMP_, FIELD_VERSION_
     });
 
     

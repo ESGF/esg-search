@@ -55,12 +55,13 @@
     </bean>
 	
   	<!-- Facet profile example -->
-<!-- 	<bean name="wsFacetProfile" class="esg.search.query.impl.solr.PropertiesFileFacetProfileImpl">
+    <!-- <bean name="wsFacetProfile" class="esg.search.query.impl.solr.PropertiesFileFacetProfileImpl">
     	<constructor-arg index="0"><value>/esg/config/facets.properties</value></constructor-arg>
     </bean> -->
-    <!-- facets initialized from the Solr Luke handler: http://localhost:8984/solr/datasets/admin/luke/?numTerms=0 -->
+    <!-- facets initialized from the Solr Luke handler: http://localhost:8984/solr/datasets/admin/luke/?numTerms=0 
+         across all shards listed in esgf_shards.xml, esgf_shards_static.xml -->
     <bean name="wsFacetProfile" class="esg.search.query.impl.solr.LukeHandlerFacetProfileImpl">
-		<constructor-arg index="0" value="${esg.search.solr.publish.url}"/>
+		<constructor-arg index="0" ref="registryService" />
 	</bean>
     
 	<!-- Registry service providing dynamic list of shards for distributed search -->
