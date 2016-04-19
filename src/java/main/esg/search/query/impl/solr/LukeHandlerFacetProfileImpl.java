@@ -42,8 +42,6 @@ import esg.search.utils.XmlParser;
  * Note that at this time the list of available facets is NOT reloaded on demand every time a client requests it,
  * to avoid any performance issues.
  * 
- * TODO: switch form using the Soor Luke handler to using the schema RESTful API.
- * 
  */
 public class LukeHandlerFacetProfileImpl implements FacetProfile, Serializable {
 	
