@@ -104,8 +104,8 @@ public class BaseController {
             // remove possible trailing '!' for negative constraints
             final String _key = key.replaceAll("!$", "");
             if (   !QueryParameters.KEYWORDS.contains(_key)
-                && !QueryParameters.CORE_QUERY_FIELDS.contains(_key)
-                && !facetProfile.getTopLevelFacets().keySet().contains(_key)) {
+                && !QueryParameters.CORE_QUERY_FIELDS.contains(_key)) {
+                //&& !facetProfile.getTopLevelFacets().keySet().contains(_key)) {
                 return sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid HTTP query parameter="+key, response); 
             }
 	        
