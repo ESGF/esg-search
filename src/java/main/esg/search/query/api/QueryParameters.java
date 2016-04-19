@@ -47,6 +47,8 @@ public class QueryParameters {
     final public static String FIELD_TRACKING_ID = "tracking_id";
     final public static String FIELD_VERSION = "version";
     final public static String FIELD_VERSION_ = "_version_";
+    final public static String FIELD_SCORE = "score";
+    final public static String FIELD_UNITS = "units";
     
     final public static String FIELD_CHECKSUM = "checksum";
     final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
@@ -113,7 +115,8 @@ public class QueryParameters {
     	FIELD_TYPE,
     	FIELD_VARIABLE_UNITS,
     	FIELD_METADATA_FORMAT, FIELD_METADATA_URL,
-    	FIELD_TIMESTAMP_, FIELD_VERSION_
+    	FIELD_TIMESTAMP_, FIELD_VERSION_,
+    	FIELD_SCORE, FIELD_UNITS
     });
 
     
