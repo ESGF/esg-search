@@ -63,7 +63,7 @@
     <bean name="wsFacetProfile" class="esg.search.query.impl.solr.LukeHandlerFacetProfileImpl">
 		<constructor-arg index="0" ref="registryService" />
         <!--  time in seconds to query the registry again for list of available facets -->
-        <constructor-arg index="1" value="10" />
+        <constructor-arg index="1" value="86400" /> <!-- every 24 hours -->
 	</bean>
     
 	<!-- Registry service providing dynamic list of shards for distributed search -->
