@@ -60,17 +60,20 @@ public class LukeHandlerFacetProfileImpl implements FacetProfile, Serializable {
 	private final static String XPATH = "/response/lst[@name='fields']/lst";
 	private XPath xPath = null;
 	private RegistryService registryService = null;
+	private long reloadTimeInSecs = 0;
+	private long lastReloadTimeInMillisecs = 0;
 		
 	/**
 	 * Constructor that builds the list of facets from a properties file.
 	 * @param propertisFile
 	 */
-	public LukeHandlerFacetProfileImpl(final RegistryService registryService) {
+	public LukeHandlerFacetProfileImpl(final RegistryService registryService, long reloadTimeInSecs) {
 		this.registryService = registryService;
+		this.reloadTimeInSecs = reloadTimeInSecs;
+		this.lastReloadTimeInMillisecs = System.currentTimeMillis();
 	}
 		
 	/**
-	 * Method that queries Solr for the latest list of facets
 	 */
 	protected Map<String, Facet> queryFacets() throws Exception {
 		
@@ -120,17 +123,20 @@ public class LukeHandlerFacetProfileImpl implements FacetProfile, Serializable {
 	public Map<String, Facet> getTopLevelFacets() {
 		
 		// initialize facets ?
-		if (this.facets.isEmpty()) {
+		if (this.facets.isEmpty() || (System.currentTimeMillis()-this.lastReloadTimeInMillisecs)/1000 > this.reloadTimeInSecs ) {
+			this.lastReloadTimeInMillisecs = System.currentTimeMillis();
+			
 			synchronized(this.facets) {
 				try {
 					Map<String, Facet> newFacets = this.queryFacets();
-					if (!newFacets.isEmpty()) {
+					if (!newFacets.isEmpty()) {  // something went wrong...
 						this.facets = newFacets;
 					}
 				} catch(Exception e) {
 					LOG.warn(e.getMessage());
 				}
 			}
+			
 		}
 		
 		return Collections.unmodifiableMap(facets);

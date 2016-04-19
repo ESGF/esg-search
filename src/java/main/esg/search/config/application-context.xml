@@ -62,6 +62,8 @@
          across all shards listed in esgf_shards.xml, esgf_shards_static.xml -->
     <bean name="wsFacetProfile" class="esg.search.query.impl.solr.LukeHandlerFacetProfileImpl">
 		<constructor-arg index="0" ref="registryService" />
+        <!--  time in seconds to query the registry again for list of available facets -->
+        <constructor-arg index="1" value="10" />
 	</bean>
     
 	<!-- Registry service providing dynamic list of shards for distributed search -->
