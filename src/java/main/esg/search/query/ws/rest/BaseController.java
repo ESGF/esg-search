@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -196,16 +197,13 @@ public class BaseController {
                 // &facet1=value1&facet1=value2
                 // OR:
                 // &facets1=value1,value2,...
+                // but do not split model="CESM1(CAM5.1,FV2)"
                 } else {
                     final String[] parValues = request.getParameterValues(parName);
                     for (final String parValue : parValues) {
-                    	if (isUnbreakable(parValue)) {
-                    		command.addConstraint(parName, parValue);
-                    	} else {
-	                    	String[] _parValues = parValue.split("\\s*,\\s*");
-	                    	for (String _parValue : _parValues) {
-	                    		command.addConstraint(parName, _parValue);
-	                    	}
+                    	String[] _parValues = splitValue(parValue);
+                    	for (String _parValue : _parValues) {
+                    		command.addConstraint(parName, _parValue);
                     	}
                     }
                 }
@@ -232,17 +230,44 @@ public class BaseController {
 	}
 	
 	/**
-	 * Checks whether this value matches one of the "unbreakable patterns"
+	 * Utility method to split an HTTP parameter value into comma-separated values
+	 * but keep intact patterns such as "CESM1(CAM5.1,FV2)"
 	 * @param value
 	 * @return
 	 */
-	private boolean isUnbreakable(String value) {
+	private String[] splitValue(String value) {
 		
-		for (Pattern p : QueryParameters.UNBREAKABLE_VALUES) {
-			Matcher m = p.matcher(value);
-			if (m.matches()) return true; // value matches this pattern
+		// first split by comma
+		String[] values = value.split("\\s*,\\s*");
+		
+		if (values.length==1) { // no splitting occurred
+			return values; 
+			
+		} else { // possibly re-assemble broken pieces
+			
+			List<String> _values = new ArrayList<String>();
+			
+			for (int i=0; i<values.length; i++) {
+				if (i<values.length-1) {
+					if (   values[i].indexOf("(") >= 0 &&  values[i].indexOf(")") < 0
+						&& values[i+1].indexOf(")") >= 0 &&  values[i+1].indexOf("(") < 0) {
+						_values.add( values[i]+","+values[i+1]); // re-assemble
+						i += 1; // skip next value
+						
+					} else {
+						_values.add( values[i] );
+					}
+					
+				} else {
+					_values.add(values[i]);
+				}
+			}
+			
+			// convert listo into array
+			return _values.toArray(new String[_values.size()]);
+		
 		}
-		return false; // value does not match any pattern
+				
 	}
 	
 	/**
