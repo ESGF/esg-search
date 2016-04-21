@@ -249,13 +249,25 @@ public class BaseController {
 			
 			for (int i=0; i<values.length; i++) {
 				if (i<values.length-1) {
+					
 					if (   values[i].indexOf("(") >= 0 &&  values[i].indexOf(")") < 0
 						&& values[i+1].indexOf(")") >= 0 &&  values[i+1].indexOf("(") < 0) {
 						_values.add( values[i]+","+values[i+1]); // re-assemble
 						i += 1; // skip next value
 						
+					} else if (   values[i].indexOf("[") >= 0 &&  values[i].indexOf("]") < 0
+								&& values[i+1].indexOf("]") >= 0 &&  values[i+1].indexOf("[") < 0) {
+						_values.add( values[i]+","+values[i+1]); // re-assemble
+						i += 1; // skip next value
+								
+					} else if (values[i].indexOf("{") >= 0 &&  values[i].indexOf("}") < 0
+										&& values[i+1].indexOf("}") >= 0 &&  values[i+1].indexOf("{") < 0) {						
+						_values.add( values[i]+","+values[i+1]); // re-assemble
+						i += 1; // skip next value
+
 					} else {
 						_values.add( values[i] );
+						
 					}
 					
 				} else {
