@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -198,9 +199,13 @@ public class BaseController {
                 } else {
                     final String[] parValues = request.getParameterValues(parName);
                     for (final String parValue : parValues) {
-                    	String[] _parValues = parValue.split("\\s*,\\s*");
-                    	for (String _parValue : _parValues) {
-                    		command.addConstraint(parName, _parValue);
+                    	if (isUnbreakable(parValue)) {
+                    		command.addConstraint(parName, parValue);
+                    	} else {
+	                    	String[] _parValues = parValue.split("\\s*,\\s*");
+	                    	for (String _parValue : _parValues) {
+	                    		command.addConstraint(parName, _parValue);
+	                    	}
                     	}
                     }
                 }
@@ -224,6 +229,20 @@ public class BaseController {
         // response error, return empty body content
         return "";
 	    	    		
+	}
+	
+	/**
+	 * Checks whether this value matches one of the "unbreakable patterns"
+	 * @param value
+	 * @return
+	 */
+	private boolean isUnbreakable(String value) {
+		
+		for (Pattern p : QueryParameters.UNBREAKABLE_VALUES) {
+			Matcher m = p.matcher(value);
+			if (m.matches()) return true; // value matches this pattern
+		}
+		return false; // value does not match any pattern
 	}
 	
 	/**

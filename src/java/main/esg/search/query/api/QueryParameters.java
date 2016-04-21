@@ -143,6 +143,14 @@ public class QueryParameters {
     public static Pattern INVALID_CHARACTERS = Pattern.compile(".*[^a-zA-Z0-9_+\\-\\.\\@\\:\\;\\,\\s/()\\*\\[\\]].*!");
     
     /**
+     * List of parameter values that will NOT be broken into different values according to the comma (,) separator.
+     */
+    public static Pattern[] UNBREAKABLE_VALUES = new Pattern[] { Pattern.compile(".*\\(.*\\).*"),
+    		                                                     Pattern.compile(".*\\[.*\\].*"),
+    		                                                     Pattern.compile(".*\\{.*\\}.*")
+    };
+    
+    /**
      * Format for temporal queries.
      */
     // recognized date/time format for input metadata records
