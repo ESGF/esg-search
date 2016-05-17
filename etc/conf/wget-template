@@ -475,7 +475,7 @@ download_http_sec()
 
 
   #Try to download the data. 
-  command="wget $wget_args $data"
+  command="wget $wget_args -O $filename $data"
   http_resp=$(eval $command  2>&1) 
   cmd_exit_status="$?"
   
