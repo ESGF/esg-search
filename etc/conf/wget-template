@@ -414,12 +414,12 @@ md5sum_() {
 }
 
 get_mod_time_() {
-    if ((LINUX)); then
-        #on linux modtime is stat -c %Y <file>
-        echo "$(stat -c %Y $@)"
-    elif ((MACOSX)); then
+    if ((MACOSX)); then
         #on a mac modtime is stat -f %m <file>
         echo "$(stat -f %m $@)"
+    else
+        #on linux (cygwin) modtime is stat -c %Y <file>
+        echo "$(stat -c %Y $@)"
     fi
     return 0;
 }
