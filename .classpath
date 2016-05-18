@@ -81,7 +81,6 @@
 	<classpathentry kind="lib" path="lib/fetched/lucene-spellchecker-2.9.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/mail-1.4.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/nekohtml-1.9.20.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/netcdf-4.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/opendap-2.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/openid4java-0.9.6.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/openid4java-nodeps-0.9.6.jar"/>
@@ -148,5 +147,6 @@
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.7.13.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-filters-0.7.13.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.7.5.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/netcdfAll-4.6.5.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
