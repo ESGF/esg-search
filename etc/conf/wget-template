@@ -37,7 +37,6 @@ ESG_HOME=${ESG_HOME:-$HOME/.esg}
 ESG_CREDENTIALS=${X509_USER_PROXY:-$ESG_HOME/credentials.pem}
 ESG_CERT_DIR=${X509_CERT_DIR:-$ESG_HOME/certificates}
 MYPROXY_STATUS=$HOME/.MyProxyLogon
-TRUSTSTORE=$ESG_HOME/esg-truststore.ts
 COOKIE_JAR=$ESG_HOME/cookies
 MYPROXY_GETCERT=$ESG_HOME/getcert.jar
 CERT_EXPIRATION_WARNING=$((60 * 60 * 8))   #Eight hour (in seconds)
@@ -247,33 +246,13 @@ get_certificates() {
 
 }
 
-#get truststore from github
-get_truststore() {
-    # don't if this was already done today
-    [[ -z $force && "$(find $TRUSTSTORE -type f -mtime -1 2>/dev/null)" ]] && return 0
-    echo -n "Retrieving Federation Truststore..." >&2
-    
-    if ! wget --no-check-certificate https://raw.githubusercontent.com/ESGF/esgf-dist/master/installer/certs/esg-truststore.ts -O $TRUSTSTORE -q ; then
-        #certificates tarred into esg_trusted_certificates. (if it breaks, let the user know why
-        wget --no-check-certificate https://raw.githubusercontent.com/ESGF/esgf-dist/master/installer/certs/esg-truststore.ts -O $TRUSTSTORE
-        echo "Could't update truststore!" >&2
-        return 1
-    else
-        touch $TRUSTSTORE
-    fi
-    
-    echo "done!" >&2    
-}
-
 # Retrieve ESG credentials
 unset pass
 get_credentials() {
     check_java
     #get all certificates
     get_certificates
-    #get truststore 
-    get_truststore
-    
+
     if [[ -z "$(find $MYPROXY_GETCERT -type f -mtime -1 2>/dev/null)" ]]; then
         echo -n "(Downloading $MYPROXY_GETCERT... "
         mkdir -p $(dirname $MYPROXY_GETCERT)
@@ -319,7 +298,7 @@ get_credentials() {
     [[ "$username" ]] && args=$args" -l $username"
     
     echo -n $'\nRetrieving Credentials...' >&2
-    if ! java $(proxy_to_java) -Djavax.net.ssl.trustStore=$TRUSTSTORE -Djavax.net.ssl.trustStorePassword=changeit -jar $MYPROXY_GETCERT $args --output $ESG_CREDENTIALS ; then        
+    if ! java $(proxy_to_java) -jar $MYPROXY_GETCERT $args --ca-directory $ESG_CERT_DIR --output $ESG_CREDENTIALS ; then        
         echo "Certificate could not be retrieved"
         exit 1
     fi
@@ -394,7 +373,7 @@ check_chksum() {
 
     case $chk_type in
         md5) local_chksum=$(md5sum_ $file | cut -f1 -d" ");;
-        sha256) local_chksum=$(sha256sum $file|awk '{print $1}'|cut -d ' ' -f1);;
+        sha256) local_chksum=$(sha256sum_ $file|awk '{print $1}'|cut -d ' ' -f1);;
         *) echo "Can't verify checksum." && return 0;;
     esac
 
@@ -410,6 +389,18 @@ md5sum_() {
         echo $(md5sum $@)
     else
         echo $(md5 $@ | sed -n 's/MD5[ ]*\(.*\)[^=]*=[ ]*\(.*$\)/\2 \1/p')
+    fi
+}
+
+#Our own sha256sum function call that takes into account machines that don't have sha256sum but do have sha2 (i.e. mac os x)
+sha256sum_() {
+    hash -r
+    if type sha256sum >& /dev/null; then
+        echo $(sha256sum $@)
+    elif type shasum >& /dev/null; then
+        echo $(shasum -a 256 $@)
+    else
+        echo $(sha2 -q -256 $@)
     fi
 }
 
