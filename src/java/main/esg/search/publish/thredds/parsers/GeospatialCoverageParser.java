@@ -50,14 +50,18 @@ public class GeospatialCoverageParser implements ThreddsElementParser {
             if (gsc.getEastWestRange()!=null)
                 record.addField(SolrXmlPars.FIELD_EAST, Double.toString(gsc.getEastWestRange().getStart()+gsc.getEastWestRange().getSize()));
     		// complete geo-spatial location
+            // ENVELOPE(-10, 20, 15, 10) # ENVELOPE(minX, maxX, maxY, minY)
+            // <field name="geo">ENVELOPE(-74.093, -69.347, 44.558, 41.042)</field>
     		if (   record.getFieldValue(SolrXmlPars.FIELD_WEST)!=null  && record.getFieldValue(SolrXmlPars.FIELD_EAST)!=null
     			&& record.getFieldValue(SolrXmlPars.FIELD_SOUTH)!=null && record.getFieldValue(SolrXmlPars.FIELD_NORTH)!=null) {
     			
     			record.setField(SolrXmlPars.FIELD_GEO, // "minLon minLat maxLon maxLat"
-    					    record.getFieldValue(SolrXmlPars.FIELD_WEST)
-    				   +" "+record.getFieldValue(SolrXmlPars.FIELD_SOUTH)
-    				   +" "+record.getFieldValue(SolrXmlPars.FIELD_EAST)
-    				   +" "+record.getFieldValue(SolrXmlPars.FIELD_NORTH) );
+    					        "ENVELOPE("
+    					       + record.getFieldValue(SolrXmlPars.FIELD_WEST)  + ", "
+    					       + record.getFieldValue(SolrXmlPars.FIELD_EAST)  + ", "
+    					       + record.getFieldValue(SolrXmlPars.FIELD_NORTH) + ", "
+    					       + record.getFieldValue(SolrXmlPars.FIELD_SOUTH) 
+    					       + ")" );
     				  			
     		}
             
