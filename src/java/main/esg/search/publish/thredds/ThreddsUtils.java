@@ -1,14 +1,16 @@
 package esg.search.publish.thredds;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.util.StringUtils;
 
+import esg.search.query.api.QueryParameters;
 import thredds.catalog.InvAccess;
 import thredds.catalog.InvCatalogRef;
 import thredds.catalog.InvDataset;
 import thredds.catalog.InvDatasetImpl;
-import esg.search.query.api.QueryParameters;
 
 /**
  * Class containing utilities for parsing THREDDS catalogs.

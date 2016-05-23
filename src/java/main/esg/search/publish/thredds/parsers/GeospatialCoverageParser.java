@@ -1,11 +1,14 @@
 package esg.search.publish.thredds.parsers;
 
+import java.util.List;
+
 import org.springframework.util.StringUtils;
 
-import thredds.catalog.InvDataset;
-import thredds.catalog.ThreddsMetadata.GeospatialCoverage;
 import esg.search.core.Record;
 import esg.search.query.impl.solr.SolrXmlPars;
+import esg.search.utils.GeoUtils;
+import thredds.catalog.InvDataset;
+import thredds.catalog.ThreddsMetadata.GeospatialCoverage;
 
 /**
  * Class that parsers a THREDDS <geospatialCoverage> element.
@@ -55,13 +58,18 @@ public class GeospatialCoverageParser implements ThreddsElementParser {
     		if (   record.getFieldValue(SolrXmlPars.FIELD_WEST)!=null  && record.getFieldValue(SolrXmlPars.FIELD_EAST)!=null
     			&& record.getFieldValue(SolrXmlPars.FIELD_SOUTH)!=null && record.getFieldValue(SolrXmlPars.FIELD_NORTH)!=null) {
     			
-    			record.setField(SolrXmlPars.FIELD_GEO, // "minLon minLat maxLon maxLat"
-    					        "ENVELOPE("
-    					       + record.getFieldValue(SolrXmlPars.FIELD_WEST)  + ", "
-    					       + record.getFieldValue(SolrXmlPars.FIELD_EAST)  + ", "
-    					       + record.getFieldValue(SolrXmlPars.FIELD_NORTH) + ", "
-    					       + record.getFieldValue(SolrXmlPars.FIELD_SOUTH) 
-    					       + ")" );
+    			List<float[]> latRanges = GeoUtils.convertLongitudeRangeto180( 
+    					                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_WEST)),
+    					                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_EAST)) );
+    			for (float[] latRange : latRanges) {
+	    			record.setField(SolrXmlPars.FIELD_GEO, // "minLon minLat maxLon maxLat"
+	    					        "ENVELOPE("
+	    					       + latRange[0]  + ", "
+	    					       + latRange[1]  + ", "
+	    					       + record.getFieldValue(SolrXmlPars.FIELD_NORTH) + ", "
+	    					       + record.getFieldValue(SolrXmlPars.FIELD_SOUTH) 
+	    					       + ")" );
+    			}
     				  			
     		}
             
