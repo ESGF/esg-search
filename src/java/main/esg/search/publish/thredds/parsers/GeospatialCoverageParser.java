@@ -49,6 +49,18 @@ public class GeospatialCoverageParser implements ThreddsElementParser {
                 record.addField(SolrXmlPars.FIELD_WEST, Double.toString(gsc.getEastWestRange().getStart()));
             if (gsc.getEastWestRange()!=null)
                 record.addField(SolrXmlPars.FIELD_EAST, Double.toString(gsc.getEastWestRange().getStart()+gsc.getEastWestRange().getSize()));
+    		// complete geo-spatial location
+    		if (   record.getFieldValue(SolrXmlPars.FIELD_WEST)!=null  && record.getFieldValue(SolrXmlPars.FIELD_EAST)!=null
+    			&& record.getFieldValue(SolrXmlPars.FIELD_SOUTH)!=null && record.getFieldValue(SolrXmlPars.FIELD_NORTH)!=null) {
+    			
+    			record.setField(SolrXmlPars.FIELD_GEO, // "minLon minLat maxLon maxLat"
+    					    record.getFieldValue(SolrXmlPars.FIELD_WEST)
+    				   +" "+record.getFieldValue(SolrXmlPars.FIELD_SOUTH)
+    				   +" "+record.getFieldValue(SolrXmlPars.FIELD_EAST)
+    				   +" "+record.getFieldValue(SolrXmlPars.FIELD_NORTH) );
+    				  			
+    		}
+            
             if (gsc.getUpDownRange()!=null) {
                 record.addField(SolrXmlPars.FIELD_HEIGHT_BOTTOM, Double.toString(gsc.getUpDownRange().getStart()));
                 record.addField(SolrXmlPars.FIELD_HEIGHT_TOP, Double.toString(gsc.getUpDownRange().getStart()+gsc.getUpDownRange().getSize()));
