@@ -14,6 +14,7 @@ import ucar.nc2.NetcdfFile;
 import ucar.nc2.Variable;
 import esg.search.core.Record;
 import esg.search.publish.impl.FileLogger;
+import esg.search.publish.thredds.ThreddsUtils;
 import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
 import esg.search.utils.DateUtils;
@@ -139,17 +140,8 @@ public abstract class HdfMetadataEnhancer extends BaseMetadataEnhancerImpl {
 			if (!lonBounds[1].isNaN()) record.setField(SolrXmlPars.FIELD_EAST, Double.toString(lonBounds[1]));
 		}
 		
-		// complete geo location
-		if (   record.getFieldValue(SolrXmlPars.FIELD_WEST)!=null  && record.getFieldValue(SolrXmlPars.FIELD_EAST)!=null
-			&& record.getFieldValue(SolrXmlPars.FIELD_SOUTH)!=null && record.getFieldValue(SolrXmlPars.FIELD_NORTH)!=null) {
-			
-			record.setField(SolrXmlPars.FIELD_GEO, // "minLon minLat maxLon maxLat"
-					    record.getFieldValue(SolrXmlPars.FIELD_WEST)
-				   +" "+record.getFieldValue(SolrXmlPars.FIELD_SOUTH)
-				   +" "+record.getFieldValue(SolrXmlPars.FIELD_EAST)
-				   +" "+record.getFieldValue(SolrXmlPars.FIELD_NORTH) );
-				  			
-		}
+        // complete geospatial coverage
+        ThreddsUtils.addGeoCoverage(record);
 		
 		// time boundaries
 		if (this.time != null) {

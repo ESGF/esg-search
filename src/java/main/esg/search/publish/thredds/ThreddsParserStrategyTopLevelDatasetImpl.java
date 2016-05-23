@@ -164,6 +164,8 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	        record.addField(SolrXmlPars.FIELD_EAST, Double.toString(ds.lonEast) );
 	    if (record.getFieldValue(SolrXmlPars.FIELD_WEST)==null && ds.lonWest!=Double.MAX_VALUE)
 	        record.addField(SolrXmlPars.FIELD_WEST, Double.toString(ds.lonWest) );
+        // complete geospatial coverage
+        ThreddsUtils.addGeoCoverage(record);
 	    if (record.getFieldValue(SolrXmlPars.FIELD_HEIGHT_BOTTOM)==null && ds.heightBottom!=Double.MAX_VALUE)
             record.addField(SolrXmlPars.FIELD_HEIGHT_BOTTOM, Double.toString(ds.heightBottom) );
 	    if (record.getFieldValue(SolrXmlPars.FIELD_HEIGHT_TOP)==null && ds.heightTop!=Double.MIN_VALUE)

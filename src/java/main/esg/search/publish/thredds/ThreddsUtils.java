@@ -1,12 +1,14 @@
 package esg.search.publish.thredds;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.util.StringUtils;
 
+import esg.search.core.Record;
 import esg.search.query.api.QueryParameters;
+import esg.search.query.impl.solr.SolrXmlPars;
+import esg.search.utils.GeoUtils;
 import thredds.catalog.InvAccess;
 import thredds.catalog.InvCatalogRef;
 import thredds.catalog.InvDataset;
@@ -120,6 +122,38 @@ public class ThreddsUtils {
         uri.normalize();
         return uri;
         
+    }
+    
+    /**
+     * Method to add an element of the form:
+     * <field name="geo">ENVELOPE(1.0, 180.0, 89.5, -89.5)</field>
+     * from north/south/east/west degree elements of the form:
+     * <field name="south_degrees">-89.5</field>
+     * @param record
+     */
+    public static void addGeoCoverage(Record record) {
+    	
+		// complete geo-spatial location
+        // ENVELOPE(-10, 20, 15, 10) # ENVELOPE(minX, maxX, maxY, minY)
+        // <field name="geo">ENVELOPE(-74.093, -69.347, 44.558, 41.042)</field>
+		if (   record.getFieldValue(SolrXmlPars.FIELD_WEST)!=null  && record.getFieldValue(SolrXmlPars.FIELD_EAST)!=null
+			&& record.getFieldValue(SolrXmlPars.FIELD_SOUTH)!=null && record.getFieldValue(SolrXmlPars.FIELD_NORTH)!=null) {
+			
+			List<float[]> latRanges = GeoUtils.convertLongitudeRangeto180( 
+					                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_WEST)),
+					                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_EAST)) );
+			for (float[] latRange : latRanges) {
+    			record.addField(SolrXmlPars.FIELD_GEO, // "minLon minLat maxLon maxLat"
+    					        "ENVELOPE("
+    					       + latRange[0]  + ", "
+    					       + latRange[1]  + ", "
+    					       + record.getFieldValue(SolrXmlPars.FIELD_NORTH) + ", "
+    					       + record.getFieldValue(SolrXmlPars.FIELD_SOUTH) 
+    					       + ")" );
+			}
+				  			
+		}
+    	
     }
     
     private ThreddsUtils() {}

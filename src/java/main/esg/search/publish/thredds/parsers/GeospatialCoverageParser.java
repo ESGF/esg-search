@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.util.StringUtils;
 
 import esg.search.core.Record;
+import esg.search.publish.thredds.ThreddsUtils;
 import esg.search.query.impl.solr.SolrXmlPars;
 import esg.search.utils.GeoUtils;
 import thredds.catalog.InvDataset;
@@ -52,27 +53,8 @@ public class GeospatialCoverageParser implements ThreddsElementParser {
                 record.addField(SolrXmlPars.FIELD_WEST, Double.toString(gsc.getEastWestRange().getStart()));
             if (gsc.getEastWestRange()!=null)
                 record.addField(SolrXmlPars.FIELD_EAST, Double.toString(gsc.getEastWestRange().getStart()+gsc.getEastWestRange().getSize()));
-    		// complete geo-spatial location
-            // ENVELOPE(-10, 20, 15, 10) # ENVELOPE(minX, maxX, maxY, minY)
-            // <field name="geo">ENVELOPE(-74.093, -69.347, 44.558, 41.042)</field>
-    		if (   record.getFieldValue(SolrXmlPars.FIELD_WEST)!=null  && record.getFieldValue(SolrXmlPars.FIELD_EAST)!=null
-    			&& record.getFieldValue(SolrXmlPars.FIELD_SOUTH)!=null && record.getFieldValue(SolrXmlPars.FIELD_NORTH)!=null) {
-    			
-    			List<float[]> latRanges = GeoUtils.convertLongitudeRangeto180( 
-    					                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_WEST)),
-    					                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_EAST)) );
-    			for (float[] latRange : latRanges) {
-	    			record.setField(SolrXmlPars.FIELD_GEO, // "minLon minLat maxLon maxLat"
-	    					        "ENVELOPE("
-	    					       + latRange[0]  + ", "
-	    					       + latRange[1]  + ", "
-	    					       + record.getFieldValue(SolrXmlPars.FIELD_NORTH) + ", "
-	    					       + record.getFieldValue(SolrXmlPars.FIELD_SOUTH) 
-	    					       + ")" );
-    			}
-    				  			
-    		}
-            
+            // complete geospatial coverage
+            ThreddsUtils.addGeoCoverage(record);
             if (gsc.getUpDownRange()!=null) {
                 record.addField(SolrXmlPars.FIELD_HEIGHT_BOTTOM, Double.toString(gsc.getUpDownRange().getStart()));
                 record.addField(SolrXmlPars.FIELD_HEIGHT_TOP, Double.toString(gsc.getUpDownRange().getStart()+gsc.getUpDownRange().getSize()));
