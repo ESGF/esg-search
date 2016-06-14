@@ -202,7 +202,8 @@ public class SolrUrlBuilder {
 		       // the implicit 'field' operator transforms the string 'version' into a numerical value
 		       } else if (name.equals(QueryParameters.FIELD_MAX_VERSION)) {
 		    	   if (StringUtils.hasText(input.getConstraint(name))) {
-		    		   fq.append("&fq="+URLEncoder.encode( "${vers}:[* TO "+input.getConstraint(name)+"]&vers=version", "UTF-8" ));
+		    		   fq.append("&fq="+URLEncoder.encode( "${vers}:[* TO "+input.getConstraint(name)+"]", "UTF-8"));
+		    		   fq.append("&vers=version");
 		    	   }
 		            
 		       } else if (name.equals(QueryParameters.FIELD_BBOX)) {
