@@ -47,6 +47,7 @@ public class QueryParameters {
     final public static String FIELD_TRACKING_ID = "tracking_id";
     final public static String FIELD_VERSION = "version";
     final public static String FIELD_VERSION_ = "_version_";
+    final public static String FIELD_MAX_VERSION = "max_version";
     final public static String FIELD_SCORE = "score";
     final public static String FIELD_UNITS = "units";
     

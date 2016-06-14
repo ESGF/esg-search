@@ -198,6 +198,13 @@ public class SolrUrlBuilder {
 		                qs.add(SolrXmlPars.FIELD_DATETIME_START+URLEncoder.encode(":[* TO "+input.getConstraint(name)+"]", "UTF-8") );
 		            }
 
+		       // max_version=20110608 --> fq=${vers}:[* TO 20110608]&vers=version
+		       // the implicit 'field' operator transforms the string 'version' into a numerical value
+		       } else if (name.equals(QueryParameters.FIELD_MAX_VERSION)) {
+		    	   if (StringUtils.hasText(input.getConstraint(name))) {
+		    		   fq.append("&fq="+URLEncoder.encode( "${vers}:[* TO "+input.getConstraint(name)+"]&vers=version", "UTF-8" ));
+		    	   }
+		            
 		       } else if (name.equals(QueryParameters.FIELD_BBOX)) {
 		           
 		           // [west, south, east, north]
