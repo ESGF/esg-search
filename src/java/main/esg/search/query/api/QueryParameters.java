@@ -48,6 +48,7 @@ public class QueryParameters {
     final public static String FIELD_VERSION = "version";
     final public static String FIELD_VERSION_ = "_version_";
     final public static String FIELD_MAX_VERSION = "max_version";
+    final public static String FIELD_MIN_VERSION = "min_version";
     final public static String FIELD_SCORE = "score";
     final public static String FIELD_UNITS = "units";
     
@@ -95,7 +96,7 @@ public class QueryParameters {
             FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_LATEST, FIELD_MASTER_ID, FIELD_INSTANCE_ID, FIELD_DRS_ID,
             FIELD_TITLE, FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_XLINK, FIELD_SIZE, 
             FIELD_NUMBER_OF_FILES, FIELD_NUMBER_OF_AGGREGATIONS, FIELD_DATASET_ID, FIELD_TRACKING_ID, FIELD_ACCESS,
-            FIELD_VERSION, FIELD_MAX_VERSION,
+            FIELD_VERSION, FIELD_MAX_VERSION, FIELD_MIN_VERSION,
             FIELD_CHECKSUM, FIELD_CHECKSUM_TYPE, FIELD_DATA_NODE, FIELD_INDEX_NODE,
             FIELD_BBOX, FIELD_LAT, FIELD_LON, FIELD_RADIUS, FIELD_POLYGON,
             FIELD_START, FIELD_END,

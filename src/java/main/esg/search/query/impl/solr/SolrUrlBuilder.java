@@ -199,11 +199,16 @@ public class SolrUrlBuilder {
 		            }
 
 		       // max_version=20110608 --> fq=${vers}:[* TO 20110608]&vers=version
+		       // min_version=20110608 --> fq=${vers}:[20110608 TO *]&vers=version
 		       // the implicit 'field' operator transforms the string 'version' into a numerical value
-		       } else if (name.equals(QueryParameters.FIELD_MAX_VERSION)) {
+		       } else if (name.equals(QueryParameters.FIELD_MAX_VERSION) || name.equals(QueryParameters.FIELD_MIN_VERSION)) {
 		    	   if (StringUtils.hasText(input.getConstraint(name))) {
-		    		   fq.append("&fq="+URLEncoder.encode( "${vers}:[* TO "+input.getConstraint(name)+"]", "UTF-8"));
-		    		   fq.append("&vers=version");
+		    		   if (name.equals(QueryParameters.FIELD_MAX_VERSION)) {
+		    			   fq.append("&fq="+URLEncoder.encode( "${vers}:[* TO "+input.getConstraint(name)+"]", "UTF-8"));
+		    		   } else {
+		    			   fq.append("&fq="+URLEncoder.encode( "${vers}:["+input.getConstraint(name)+" TO *]", "UTF-8"));
+		    		   }
+		    		   if (fq.indexOf("&vers=version")<0) fq.append("&vers=version"); // one time only
 		    	   }
 		            
 		       } else if (name.equals(QueryParameters.FIELD_BBOX)) {
