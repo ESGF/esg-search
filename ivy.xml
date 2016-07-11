@@ -109,7 +109,7 @@ Note: Check Maven for propery dependency parameter values @
     <dependency org="org.slf4j" name="slf4j-log4j12" rev="1.6.4"/>
     
     <!-- Note: could move version to 4.2 see: http://mvnrepository.com/artifact/edu.ucar/netcdf -->
-    <dependency org="unidata.thredds" name="netcdfAll" rev="4.6.5"/>
+    <dependency org="unidata.thredds" name="netcdfAll" rev="4.6.6"/>
 
     <dependency org="aopalliance" name="aopalliance" rev="1.0"/>
     
