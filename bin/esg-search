@@ -1035,7 +1035,7 @@ stop_solr() {
 
 #status
 check_solr_process() {
-    local pid=`lsof -i:${solr_server_port} | grep -i java | awk '{print $2}'`
+    local pid=`lsof -i:${solr_server_port} -s TCP:LISTEN | grep -i java | awk '{print $2}'`
     [ -n "$pid" ] && echo " Solr process for ${solr_config_type} running on port [${solr_server_port}]... " && return 0
 }
 
