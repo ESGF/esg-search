@@ -167,7 +167,6 @@ public class WgetController {
         
         // process request, obtain Solr/XML output
         String xml = baseController.process(new_req, command, response);
-        System.out.println("SOLR XML RESPONSE="+xml);
         if (xml == null || xml.length() == 0) return;
         
         // parse the Solr/XML document
@@ -201,8 +200,6 @@ public class WgetController {
         int res_count = ((Element) XPath.newInstance("/response/result").selectSingleNode(doc)
                 ).getAttribute("numFound").getIntValue();
         int ret_count = xpath.selectNodes(doc).size();
-        System.out.println("res_count="+res_count);
-        System.out.println("rts_count="+ret_count);
             
         if (res_count> ret_count) {
             //this is just apart!
