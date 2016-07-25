@@ -84,10 +84,10 @@ public class WgetController {
                        final HttpServletResponse response) throws Exception {
         
         // prevent requests with no constraints
-        if (!StringUtils.hasText(request.getQueryString())) {
-            response.sendRedirect(request.getRequestURI()+"?limit=1&distrib=false");
-            return;
-        }
+        //if (!StringUtils.hasText(request.getQueryString())) {
+        //    response.sendRedirect(request.getRequestURI()+"?limit=1&distrib=false");
+        //    return;
+        //}
     	
         HttpServletRequestWrapper new_req = new HttpServletRequestWrapper(request) {
             

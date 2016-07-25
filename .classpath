@@ -147,6 +147,6 @@
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.7.13.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-filters-0.7.13.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.7.5.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/netcdfAll-4.6.5.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/netcdfAll-4.6.6.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
