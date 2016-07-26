@@ -11,12 +11,17 @@
     <bean class="org.springframework.context.annotation.CommonAnnotationBeanPostProcessor"/>
     
     <!-- Use Spring @Autowired, @Qualifier, @Value annotations -->
-    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/> 
-    
-    <!-- Configurable properties -->
-	<bean id="searchPropertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-		<property name="location" value="classpath:esg/search/config/application.properties" />
-	</bean>
+    <bean class="org.springframework.beans.factory.annotation.AutowiredAnnotationBeanPostProcessor"/>
+  
+    <!-- Configurable properties (properties in last file override those in previous files) -->
+    <bean id="searchPropertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+      <property name="locations">
+        <list>
+          <value>classpath:esg/search/config/application.properties</value>
+          <value>file:/esg/config/esgf.properties</value>
+        </list>
+      </property>
+    </bean>
 	
 	<!-- Class that makes Spring application context available to other non-Spring classes -->
 	<bean id="contextApplicationContextProvider" class="esg.search.utils.ApplicationContextProvider"></bean>  
