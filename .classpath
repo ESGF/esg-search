@@ -140,13 +140,12 @@
 	<classpathentry kind="lib" path="lib/fetched/wstx-asl-3.2.7.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xalan-2.7.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-beanutils-1.9.2.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.8.4.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esg-orp-test-2.8.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-accesslog-client-0.7.13.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.7.13.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.7.13.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-filters-0.7.13.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.7.5.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/netcdfAll-4.6.6.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.9.0.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.7.6.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
