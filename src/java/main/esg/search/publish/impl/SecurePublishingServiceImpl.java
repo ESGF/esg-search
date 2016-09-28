@@ -37,7 +37,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
         this.publishingService = publishingService;
     }
     
-    @Autowired
+    //@Autowired // FIXME
     public void setAuthorizerAdpater(AuthorizerAdapter authorizer) {
         this.authorizer = authorizer;
     }
