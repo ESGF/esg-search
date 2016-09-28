@@ -30,6 +30,8 @@ import org.springframework.stereotype.Component;
 
 import esg.search.core.Record;
 import esg.search.publish.api.RecordConsumer;
+import esg.search.query.api.QueryParameters;
+import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
  * Implementation of {@link RecordConsumer} that sends (skeleton) records to a Solr server for removal.
@@ -54,7 +56,13 @@ public class SolrScrabber implements RecordConsumer {
 	 */
 	public void consume(final Record record) throws Exception {
 		
-	    solrClient.delete( Arrays.asList( new String[]{record.getId()} ) );
+		System.out.println("\n CONSUMING RECORD="+record.getId());
+		
+		// delete records from Files, Aggregations cores only
+		// NOT from datasets core
+	    solrClient.delete( Arrays.asList( new String[]{record.getId()} ),  
+	    		           Arrays.asList( new String[] { SolrXmlPars.CORES.get(QueryParameters.TYPE_FILE),
+	    		        		                         SolrXmlPars.CORES.get(QueryParameters.TYPE_AGGREGATION) }) );
 		
 	}
 	

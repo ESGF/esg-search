@@ -117,7 +117,7 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
         final List<String> ids = new ArrayList<String>();
         for (final Record record : records) {
             ids.add(record.getId());
-            if (LOG.isInfoEnabled()) LOG.info("Deleting dataset with id="+record.getId());
+            if (LOG.isInfoEnabled()) LOG.info("Retracting dataset with id="+record.getId());
         }
         publishingService.unpublish(ids);
         

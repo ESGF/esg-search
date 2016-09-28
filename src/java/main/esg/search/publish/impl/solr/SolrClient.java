@@ -23,6 +23,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.WordUtils;
@@ -106,22 +107,38 @@ public class SolrClient {
      * @param ids
      */
     public String delete(List<String> ids) throws Exception {
+    	
+    	return this.delete(ids, SolrXmlPars.CORES.values());
         
+    }
+    
+    /**
+     * Method to delete a list of documents from a specified set of cores
+     * @param ids
+     * @return
+     * @throws Exception
+     */
+    public String delete(List<String> ids, Collection<String> cores) throws Exception {
+    	
         StringBuffer sb = new StringBuffer();
         
-        // loop over all cores, remove records from all cores alike
-        for (final String core : SolrXmlPars.CORES.values()) {
-            final String xml = SolrMessageBuilder.buildDeleteMessage(ids, true);
-            final URL postUrl = solrUrlBuilder.buildUpdateUrl(core); 
-            if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
-            sb.append( httpClient.doPost(postUrl, xml, true) );
+        // loop over given cores, remove records from all cores alike
+        for (final String core : cores) {
+        	
+             final String xml = SolrMessageBuilder.buildDeleteMessage(ids, true);
+             final URL postUrl = solrUrlBuilder.buildUpdateUrl(core); 
+             if (LOG.isDebugEnabled()) LOG.debug("Posting record:"+xml+" to URL:"+postUrl.toString());
+             sb.append( httpClient.doPost(postUrl, xml, true) );
+             
         }
         
         // commit changes to all cores
         commit();
         
         return sb.toString();
+    	
     }
+    
 	
 	/**
 	 * Method to commit changes to all cores,
