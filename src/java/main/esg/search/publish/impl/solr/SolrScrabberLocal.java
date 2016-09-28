@@ -37,7 +37,7 @@ public class SolrScrabberLocal extends SolrScrabber {
 	 * @param url
 	 */
 	@Autowired
-	public SolrScrabberLocal(final @Value("${esg.search.solr.local.url}") URL url) {
+	public SolrScrabberLocal(final @Value("${esg.search.solr.local.url}") URL url) throws Exception {
 	    super(url);
 	}
 

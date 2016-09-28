@@ -31,6 +31,7 @@ public class QueryParameters {
     final public static String FIELD_ID = "id";
     final public static String FIELD_TYPE = "type";
     final public static String FIELD_REPLICA = "replica";
+    final public static String FIELD_RETRACTED = "retracted";
     final public static String FIELD_LATEST = "latest";
     final public static String FIELD_MASTER_ID = "master_id";
     final public static String FIELD_INSTANCE_ID = "instance_id";
@@ -93,7 +94,7 @@ public class QueryParameters {
     
     // fields that are always allowed in queries, in addition to configured facets
     public final static List<String> CORE_QUERY_FIELDS = Arrays.asList( new String[]{ 
-            FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_LATEST, FIELD_MASTER_ID, FIELD_INSTANCE_ID, FIELD_DRS_ID,
+            FIELD_ID, FIELD_TYPE, FIELD_REPLICA, FIELD_RETRACTED, FIELD_LATEST, FIELD_MASTER_ID, FIELD_INSTANCE_ID, FIELD_DRS_ID,
             FIELD_TITLE, FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_XLINK, FIELD_SIZE, 
             FIELD_NUMBER_OF_FILES, FIELD_NUMBER_OF_AGGREGATIONS, FIELD_DATASET_ID, FIELD_TRACKING_ID, FIELD_ACCESS,
             FIELD_VERSION, FIELD_MAX_VERSION, FIELD_MIN_VERSION,
@@ -110,7 +111,7 @@ public class QueryParameters {
     	FIELD_EAST_DEGREES, FIELD_WEST_DEGREES, FIELD_NORTH_DEGREES, FIELD_SOUTH_DEGREES,
     	FIELD_BBOX, FIELD_LAT, FIELD_LON, FIELD_RADIUS, FIELD_POLYGON,
     	FIELD_HEIGHT_BOTTOM, FIELD_HEIGHT_TOP, FIELD_HEIGHT_UNITS,
-    	FIELD_LATEST, FIELD_REPLICA,
+    	FIELD_LATEST, FIELD_REPLICA, FIELD_RETRACTED,
     	FIELD_NUMBER_OF_FILES, FIELD_NUMBER_OF_AGGREGATIONS,
     	FIELD_TRACKING_ID,
     	FIELD_TIMESTAMP, FIELD_TITLE, FIELD_DESCRIPTION, FIELD_TIMESTAMP, FIELD_URL, FIELD_XLINK, FIELD_SIZE, 
