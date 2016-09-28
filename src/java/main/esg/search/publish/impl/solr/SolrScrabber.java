@@ -67,18 +67,18 @@ public class SolrScrabber implements RecordConsumer {
 	 * {@inheritDoc}
 	 */
 	public void consume(final Record record) throws Exception {
-		
-		System.out.println("\n CONSUMING RECORD="+record.getId());
-		
+				
 		// delete records from Files, Aggregations cores only, NOT from datasets core
 	    solrClient.delete( Arrays.asList( new String[]{record.getId()} ),  
 	    		           Arrays.asList( new String[] { SolrXmlPars.CORES.get(QueryParameters.TYPE_FILE),
 	    		        		                         SolrXmlPars.CORES.get(QueryParameters.TYPE_AGGREGATION) }) );
 	    
-	    // "retract" records from Datasets core
+	    // "retract" records from Datasets core: "retracted=true"
+	    // also set "latest=false"
 		String query = "id="+record.getId();
 		Map<String,String[]> metadata = new HashMap<String,String[]>();
 		metadata.put(QueryParameters.FIELD_RETRACTED, new String[] {"true"} );
+		metadata.put(QueryParameters.FIELD_LATEST, new String[] {"false"} );
 		HashMap<String, Map<String,String[]>> doc = new HashMap<String, Map<String,String[]>>();
 		doc.put(query, metadata);
 	    updateService.update(solrUrl.toString(), 
