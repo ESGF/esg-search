@@ -45,7 +45,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
     @Override
     public void publish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType, URI schema) throws PublishingException {
         
-        authorizer.checkAuthorization(uri);
+    	if (authorizer!=null) authorizer.checkAuthorization(uri);
         this.publishingService.publish(uri, filter, recursive, metadataRepositoryType, schema);
 
     }
@@ -53,7 +53,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
     @Override
     public void unpublish(String uri, String filter, boolean recursive, MetadataRepositoryType metadataRepositoryType) throws PublishingException {
         
-        authorizer.checkAuthorization(uri);
+    	if (authorizer!=null) authorizer.checkAuthorization(uri);
         this.publishingService.unpublish(uri, filter, recursive, metadataRepositoryType);
 
     }
@@ -61,7 +61,9 @@ public class SecurePublishingServiceImpl implements PublishingService {
     @Override
     public void unpublish(List<String> ids) throws PublishingException {
         
-        for (String id : ids) authorizer.checkAuthorization(id);
+    	if (authorizer!=null)  {
+    		for (String id : ids) authorizer.checkAuthorization(id);
+    	}
         this.publishingService.unpublish(ids);
 
     }
