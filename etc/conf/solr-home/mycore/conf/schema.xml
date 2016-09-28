@@ -146,7 +146,7 @@
    <field name="latest" type="boolean" indexed="true" stored="true" required="true" multiValued="false" default="true" />
 
    <!-- Retracted flag -->
-   <field name="retracted" type="boolean" indexed="true" stored="true" required="true" multiValued="false" default="true" />
+   <field name="retracted" type="boolean" indexed="true" stored="true" required="true" multiValued="false" default="false" />
 
    <!-- The version of the document (optional) -->
    <field name="version" type="string" indexed="true" stored="true" required="false" multiValued="false" />

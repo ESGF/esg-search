@@ -181,7 +181,9 @@ public class SolrUrlBuilder {
 		            fq.append("&fq="+URLEncoder.encode( name+":"+input.getConstraint(name), "UTF-8" ));
 		           
 		        // boolean replica=true|false, latest=true|false
-		        } else if (name.equals(QueryParameters.FIELD_REPLICA) || name.equals(QueryParameters.FIELD_LATEST)) {   
+		        } else if (  name.equals(QueryParameters.FIELD_REPLICA) 
+		        		  || name.equals(QueryParameters.FIELD_LATEST)  
+		        		  || name.equals(QueryParameters.FIELD_RETRACTED)) {   
 		            if (StringUtils.hasText(input.getConstraint(name))) {
 		                fq.append("&fq="+URLEncoder.encode( name+":"+input.getConstraint(name), "UTF-8" ));
 		            }
