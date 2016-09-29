@@ -89,9 +89,9 @@ public abstract class AbstractPublishResource {
         
         this.publishingService = publishingService;
         
-        // FIXME
-        //this.authorizer = authorizer;
-        this.authorizer = null;
+        this.authorizer = authorizer;
+        // NOTE: set authorizer to null to disable access control
+        //this.authorizer = null;
         
         this.validator = validator;
         
