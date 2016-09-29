@@ -102,4 +102,10 @@ public class PublishResourceLocal extends AbstractPublishResource {
     	return super.delete(ids);
     }
     
+    @POST
+    @Path("retractLocal/")
+    public String retract(@FormParam("id") List<String> ids) {
+        return super.retract(ids);
+    }
+    
 }

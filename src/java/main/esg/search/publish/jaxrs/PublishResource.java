@@ -101,5 +101,11 @@ public class PublishResource extends AbstractPublishResource {
     public String delete(@FormParam("id") List<String> ids) {
         return super.delete(ids);
     }
+    
+    @POST
+    @Path("retract/")
+    public String retract(@FormParam("id") List<String> ids) {
+        return super.retract(ids);
+    }
    
 }
