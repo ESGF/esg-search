@@ -22,20 +22,14 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import esg.search.core.Record;
-import esg.search.publish.api.MetadataUpdateService;
 import esg.search.publish.api.RecordConsumer;
-import esg.search.publish.impl.MetadataUpdateServiceImpl;
-import esg.search.query.api.QueryParameters;
-import esg.search.query.impl.solr.SolrXmlPars;
 
 /**
  * Implementation of {@link RecordConsumer} that sends (skeleton) records to a Solr server for removal.
@@ -43,47 +37,24 @@ import esg.search.query.impl.solr.SolrXmlPars;
 @Component("scrabber")
 public class SolrScrabber implements RecordConsumer {
     
-	// target Solr base URL
-	private URL solrUrl = null;
-	
     // client object that sends XML requests to Solr server
-    final private SolrClient solrClient;
-    
-    // service that updates already published metadata records
-    private MetadataUpdateService updateService;
+    final SolrClient solrClient;
 						
 	/**
 	 * Constructor delegates to superclass.
 	 * @param url
 	 */
 	@Autowired
-	public SolrScrabber(final @Value("${esg.search.solr.publish.url}") URL url) throws Exception {
-		solrUrl = url;
-	    solrClient = new SolrClient(solrUrl);
-	    updateService = new MetadataUpdateServiceImpl(null); // FIXME: no authorization
+	public SolrScrabber(final @Value("${esg.search.solr.publish.url}") URL url) {
+	    solrClient = new SolrClient(url);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public void consume(final Record record) throws Exception {
-				
-		// delete records from Files, Aggregations cores only, NOT from datasets core
-	    solrClient.delete( Arrays.asList( new String[]{record.getId()} ),  
-	    		           Arrays.asList( new String[] { SolrXmlPars.CORES.get(QueryParameters.TYPE_FILE),
-	    		        		                         SolrXmlPars.CORES.get(QueryParameters.TYPE_AGGREGATION) }) );
-	    
-	    // "retract" records from Datasets core: "retracted=true"
-	    // also set "latest=false"
-		String query = "id="+record.getId();
-		Map<String,String[]> metadata = new HashMap<String,String[]>();
-		metadata.put(QueryParameters.FIELD_RETRACTED, new String[] {"true"} );
-		metadata.put(QueryParameters.FIELD_LATEST, new String[] {"false"} );
-		HashMap<String, Map<String,String[]>> doc = new HashMap<String, Map<String,String[]>>();
-		doc.put(query, metadata);
-	    updateService.update(solrUrl.toString(), 
-	    		             SolrXmlPars.CORES.get(QueryParameters.TYPE_DATASET), 
-	    		             QueryParameters.ACTION_SET, doc);
+		
+	    solrClient.delete( Arrays.asList( new String[]{record.getId()} ) );
 		
 	}
 	
