@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 
 import esg.search.publish.api.PublishingService;
+import esg.search.publish.impl.solr.SolrRetractor;
 import esg.search.publish.security.AuthorizerAdapter;
 import esg.search.publish.validation.RecordValidator;
 
@@ -32,9 +33,10 @@ public class PublishResource extends AbstractPublishResource {
     public PublishResource(final @Value("${esg.search.solr.publish.url}") URL url,
                            final @Qualifier("publishingService") PublishingService publishingService,
                            final AuthorizerAdapter authorizer,
-                           final @Qualifier("recordValidatorManager") RecordValidator validator) throws Exception {
+                           final @Qualifier("recordValidatorManager") RecordValidator validator,
+                           final @Qualifier("retractor") SolrRetractor retractor) throws Exception {
         
-    	super(url, publishingService, authorizer, validator);
+    	super(url, publishingService, authorizer, validator, retractor);
         
     }
     

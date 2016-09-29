@@ -19,6 +19,7 @@ import org.jdom.JDOMException;
 import org.springframework.util.StringUtils;
 
 import esg.search.core.Record;
+import esg.search.core.RecordImpl;
 import esg.search.core.RecordSerializer;
 import esg.search.publish.api.MetadataRepositoryType;
 import esg.search.publish.api.MetadataUpdateService;
@@ -28,6 +29,7 @@ import esg.search.publish.impl.MetadataUpdateServiceImpl;
 import esg.search.publish.impl.UpdateDocumentParser;
 import esg.search.publish.impl.solr.SolrClient;
 import esg.search.publish.impl.solr.SolrRecordSerializer;
+import esg.search.publish.impl.solr.SolrRetractor;
 import esg.search.publish.security.AuthorizerAdapter;
 import esg.search.publish.validation.RecordValidator;
 
@@ -65,6 +67,9 @@ public abstract class AbstractPublishResource {
     // class used to authorize the publishing calls
     // no authorization takes place if null
     private final AuthorizerAdapter authorizer;
+    
+    // class used to retract records
+    private final SolrRetractor retractor;
         
     /**
      * Constructor is configured to interact with a specific Solr server.
@@ -75,7 +80,8 @@ public abstract class AbstractPublishResource {
     		final URL url, 
     		final PublishingService publishingService,
     		final AuthorizerAdapter authorizer,
-    		final RecordValidator validator) throws Exception {
+    		final RecordValidator validator,
+    		final SolrRetractor retractor) throws Exception {
         
     	this.url = url;
     	
@@ -83,13 +89,17 @@ public abstract class AbstractPublishResource {
         
         this.publishingService = publishingService;
         
-        this.authorizer = authorizer;
+        // FIXME
+        //this.authorizer = authorizer;
+        this.authorizer = null;
         
         this.validator = validator;
         
         this.serializer = new SolrRecordSerializer();
         
         this.updateService = new MetadataUpdateServiceImpl(this.authorizer);
+        
+        this.retractor = retractor;
         
     }
     
@@ -397,6 +407,48 @@ public abstract class AbstractPublishResource {
             solrClient.delete( ids );
             List<String> messages = new ArrayList<String>();
             for (String id : ids) messages.add("Deleted id: "+id);
+            return newXmlResponse(messages);
+            
+        } catch(SecurityException se) {
+            throw newWebApplicationException(se.getMessage(), Response.Status.UNAUTHORIZED);
+
+        } catch(Exception e) {
+            e.printStackTrace();
+            throw newWebApplicationException(e.getMessage(), Response.Status.INTERNAL_SERVER_ERROR);
+        }
+                
+    }
+    
+    /**
+     * Push POST retraction method: retracts records by specific identifiers.
+     * This method authorization is based on the records identifiers.
+     * 
+     * @param id: identifiers of records to be retracted (one or more)
+     * @return
+     */
+    public String retract(List<String> ids) {
+        
+        // validate HTTP parameters
+        if (ids.size()==0) 
+            throw newWebApplicationException("Missing mandatory parameter 'id'", Response.Status.BAD_REQUEST);
+        
+        try {
+        
+            // authorization
+            if (authorizer!=null) {
+                for (String id : ids) {
+                    if (LOG.isDebugEnabled()) LOG.debug("Retracting id="+id);
+                    authorizer.checkAuthorization(id);
+                }
+            }
+        
+            // retract records invoking the retractor directly
+            for (String id : ids) {
+            	retractor.consume( new RecordImpl(id) );
+            }
+            
+            List<String> messages = new ArrayList<String>();
+            for (String id : ids) messages.add("Retracted id: "+id);
             return newXmlResponse(messages);
             
         } catch(SecurityException se) {
