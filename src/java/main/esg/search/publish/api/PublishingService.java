@@ -39,4 +39,11 @@ public interface PublishingService {
 	 */
 	void unpublish(List<String> ids) throws PublishingException;
 	
+	/**
+	 * Method to "retract" a list of records with known identifiers.
+	 * @param ids
+	 * @throws PublishingException
+	 */
+	void retract(List<String> ids) throws PublishingException;
+	
 }

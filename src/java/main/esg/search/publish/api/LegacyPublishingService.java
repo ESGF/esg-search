@@ -36,6 +36,17 @@ public interface LegacyPublishingService {
 	 */
 	void deleteDataset(String datasetId, boolean recursive, String message) throws PublishingException;
 	
+	/**
+	 * Method to retract a single dataset i.e. delete all the associated files abd aggregations,
+	 * but keep the dataset record and mark it with "retracted=true" (and "latest=false").
+	 * 
+	 * @param datasetId
+	 * @param recursive
+	 * @param message
+	 * @throws PublishingException
+	 */
+	void retractDataset(String datasetId, boolean recursive, String message) throws PublishingException;
+	
     /**
      * Legacy method to check for the status of a current (asynchronous) ongoing publishing operation.
      * This method is only meant to be implemented to support clients of the legacy asynchronous API.

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import esg.search.publish.api.MetadataDeletionService;
 import esg.search.publish.api.MetadataRepositoryCrawlerManager;
 import esg.search.publish.api.MetadataRepositoryType;
+import esg.search.publish.api.MetadataRetractionService;
 import esg.search.publish.api.PublishingException;
 import esg.search.publish.api.PublishingService;
 
@@ -44,16 +45,24 @@ public class PublishingServiceImpl implements PublishingService {
      * Collaborator that deletes records with known identifiers.
      */
     private final MetadataDeletionService recordRemover;
+    
+    /**
+     * Collaborator that retracts records with known identifiers.
+     */
+    private final MetadataRetractionService recordRetractor;
 
     @Autowired
     public PublishingServiceImpl(
             final @Qualifier("publisherCrawler") MetadataRepositoryCrawlerManager publisherCrawler,
             final @Qualifier("unpublisherCrawler") MetadataRepositoryCrawlerManager unpublisherCrawler,
-            final @Qualifier("recordRemover") MetadataDeletionService recordRemover) {
+            final @Qualifier("recordRemover") MetadataDeletionService recordRemover,
+            final @Qualifier("recordRetractor") MetadataRetractionService recordRetractor) {
 
         this.publisherCrawler = publisherCrawler;
         this.unpublisherCrawler = unpublisherCrawler;
         this.recordRemover = recordRemover;
+        this.recordRetractor = recordRetractor;
+        
     }
 
     @Override
@@ -87,6 +96,19 @@ public class PublishingServiceImpl implements PublishingService {
 
         try {
             recordRemover.delete(ids);
+        } catch(Exception e) {
+            LOG.error(e.getMessage());
+            e.printStackTrace();
+            throw new PublishingException(e.getMessage());
+        }
+
+    }
+    
+    @Override
+    public void retract(List<String> ids) throws PublishingException {
+
+        try {
+        	recordRetractor.retract(ids);
         } catch(Exception e) {
             LOG.error(e.getMessage());
             e.printStackTrace();

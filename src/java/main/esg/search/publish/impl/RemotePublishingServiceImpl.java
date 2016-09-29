@@ -76,6 +76,11 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
     public void unpublish(List<String> ids) throws PublishingException {
         this.getPublishingService().unpublish(ids);
     }
+    
+    @Override
+    public void retract(List<String> ids) throws PublishingException {
+        this.getPublishingService().retract(ids);
+    }
 
     /**
      * {@inheritDoc}
@@ -103,8 +108,37 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
     @Override
     public void deleteDataset(final String datasetId, final boolean recursive, final String message) throws PublishingException {
         
+    	// implementation that calls the "unpublish" service method
+        //final PublishingService publishingService = this.getPublishingService();
+        //final List<String> ids = getDatasetsById(datasetId);
+        //publishingService.unpublish(ids);
+    	
+    	// implementation that calls the "retract" service method
+    	this.retractDataset(datasetId, recursive, message);
+        
+    }
+    
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void retractDataset(final String datasetId, final boolean recursive, final String message) throws PublishingException {
+        
         final PublishingService publishingService = this.getPublishingService();
         
+        final List<String> ids = getDatasetsById(datasetId);
+        
+        publishingService.retract(ids);
+        
+    }
+    
+    /**
+     * Retrieve all datasets that have their master_id or instance_id equal tio the given id
+     * @param datasetId
+     * @return
+     */
+    private List<String> getDatasetsById(final String datasetId) {
+    	
         List<Record> records = new ArrayList<Record>();
         
         // find all datasets matching the given "master_id"
@@ -117,10 +151,11 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
         final List<String> ids = new ArrayList<String>();
         for (final Record record : records) {
             ids.add(record.getId());
-            if (LOG.isInfoEnabled()) LOG.info("Retracting dataset with id="+record.getId());
+            if (LOG.isInfoEnabled()) LOG.info("Deleting or Retracting dataset with id="+record.getId());
         }
-        publishingService.unpublish(ids);
-        
+
+        return ids;
+    	
     }
 
     /**

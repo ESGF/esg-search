@@ -69,6 +69,16 @@ public class SecurePublishingServiceImpl implements PublishingService {
 
     }
     
+    @Override
+    public void retract(List<String> ids) throws PublishingException {
+        
+    	if (authorizer!=null)  {
+    		for (String id : ids) authorizer.checkAuthorization(id);
+    	}
+        this.publishingService.retract(ids);
+
+    }
+    
 
 
 }

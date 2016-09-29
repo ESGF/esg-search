@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import esg.search.publish.api.MetadataDeletionService;
 import esg.search.publish.api.MetadataRepositoryCrawlerManager;
+import esg.search.publish.api.MetadataRetractionService;
 import esg.search.publish.api.PublishingService;
 
 /**
@@ -21,10 +22,11 @@ public class PublishingServiceImplLocal extends PublishingServiceImpl {
     public PublishingServiceImplLocal(
             final @Qualifier("publisherCrawlerLocal") MetadataRepositoryCrawlerManager publisherCrawler,
             final @Qualifier("unpublisherCrawlerLocal") MetadataRepositoryCrawlerManager unpublisherCrawler,
-            final @Qualifier("recordRemoverLocal") MetadataDeletionService recordRemover) {
+            final @Qualifier("recordRemoverLocal") MetadataDeletionService recordRemover,
+            final @Qualifier("recordRetractorLocal") MetadataRetractionService recordRetractor) {
 
 
-    	super(publisherCrawler, unpublisherCrawler, recordRemover);
+    	super(publisherCrawler, unpublisherCrawler, recordRemover, recordRetractor);
 
     }
 
