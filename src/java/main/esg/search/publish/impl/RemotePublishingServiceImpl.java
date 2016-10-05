@@ -108,14 +108,12 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
     @Override
     public void deleteDataset(final String datasetId, final boolean recursive, final String message) throws PublishingException {
         
-    	// implementation that calls the "unpublish" service method
-        //final PublishingService publishingService = this.getPublishingService();
-        //final List<String> ids = getDatasetsById(datasetId);
-        //publishingService.unpublish(ids);
-    	
-    	// implementation that calls the "retract" service method
-    	this.retractDataset(datasetId, recursive, message);
+        final PublishingService publishingService = this.getPublishingService();
         
+        final List<String> ids = getDatasetsById(datasetId);
+        
+        publishingService.unpublish(ids);
+    	        
     }
     
     /**
