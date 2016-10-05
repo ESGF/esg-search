@@ -108,6 +108,8 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
     @Override
     public void deleteDataset(final String datasetId, final boolean recursive, final String message) throws PublishingException {
         
+    	if (LOG.isInfoEnabled()) LOG.info("Deleting dataset with id="+datasetId);
+    	
         final PublishingService publishingService = this.getPublishingService();
         
         final List<String> ids = getDatasetsById(datasetId);
@@ -122,6 +124,8 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
     @Override
     public void retractDataset(final String datasetId, final boolean recursive, final String message) throws PublishingException {
         
+    	if (LOG.isInfoEnabled()) LOG.info("Retracting dataset with id="+datasetId);
+    	
         final PublishingService publishingService = this.getPublishingService();
         
         final List<String> ids = getDatasetsById(datasetId);
@@ -149,7 +153,6 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
         final List<String> ids = new ArrayList<String>();
         for (final Record record : records) {
             ids.add(record.getId());
-            if (LOG.isInfoEnabled()) LOG.info("Deleting or Retracting dataset with id="+record.getId());
         }
 
         return ids;
