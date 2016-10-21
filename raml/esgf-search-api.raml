@@ -1,0 +1,77 @@
+#%RAML 1.0
+---
+title: ESGF Search API
+baseUri: http://<esgf-node.host.name>/esg-search
+version: v1
+
+/search:
+	description: Query the ESGF distributed metadata archive.
+	get:
+		queryParameters:
+			distrib:
+				description: Flag to execute a distributed or local query.
+				type: boolean
+				required: false
+				default: true
+				example: false
+			shards:
+				description: List of specific shard URLs to query (comma separated)
+				type: string
+				required: false
+				example: pcmdi.llnl.gov/solr,esgf-index1.ceda.ac.uk/solr
+		responses:
+			200:
+				body:
+					application/xml:
+						example: !include examples/search_example+1.xml
+					application/json: 
+						example: !include examples/search_example+1.json
+						
+			
+/ws:
+	/harvest:
+		description: Harvest metadata from a remote archive ("pull" operation).
+		post:
+			securedBy: [x509_certificate]
+		body:
+			application/x-www-form-urlencoded:
+            	formParameters:
+              		uri:
+                		description: Location identifier of remote metadata repository or catalog.
+                		required: true
+                		type: string
+                		example: http://esgf-data.jpl.nasa.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml
+                	metadataRepositoryType:
+                		description: Type of metadata repository, chosen from controlled vocabulary.
+						required: true
+						type: string
+						example: THREDDS
+					schema:
+						description: Optional URI of additional schema for record validation.
+						required: false
+						type: string
+						example: CMIP5
+	/unharvest:
+		description: Remove from the local catalog metadata that was harvested from a remote archive ("pull" operation).
+		post:
+			securedBy: [x509_certificate]
+		body:
+			application/x-www-form-urlencoded:
+            	formParameters:
+              		uri:
+                		description: Location identifier of remote metadata repository or catalog.
+                		required: true
+                		type: string
+                		example: http://esgf-data.jpl.nasa.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml
+                	metadataRepositoryType:
+                		description: Type of metadata repository, chosen from controlled vocabulary.
+						required: true
+						type: string
+						example: THREDDS
+	
+						
+securitySchemes:
+	- x509_certificate:
+		description: ESGF publishing operations through POST require an X509 certificate for user authentication.
+		type: X.509
+		

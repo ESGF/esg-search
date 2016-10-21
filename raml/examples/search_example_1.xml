@@ -1,0 +1,153 @@
+<response>
+  <lst name="responseHeader">
+    <int name="status">0</int>
+    <int name="QTime">1</int>
+    <lst name="params">
+      <str name="df">text</str>
+      <str name="q.alt">*:*</str>
+      <str name="indent">true</str>
+      <str name="echoParams">all</str>
+      <str name="fl">*,score</str>
+      <str name="start">0</str>
+      <arr name="fq">
+        <str>type:Dataset</str>
+        <str>
+          id:"obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|esgf-data.jpl.nasa.gov"
+        </str>
+      </arr>
+      <str name="rows">10</str>
+      <str name="q">*:*</str>
+      <str name="tie">0.01</str>
+      <str name="facet.limit">-1</str>
+      <str name="qf">text</str>
+      <str name="facet.method">enum</str>
+      <str name="facet.mincount">1</str>
+      <str name="facet">true</str>
+      <str name="facet.sort">lex</str>
+    </lst>
+  </lst>
+  <result name="response" numFound="1" start="0" maxScore="1.0">
+    <doc>
+      <str name="id">
+        obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|esgf-data.jpl.nasa.gov
+      </str>
+      <str name="version">20110608</str>
+      <arr name="access">
+        <str>HTTPServer</str>
+        <str>GridFTP</str>
+        <str>OPENDAP</str>
+        <str>Globus</str>
+        <str>LAS</str>
+      </arr>
+      <arr name="cf_standard_name">
+        <str>mole_fraction_of_ozone_in_air</str>
+        <str>mole_fraction_of_o3_number_of_observations</str>
+        <str>mole_fraction_of_o3_standard_error</str>
+      </arr>
+      <str name="data_node">esgf-data.jpl.nasa.gov</str>
+      <arr name="data_structure">
+        <str>grid</str>
+      </arr>
+      <arr name="dataset_id_template_">
+        <str>
+          %(project)s.%(institute)s.%(source_id)s.%(variable)s.%(time_frequency)s
+        </str>
+      </arr>
+      <date name="datetime_start">2005-07-16T12:00:00Z</date>
+      <date name="datetime_stop">2009-12-16T12:00:00Z</date>
+      <arr name="description">
+        <str>
+          Obs-TES model output prepared for obs4MIPs NASA-JPL observation
+        </str>
+      </arr>
+      <float name="east_degrees">358.75</float>
+      <arr name="experiment">
+        <str>obs</str>
+      </arr>
+      <arr name="experiment_family">
+        <str>All</str>
+      </arr>
+      <float name="height_bottom">100000.0</float>
+      <float name="height_top">1000.0</float>
+      <str name="height_units">Pa</str>
+      <str name="index_node">esgf-node.jpl.nasa.gov</str>
+      <str name="instance_id">obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608</str>
+      <arr name="institute">
+        <str>NASA-JPL</str>
+      </arr>
+      <bool name="latest">true</bool>
+      <str name="master_id">obs4MIPs.NASA-JPL.TES.tro3.mon</str>
+      <str name="metadata_format">THREDDS</str>
+      <arr name="model">
+        <str>Obs-TES</str>
+      </arr>
+      <float name="north_degrees">89.0</float>
+      <int name="number_of_aggregations">6</int>
+      <int name="number_of_files">3</int>
+      <arr name="processing_level">
+        <str>L3</str>
+      </arr>
+      <arr name="product">
+        <str>observations</str>
+      </arr>
+      <arr name="project">
+        <str>obs4MIPs</str>
+      </arr>
+      <arr name="realm">
+        <str>atmos</str>
+      </arr>
+      <bool name="replica">false</bool>
+      <long name="size">142817720</long>
+      <arr name="source_id">
+        <str>TES</str>
+      </arr>
+      <float name="south_degrees">-89.0</float>
+      <arr name="time_frequency">
+        <str>mon</str>
+      </arr>
+      <date name="timestamp">2016-06-09T16:48:17Z</date>
+      <str name="title">obs4MIPs TES Mole Fraction of O3 L3 Monthly Data</str>
+      <str name="type">Dataset</str>
+      <arr name="url">
+        <str>
+          http://esgf-data.jpl.nasa.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml#obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|application/xml+thredds|THREDDS
+        </str>
+        <str>
+          http://esgf-node.jpl.nasa.gov/las/getUI.do?catid=0C5410C250379F2D139F978F7BF48BB9_ns_obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|application/las|LAS
+        </str>
+      </arr>
+      <arr name="variable">
+        <str>tro3</str>
+        <str>tro3Nobs</str>
+        <str>tro3Stderr</str>
+      </arr>
+      <arr name="variable_long_name">
+        <str>Mole Fraction of O3</str>
+        <str>Mole Fraction of O3 Number of Observations</str>
+        <str>Mole Fraction of O3 Standard Error</str>
+      </arr>
+      <arr name="variable_units">
+        <str>1e-9</str>
+        <str>1e-9</str>
+        <str>1e-9</str>
+      </arr>
+      <float name="west_degrees">1.25</float>
+      <date name="_timestamp">2016-06-09T16:50:13.52Z</date>
+      <arr name="xlink">
+        <str>
+          http://esgf-data.jpl.nasa.gov/thredds/fileServer/obs4MIPs/technotes/tro3TechNote_TES_L3_tbd_200507-200912.pdf|TES Ozone Technical Note|technote
+        </str>
+      </arr>
+      <long name="_version_">1536678763585077248</long>
+      <float name="score">1.0</float>
+    </doc>
+  </result>
+  <lst name="facet_counts">
+    <lst name="facet_queries" />
+    <lst name="facet_fields" />
+    <lst name="facet_dates" />
+    <lst name="facet_ranges" />
+    <lst name="facet_intervals" />
+    <lst name="facet_heatmaps" />
+  </lst>
+</response>
