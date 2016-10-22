@@ -4,8 +4,45 @@ title: ESGF Search API
 baseUri: http://<esgf-node.host.name>/esg-search
 version: v1
 
+resourceTypes:
+
+	- query_operation:
+		description: Queries the ESGF distributed metadata archive.
+		get:
+		
+	- pull_operation:
+		description: Pulls metadata from a remote archive for publishing or unpublishing in/to the local archive.
+		post:
+			securedBy: [x509_certificate]
+			body:
+				application/x-www-form-urlencoded:
+	            	formParameters:
+	              		uri:
+	                		description: Location identifier of remote metadata repository or catalog.
+	                		required: true
+	                		type: string
+	                		example: http://esgf-data.jpl.nasa.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml
+	                	metadataRepositoryType:
+	                		description: Type of metadata repository, chosen from controlled vocabulary.
+							required: true
+							type: string
+							example: THREDDS
+						schema:
+							description: |
+								Optional URI of additional schema for record validation 
+								(only used when publishing, ignored when unpublishing).
+							required: false
+							type: string
+							example: CMIP5
+							
+	- push_operation:
+		description: Pushes metadata to the local archive for publishing or unpublishing.
+		post:
+			securedBy: [x509_certificate]
+
+
 /search:
-	description: Query the ESGF distributed metadata archive.
+	type: query_operation
 	get:
 		queryParameters:
 			distrib:
@@ -23,51 +60,18 @@ version: v1
 			200:
 				body:
 					application/xml:
-						example: !include examples/search_example+1.xml
+						example: !include examples/search_example_1.xml
 					application/json: 
-						example: !include examples/search_example+1.json
+						example: !include examples/search_example_1.json
 						
 			
 /ws:
 	/harvest:
-		description: Harvest metadata from a remote archive ("pull" operation).
-		post:
-			securedBy: [x509_certificate]
-		body:
-			application/x-www-form-urlencoded:
-            	formParameters:
-              		uri:
-                		description: Location identifier of remote metadata repository or catalog.
-                		required: true
-                		type: string
-                		example: http://esgf-data.jpl.nasa.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml
-                	metadataRepositoryType:
-                		description: Type of metadata repository, chosen from controlled vocabulary.
-						required: true
-						type: string
-						example: THREDDS
-					schema:
-						description: Optional URI of additional schema for record validation.
-						required: false
-						type: string
-						example: CMIP5
+		type: pull_operation
+		description: Harvests metadata from a remote archive and publishes it to the local archive.
 	/unharvest:
-		description: Remove from the local catalog metadata that was harvested from a remote archive ("pull" operation).
-		post:
-			securedBy: [x509_certificate]
-		body:
-			application/x-www-form-urlencoded:
-            	formParameters:
-              		uri:
-                		description: Location identifier of remote metadata repository or catalog.
-                		required: true
-                		type: string
-                		example: http://esgf-data.jpl.nasa.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml
-                	metadataRepositoryType:
-                		description: Type of metadata repository, chosen from controlled vocabulary.
-						required: true
-						type: string
-						example: THREDDS
+		type: pull_operation
+		description: Removes from the local archive metadata that was harvested from a remote archive.
 	
 						
 securitySchemes:
