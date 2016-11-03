@@ -139,14 +139,22 @@ public class ThreddsUtils {
 		if (   record.getFieldValue(SolrXmlPars.FIELD_WEST)!=null  && record.getFieldValue(SolrXmlPars.FIELD_EAST)!=null
 			&& record.getFieldValue(SolrXmlPars.FIELD_SOUTH)!=null && record.getFieldValue(SolrXmlPars.FIELD_NORTH)!=null) {
 			
-			List<float[]> latRanges = GeoUtils.convertLongitudeRangeto180( 
+			List<float[]> lonRanges = GeoUtils.convertLongitudeRangeto180( 
 					                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_WEST)),
 					                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_EAST)) );
-			for (float[] latRange : latRanges) {
+			// retrieve and possible invert the latitude min, max (in case the latitude increment is negative)
+			float lonMin = Float.parseFloat( record.getFieldValue(SolrXmlPars.FIELD_SOUTH) );
+			float lonMax = Float.parseFloat( record.getFieldValue(SolrXmlPars.FIELD_NORTH) );
+			if (lonMin > lonMax) {
+				float lonTmp = lonMax;
+				lonMax = lonMin;
+				lonMin = lonTmp;
+			}
+			for (float[] lonRange : lonRanges) {
     			record.addField(SolrXmlPars.FIELD_GEO, // "minLon minLat maxLon maxLat"
     					        "ENVELOPE("
-    					       + latRange[0]  + ", "
-    					       + latRange[1]  + ", "
+    					       + lonRange[0]  + ", "
+    					       + lonRange[1]  + ", "
     					       + record.getFieldValue(SolrXmlPars.FIELD_NORTH) + ", "
     					       + record.getFieldValue(SolrXmlPars.FIELD_SOUTH) 
     					       + ")" );
