@@ -155,8 +155,8 @@ public class ThreddsUtils {
     					        "ENVELOPE("
     					       + lonRange[0]  + ", "
     					       + lonRange[1]  + ", "
-    					       + record.getFieldValue(SolrXmlPars.FIELD_NORTH) + ", "
-    					       + record.getFieldValue(SolrXmlPars.FIELD_SOUTH) 
+    					       + lonMax + ", "
+    					       + lonMin 
     					       + ")" );
 			}
 				  			
