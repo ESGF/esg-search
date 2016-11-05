@@ -1000,15 +1000,18 @@ start_solr() {
         solr_java_opts=${!solr_java_opts:-${SOLR_JAVA_OPTS}}
 
         pushd ${solr_server_dir} >& /dev/null
-        master_or_slave='slave'
+        enable_master_or_slave=''
         if [ "${solr_config_type}" == "master" ] ; then
-            master_or_slave='master'
+            # enable master only
+            enable_master_or_slave='-Denable.master=true'
+        elif [ "${solr_config_type}" == "localhost" ] ; then
+            # enable neither master nor slave - does not parteciopate in replication
+            enable_master_or_slave='-Denable.localhost=true'
         else
-            if [ "${solr_config_type}" == "localhost" ] ; then
-            	master_or_slave='localhost'
-            fi
+            # repeater: enable both master and slave
+            enable_master_or_slave='-Denable.master=true -Denable.slave=true'
         fi
-        command="source /etc/esg.env; SOLR_INCLUDE=${solr_install_dir}/solr.in.sh bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a '-Denable.${master_or_slave}=true'"
+        command="source /etc/esg.env; SOLR_INCLUDE=${solr_install_dir}/solr.in.sh bin/solr start -d ${solr_server_dir}/server -s ${solr_install_dir} -p ${solr_server_port} -a '${enable_master_or_slave}'"
         echo "Starting solr: sudo -H -u ${esg_solr_user} bash -c $command"
         sudo -H -u ${esg_solr_user} bash -c "$command"
         popd >& /dev/null
