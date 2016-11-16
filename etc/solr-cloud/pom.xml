@@ -25,7 +25,7 @@
 
   <!-- configuration properties -->
   <properties>
-    <solr.repo>http://apache.mirrors.lucidnetworks.net/lucene/solr</solr.repo>
+    <solr.repo>http://archive.apache.org/dist/lucene/solr</solr.repo>
     <solr.version>5.3.1</solr.version>
     <solr.dir>${env.SOLR_CLOUD_HOME}</solr.dir>
     <solr.solr.home>${env.SOLR_CLOUD_HOME}/solr-home</solr.solr.home>
