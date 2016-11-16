@@ -4,3 +4,4 @@
 cd $SOLR_CLOUD_HOME
 
 solr/bin/solr stop -all
+
