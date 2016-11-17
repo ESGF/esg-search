@@ -63,7 +63,10 @@
   </build>
   
   <modules>
+    <!-- installation: sets up 3 solr instances on ports 8983, 8984, 8985 -->
     <module>solr-cloud-installation</module>
+    <!-- configuration: sets up collections for specific index nodes
+         now done via shell scripts for better customization -->
     <!-- <module>solr-cloud-configuration</module> -->
   </modules>
 
