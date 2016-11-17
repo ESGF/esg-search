@@ -57,7 +57,7 @@
             </configuration>
           </execution>
           
-          <!-- make the Solr startup scrupt and Zookeeper client script executable -->
+          <!-- make the Solr startup script and Zookeeper client script executable -->
           <execution>
             <id>chmod-scripts</id>
             <phase>install</phase>

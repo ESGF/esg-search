@@ -64,7 +64,7 @@
   
   <modules>
     <module>solr-cloud-installation</module>
-    <module>solr-cloud-configuration</module>
+    <!-- <module>solr-cloud-configuration</module> -->
   </modules>
 
 </project>
