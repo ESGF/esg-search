@@ -38,12 +38,12 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${solr.dir}/solr/bin/solr</executable>
+              <executable>${solr.install.dir}/solr/bin/solr</executable>
               <arguments>
                 <argument>start</argument>
                 <argument>-cloud</argument>
                 <argument>-s</argument>
-                <argument>${solr.dir}/node8983/solr</argument>
+                <argument>${solr.home.dir}/node8983/solr</argument>
                 <argument>-p</argument>
                 <argument>8983</argument>
                 <argument>-m</argument>
@@ -58,12 +58,12 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${solr.dir}/solr/bin/solr</executable>
+              <executable>${solr.install.dir}/solr/bin/solr</executable>
               <arguments>
                 <argument>start</argument>
                 <argument>-cloud</argument>
                 <argument>-s</argument>
-                <argument>${solr.dir}/node8984/solr</argument>
+                <argument>${solr.home.dir}/node8984/solr</argument>
                 <argument>-p</argument>
                 <argument>8984</argument>
                 <argument>-m</argument>
@@ -80,12 +80,12 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${solr.dir}/solr/bin/solr</executable>
+              <executable>${solr.install.dir}/solr/bin/solr</executable>
               <arguments>
                 <argument>start</argument>
                 <argument>-cloud</argument>
                 <argument>-s</argument>
-                <argument>${solr.dir}/node8985/solr</argument>
+                <argument>${solr.home.dir}/node8985/solr</argument>
                 <argument>-p</argument>
                 <argument>8985</argument>
                 <argument>-m</argument>
@@ -104,7 +104,7 @@
               <goal>exec</goal>
             </goals>
             <configuration>
-              <executable>${solr.dir}/solr/server/scripts/cloud-scripts/zkcli.sh</executable>
+              <executable>${solr.install.dir}/solr/server/scripts/cloud-scripts/zkcli.sh</executable>
               <arguments>
                 <argument>-zkhost</argument>
                 <argument>localhost:9983</argument>

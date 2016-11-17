@@ -52,7 +52,7 @@
             <configuration>
               <target>
                 <!-- run Ant "untar" task to expand the file -->
-                <untar src="./solr-${solr.version}.tgz" dest="${solr.dir}/" compression="gzip" overwrite="false" />
+                <untar src="./solr-${solr.version}.tgz" dest="${solr.install.dir}/" compression="gzip" overwrite="false" />
               </target>
             </configuration>
           </execution>
@@ -67,8 +67,8 @@
             <configuration>
               <target>
                 <!-- run Ant "chmod" task to make scripts executable -->
-                <chmod file="${solr.dir}/solr-${solr.version}/bin/solr" perm="a+x" />
-                <chmod file="${solr.dir}/solr-${solr.version}/server/scripts/cloud-scripts/zkcli.sh" perm="a+x" />
+                <chmod file="${solr.install.dir}/solr-${solr.version}/bin/solr" perm="a+x" />
+                <chmod file="${solr.install.dir}/solr-${solr.version}/server/scripts/cloud-scripts/zkcli.sh" perm="a+x" />
               </target>
             </configuration>
           </execution>
@@ -82,7 +82,7 @@
             </goals>
             <configuration>
               <target>
-                <symlink resource="${solr.dir}/solr-${solr.version}" link="${solr.dir}/solr" overwrite="true" />
+                <symlink resource="${solr.install.dir}/solr-${solr.version}" link="${solr.install.dir}/solr" overwrite="true" />
               </target>
             </configuration>
           </execution>
@@ -113,7 +113,7 @@
                   </plugin>
                   <goal>copy-resources</goal>
                   <configuration>
-                    <outputDirectory>${solr.dir}/node@item@</outputDirectory>
+                    <outputDirectory>${solr.home.dir}/node@item@</outputDirectory>
                     <resources>
                       <resource>
                         <directory>${project.parent.basedir}/node0</directory>

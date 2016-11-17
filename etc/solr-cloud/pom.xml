@@ -27,9 +27,8 @@
   <properties>
     <solr.repo>http://archive.apache.org/dist/lucene/solr</solr.repo>
     <solr.version>5.3.1</solr.version>
-    <solr.dir>${env.SOLR_CLOUD_HOME}</solr.dir>
-    <solr.solr.home>${env.SOLR_CLOUD_HOME}/solr-home</solr.solr.home>
-    <solr.data.dir>${env.SOLR_CLOUD_HOME}/solr-index</solr.data.dir>
+    <solr.install.dir>${env.SOLR_CLOUD_INSTALL}</solr.install.dir>
+    <solr.home.dir>${env.SOLR_CLOUD_HOME}</solr.home.dir>
   </properties>
 
   <build>
