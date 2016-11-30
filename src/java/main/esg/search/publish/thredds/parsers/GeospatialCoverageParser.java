@@ -53,6 +53,10 @@ public class GeospatialCoverageParser implements ThreddsElementParser {
                 record.addField(SolrXmlPars.FIELD_WEST, Double.toString(gsc.getEastWestRange().getStart()));
             if (gsc.getEastWestRange()!=null)
                 record.addField(SolrXmlPars.FIELD_EAST, Double.toString(gsc.getEastWestRange().getStart()+gsc.getEastWestRange().getSize()));
+            if (gsc.getLatUnits()!=null)
+            	record.addField(SolrXmlPars.FIELD_GEO_UNITS, gsc.getLatUnits());
+            if (gsc.getLonUnits()!=null) // will override gsc.getLatUnits() - hopefully the are the same!
+            	record.addField(SolrXmlPars.FIELD_GEO_UNITS, gsc.getLonUnits());
             // complete geospatial coverage
             ThreddsUtils.addGeoCoverage(record);
             if (gsc.getUpDownRange()!=null) {
@@ -76,6 +80,8 @@ public class GeospatialCoverageParser implements ThreddsElementParser {
                     ds.heightTop=(gsc.getUpDownRange().getStart()+gsc.getUpDownRange().getSize());
                 if (StringUtils.hasText(gsc.getHeightUnits())) ds.heightUnits = gsc.getHeightUnits();
             }
+            if (gsc.getLatUnits()!=null) ds.geoUnits = gsc.getLatUnits();
+            if (gsc.getLonUnits()!=null) ds.geoUnits = gsc.getLonUnits();
             
         }
 

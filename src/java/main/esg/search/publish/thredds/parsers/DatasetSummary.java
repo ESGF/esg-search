@@ -25,6 +25,7 @@ public class DatasetSummary {
     public double lonWest = Double.MAX_VALUE;
     public double latNorth = Double.MIN_VALUE;
     public double latSouth = Double.MAX_VALUE;
+    public String geoUnits = "";
     
     public double heightBottom = Double.MAX_VALUE;
     public double heightTop = Double.MIN_VALUE;
