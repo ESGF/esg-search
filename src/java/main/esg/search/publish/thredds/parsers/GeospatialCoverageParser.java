@@ -45,20 +45,22 @@ public class GeospatialCoverageParser implements ThreddsElementParser {
         if (gsc!=null) {
             
             // record metadata
-            if (gsc.getNorthSouthRange()!=null)
-                record.addField(SolrXmlPars.FIELD_SOUTH, Double.toString(gsc.getNorthSouthRange().getStart()));
-            if (gsc.getNorthSouthRange()!=null)
-                record.addField(SolrXmlPars.FIELD_NORTH, Double.toString(gsc.getNorthSouthRange().getStart()+gsc.getNorthSouthRange().getSize()));
-            if (gsc.getEastWestRange()!=null)
-                record.addField(SolrXmlPars.FIELD_WEST, Double.toString(gsc.getEastWestRange().getStart()));
-            if (gsc.getEastWestRange()!=null)
-                record.addField(SolrXmlPars.FIELD_EAST, Double.toString(gsc.getEastWestRange().getStart()+gsc.getEastWestRange().getSize()));
-            if (gsc.getLatUnits()!=null)
-            	record.addField(SolrXmlPars.FIELD_GEO_UNITS, gsc.getLatUnits());
-            if (gsc.getLonUnits()!=null) // will override gsc.getLatUnits() - hopefully the are the same!
-            	record.addField(SolrXmlPars.FIELD_GEO_UNITS, gsc.getLonUnits());
-            // complete geospatial coverage
-            ThreddsUtils.addGeoCoverage(record);
+        	if (!isInKm(gsc)) {
+	            if (gsc.getNorthSouthRange()!=null)
+	                record.addField(SolrXmlPars.FIELD_SOUTH, Double.toString(gsc.getNorthSouthRange().getStart()));
+	            if (gsc.getNorthSouthRange()!=null)
+	                record.addField(SolrXmlPars.FIELD_NORTH, Double.toString(gsc.getNorthSouthRange().getStart()+gsc.getNorthSouthRange().getSize()));
+	            if (gsc.getEastWestRange()!=null)
+	                record.addField(SolrXmlPars.FIELD_WEST, Double.toString(gsc.getEastWestRange().getStart()));
+	            if (gsc.getEastWestRange()!=null)
+	                record.addField(SolrXmlPars.FIELD_EAST, Double.toString(gsc.getEastWestRange().getStart()+gsc.getEastWestRange().getSize()));
+	            if (gsc.getLatUnits()!=null)
+	            	record.addField(SolrXmlPars.FIELD_GEO_UNITS, gsc.getLatUnits());
+	            if (gsc.getLonUnits()!=null) // will override gsc.getLatUnits() - hopefully the are the same!
+	            	record.addField(SolrXmlPars.FIELD_GEO_UNITS, gsc.getLonUnits());
+	            // complete geospatial coverage
+	            ThreddsUtils.addGeoCoverage(record);
+        	}
             if (gsc.getUpDownRange()!=null) {
                 record.addField(SolrXmlPars.FIELD_HEIGHT_BOTTOM, Double.toString(gsc.getUpDownRange().getStart()));
                 record.addField(SolrXmlPars.FIELD_HEIGHT_TOP, Double.toString(gsc.getUpDownRange().getStart()+gsc.getUpDownRange().getSize()));
@@ -66,24 +68,41 @@ public class GeospatialCoverageParser implements ThreddsElementParser {
             }
             
             // summary metadata
-            if (gsc.getNorthSouthRange()!=null) {        
-                if (ds.latNorth<gsc.getLatNorth()) ds.latNorth = gsc.getLatNorth();
-                if (ds.latSouth>gsc.getLatSouth()) ds.latSouth = gsc.getLatSouth();                
-            }
-            if (gsc.getEastWestRange()!=null) {                
-                if (ds.lonEast<gsc.getLonEast()) ds.lonEast = gsc.getLonEast();
-                if (ds.lonWest>gsc.getLonWest()) ds.lonWest = gsc.getLonWest();                
-            }
+        	if (!isInKm(gsc)) {
+        		
+	            if (gsc.getNorthSouthRange()!=null) {        
+	                if (ds.latNorth<gsc.getLatNorth()) ds.latNorth = gsc.getLatNorth();
+	                if (ds.latSouth>gsc.getLatSouth()) ds.latSouth = gsc.getLatSouth();                
+	            }
+	            if (gsc.getEastWestRange()!=null) {                
+	                if (ds.lonEast<gsc.getLonEast()) ds.lonEast = gsc.getLonEast();
+	                if (ds.lonWest>gsc.getLonWest()) ds.lonWest = gsc.getLonWest();                
+	            }
+	            if (gsc.getLatUnits()!=null) ds.geoUnits = gsc.getLatUnits();
+	            if (gsc.getLonUnits()!=null) ds.geoUnits = gsc.getLonUnits();
+        	}
+
             if (gsc.getUpDownRange()!=null) {
                 if (ds.heightBottom>gsc.getUpDownRange().getStart()) ds.heightBottom=gsc.getUpDownRange().getStart();
                 if (ds.heightTop<(gsc.getUpDownRange().getStart()+gsc.getUpDownRange().getSize())) 
                     ds.heightTop=(gsc.getUpDownRange().getStart()+gsc.getUpDownRange().getSize());
                 if (StringUtils.hasText(gsc.getHeightUnits())) ds.heightUnits = gsc.getHeightUnits();
             }
-            if (gsc.getLatUnits()!=null) ds.geoUnits = gsc.getLatUnits();
-            if (gsc.getLonUnits()!=null) ds.geoUnits = gsc.getLonUnits();
             
         }
 
+    }
+    
+    /**
+     * Method to establish wether the THREDDS geo-spatial coverage is given in km
+     * @param gsc
+     * @return
+     */
+    private boolean isInKm(GeospatialCoverage gsc) {
+    	
+    	if (gsc.getLonUnits()!=null && gsc.getLonUnits().toLowerCase().equals("km")) return true;
+    	if (gsc.getLatUnits()!=null && gsc.getLatUnits().toLowerCase().equals("km")) return true;
+    	return false;
+    	
     }
 }

@@ -129,6 +129,7 @@ public class ThreddsUtils {
      * <field name="geo">ENVELOPE(1.0, 180.0, 89.5, -89.5)</field>
      * from north/south/east/west degree elements of the form:
      * <field name="south_degrees">-89.5</field>
+     * IMPORTANT: this method already assumes that the geo-spatial coverage is exoressed in degrees, not kilometers.
      * @param record
      */
     public static void addGeoCoverage(Record record) {
@@ -138,32 +139,28 @@ public class ThreddsUtils {
         // <field name="geo">ENVELOPE(-74.093, -69.347, 44.558, 41.042)</field>
 		if (   record.getFieldValue(SolrXmlPars.FIELD_WEST)!=null  && record.getFieldValue(SolrXmlPars.FIELD_EAST)!=null
 			&& record.getFieldValue(SolrXmlPars.FIELD_SOUTH)!=null && record.getFieldValue(SolrXmlPars.FIELD_NORTH)!=null) {
-			
-			if (record.getFieldValue(SolrXmlPars.FIELD_GEO_UNITS)==null 
-				|| !record.getFieldValue(SolrXmlPars.FIELD_GEO_UNITS).toLowerCase().equals("km") ) {
-			
-				List<float[]> lonRanges = GeoUtils.convertLongitudeRangeto180( 
-						                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_WEST)),
-						                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_EAST)) );
-				// retrieve and possible invert the latitude min, max (in case the latitude increment is negative)
-				float latMin = Float.parseFloat( record.getFieldValue(SolrXmlPars.FIELD_SOUTH) );
-				float latMax = Float.parseFloat( record.getFieldValue(SolrXmlPars.FIELD_NORTH) );
-				if (latMin > latMax) {
-					float latTmp = latMax;
-					latMax = latMin;
-					latMin = latTmp;
-				}
-				for (float[] lonRange : lonRanges) {
-	    			record.addField(SolrXmlPars.FIELD_GEO, // ENVELOPE(minX, maxX, maxY, minY)
-	    					        "ENVELOPE("
-	    					       + lonRange[0]  + ", "
-	    					       + lonRange[1]  + ", "
-	    					       + latMax + ", "
-	    					       + latMin 
-	    					       + ")" );
-				}
-			
+						
+			List<float[]> lonRanges = GeoUtils.convertLongitudeRangeto180( 
+					                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_WEST)),
+					                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_EAST)) );
+			// retrieve and possible invert the latitude min, max (in case the latitude increment is negative)
+			float latMin = Float.parseFloat( record.getFieldValue(SolrXmlPars.FIELD_SOUTH) );
+			float latMax = Float.parseFloat( record.getFieldValue(SolrXmlPars.FIELD_NORTH) );
+			if (latMin > latMax) {
+				float latTmp = latMax;
+				latMax = latMin;
+				latMin = latTmp;
 			}
+			for (float[] lonRange : lonRanges) {
+    			record.addField(SolrXmlPars.FIELD_GEO, // ENVELOPE(minX, maxX, maxY, minY)
+    					        "ENVELOPE("
+    					       + lonRange[0]  + ", "
+    					       + lonRange[1]  + ", "
+    					       + latMax + ", "
+    					       + latMin 
+    					       + ")" );
+			}
+			
 				  			
 		}
     	
