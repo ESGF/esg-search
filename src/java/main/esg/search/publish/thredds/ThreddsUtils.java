@@ -143,20 +143,20 @@ public class ThreddsUtils {
 					                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_WEST)),
 					                     Float.parseFloat(record.getFieldValue(SolrXmlPars.FIELD_EAST)) );
 			// retrieve and possible invert the latitude min, max (in case the latitude increment is negative)
-			float lonMin = Float.parseFloat( record.getFieldValue(SolrXmlPars.FIELD_SOUTH) );
-			float lonMax = Float.parseFloat( record.getFieldValue(SolrXmlPars.FIELD_NORTH) );
-			if (lonMin > lonMax) {
-				float lonTmp = lonMax;
-				lonMax = lonMin;
-				lonMin = lonTmp;
+			float latMin = Float.parseFloat( record.getFieldValue(SolrXmlPars.FIELD_SOUTH) );
+			float latMax = Float.parseFloat( record.getFieldValue(SolrXmlPars.FIELD_NORTH) );
+			if (latMin > latMax) {
+				float latTmp = latMax;
+				latMax = latMin;
+				latMin = latTmp;
 			}
 			for (float[] lonRange : lonRanges) {
-    			record.addField(SolrXmlPars.FIELD_GEO, // "minLon minLat maxLon maxLat"
+    			record.addField(SolrXmlPars.FIELD_GEO, // ENVELOPE(minX, maxX, maxY, minY)
     					        "ENVELOPE("
     					       + lonRange[0]  + ", "
     					       + lonRange[1]  + ", "
-    					       + lonMax + ", "
-    					       + lonMin 
+    					       + latMax + ", "
+    					       + latMin 
     					       + ")" );
 			}
 				  			
