@@ -789,7 +789,7 @@ setup_solr() {
     fi
 
     #Check to see if we already have a solr distribution directory
-    if [ ! -e ${solr_install_dir} ]; then
+    #if [ ! -e ${solr_install_dir} ]; then
         echo "Don't see solr installation dir ${solr_install_dir}"
         if [ ! -e ${solr_dist_file} ]; then
             echo "Don't see solr distribution file $(pwd)/${solr_dist_file} either"
@@ -803,7 +803,7 @@ setup_solr() {
             tar xzf ${solr_dist_file}
             [ $? != 0 ] && echo " ERROR: Could not extract solr [${solr_dist_file}] ... :-( " && popd && checked_done 1
         fi
-    fi
+    #fi
 
     #If you don't see the directory but see the tar.gz distribution
     #then expand it and go from there....
@@ -814,11 +814,12 @@ setup_solr() {
     fi
     
     # move unpacked solr distribution to final location
-    if [ ! -e ${solr_server_dir} ]; then
+    #if [ ! -e ${solr_server_dir} ]; then
     	pushd ${install_prefix} >& /dev/null
     	
         echo "copying: ${solr_workdir}/solr-${solr_version} to: ${install_prefix}/solr-${solr_version}"
         cp -R ${solr_workdir}/solr-${solr_version} .
+        rm -f ./solr
         ln -s ./solr-${solr_version} ./solr
        
         # override log4j.properties file
@@ -831,7 +832,7 @@ setup_solr() {
         chown -R ${esg_solr_user}:${esg_solr_group} ${solr_logs_dir}
         
         popd >& /dev/null
-    fi
+    #fi
 
     [ -d ${solr_install_dir} ] && (echo "Backing up previous install... " && (backup ${solr_install_dir} || (mv ${solr_install_dir}{,.bak} || echo "Could not move aside prev install")))
     [ ! -d "${solr_install_dir}" ] && echo "Creating installation dir: ${solr_install_dir}" && mkdir -p ${solr_install_dir}
