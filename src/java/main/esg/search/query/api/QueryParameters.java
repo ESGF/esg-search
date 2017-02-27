@@ -79,6 +79,8 @@ public class QueryParameters {
     public final static String FIELD_HEIGHT_TOP = "height_top";
     public final static String FIELD_HEIGHT_UNITS = "height_units";
     public final static String FIELD_VARIABLE_UNITS = "variable_units";
+    public final static String FIELD_GEO = "geo";
+    public final static String FIELD_GEO_UNITS = "geo_units";
     
     // obsolete
     public final static String FIELD_METADATA_FORMAT = "metadata_format";
@@ -118,6 +120,7 @@ public class QueryParameters {
     	FIELD_TEXT,
     	FIELD_TYPE,
     	FIELD_VARIABLE_UNITS,
+    	FIELD_GEO, FIELD_GEO_UNITS,
     	FIELD_METADATA_FORMAT, FIELD_METADATA_URL,
     	FIELD_TIMESTAMP_, FIELD_VERSION_,
     	FIELD_SCORE, FIELD_UNITS
