@@ -42,6 +42,8 @@ generated/
 **/*.tgz
 **/*.zip
 **/*.tar
+build/
+dist/
 
 ################################
 #Generated from templated files
