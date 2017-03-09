@@ -112,7 +112,23 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
     	
         final PublishingService publishingService = this.getPublishingService();
         
-        final List<String> ids = getDatasetsById(datasetId);
+        final List<String> ids = getDatasetsById(datasetId, null);
+        
+        publishingService.unpublish(ids);
+    	        
+    }
+    
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void deleteDatasetSingleDataNode(final String datasetId, final String dataNode, final boolean recursive, final String message) throws PublishingException {
+        
+    	if (LOG.isInfoEnabled()) LOG.info("Deleting dataset with id="+datasetId+" from data_node="+dataNode);
+    	
+        final PublishingService publishingService = this.getPublishingService();
+        
+        final List<String> ids = getDatasetsById(datasetId, dataNode);
         
         publishingService.unpublish(ids);
     	        
@@ -128,7 +144,23 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
     	
         final PublishingService publishingService = this.getPublishingService();
         
-        final List<String> ids = getDatasetsById(datasetId);
+        final List<String> ids = getDatasetsById(datasetId, null);
+        
+        publishingService.retract(ids);
+        
+    }
+    
+    /**
+     *{@inheritDoc}
+     */
+    @Override
+    public void retractDatasetSingleDataNode(final String datasetId, final String dataNode, final boolean recursive, final String message) throws PublishingException {
+        
+    	if (LOG.isInfoEnabled()) LOG.info("Retracting dataset with id="+datasetId+" from data_node="+dataNode);
+    	
+        final PublishingService publishingService = this.getPublishingService();
+        
+        final List<String> ids = getDatasetsById(datasetId, dataNode);
         
         publishingService.retract(ids);
         
@@ -139,16 +171,16 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
      * @param datasetId
      * @return
      */
-    private List<String> getDatasetsById(final String datasetId) {
+    private List<String> getDatasetsById(final String datasetId, final String dataNode) {
     	
         List<Record> records = new ArrayList<Record>();
         
         // find all datasets matching the given "master_id"
-        records.addAll(getDatasetsByIdType(QueryParameters.FIELD_MASTER_ID, datasetId));
+        records.addAll(getDatasetsByIdType(QueryParameters.FIELD_MASTER_ID, datasetId, dataNode));
         
         // find all datasets matching the given "instance_id"
-        records.addAll(getDatasetsByIdType(QueryParameters.FIELD_INSTANCE_ID, datasetId));
-        
+        records.addAll(getDatasetsByIdType(QueryParameters.FIELD_INSTANCE_ID, datasetId, dataNode));
+
         // delete all matching datasets
         final List<String> ids = new ArrayList<String>();
         for (final Record record : records) {
@@ -172,7 +204,7 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
      * 
      * @param master_id
      */
-    private List<Record> getDatasetsByIdType(final String idType, final String idValue) throws PublishingException {
+    private List<Record> getDatasetsByIdType(final String idType, final String idValue, final String dataNode) throws PublishingException {
         
         final SearchService searchService = this.getSearchService();
                
@@ -180,7 +212,11 @@ public class RemotePublishingServiceImpl implements RemotePublishingService {
             final SearchInput input = new SearchInputImpl(QueryParameters.TYPE_DATASET);
             input.setConstraint(idType, idValue);
             input.setDistrib(false);
-                    
+            
+            if (dataNode != null) {
+                input.setConstraint("data_node", dataNode);
+            }
+                                
             // execute query
             final SearchOutput output = searchService.search(input);
             
