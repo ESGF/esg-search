@@ -37,6 +37,20 @@ public interface LegacyPublishingService {
 	void deleteDataset(String datasetId, boolean recursive, String message) throws PublishingException;
 	
 	/**
+	 * Method to unpublish a single dataset.
+	 * Note: all input parameters are ignored except for the root dataset identifier,
+	 * which is matched against both the "master_id" and "instance_id" of all records in the local index and the data_node.
+	 * 
+	 * @param datasetId: the root dataset identifier (version-independent).
+	 * @param dataNode: the data_node where the dataset is hosted
+	 * @param recursive: ignored (only one dataset at a time can be unpublished, since dataset are not organized hierarchically).
+	 * @param message: ignored.
+	 * 
+	 * @throws PublishingException: if the unpublishing operation did not complete successfully.
+	 */
+	void deleteDatasetSingleDataNode(String datasetId, String dataNode, boolean recursive, String message) throws PublishingException;
+	
+	/**
 	 * Method to retract a single dataset i.e. delete all the associated files abd aggregations,
 	 * but keep the dataset record and mark it with "retracted=true" (and "latest=false").
 	 * 
@@ -47,7 +61,19 @@ public interface LegacyPublishingService {
 	 */
 	void retractDataset(String datasetId, boolean recursive, String message) throws PublishingException;
 	
-    /**
+	/**
+	 * Method to retract a single dataset i.e. delete all the associated files abd aggregations,
+	 * but keep the dataset record and mark it with "retracted=true" (and "latest=false").
+	 * 
+	 * @param datasetId
+	 * @param dataNode
+	 * @param recursive
+	 * @param message
+	 * @throws PublishingException
+	 */
+	void retractDatasetSingleDataNode(String datasetId, String dataNode, boolean recursive, String message) throws PublishingException;
+	
+	/**
      * Legacy method to check for the status of a current (asynchronous) ongoing publishing operation.
      * This method is only meant to be implemented to support clients of the legacy asynchronous API.
      * 
