@@ -73,7 +73,7 @@
     
 	<!-- Registry service providing dynamic list of shards for distributed search -->
 	<bean id="registryService" class="esg.security.registry.service.impl.RegistryServiceLocalXmlImpl">
-  		<constructor-arg index="0"><value>/esg/config/esgf_shards_static.xml</value></constructor-arg>
+  		<constructor-arg index="0"><value>/esg/config/esgf_shards_static.xml,/esg/config/esgf_search_aliases.xml</value></constructor-arg>
   	</bean>
 	
 </beans>

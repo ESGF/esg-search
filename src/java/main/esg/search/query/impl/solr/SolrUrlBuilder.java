@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,11 @@ public class SolrUrlBuilder {
 	private List<String> facets;
 	
 	/**
+	 * The list of optional sets of facet aliases.
+	 */
+	private List<Set<String>> aliases;
+	
+	/**
 	 * The set of default Solr shards to query for distributed search,
 	 * if the shards are not explicitely specified.
 	 */
@@ -77,7 +83,7 @@ public class SolrUrlBuilder {
 	 * @throws MalformedURLException
 	 */
 	public SolrUrlBuilder(final URL url) {
-		this.url = url;
+		this.url = url;		
 	}
 	
 	/**
@@ -94,6 +100,14 @@ public class SolrUrlBuilder {
 	 */
 	public void setFacets(final List<String> facets) {
 		this.facets = facets;
+	}
+	
+	/**
+	 * Method to set the facet aliases to be used when building the query.
+	 * @param aliases
+	 */
+	public void setAliases(final List<Set<String>> aliases) {
+		this.aliases = aliases;
 	}
 	
 	/**
@@ -263,7 +277,17 @@ public class SolrUrlBuilder {
     				        } else {
     				            yesClause.append(URLEncoder.encode(" || ", "UTF-8"));
     				        }
-    				        yesClause.append( URLEncoder.encode( name+":"+val,"UTF-8" ) );
+    				        Set<String> _nameAliases = getAliases(name);
+    				        if (_nameAliases.size()>0) {
+    				        	String fqalias = "";
+    				        	for (String alias : _nameAliases) {
+    				        		if (fqalias.length()>0) fqalias += " || ";
+    				        		fqalias += alias + ":" + val;
+    				        	}
+    				        	yesClause.append( URLEncoder.encode(fqalias,"UTF-8" ) );
+    				        } else {
+    				        	yesClause.append( URLEncoder.encode( name+":"+val,"UTF-8" ) );
+    				        }
     				    }
     				}
     				if (yesClause.length()>0) fq.append(yesClause);
@@ -350,6 +374,27 @@ public class SolrUrlBuilder {
         final String queryString = sb.toString();
 		if (LOG.isInfoEnabled()) LOG.info("Select Query String: "+queryString);
 		return queryString;
+		
+	}
+	
+	/**
+	 * Method to return all the aliases of a given facet key,
+	 * including the key itself, if found.
+	 * @param name
+	 * @return
+	 */
+	private Set<String> getAliases(String key) {
+		
+		if (this.aliases != null && this.aliases.size()>0) {
+			for (Set<String> set : this.aliases) {
+				if (set.contains(key)) {
+					return set;
+				}
+			}
+		}
+		
+		// return empty set
+		return new HashSet<String>();
 		
 	}
 	

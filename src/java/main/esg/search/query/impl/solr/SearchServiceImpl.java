@@ -216,7 +216,10 @@ public class SearchServiceImpl implements SearchService {
         final SolrUrlBuilder builder = new SolrUrlBuilder(url);
         builder.setSearchInput(input);
         builder.setFacets(input.getFacets());
-        if (registryService!=null) builder.setDefaultShards( registryService.getShards() );
+        if (registryService!=null) {
+        	builder.setDefaultShards( registryService.getShards() );
+        	builder.setAliases( registryService.getAliases() );
+        }
         
         // instantiate HTTP client
         final HttpClient httpClient = new HttpClient();
