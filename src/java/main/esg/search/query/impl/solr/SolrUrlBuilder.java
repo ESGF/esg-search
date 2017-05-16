@@ -173,12 +173,14 @@ public class SolrUrlBuilder {
 		// experiment=1pctCO2&variable=!huss --> fq=experiment:"1pctCO2"&fq=-variable:"huss"
 		// experiment=1pctCO2&variable=!huss&variable=!clt --> fq=experiment:"1pctCO2"&fq=-variable:"huss"&fq=-variable:"clt"
 		// experiment=1pctCO2&variable=!huss&variable=clt --> fq=experiment:"1pctCO2"&fq=variable:"clt"&fq=-variable:"huss"
+		String type = QueryParameters.TYPE_DATASET; // default record type
 		if (!constraints.isEmpty()) {
 			for (final String name : constraints.keySet()) {
 			      
 			    // first process single-valued constraints
 		        if (name.equals(QueryParameters.FIELD_TYPE)) {
 		            fq.append("&fq="+URLEncoder.encode( name+":"+input.getConstraint(name), "UTF-8" ));
+		            type = input.getConstraint(name);
 		           
 		        // boolean replica=true|false, latest=true|false
 		        } else if (  name.equals(QueryParameters.FIELD_REPLICA) 
@@ -335,9 +337,14 @@ public class SolrUrlBuilder {
             sb.append("&wt=json");
         }        
         
-        // sort by timestamp descending
+        // if requested, sort records by timestamp descending
         if (input.isSort()) {
             sb.append("&sort="+URLEncoder.encode(QueryParameters.FIELD_TIMESTAMP+" desc","UTF-8"));
+        // otherwise by default sort Files by id ascending
+        } else {
+        	if (type.equals(QueryParameters.TYPE_FILE)) {
+        		sb.append("&sort="+URLEncoder.encode(QueryParameters.FIELD_ID+" asc","UTF-8"));
+        	}
         }
         
         final String queryString = sb.toString();
