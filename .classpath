@@ -23,11 +23,9 @@
 	<classpathentry kind="lib" path="lib/fetched/cobertura-1.9.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-cli-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-codec-1.9.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-dbcp-1.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-dbutils-1.3.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-digester-2.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/commons-fileupload-1.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-httpclient-3.1.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-io-2.4.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-jelly-tags-log-1.0.jar"/>
@@ -140,12 +138,14 @@
 	<classpathentry kind="lib" path="lib/fetched/wstx-asl-3.2.7.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xalan-2.7.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-beanutils-1.9.2.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-accesslog-client-0.7.13.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.7.13.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.7.13.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-filters-0.7.13.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/netcdfAll-4.6.6.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.9.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.7.6.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/commons-collections-3.2.2.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/commons-fileupload-1.3.2.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.9.3.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-accesslog-client-0.7.23.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.7.23.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.7.23.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-filters-0.7.23.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.7.12.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>

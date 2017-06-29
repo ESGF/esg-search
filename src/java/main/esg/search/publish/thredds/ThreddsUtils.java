@@ -129,7 +129,7 @@ public class ThreddsUtils {
      * <field name="geo">ENVELOPE(1.0, 180.0, 89.5, -89.5)</field>
      * from north/south/east/west degree elements of the form:
      * <field name="south_degrees">-89.5</field>
-     * IMPORTANT: this method already assumes that the geo-spatial coverage is exoressed in degrees, not kilometers.
+     * IMPORTANT: this method already assumes that the geo-spatial coverage is expressed in degrees, not kilometers.
      * @param record
      */
     public static void addGeoCoverage(Record record) {
@@ -151,11 +151,19 @@ public class ThreddsUtils {
 				latMax = latMin;
 				latMin = latTmp;
 			}
+			// fix coordinates out of range
+			if (latMax > 90) latMax = 90;
+			if (latMin < -90) latMin = -90;
 			for (float[] lonRange : lonRanges) {
+				// fix coordinates out of range
+				float lonMin = lonRange[0];
+				if (lonMin < -180) lonMin = -180;
+				float lonMax = lonRange[1];
+				if (lonMax > 180) lonMax = 180;
     			record.addField(SolrXmlPars.FIELD_GEO, // ENVELOPE(minX, maxX, maxY, minY)
     					        "ENVELOPE("
-    					       + lonRange[0]  + ", "
-    					       + lonRange[1]  + ", "
+    					       + lonMin  + ", "
+    					       + lonMax  + ", "
     					       + latMax + ", "
     					       + latMin 
     					       + ")" );
