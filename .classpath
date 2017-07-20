@@ -134,16 +134,6 @@
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-common-0.7.23.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-connector-0.7.23.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/esgf-node-manager-filters-0.7.23.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.7.13.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esgf-security-test-2.7.13.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/opensaml-2.6.4.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-aop-4.3.9.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-beans-4.3.9.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-context-4.3.9.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-core-4.3.9.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-expression-4.3.9.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-web-4.3.9.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-webmvc-4.3.9.RELEASE.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xercesImpl-2.10.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xml-apis-1.4.01.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xml-resolver-1.2.jar"/>
@@ -153,10 +143,20 @@
 	<classpathentry kind="lib" path="lib/fetched/xmltooling-1.2.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xom-1.0.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/XSGroupRole-1.0.0.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.9.4.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/esg-orp-test-2.9.4.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-context-support-4.3.9.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-jdbc-4.3.9.RELEASE.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/spring-tx-4.3.9.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esg-orp-2.9.6.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esg-orp-test-2.9.6.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-2.7.15.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/esgf-security-test-2.7.15.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/opensaml-2.3.2.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-aop-4.2.9.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-beans-4.2.9.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-context-4.2.9.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-context-support-4.2.9.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-core-4.2.9.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-expression-4.2.9.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-jdbc-4.2.9.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-tx-4.2.9.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-web-4.2.9.RELEASE.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/spring-webmvc-4.2.9.RELEASE.jar"/>
 	<classpathentry kind="output" path="build"/>
 </classpath>
