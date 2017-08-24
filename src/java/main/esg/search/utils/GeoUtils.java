@@ -15,13 +15,13 @@ public class GeoUtils {
     	List<float[]> lonRanges = new ArrayList<float[]>();
     	
     	// invalid longitude values
-    	if ( (lonMax < lonMin) || (lonMax > lonMin + 360) ) {
+    	if ( (lonMax < lonMin) || (lonMax >= lonMin + 360) ) {
     		LOG.warn("Invalid longitude values: lonMin="+lonMin+" lonMax="+lonMax);
     		lonRanges.add( new float[]{ 0, 0 } ); 
     		return lonRanges;
     	}
     	
-    	while (lonMin < 180) {
+    	while (lonMin < -180) {
     		lonMin += 360;
     		lonMax += 360;
     	}
