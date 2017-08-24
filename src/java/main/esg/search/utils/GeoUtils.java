@@ -5,32 +5,31 @@ import java.util.List;
 
 public class GeoUtils {
 	
-    public static List<float[]> convertLongitudeRangeto180(float latMin, float latMax) {
+    public static List<float[]> convertLongitudeRangeto180(float lonMin, float lonMax) {
         
-    	List<float[]> latRanges = new ArrayList<float[]>();
+    	List<float[]> lonRanges = new ArrayList<float[]>();
     	
     	// return left interval
-    	if (latMax <= 180) {
-    		float[] latRange = new float[]{ latMin, latMax };
-    		latRanges.add(latRange);
+    	if (lonMax <= 180) {
+    		float[] lonRange = new float[]{ lonMin, lonMax };
+    		lonRanges.add(lonRange);
     		
     	// return right interval, shifted
-    	} else if (latMin >= 180) {
-    		float[] latRange = new float[]{ latMin-360, latMax-360 };
-    		latRanges.add(latRange);
+    	} else if (lonMin >= 180) {
+    		float[] lonRange = new float[]{ lonMin-360, lonMax-360 };
+    		lonRanges.add(lonRange);
     		
     	// must split into two intervals
     	} else {
     		
-    		float[] latRange1 = new float[]{ -180, latMax-360 };
-    		float[] latRange2 = new float[]{ latMin, 180 };
-    		latRanges.add(latRange1);
-    		latRanges.add(latRange2);
+    		float[] lonRange1 = new float[]{ -180, lonMax-360 };
+    		float[] lonRange2 = new float[]{ lonMin, 180 };
+    		lonRanges.add(lonRange1);
+    		lonRanges.add(lonRange2);
     		
     	}
     	
-    	
-    	return latRanges;
+    	return lonRanges;
     	
     }
 	
