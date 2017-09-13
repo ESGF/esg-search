@@ -1,5 +1,5 @@
 <doc>
-	<field name="id">obs4MIPs.NASA-JPL.AIRS.mon.v1|esg-datanode.jpl.nasa.gov</field>
+	<field name="id">test.obs4MIPs.NASA-JPL.AIRS.mon.v1|esg-datanode.jpl.nasa.gov</field>
 	<field name="version">1</field>
 	<field name="access">LAS</field>
 	<field name="access">HTTPServer</field>
@@ -22,10 +22,10 @@
 	<field name="height_top">1000.0</field>
 	<field name="height_units">Pa</field>
 	<field name="index_node">localhost</field>
-	<field name="instance_id">obs4MIPs.NASA-JPL.AIRS.mon.v1</field>
+	<field name="instance_id">test.obs4MIPs.NASA-JPL.AIRS.mon.v1</field>
 	<field name="institute">NASA-JPL</field>
 	<field name="latest">true</field>
-	<field name="master_id">obs4MIPs.NASA-JPL.AIRS.mon</field>
+	<field name="master_id">test.obs4MIPs.NASA-JPL.AIRS.mon</field>
 	<field name="metadata_format">THREDDS</field>
 	<field name="metadata_url">http://esg-datanode.jpl.nasa.gov/thredds/esgcet/1/obs4MIPs.NASA-JPL.AIRS.mon.v1.xml</field>
 	<field name="model">Obs-AIRS</field>

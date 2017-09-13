@@ -1,0 +1,50 @@
+<doc>
+        <!-- mandatory fields -->
+	<field name="id">test.nasa.airxstm.006.l3.v2|acdisc.gesdisc.eosdis.nasa.gov</field>
+	<field name="title">NASA AIRS surface_temperature</field>
+	<field name="type">Dataset</field>
+	<field name="data_node">acdisc.gesdisc.eosdis.nasa.gov</field>
+	<field name="index_node">esgf-node.jpl.nasa.gov</field>
+
+        <!-- optional fields useful for searching 
+             some of these fields should be extracted from the data
+             others could be configured as additional metadata served by the server
+        -->
+        <field name="description">Surface temperature, daytime (ascending) node</field>
+        <field name="url">https://acdisc.gesdisc.eosdis.nasa.gov/opendap/ncml/aggregation/AIRX3STM.006/AIRX3STM.006_Aggregation.ncml.html|application/opendap-html|OPENDAP</field>
+        <field name="datetime_start">2002-09-16T00:00:00Z</field>
+        <field name="datetime_stop">2011-05-16T12:00:00Z</field>
+        <field name="timestamp">2012-04-11T19:54:23Z</field>
+        <field name="north_degrees">89.5</field>
+        <field name="south_degrees">-89.5</field>
+        <field name="east_degrees">359.5</field>
+        <field name="west_degrees">0.5</field>
+        <field name="height_bottom">100000.0</field>
+        <field name="height_top">1000.0</field>
+        <field name="height_units">Pa</field>
+        
+        <field name="activity_id">NASA_OBS</field>
+        <field name="institute">NASA-GSFC</field>
+        <field name="source_id">AIRS</field>
+        <field name="time_frequency">daily</field>
+        <field name="realm">atmos</field>
+        <field name="variable">SurfSkinTemp_A</field>
+        <field name="variable_long_name">Surface temperature, daytime (ascending) node</field>
+        <field name="variable_units">K</field>
+        <field name="cf_standard_name">surface_temperature</field>
+        <field name="access">OPENDAP</field>
+        <field name="data_structure">grid</field>
+        <field name="experiment">obs</field>
+        <field name="product">observations</field>
+        <field name="xlink">https://esgf-data.jpl.nasa.gov/thredds/fileServer/obs4MIPs/technotes/ta-zgTechNote_RO_L3_Ret-v1_3_200201-201412.pdf|RO Air Temperature and Geopotential Height Technical Note|summary</field>
+
+        <!-- optional fields useful for versioning and replication -->
+        <field name="version">2</field>
+        <field name="master_id">test.nasa.airxstm.006.l3</field>
+        <field name="instance_id">test.nasa.airxstm.006.l3.v2</field>
+        <field name="replica">false</field>
+        <field name="latest">true</field>
+        <field name="retracted">false</field>
+        
+
+</doc>
