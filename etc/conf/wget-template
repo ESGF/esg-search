@@ -200,16 +200,24 @@ fi
 ##############################################################################
 check_java() {
     if ! type java >& /dev/null; then
-        echo "Java is required for retrieving the certificate and couldn't be found."
-        exit 1
+        echo "Java could not be found." >&2
+        return 1
     fi
     jversion=($(jversion=$(java -version 2>&1 | awk '/version/ {gsub("\"","");print $3}'); echo ${jversion//./ }))
     mVer=${jversion[1]}
     if ((mVer<5)); then
         echo "Java version 1.5+ is required for retrieving the certificate." >&2
         echo "Current version seems older: $(java -version | head -n1) " >&2  
-        exit 1
+        return 1
     fi
+}
+
+check_myproxy_logon() {
+    if ! type myproxy-logon >& /dev/null; then
+	echo "myproxy-logon could not be found." >&2
+	return 1
+    fi
+    echo "myproxy-logon found" >&2
 }
 
 proxy_to_java() {
@@ -249,7 +257,14 @@ get_certificates() {
 # Retrieve ESG credentials
 unset pass
 get_credentials() {
-    check_java
+    if check_java
+    then
+	use_java=1
+    else	
+	use_java=0
+	echo "No suitable java for obtaining certificate - checking for myproxy-logon instead" >&2
+	check_myproxy_logon || exit 1
+    fi
     #get all certificates
     get_certificates
 
@@ -288,21 +303,61 @@ get_credentials() {
         [[ "$REPLY" ]] && username="$REPLY"
     fi
     
-    #get password
-    [[ ! "$pass" ]] && read -sp "MyProxy Password? " pass
 
 
-    local args=
-    [[ "$openId" ]] && args=$args" --oid $openId"
-    [[ "$pass" ]] && args=$args" -P $pass"
-    [[ "$username" ]] && args=$args" -l $username"
-    
-    echo -n $'\nRetrieving Credentials...' >&2
-    if ! java $(proxy_to_java) -jar $MYPROXY_GETCERT $args --ca-directory $ESG_CERT_DIR --output $ESG_CREDENTIALS ; then        
-        echo "Certificate could not be retrieved"
-        exit 1
+    if [ $use_java -eq 1 ]
+    then
+        local args=
+        #get password
+	[[ ! "$pass" ]] && read -sp "MyProxy Password? " pass
+        [[ "$openId" ]] && args=$args" --oid $openId"
+        [[ "$pass" ]] && args=$args" -P $pass"
+        [[ "$username" ]] && args=$args" -l $username"
+        
+        echo -n $'\nRetrieving Credentials...' >&2
+        if ! java $(proxy_to_java) -jar $MYPROXY_GETCERT $args --ca-directory $ESG_CERT_DIR --output $ESG_CREDENTIALS ; then        
+            echo "Certificate could not be retrieved"
+            exit 1
+        fi
+        echo "done!" >&2
+    else
+        args=`openid_to_myproxy_args $openId $username` || exit 1
+        if ! myproxy-logon $args -b -o $ESG_CREDENTIALS
+	then
+            echo "Certificate could not be retrieved"
+	    exit 1
+        fi
+	cp $HOME/.globus/certificates/* $ESG_CERT_DIR/	
     fi
-    echo "done!" >&2
+}
+
+openid_to_myproxy_args() {
+  python - <<EOF || exit 1
+import sys
+import re
+import xml.etree.ElementTree as ET
+import urllib2
+openid = "$1"
+username = "$2" or re.sub(".*/", "", openid)
+e = ET.parse(urllib2.urlopen(openid))
+servs = [el for el in e.getiterator() if el.tag.endswith("Service")]
+for serv in servs:
+    servinfo = dict([(re.sub(".*}", "", c.tag), c.text)
+                     for c in serv.getchildren()])
+    try:
+        if servinfo["Type"].endswith("myproxy-service"):
+            m = re.match("socket://(.*):(.*)", servinfo["URI"])
+            if m:
+                host = m.group(1)
+                port = m.group(2)
+                print "-s %s -p %s -l %s" % (host, port, username)
+                break
+    except KeyError:
+        continue
+else:
+    sys.stderr.write("myproxy service could not be found\n")
+    sys.exit(1)
+EOF
 }
 
 # check the certificate validity
