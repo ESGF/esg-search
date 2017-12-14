@@ -702,7 +702,7 @@ solr_init() {
     get_property index_master_port "8984"
     get_property index_slave_port "8983"
 
-    solr_version=5.5.4
+    solr_version=5.5.5
     #solr_dist_url=${esg_dist_url}/thirdparty/apache-solr-${solr_version}.tgz
     # http://archive.apache.org/dist/lucene/solr/5.2.1/solr-5.2.1.tgz
     solr_dist_url=http://archive.apache.org/dist/lucene/solr/${solr_version}/solr-${solr_version}.tgz
