@@ -44,6 +44,7 @@ generated/
 **/*.tar
 build/
 dist/
+.settings
 
 ################################
 #Generated from templated files
