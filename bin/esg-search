@@ -358,7 +358,7 @@ _commit_configuration() {
     #Check the static shards file (esgf_shards_static.xml)
     #First, if it is not there, go fetch it...
     if [ ! -e "${esgf_shards_static_file}" ]; then
-        _curl "${esg_dist_url}/esg-search/${esgf_shards_static_file##*/}" "${esgf_shards_static_file}"
+        _curl "${esg_dist_url}/lists/${esgf_shards_static_file##*/}" "${esgf_shards_static_file}"
     fi
     #Do NOT need to write an entry into the static shards file in am the master index
     if [ "${solr_config_type}" != "master" ]; then
