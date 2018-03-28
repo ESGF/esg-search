@@ -261,13 +261,7 @@ public class ThreddsParserStrategyTopLevelDatasetImpl implements ThreddsParserSt
 	                    RecordHelper.encodeUrlTuple(url, 
 	                                                ThreddsUtils.getMimeType(url, ThreddsPars.SERVICE_TYPE_CATALOG),
 	                                                ThreddsPars.SERVICE_TYPE_CATALOG));
-	    
-        // FIXME
-        // metadata format
-        record.addField(SolrXmlPars.FIELD_METADATA_FORMAT, "THREDDS");      
-        // metadata file name
-        record.addField(SolrXmlPars.FIELD_METADATA_URL, PublishingServiceMain.METADATA_URL);
-	                        
+	    	                        
 	    // parse THREDDS elements
         for (final ThreddsElementParser parser : parsers) {
             parser.parse(dataset, record, ds);

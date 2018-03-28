@@ -52,42 +52,7 @@ public class SolrXmlPars {
 	final public static String ATTRIBUTE_NAME = "name";
 	final public static String ATTRIBUTE_NUM_FOUND = "numFound";
 	final public static String ATTRIBUTE_START = "start";
-	
 	final public static String ATTRIBUTE_VALUE_RESPONSE = "response";
-	
-	// field names: generic search record
-    // <field name="id">0</field>
-	// <field name="title">Record #0</field>
-    // <field name="type">Dataset</field>
-    // <field name="frequency">Monthly</field>
-	// <field name="version">0</field>
-    // .........
-	//final public static String FIELD_ID = "id";
-	//final public static String FIELD_PARENT_ID = "parent_id"; // note: generic notation to allow parent-child relations beyond just datasets
-	//final public static String FIELD_VERSION = "version";
-	//final public static String FIELD_TITLE = "title";
-	//final public static String FIELD_NAME = "name";
-	//final public static String FIELD_DESCRIPTION = "description";
-	//final public static String FIELD_TYPE = "type";
-	//final public static String FIELD_URL = "url";
-	//final public static String FIELD_SERVICE = "service";
-	//final public static String FIELD_SERVICE_TYPE = "service_type";
-	//final public static String FIELD_XLINK = "xlink";
-	//final public static String FIELD_XREF = "xref";
-	//final public static String FIELD_TIMESTAMP = "timestamp";
-	
-	// field names: metadata file information
-	final public static String FIELD_METADATA_FORMAT = "metadata_format";
-	final public static String FIELD_METADATA_URL = "metadata_url";
-	final public static String FIELD_METADATA_FILE_NAME = "metadata_file_name";
-
-	// field names:
-	
-	//final public static String FIELD_FILE_ID = "file_id";
-	//final public static String FIELD_FILE_URL = "file_url";
-    final public static String FIELD_SIZE = "size";
-    //#final public static String FIELD_FILE_SIZE = "file_size";
-	
 	
 	// field names: physical data
 	final public static String FIELD_PROJECT = "project";
@@ -115,6 +80,7 @@ public class SolrXmlPars {
 	
 	final public static String FIELD_DATA_FORMAT = "format";
 	final public static String FIELD_FILE_NAME = "file_name";
+	final public static String FIELD_SIZE = "size";
 			
 	/**
 	 * Map holding references from record type to Solr core storing those records.
