@@ -90,7 +90,11 @@ public class ExperimentMetadataEnhancer extends MappingPropertiesMetadataEnhence
      */
     @Override
     public void enhance(String name, List<String> values, Record record) {
-                
+    
+    	  // only apply processing to CMIP5 records
+    	  String project = record.getFieldValue(SolrXmlPars.FIELD_PROJECT);
+    	  if (project!=null && project.toLowerCase().equals("cmip5")) {
+    	
         // only process "experiment"
         if (name.equals(KEYIN)) {
             
@@ -109,7 +113,9 @@ public class ExperimentMetadataEnhancer extends MappingPropertiesMetadataEnhence
                     }
                 }      
             }
-        }
+        } // "experiment"
+        
+    	  } // CMIP5
                 
     }
 
