@@ -1,0 +1,91 @@
+<doc>
+    
+<!-- mandatory fields -->
+<field name="id">test.nasa.pr_TRMM_3B42_daily_v7_201501-201512.v1|acdisc.gesdisc.eosdis.nasa.gov</field>
+<field name="title">Obs-TRMM model output prepared for Obs4MIPs NASA-JPL observation</field>
+  
+<field name="type">Dataset</field>
+<field name="data_node">acdisc.gesdisc.eosdis.nasa.gov</field>
+<field name="index_node">esgf-node.jpl.nasa.gov</field>
+
+<!-- optional fields useful for searching 
+     some of these fields should be extracted from the data
+     others could be configured as additional metadata served by the server
+-->
+<field name="description">This daily accumulated rainfall product, in mm/day, is derived from the original 3-hourly TRMM 3B42 product. It is not from the suite of the official TRMM products, and is generated at NASA GES DISC. The daily files are generated in bulk once a month, usually with 2-month latency. For every data-day, eight 3B42 files are simply accumulated and the result is scaled so that the resulting units are mm/day. For every data day, the first of the eight 3-hourly accumulated 3B42 files has starting time 22:30:00 (hh:mm:sec) UTC on the day before, and the last 3B42 file has the ending time 22:29:59 UTC on the data day.</field>
+        
+<field name="url">https://disc2.gesdisc.eosdis.nasa.gov/thredds/dodsC/esgf/TRMM_3B42_daily_v7_201501-201512.ncml.html|application/opendap-html|OPENDAP</field>
+<field name="url">https://disc2.gesdisc.eosdis.nasa.gov/thredds/dodsC/esgf/TRMM_3B42_daily_v7_201501-201512.ncml.dods|application/opendap-dods|OPENDAP</field>
+        
+        <!-- <field name="datetime_start">2002-09-16T00:00:00Z</field> -->
+        <!-- <field name="datetime_stop">2011-05-16T12:00:00Z</field> -->
+        
+<field name="timestamp">2017-11-27T19:28:16Z</field>
+<field name="creation_date">2017-11-27T19:28:16Z</field>
+    
+        <!-- <field name="north_degrees">89.5</field> -->
+        <!-- <field name="south_degrees">-89.5</field> -->
+        <!-- <field name="east_degrees">359.5</field> -->
+        <!-- <field name="west_degrees">0.5</field> -->
+        <!-- <field name="height_bottom">100000.0</field> -->
+        <!-- <field name="height_top">1000.0</field> -->
+        <!-- <field name="height_units">Pa</field> -->
+        
+<field name="project">obs4MIPs</field>
+<field name="activity_id">obs4MIPs</field>
+        
+<field name="institution">National Aeronautics and Space Administration, Goddard Space Flight Center</field>
+<field name="institute">NASA-GSFC</field>
+<field name="institute_id">NASA-GSFC</field> 
+        
+<field name="source_id">TRMM</field>
+<field name="source">TRMM Tropical Rainfall Measuring Mission 3B43 Monthly 0.25x0.25 degree merged</field>
+<!-- <field name="source_type">satellite_retrieval</field> -->
+
+<field name="processing_level">L3</field>
+<field name="processing_version">7</field>
+        
+<field name="time_frequency">daily</field>
+
+<field name="modeling_realm">atmos</field>
+<field name="realm">atmos</field>
+
+<field name="variable">pr</field>
+<field name="variable_long_name">Daily accumulated precipitation (combined microwave-IR) estimate with gauge calibration over land</field>
+<field name="variable_units">mm</field>
+<field name="cf_standard_name">precipitation</field>
+
+<field name="access">OPENDAP</field>
+        
+<!-- <field name="data_structure">grid</field> -->
+        
+<field name="experiment">obs</field>
+<field name="experiment_id">obs</field>
+
+<field name="mip_specs">CMIP5</field>
+
+<field name="product">observations</field>
+
+<field name="xlink">https://trmm.gsfc.nasa.gov/|Tropical Rainfall Measuring Mission|web_site</field>
+
+<!-- optional fields useful for versioning and replication -->
+<field name="version">1</field>
+
+<field name="master_id">test.nasa.pr_TRMM_3B42_daily_v7_201501-201512</field>
+<field name="instance_id">test.nasa.pr_TRMM_3B42_daily_v7_201501-201512.v1</field>
+<field name="replica">false</field>
+<field name="latest">true</field>
+<field name="retracted">false</field>
+        
+<!-- new fields introduced by GSFC -->
+<field name="model_id">Obs-AIRS</field>
+<field name="contact">Fan.Fang@nasa.gov</field>
+<field name="table_id">Obs4MIPs</field>
+<field name="conventions">CF-1.0</field>
+<field name="history">aggregated in THREDDS Data Server</field>
+<field name="comment">Test file</field>
+<field name="tracking_id">96b21fb0-c49e-4433-b700-b696e921a5ff???</field>
+<field name="obs_project">TRMM</field>
+<field name="instrument">TRMM</field>
+
+</doc>

@@ -87,7 +87,7 @@
 <field name="contact">Fan.Fang@nasa.gov</field>
 <field name="table_id">Obs4MIPs</field>
 <field name="conventions">CF-1.0</field>
-<field name="history">onverted by OPeNDAP HDF4 and NcML handlers</field>
+<field name="history">Converted by OPeNDAP HDF4 and NcML handlers</field>
 <field name="comment">Test file</field>
 <field name="tracking_id">f0a279ee-a755-4323-afe4-1ac392225bb7</field>
 <field name="obs_project">AQUA</field>
