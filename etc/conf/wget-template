@@ -203,12 +203,27 @@ check_java() {
         echo "Java could not be found." >&2
         return 1
     fi
+    if java -version 2>&1|grep openjdk >/dev/null; then
+        openjdk=1;
+    else
+        openjdk=0;
+    fi
     jversion=($(jversion=$(java -version 2>&1 | awk '/version/ {gsub("\"","");print $3}'); echo ${jversion//./ }))
     mVer=${jversion[1]}
-    if ((mVer<5)); then
-        echo "Java version 1.5+ is required for retrieving the certificate." >&2
-        echo "Current version seems older: $(java -version | head -n1) " >&2  
-        return 1
+    if [ $openjdk -eq 1 ]; then
+        mVer=${jversion[0]}
+        if ((mVer<5)); then
+            echo "Openjdk detected. Version 9+ is required for retrieving the certificate." >&2
+            echo "Current version seems older: $(java -version | head -n1) " >&2
+            return 1
+        fi
+    else
+    
+        if ((mVer<5)); then
+            echo "Java version 1.5+ is required for retrieving the certificate." >&2
+            echo "Current version seems older: $(java -version | head -n1) " >&2
+            return 1
+        fi
     fi
 }
 
