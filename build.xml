@@ -423,30 +423,6 @@ Builds the project via ant (obviously).
       </manifest>
     </jar>
   </target>
-
-  <target name="make_test_jar" depends="make_test" description="(Creates test jar file)">
-    <echo message="JAR -  ${test_build_dir} ->> ${dist_dir}/${module}-test-${version_num}.jar"/>
-    <delete>
-      <fileset dir="." includes="${dist_dir}/${module}-test-${version_num}.jar"/>
-    </delete>
-    <mkdir dir="${dist_dir}" />
-    <jar destfile="${dist_dir}/${module}-test-${version_num}.jar">
-      <fileset dir="${test_build_dir}"/>
-      <manifest>
-	<attribute name="Organization" value="${organization}"/>
-	<attribute name="Author"       value="${author}"/>
-	<attribute name="Project"      value="${project_name} (Tests)"/>
-	<attribute name="Module"       value="${module}"/>
-	<attribute name="Version"      value="${version_num}"/>
-	<attribute name="Branch"       value="${branch}"/>
-	<attribute name="Commit"       value="${commit}"/>
-	<attribute name="Release-Name" value="${release_name}"/>
-	<section name="esg/">
-	  <attribute name="Sealed" value="false"/>
-	</section>
-      </manifest>
-    </jar>
-  </target>
   
   <target name="make_common_jar" depends="make" description="(Creates common jar file)">
     <echo message="JAR -  ${test_build_dir} ->> ${dist_dir}/${module}-common-${version_num}.jar"/> 
@@ -579,13 +555,6 @@ Builds the project via ant (obviously).
 	  description="(Cleans out the test build directory)">
     <echo message="Cleaning out test build directory"/> 
     <delete dir="${test_build_dir}"/>
-    <tstamp/>
-  </target>
-
-  <target name="clean_test_jar" depends="init" 
-	  description="(Cleans out the test jar file)">
-    <echo message="Cleaning out test jar file"/> 
-    <delete file="${dist_dir}/${module}-test-${version_num}.jar"/>
     <tstamp/>
   </target>
 
