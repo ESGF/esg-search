@@ -8,12 +8,7 @@
 	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
 	                       http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-                           
-    <!-- enable support for annotation-based URL resolution -->
-    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
-    <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"/>
-    <bean class="org.springframework.web.servlet.mvc.HttpRequestHandlerAdapter"/>
-	
+                           	
 	<!-- View resolver is only used for RSS feeds -->
 	<bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
     
