@@ -102,7 +102,7 @@ Note: Check Maven for propery dependency parameter values @
     <dependency org="org.esgf" name="esg-orp" rev="latest.milestone" >
             <exclude org="com.google.code.guice"/>
     </dependency>    
-    <dependency org="org.esgf" name="esgf-security" rev="latest.milestone"/>
+    <dependency org="org.esgf" name="esgf-security" rev="2.7.20"/>
 
     
     <dependency org="org.jdom" name="jdom" rev="2.0.2"/>
@@ -130,6 +130,8 @@ Note: Check Maven for propery dependency parameter values @
     
     <!-- NOTE: must force inclusion of xml-apis-1.4.01.jar as latest xml-apis#xml-apis;2.0.2 has no jar....-->
     <dependency org="xml-apis" name="xml-apis" rev="1.4.01" />
+    
+    <dependency org="com.fasterxml.jackson.core" name="jackson-databind" rev="2.9.4"/>
     
     <conflict org="xml-apis" module="xml-apis" rev="1.4.01"/>
     
