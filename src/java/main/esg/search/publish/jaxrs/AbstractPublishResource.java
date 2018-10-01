@@ -15,7 +15,7 @@ import javax.ws.rs.core.Response;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.cxf.jaxrs.impl.ResponseBuilderImpl;
-import org.jdom.JDOMException;
+import org.jdom2.JDOMException;
 import org.springframework.util.StringUtils;
 
 import esg.search.core.Record;

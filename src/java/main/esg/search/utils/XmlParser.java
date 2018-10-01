@@ -22,9 +22,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 
-import org.jdom.Document;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
+import org.jdom2.Document;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
 
 /**
  * Utility class to handle XML documents.

@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.xpath.XPath;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.xpath.XPath;
 
 import esg.search.utils.HttpClient;
 import esg.search.utils.XmlParser;

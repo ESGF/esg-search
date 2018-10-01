@@ -20,7 +20,7 @@ package esg.search.publish.xml;
 
 import java.util.List;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import esg.search.core.Record;
 

@@ -2,7 +2,7 @@ package esg.search.publish.impl.solr;
 
 import java.util.List;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 
 import esg.search.core.Record;
 import esg.search.core.RecordSerializer;

@@ -6,10 +6,9 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.springframework.util.StringUtils;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
 
 import esg.search.core.Record;
 import esg.search.core.RecordImpl;
@@ -18,6 +17,7 @@ import esg.search.query.api.QueryParameters;
 import esg.search.query.impl.solr.SolrXmlPars;
 import esg.search.utils.XmlParser;
 import esg.search.utils.XmlUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * Implementation of {@link RecordSerializer} based on Solr XML.

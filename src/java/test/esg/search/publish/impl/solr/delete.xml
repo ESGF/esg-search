@@ -1,6 +1,0 @@
-<delete>
-  <id>123</id>
-  <query>dataset_id:123</query>
-  <id>456</id>
-  <query>dataset_id:456</query>
-</delete>

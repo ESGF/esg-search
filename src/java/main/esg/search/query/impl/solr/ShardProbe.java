@@ -4,9 +4,9 @@ import java.net.URL;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.xpath.XPath;
+import org.jdom2.Document;
+import org.jdom2.Element;
+import org.jdom2.xpath.XPath;
 
 import esg.search.utils.HttpClient;
 import esg.search.utils.XmlParser;

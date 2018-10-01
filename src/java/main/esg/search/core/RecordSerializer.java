@@ -3,8 +3,8 @@ package esg.search.core;
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import org.jdom.Element;
-import org.jdom.JDOMException;
+import org.jdom2.Element;
+import org.jdom2.JDOMException;
 
 /**
  * API to serialize/deserialize ESGF search records to/from Solr/XML.

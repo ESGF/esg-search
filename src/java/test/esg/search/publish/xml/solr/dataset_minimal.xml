@@ -1,7 +1,0 @@
-<doc>
-	<field name="id">test.nasa.airxstm.006.l3.v1|acdisc.gesdisc.eosdis.nasa.gov</field>
-	<field name="title">NASA AIRS surface_temperature</field>
-	<field name="type">Dataset</field>
-	<field name="data_node">acdisc.gesdisc.eosdis.nasa.gov</field>
-	<field name="index_node">esgf-node.jpl.nasa.gov</field>
-</doc>
