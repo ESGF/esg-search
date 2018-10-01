@@ -504,7 +504,7 @@ Builds the project via ant (obviously).
     </jar>
   </target>  
 
-  <target name="make_all_jars" depends="make_jar,make_test_jar,make_common_jar,make_fe_jar,make_connector_jar"/>
+  <target name="make_all_jars" depends="make_jar,make_common_jar,make_fe_jar,make_connector_jar"/>
 
   <target name="make_dist" depends="make_war,make_all_jars"
 	  description="(Creates full software distribution)">
