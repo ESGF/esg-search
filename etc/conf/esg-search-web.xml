@@ -105,6 +105,11 @@
 		<param-value>classpath:esg/search/config/web-application-context.xml</param-value>
 	</context-param>
 	
+	<!-- Listener that allows Log4J configuration from the specified context parameter -->
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+
 	<!-- Listener that loads the Spring web application context 
 	(from the specified value of contextConfigLocation) -->
 	<listener>
