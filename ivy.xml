@@ -103,8 +103,10 @@ Note: Check Maven for propery dependency parameter values @
             <exclude org="com.google.code.guice"/>
     </dependency>    
     <dependency org="org.esgf" name="esgf-security" rev="latest.milestone"/>
-
     
+    <dependency org="org.opensaml" name="opensaml" rev="2.6.4" conf="default->default"  /> 
+    <dependency org="org.opensaml" name="XSGroupRole" rev="1.0.0" transitive="false" conf="default->default"  />
+   
     <dependency org="org.jdom" name="jdom" rev="2.0.2"/>
     
     <dependency org="org.slf4j" name="slf4j-api" rev="1.6.4"/>
@@ -130,6 +132,7 @@ Note: Check Maven for propery dependency parameter values @
     <dependency org="xml-apis" name="xml-apis" rev="1.4.01" />
     
     <conflict org="xml-apis" module="xml-apis" rev="1.4.01"/>
+    <conflict org="xml-security" module="xmlsec" rev="1.5.7"/>
     
 
   </dependencies>
