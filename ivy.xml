@@ -119,7 +119,8 @@ Note: Check Maven for propery dependency parameter values @
     
     <dependency org="com.rometools" name="rome" rev="1.5.0"/>
     
-    <dependency org="org.apache.cxf" name="cxf-rt-frontend-jaxrs" rev="3.1.4" />
+    <dependency org="org.apache.cxf" name="cxf-rt-frontend-jaxrs" rev="3.2.6" />
+    <dependency org="javax" name="javaee-api" rev="8.0"/>
     
     <dependency org="edu.ucar" name="opendap" rev="2.2.2"/>
 
