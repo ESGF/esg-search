@@ -104,7 +104,10 @@ Note: Check Maven for propery dependency parameter values @
     </dependency>    
     <dependency org="org.esgf" name="esgf-security" rev="latest.milestone"/>
     
-    <dependency org="org.opensaml" name="opensaml" rev="2.6.4" conf="default->default"  /> 
+    <dependency org="org.opensaml" name="opensaml" rev="2.6.6"/>
+    <dependency org="org.opensaml" name="openws" rev="1.5.6"/>
+    <dependency org="org.opensaml" name="xmltooling" rev="1.4.4"/>
+    <dependency org="org.owasp.esapi" name="esapi" rev="2.1.0.1"/>
     <dependency org="org.opensaml" name="XSGroupRole" rev="1.0.0" transitive="false" conf="default->default"  />
    
     <dependency org="org.jdom" name="jdom" rev="2.0.2"/>

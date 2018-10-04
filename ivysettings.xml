@@ -20,7 +20,11 @@
       <!-- Public Maven 2 repository -->
       <include url="${ivy.default.root.url}/ivysettings-public.xml"/>
       
+      <!-- Spring libraries -->
       <include url="${ivy.default.root.url}/ivysettings-spring.xml"/>
+
+      <!-- Alfresco -->
+      <include url="${ivy.default.root.url}/ivysettings-alfresco.xml"/>
 
       <include url="${ivy.default.root.url}/ivysettings-default-chain.xml"/>
       
