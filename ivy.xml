@@ -106,10 +106,13 @@ Note: Check Maven for propery dependency parameter values @
     
     <dependency org="org.opensaml" name="opensaml" rev="2.6.6"/>
     <dependency org="org.opensaml" name="openws" rev="1.5.6"/>
-    <dependency org="org.opensaml" name="xmltooling" rev="1.4.4"/>
+    <dependency org="org.opensaml" name="xmltooling" rev="1.4.6"/>
     <dependency org="org.owasp.esapi" name="esapi" rev="2.1.0.1"/>
     <dependency org="org.owasp.antisamy" name="antisamy" rev="1.5.7"/>
     <dependency org="org.opensaml" name="XSGroupRole" rev="1.0.0" transitive="false" conf="default->default"  />
+    
+    <dependency org="org.apache.santuario" name="xmlsec" rev="1.4.7"/>
+    <dependency org="ca.juliusdavies" name="not-yet-commons-ssl" rev="0.3.9"/>
    
     <dependency org="org.jdom" name="jdom" rev="2.0.2"/>
     
@@ -137,7 +140,7 @@ Note: Check Maven for propery dependency parameter values @
     <dependency org="xml-apis" name="xml-apis" rev="1.4.01" />
     
     <conflict org="xml-apis" module="xml-apis" rev="1.4.01"/>
-    <conflict org="xml-security" module="xmlsec" rev="1.5.7"/>
+    <conflict org="xml-security" module="xmlsec" rev="1.4.7"/>
     
 
   </dependencies>

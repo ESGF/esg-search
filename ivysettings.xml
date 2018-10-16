@@ -25,7 +25,10 @@
 
       <!-- Alfresco -->
       <include url="${ivy.default.root.url}/ivysettings-alfresco.xml"/>
-
+      
+      <!-- Shibboleth -->
+      <include url="${ivy.default.root.url}/ivysettings-shibboleth.xml"/>
+      
       <include url="${ivy.default.root.url}/ivysettings-default-chain.xml"/>
       
 </ivysettings>
