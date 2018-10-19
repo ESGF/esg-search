@@ -86,7 +86,7 @@
 	<classpathentry kind="lib" path="lib/fetched/commons-beanutils-1.9.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/netcdfAll-4.6.6.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/commons-collections-3.2.2.jar"/>
-	<classpathentry kind="lib" path="lib/fetched/commons-fileupload-1.3.2.jar"/>
+	<classpathentry kind="lib" path="lib/fetched/commons-fileupload-1.3.3.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xml-apis-1.4.01.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/xml-resolver-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/fetched/XSGroupRole-1.0.0.jar"/>
