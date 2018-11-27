@@ -147,6 +147,7 @@ Note: Check Maven for propery dependency parameter values @
 	<!-- https://mvnrepository.com/artifact/org.apache-extras.beanshell/bsh -->
 	<dependency org="org.apache-extras.beanshell" name="bsh-core" rev="2.0b6"/>
 	<exclude org="org.beanshell" module="bsh-core" />
+	<exclude org="pull-parser" module="pull-parser" />
     
     <conflict org="xml-apis" module="xml-apis" rev="1.4.01"/>
     <conflict org="xml-security" module="xmlsec" rev="1.4.7"/>
