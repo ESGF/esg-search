@@ -162,7 +162,7 @@ public class SolrUrlBuilder {
 		    // set both defaults to "*"
 		    if (!StringUtils.hasText(input.getFrom())) input.setFrom("*");
 		    if (!StringUtils.hasText(input.getTo())) input.setTo("*");
-		    qs.add( QueryParameters.FIELD_TIMESTAMP+URLEncoder.encode(":["+input.getFrom()+" TO "+input.getTo()+"]", "UTF-8") );
+		    qs.add( QueryParameters.FIELD_TIMESTAMP_+URLEncoder.encode(":["+input.getFrom()+" TO "+input.getTo()+"]", "UTF-8") );
 		}		
 										
 		// search input constraints --> fq=facet_name:"facet_value"
@@ -339,7 +339,7 @@ public class SolrUrlBuilder {
         
         // if requested, sort records by timestamp descending
         if (input.isSort()) {
-            sb.append("&sort="+URLEncoder.encode(QueryParameters.FIELD_TIMESTAMP+" desc","UTF-8"));
+            sb.append("&sort="+URLEncoder.encode(QueryParameters.FIELD_TIMESTAMP_+" desc","UTF-8"));
         // otherwise by default sort Files by id ascending
         } else {
         	if (type.equals(QueryParameters.TYPE_FILE)) {
