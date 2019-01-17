@@ -335,7 +335,9 @@ public class SolrUrlBuilder {
         // return type
         if (input.getFormat().equals(SearchReturnType.SOLR_JSON.getMimeType())) {
             sb.append("&wt=json");
-        }        
+        } else {
+        		sb.append("&wt=xml");
+        }
         
         // if requested, sort records by timestamp descending
         if (input.isSort()) {
