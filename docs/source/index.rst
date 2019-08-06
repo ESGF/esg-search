@@ -7,7 +7,7 @@ Welcome to esg-search's documentation!
 ======================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
 
 
