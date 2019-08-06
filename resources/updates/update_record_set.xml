@@ -1,9 +1,0 @@
-<updates core="datasets" action="set">
-   <update>
-      <query>id=obs4MIPs.NASA-JPL.AIRS.mon.v1|esg-datanode.jpl.nasa.gov</query>
-      <field name="xlink">
-         <value>abc</value>
-         <value>123</value>
-      </field>
-   </update>
-</updates>
