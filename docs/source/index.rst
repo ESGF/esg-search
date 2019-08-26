@@ -10,6 +10,8 @@ Welcome to esg-search's documentation!
    :maxdepth: 4
    :caption: Contents:
 
+   docs/manual/Atomic_Metadata_Updates
+
 
 
 Indices and tables
