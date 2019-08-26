@@ -1,5 +1,5 @@
 Atomic Metadata Updates
-======================+
+=======================
 
 This document explains how to update metadata records that have already
 been published to an ESGF Index Node (backed up by a corresponding Solr
