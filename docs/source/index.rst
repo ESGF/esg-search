@@ -11,6 +11,7 @@ Welcome to esg-search's documentation!
    :caption: Contents:
 
    manual/Atomic_Metadata_Updates
+   manual/Installation_Configuration
 
 
 
