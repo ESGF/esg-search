@@ -10,8 +10,9 @@ Welcome to esg-search's documentation!
    :maxdepth: 4
    :caption: Contents:
 
-   manual/Atomic_Metadata_Updates
-   manual/Installation_Configuration
+   Atomic_Metadata_Updates
+   Installation_Configuration
+   REST_Publishing_Services
 
 
 
