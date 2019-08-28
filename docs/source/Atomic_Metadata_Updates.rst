@@ -98,37 +98,42 @@ The following examples show how to use the popular wget client to issue
 GET metadata updates requests (each example must be entered all in one
 line):
 
-#set one or more values
+.. code:: ipython2
 
-| wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-  –certificate ~/.esg/credentials.pem
-| –private-key ~/.esg/credentials.pem –verbose
-| ‘https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov
-  &action=set&core=datasets&field=xlink&value=cnn&value=abc’
+   # set one or more values
+    
+   wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
+         --private-key ~/.esg/credentials.pem --verbose\
+        'https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+                                                                
 
-#add one or more values
 
-| wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-  –certificate ~/.esg/credentials.pem
-| –private-key ~/.esg/credentials.pem –verbose
-| ‘https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov
-  &action=add&core=datasets&field=xlink&value=cbs’
+.. code:: ipython2
 
-#remove one or more values
+   # add one or more values
+    
+   wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
+         --private-key ~/.esg/credentials.pem --verbose\
+        'https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+                                                                
 
-| wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-  –certificate ~/.esg/credentials.pem
-| –private-key ~/.esg/credentials.pem –verbose
-| ‘https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov
-  &action=remove&core=datasets&field=xlink&value=cnn&value=abc’
+.. code:: ipython2
 
-#remove all values
+   # remove one or more values
+    
+   wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
+         --private-key ~/.esg/credentials.pem --verbose\
+        'https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+                                                               
 
-| wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-  –certificate ~/.esg/credentials.pem
-| –private-key ~/.esg/credentials.pem –verbose
-| ‘https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov
-  &action=set&core=datasets&field=xlink’
+.. code:: ipython2
+
+   # remove all values
+    
+    wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
+         --private-key ~/.esg/credentials.pem --verbose\
+        'https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+                                                               
 
 POST HTTPS Requests
 ~~~~~~~~~~~~~~~~~~~
@@ -140,43 +145,81 @@ metadata updates are specified through an XML document that conforms to
 a custom ESGF syntax. For example, the following command can be used to
 send a POST metadata update request using the wget client:
 
-| wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-  –certificate ~/.esg/credentials.pem
-| –private-key ~/.esg/credentials.pem –verbose –post-file=updates.xml
-| ‘https://esgf-dev.jpl.nasa.gov/esg-search/ws/update’
+.. code:: ipython2
+
+    wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
+         --private-key ~/.esg/credentials.pem --verbose --post-file=updates.xml\
+         'https://esgf-dev.jpl.nasa.gov/esg-search/ws/update'
+
 
 where the XML document has the following content, depending on what kind
 of metadata update is requested:
 
-.. raw:: html
+.. code:: ipython2
 
-   <!-- set one or more values on a single record (identified by "id") -->
+    <!-- set one or more values on a single record (identified by "id") -->
+    <updates core="datasets" action="set">
+       <update>
+          <query>id=obs4MIPs.NASA-JPL.AIRS.mon.v1|esgf-dev.jpl.nasa.gov</query>
+          <field name="xlink">
+             <value>abc</value>
+             <value>123456</value>
+          </field>
+       </update>
+    </updates>	
 
- id=obs4MIPs.NASA-JPL.AIRS.mon.v1|esgf-dev.jpl.nasa.gov abc 123456
+.. code:: ipython2
 
-.. raw:: html
+    <!-- set one or more values on multiple records (identified by an ESGF query) -->
+    <updates core="datasets" action="set">
+       <update>
+          <query>project=obs4MIPs&amp;realm=atmos</query>
+          <field name="xlink">
+             <value>xyzuvw</value>
+             <value>999999</value>
+          </field>
+       </update>
+    </updates>	
 
-   <!-- set one or more values on multiple records (identified by an ESGF query) -->
 
- project=obs4MIPs&realm=atmos xyzuvw 999999
+.. code:: ipython2
 
-.. raw:: html
+    <!-- add one or more values (by query) -->
+    <updates core="datasets" action="add">
+       <update>
+          <query>project=obs4MIPs&amp;realm=atmos</query>
+          <field name="xlink">
+             <value>qazxsw</value>
+             <value>9876543210</value>
+          </field>
+       </update>
+    </updates>	
 
-   <!-- add one or more values (by query) -->
 
- project=obs4MIPs&realm=atmos qazxsw 9876543210
+.. code:: ipython2
 
-.. raw:: html
+    <!-- remove one or more values (by query) -->
+    <updates core="datasets" action="remove">
+       <update>
+          <query>project=obs4MIPs&amp;realm=atmos</query>
+          <field name="xlink">
+             <value>qazxsw</value>
+          </field>
+       </update>
+    </updates>	
 
-   <!-- remove one or more values (by query) -->
 
- project=obs4MIPs&realm=atmos qazxsw
+.. code:: ipython2
 
-.. raw:: html
+    <!-- remove all values (by query) -->
+    <updates core="datasets" action="set">
+       <update>
+          <query>project=obs4MIPs&amp;realm=atmos</query>
+          <field name="xlink" />
+       </update>
+    </updates>	
 
-   <!-- remove all values (by query) -->
 
- project=obs4MIPs&realm=atmos
 
 Targetting the Local Shard
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -188,4 +231,3 @@ that were published to the Local Shard, use the following URLs:
 
 -  POST: https:///esg-search/ws/updateLocal
 -  GET: https:///esg-search/ws/updateByIdLocal
-

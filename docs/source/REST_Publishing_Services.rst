@@ -75,8 +75,9 @@ The examples below assumes the following initial setup:
 Example on how to obtain an X.509 certificate using the myproxy-logon
 client:
 
-myproxy-logon -s esgf-node.jpl.nasa.gov -p 7512 -l -t 48 -o
-~/.esg/credentials.pem
+.. code:: ipython2
+
+   myproxy-logon -s esgf-node.jpl.nasa.gov -p 7512 -l -t 48 -o ~/.esg/credentials.pem
 
 “Pull” Operations
 -----------------
@@ -100,13 +101,14 @@ Pull Publishing Service
 
 Example (must be entered only on one line, with … removed):
 
-| wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-| –certificate ~/.esg/credentials.pem –private-key
-  ~/.esg/credentials.pem
-| –verbose
-| –post-data=“uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/…
-  …NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml&metadataRepositoryType=THREDDS”
-| https://esgf-dev.jpl.nasa.gov/esg-search/ws/harvest
+.. code:: ipython2
+
+ wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem\
+      –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
+      –verbose
+      –post-data=“uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/…
+                 …NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml&metadataRepositoryType=THREDDS”
+|     https://esgf-dev.jpl.nasa.gov/esg-search/ws/harvest
 
 Pull UnPublishing Service
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -119,13 +121,14 @@ Pull UnPublishing Service
 
 Example (must be entered only on one line, with … removed):
 
-| wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-| –certificate ~/.esg/credentials.pem –private-key
-  ~/.esg/credentials.pem
-| –verbose
-| –post-data="uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/…
-  …NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml
-| https://esgf-dev.jpl.nasa.gov/esg-search/ws/unharvest
+.. code:: ipython2
+
+   wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
+        –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
+       –verbose
+       –post-data="uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/…
+                  …NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml
+       https://esgf-dev.jpl.nasa.gov/esg-search/ws/unharvest
 
 “Push” Operations
 ~~~~~~~~~~~~~~~~~
@@ -143,11 +146,12 @@ Push Publishing Service
 
 Example (must be entered only on one line):
 
-| wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-| –certificate ~/.esg/credentials.pem –private-key
-  ~/.esg/credentials.pem
-| –verbose –post-file=cmip5_dataset.xml
-  https://esgf-dev.jpl.nasa.gov/esg-search/ws/publish
+.. code:: ipython2
+
+   wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
+         –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
+         –verbose –post-file=cmip5_dataset.xml
+          https://esgf-dev.jpl.nasa.gov/esg-search/ws/publish
 
 The ESGF Search GitHub repository contains several examples of valid
 metadata records that can be published to an ESGF Index Node:
@@ -174,11 +178,12 @@ Push UnPublishing Service
 
 Example (must be entered only on one line):
 
-| wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-| –certificate ~/.esg/credentials.pem –private-key
-  ~/.esg/credentials.pem
-| –verbose –post-file=cmip5_dataset.xml
-  https://esgf-dev.jpl.nasa.gov/esg-search/ws/unpublish
+.. code:: ipython2
+
+   wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
+         –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
+         –verbose –post-file=cmip5_dataset.xml
+         https://esgf-dev.jpl.nasa.gov/esg-search/ws/unpublish
 
 Note that unpublishing a dataset record will automatically unpublish all
 file and aggregation records that reference that dataset.
@@ -198,13 +203,14 @@ from the metadata store. Delete UnPublishing Service
 
 Example (must be entered only on one line, with … removed):
 
-| wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-| –certificate ~/.esg/credentials.pem –private-key
-  ~/.esg/credentials.pem
-| –verbose -O response.xml
-| –post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323…
-  …|pcmdi9.llnl.gov”
-| https://esgf-dev.jpl.nasa.gov/esg-search/ws/delete
+.. code:: ipython2
+
+   wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
+         –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
+         –verbose -O response.xml
+         –post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323…
+                      …|pcmdi9.llnl.gov”
+         https://esgf-dev.jpl.nasa.gov/esg-search/ws/delete
 
 Note that just like before, unpublishing a dataset record will
 automatically unpublish all file and aggregation records that reference
@@ -231,12 +237,13 @@ Retract UnPublishing Service
 
 Example (must be entered only on one line, with … removed):
 
-| wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-| –certificate ~/.esg/credentials.pem –private-key
-  ~/.esg/credentials.pem
-| –verbose -O response.xml
-| –post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323..pcmdi9.llnl.gov”
-| https://esgf-dev.jpl.nasa.gov/esg-search/ws/retract
+.. code:: ipython2
+
+   wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
+        –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
+        –verbose -O response.xml
+        –post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323..pcmdi9.llnl.gov”
+        https://esgf-dev.jpl.nasa.gov/esg-search/ws/retract
 
 Python Client Example
 ---------------------
@@ -245,17 +252,21 @@ Following is an example on how to invoke the ESGF Publishing Services
 from a Python client. The example leverages the Python Requests library
 for HTTP(s) communication with the server.
 
-import requests
+.. code:: ipython2
 
-| url = “https://esgf-dev.jpl.nasa.gov/esg-search/ws/harvest” mycertpath
-  = “/Users/cinquini/.esg/credentials.pem” catalog =
-  “http://aims3.llnl.gov/thredds/catalog/esgcet/1/”
-| +“cmip5.output1.NIMR-KMA.HadGEM2-AO.historical.mon.atmos.Amon.r1i1p1.v20130815.xml”
-  postdata = {“uri” : catalog, “metadataRepositoryType”:“THREDDS”,
-  “schema”:“cmip5” }
+   import requests
 
-resp = requests.post(url, cert=(mycertpath, mycertpath), data=postdata,
-verify=False ) print resp.status_code print resp.text
+   url = “https://esgf-dev.jpl.nasa.gov/esg-search/ws/harvest” 
+   mycertpath = “/Users/cinquini/.esg/credentials.pem” 
+   catalog =  “http://aims3.llnl.gov/thredds/catalog/esgcet/1/”
+            +“cmip5.output1.NIMR-KMA.HadGEM2-AO.historical.mon.atmos.Amon.r1i1p1.v20130815.xml”
+   postdata = {“uri” : catalog,
+   “metadataRepositoryType”:“THREDDS”,
+   “schema”:“cmip5” }
+
+   resp = requests.post(url, cert=(mycertpath, mycertpath), data=postdata, verify=False ) 
+   print resp.status_code 
+   print resp.text
 
 Cut-and-paste the above script into a file, for example
 “client_example.py”, and execute as: python client_example.py .

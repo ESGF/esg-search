@@ -13,6 +13,8 @@ Welcome to esg-search's documentation!
    Atomic_Metadata_Updates
    Installation_Configuration
    REST_Publishing_Services
+   ESGF_Search_RESTful_API
+   Core_Metadata
 
 
 
