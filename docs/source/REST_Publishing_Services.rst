@@ -131,7 +131,7 @@ Example (must be entered only on one line, with … removed):
        https://esgf-dev.jpl.nasa.gov/esg-search/ws/unharvest
 
 “Push” Operations
-~~~~~~~~~~~~~~~~~
+-----------------
 
 In “push” mode, the client sends already generated metadata records to
 the server. The server validates the records and send them to the
@@ -139,6 +139,7 @@ metadata store for ingestion. Client authorization is based on the “id”
 of the resource that is been published or unpublished.
 
 Push Publishing Service
+~~~~~~~~~~~~~~~~~~~~~~~
 
 -  URL: https:///esg-search/ws/publish
 -  HTTP POST data: metadata record encoded as Solr/XML (with optional

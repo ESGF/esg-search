@@ -11,10 +11,20 @@ Welcome to esg-search's documentation!
    :caption: Contents:
 
    Atomic_Metadata_Updates
-   Installation_Configuration
    REST_Publishing_Services
    ESGF_Search_RESTful_API
    Core_Metadata
+   Earth_Sciences_Metadata
+   Climate_Model_Metadata
+   Metadata_Validation
+   CoG_Installation_from_Docker
+   Installation_Prerequisites
+   Installation_Initial_Setup
+   Installation_Install_or_Upgrade
+   Installation_Testing
+   Installation_Configuration
+  
+
 
 
 
