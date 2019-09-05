@@ -91,44 +91,45 @@ resource “uri”.
 Pull Publishing Service
 ~~~~~~~~~~~~~~~~~~~~~~~
 
--  URL: https:///esg-search/ws/harvest
--  HTTP POST data: encoded as form (key, value) pair
+   -  URL: https:///esg-search/ws/harvest
+   -  HTTP POST data: encoded as form (key, value) pair
 
-   -  uri: location identifier of remote metadata repository or catalog
-   -  metadataRepositoryType: type of metadata repository, chosen from
-      controlled vocabulary
-   -  schema: optional URI of additional schema for record validation
+      - uri: location identifier of remote metadata repository or catalog
+      - metadataRepositoryType: type of metadata repository, chosen from controlled vocabulary
+      - schema: optional URI of additional schema for record validation
 
 Example (must be entered only on one line, with … removed):
 
 .. code:: ipython2
 
- wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem\
-      –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
-      –verbose
-      –post-data=“uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/…
-                 …NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml&metadataRepositoryType=THREDDS”
-|     https://esgf-dev.jpl.nasa.gov/esg-search/ws/harvest
+   wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem\
+        --certificate ~/.esg/credentials.pem --private-key ~/.esg/credentials.pem\
+        --verbose\
+        --post-data="uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/...
+                     ...NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml&metadataRepositoryType=THREDDS"\ 
+     https://esgf-dev.jpl.nasa.gov/esg-search/ws/harvest
+
+ 
 
 Pull UnPublishing Service
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  URL: https:///esg-search/ws/unharvest
--  HTTP POST data: encoded as form (key, value) pairs - uri: location
-   identifier of remote metadata repository or catalog -
-   metadataRepositoryType: type of metadata repository, chosen from
-   controlled vocabulary
+   -  URL: https:///esg-search/ws/unharvest
+   -  HTTP POST data: encoded as form (key, value) pairs 
+
+      -  uri: location identifier of remote metadata repository or catalog
+      - metadataRepositoryType: type of metadata repository, chosen from controlled vocabulary
 
 Example (must be entered only on one line, with … removed):
 
 .. code:: ipython2
 
    wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-        –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
-       –verbose
-       –post-data="uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/…
+         –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem\
+        –verbose
+        –post-data="uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/…
                   …NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml
-       https://esgf-dev.jpl.nasa.gov/esg-search/ws/unharvest
+        https://esgf-dev.jpl.nasa.gov/esg-search/ws/unharvest
 
 “Push” Operations
 -----------------
@@ -193,7 +194,11 @@ Delete Operations
 -----------------
 
 A generic “delete” service is provided to remove records by identifier
-from the metadata store. Delete UnPublishing Service
+from the metadata store. 
+
+
+Delete UnPublishing Service
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  URL: https:///esg-search/ws/delete
 -  HTTP POST data: encoded as form (key, value) pairs
@@ -228,6 +233,7 @@ dataset record is kept in the catalog for reference, and marked as
 “retracted”.
 
 Retract UnPublishing Service
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 -  URL: https:///esg-search/ws/retract
 -  HTTP POST data: encoded as form (key, value) pairs
