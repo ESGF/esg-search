@@ -1,0 +1,428 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Atomic Metadata Updates &mdash; esg-search v4.7.19 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ESGF Core Metadata" href="Core_Metadata.html" />
+    <link rel="prev" title="ESGF REST Publishing Services" href="REST_Publishing_Services.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> esg-search
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ESGF_Search_RESTful_API.html">The ESGF Search RESTful API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="REST_Publishing_Services.html">ESGF REST Publishing Services</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Atomic Metadata Updates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#semantics">Semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#apis">APIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#esgf-atomic-metadata-updates">ESGF Atomic Metadata Updates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pre-requisites">Pre-Requisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-https-requests">GET HTTPS Requests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#post-https-requests">POST HTTPS Requests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#targetting-the-local-shard">Targetting the Local Shard</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Core_Metadata.html">ESGF Core Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Earth_Sciences_Metadata.html">ESGF Earth Sciences Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Climate_Model_Metadata.html">Climate Model Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Metadata_Validation.html">Metadata Validation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">esg-search</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Atomic Metadata Updates</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Atomic_Metadata_Updates.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="atomic-metadata-updates">
+<h1>Atomic Metadata Updates<a class="headerlink" href="#atomic-metadata-updates" title="Permalink to this headline">¶</a></h1>
+<p>This document explains how to update metadata records that have already
+been published to an ESGF Index Node (backed up by a corresponding Solr
+Index). This technique allows to add/change/remove single metadata
+fields to/from an existing ESGF record, without having to republish the
+full updated record with the same “id” field.</p>
+<div class="section" id="semantics">
+<h2>Semantics<a class="headerlink" href="#semantics" title="Permalink to this headline">¶</a></h2>
+<p>A metadata update changes an existing record through the following
+possible actions:</p>
+<ul class="simple">
+<li><p>set: sets one or more values for the specified field, replacing any
+current values if already existing</p></li>
+<li><p>add: adds one or more values to the specified field</p></li>
+<li><p>remove: removes one or more values from the specified field</p></li>
+</ul>
+<p>Additionally, all values can be removed from the specified field by
+using “set” with no values specified. Note that Solr does not allow to
+mix set/add/remove actions in the same request.</p>
+</div>
+<div class="section" id="apis">
+<h2>APIs<a class="headerlink" href="#apis" title="Permalink to this headline">¶</a></h2>
+<p>Metadata updates of ESGF records can be executed using three different
+APIs:</p>
+<ol class="arabic simple">
+<li><p>The native Solr API for atomic updates</p>
+<ul class="simple">
+<li><p>The client targets the “master” Solr URL directly:
+<a class="reference external" href="http://:8984/solr//update">http://:8984/solr//update</a>. Updates will be automatically
+replicated to the “slave” Solr index on port 8983</p></li>
+<li><p>No authentication or authorization is required. The client must
+have access to port 8984 and therefore must execute from within
+the institution firewall.</p></li>
+<li><p>The client must issue a POST request with a document that follows
+the Solr syntax for atomic updates (in JSON or XML).</p></li>
+<li><p>Each request can only update one document at a time.</p></li>
+<li><p>See Solr documentation for details.</p></li>
+</ul>
+</li>
+<li><p>The ESGF Python client API for Solr updates</p>
+<ul class="simple">
+<li><p>Python client library to interact with the Solr server directly to
+request metadata updates</p></li>
+<li><p>Hides behind the scenes the creation of Solr XML document,
+encoding metadata update instructions as Python dictionaries
+instead</p></li>
+<li><p>Again no authentication or authorization needed, assuming that the
+Solr master URL is open to the Python client for updates
+(typically, from localhost)</p></li>
+<li><p>See instructions at <a class="reference external" href="https://github.com/ESGF/esgfpy-solr">https://github.com/ESGF/esgfpy-solr</a></p></li>
+</ul>
+</li>
+<li><p>The ESGF metadata update API</p>
+<ul class="simple">
+<li><p>The client targets the ESGF Search web service URLs:
+<a class="reference external" href="https:///esg-search/ws/update">https:///esg-search/ws/update</a>… which behind the scenes query and
+update the “master” Solr index. Updates are again automatically
+replicated to the “slave” Solr index. -The client must provide an
+X509 certificate used for authentication and authorization.</p></li>
+<li><p>Authorization is based on the individual “id”s of all records been
+updated.</p></li>
+<li><p>The client request may originate from any server on the web, since
+it will be undergo proper authorization.</p></li>
+<li><p>The ESGF API can be used for bulk-updates of many records at once
+- infact, for all records that match an ESGF search.</p></li>
+</ul>
+</li>
+</ol>
+</div>
+<div class="section" id="esgf-atomic-metadata-updates">
+<h2>ESGF Atomic Metadata Updates<a class="headerlink" href="#esgf-atomic-metadata-updates" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pre-requisites">
+<h3>Pre-Requisites<a class="headerlink" href="#pre-requisites" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>The client must obtain a valid X.509 certificate that is transmitted
+as part of the request</p></li>
+<li><p>The certificate must contain an identity that has been authorized to
+publish to that dataset (based on the record “id” field)</p></li>
+</ul>
+</div>
+<div class="section" id="get-https-requests">
+<h3>GET HTTPS Requests<a class="headerlink" href="#get-https-requests" title="Permalink to this headline">¶</a></h3>
+<p>The ESGF Search web services support metadata updates through simple GET
+request, but in this case each request can only update one document. The
+general syntax of a GET request is:</p>
+<p><a class="reference external" href="https:///esg-search/ws/updateById?id=">https:///esg-search/ws/updateById?id=</a>…..&amp;action=…&amp;core=…&amp;field=…&amp;value=…&amp;value=…&amp;value=…</p>
+<p>where:</p>
+<ul class="simple">
+<li><p>id: record identifier (properly URL-encoded)</p></li>
+<li><p>action: set/add/remove</p></li>
+<li><p>field: the metadata field to be updated</p></li>
+<li><p>value: one or more values to be set/added/removed</p></li>
+</ul>
+<p>The following examples show how to use the popular wget client to issue
+GET metadata updates requests (each example must be entered all in one
+line):</p>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># set one or more values
+
+wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
+      --private-key ~/.esg/credentials.pem --verbose\
+     &#39;https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+</pre></div>
+</div>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># add one or more values
+
+wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
+      --private-key ~/.esg/credentials.pem --verbose\
+     &#39;https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+</pre></div>
+</div>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># remove one or more values
+
+wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
+      --private-key ~/.esg/credentials.pem --verbose\
+     &#39;https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+</pre></div>
+</div>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># remove all values
+
+ wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
+      --private-key ~/.esg/credentials.pem --verbose\
+     &#39;https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+</pre></div>
+</div>
+</div>
+<div class="section" id="post-https-requests">
+<h3>POST HTTPS Requests<a class="headerlink" href="#post-https-requests" title="Permalink to this headline">¶</a></h3>
+<p>POST requests to the ESGF Search Services are very powerful, because
+they allow to update at once ALL records that match one or more queries
+(expressed in the ESGF search syntax). In a POST request, one or more
+metadata updates are specified through an XML document that conforms to
+a custom ESGF syntax. For example, the following command can be used to
+send a POST metadata update request using the wget client:</p>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
+     --private-key ~/.esg/credentials.pem --verbose --post-file=updates.xml\
+     &#39;https://esgf-dev.jpl.nasa.gov/esg-search/ws/update&#39;
+</pre></div>
+</div>
+<p>where the XML document has the following content, depending on what kind
+of metadata update is requested:</p>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>&lt;!-- set one or more values on a single record (identified by &quot;id&quot;) --&gt;
+&lt;updates core=&quot;datasets&quot; action=&quot;set&quot;&gt;
+   &lt;update&gt;
+      &lt;query&gt;id=obs4MIPs.NASA-JPL.AIRS.mon.v1|esgf-dev.jpl.nasa.gov&lt;/query&gt;
+      &lt;field name=&quot;xlink&quot;&gt;
+         &lt;value&gt;abc&lt;/value&gt;
+         &lt;value&gt;123456&lt;/value&gt;
+      &lt;/field&gt;
+   &lt;/update&gt;
+&lt;/updates&gt;
+</pre></div>
+</div>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>&lt;!-- set one or more values on multiple records (identified by an ESGF query) --&gt;
+&lt;updates core=&quot;datasets&quot; action=&quot;set&quot;&gt;
+   &lt;update&gt;
+      &lt;query&gt;project=obs4MIPs&amp;amp;realm=atmos&lt;/query&gt;
+      &lt;field name=&quot;xlink&quot;&gt;
+         &lt;value&gt;xyzuvw&lt;/value&gt;
+         &lt;value&gt;999999&lt;/value&gt;
+      &lt;/field&gt;
+   &lt;/update&gt;
+&lt;/updates&gt;
+</pre></div>
+</div>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>&lt;!-- add one or more values (by query) --&gt;
+&lt;updates core=&quot;datasets&quot; action=&quot;add&quot;&gt;
+   &lt;update&gt;
+      &lt;query&gt;project=obs4MIPs&amp;amp;realm=atmos&lt;/query&gt;
+      &lt;field name=&quot;xlink&quot;&gt;
+         &lt;value&gt;qazxsw&lt;/value&gt;
+         &lt;value&gt;9876543210&lt;/value&gt;
+      &lt;/field&gt;
+   &lt;/update&gt;
+&lt;/updates&gt;
+</pre></div>
+</div>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>&lt;!-- remove one or more values (by query) --&gt;
+&lt;updates core=&quot;datasets&quot; action=&quot;remove&quot;&gt;
+   &lt;update&gt;
+      &lt;query&gt;project=obs4MIPs&amp;amp;realm=atmos&lt;/query&gt;
+      &lt;field name=&quot;xlink&quot;&gt;
+         &lt;value&gt;qazxsw&lt;/value&gt;
+      &lt;/field&gt;
+   &lt;/update&gt;
+&lt;/updates&gt;
+</pre></div>
+</div>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>&lt;!-- remove all values (by query) --&gt;
+&lt;updates core=&quot;datasets&quot; action=&quot;set&quot;&gt;
+   &lt;update&gt;
+      &lt;query&gt;project=obs4MIPs&amp;amp;realm=atmos&lt;/query&gt;
+      &lt;field name=&quot;xlink&quot; /&gt;
+   &lt;/update&gt;
+&lt;/updates&gt;
+</pre></div>
+</div>
+</div>
+<div class="section" id="targetting-the-local-shard">
+<h3>Targetting the Local Shard<a class="headerlink" href="#targetting-the-local-shard" title="Permalink to this headline">¶</a></h3>
+<p>All the above examples update metadata in the “master” Solr index by
+targetting the two URLs “<a class="reference external" href="https:///esg-search/ws/update">https:///esg-search/ws/update</a>” (POST) and
+“<a class="reference external" href="https:///esg-search/ws/updateById">https:///esg-search/ws/updateById</a>” (GET). To update metadata records
+that were published to the Local Shard, use the following URLs:</p>
+<ul class="simple">
+<li><p>POST: <a class="reference external" href="https:///esg-search/ws/updateLocal">https:///esg-search/ws/updateLocal</a></p></li>
+<li><p>GET: <a class="reference external" href="https:///esg-search/ws/updateByIdLocal">https:///esg-search/ws/updateByIdLocal</a></p></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Core_Metadata.html" class="btn btn-neutral float-right" title="ESGF Core Metadata" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="REST_Publishing_Services.html" class="btn btn-neutral float-left" title="ESGF REST Publishing Services" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Sasha Ames
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

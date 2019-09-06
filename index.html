@@ -1,3 +1,5 @@
+
+
 <!DOCTYPE html>
 <!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
@@ -32,7 +34,8 @@
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="The ESGF Search RESTful API" href="ESGF_Search_RESTful_API.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -76,12 +79,17 @@
               
             
             
-              <!-- Local TOC -->
-              <div class="local-toc"><ul>
-<li><a class="reference internal" href="#">Welcome to esg-search’s documentation!</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ESGF_Search_RESTful_API.html">The ESGF Search RESTful API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="REST_Publishing_Services.html">ESGF REST Publishing Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Atomic_Metadata_Updates.html">Atomic Metadata Updates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Core_Metadata.html">ESGF Core Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Earth_Sciences_Metadata.html">ESGF Earth Sciences Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Climate_Model_Metadata.html">Climate Model Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Metadata_Validation.html">Metadata Validation</a></li>
 </ul>
-</div>
+
             
           
         </div>
@@ -147,6 +155,95 @@
   <div class="section" id="welcome-to-esg-search-s-documentation">
 <h1>Welcome to esg-search’s documentation!<a class="headerlink" href="#welcome-to-esg-search-s-documentation" title="Permalink to this headline">¶</a></h1>
 <div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ESGF_Search_RESTful_API.html">The ESGF Search RESTful API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#syntax">Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#keywords">Keywords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#default-query">Default Query</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#free-text-queries">Free Text Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#facet-queries">Facet Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#facet-listings">Facet Listings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#temporal-coverage-queries">Temporal Coverage Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#spatial-coverage-queries">Spatial Coverage Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#distributed-queries">Distributed Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#shard-queries">Shard Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#replica-queries">Replica Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#latest-and-version-queries">Latest and Version Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#retracted-queries">Retracted Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#minimum-and-maximum-version-queries">Minimum and Maximum Version Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#results-pagination">Results Pagination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#output-format">Output Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#returned-metadata-fields">Returned Metadata Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#identifiers">Identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#access-urls">Access URLs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ESGF_Search_RESTful_API.html#wget-scripting">Wget scripting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="REST_Publishing_Services.html">ESGF REST Publishing Services</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="REST_Publishing_Services.html#api">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="REST_Publishing_Services.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="REST_Publishing_Services.html#pull-operations">“Pull” Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="REST_Publishing_Services.html#pull-publishing-service">Pull Publishing Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="REST_Publishing_Services.html#pull-unpublishing-service">Pull UnPublishing Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="REST_Publishing_Services.html#push-operations">“Push” Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="REST_Publishing_Services.html#push-publishing-service">Push Publishing Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="REST_Publishing_Services.html#push-unpublishing-service">Push UnPublishing Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="REST_Publishing_Services.html#delete-operations">Delete Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="REST_Publishing_Services.html#delete-unpublishing-service">Delete UnPublishing Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="REST_Publishing_Services.html#retract-operations">Retract Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="REST_Publishing_Services.html#retract-unpublishing-service">Retract UnPublishing Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="REST_Publishing_Services.html#python-client-example">Python Client Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="REST_Publishing_Services.html#rest-publishing-to-local-shard">REST Publishing to Local Shard</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Atomic_Metadata_Updates.html">Atomic Metadata Updates</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Atomic_Metadata_Updates.html#semantics">Semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Atomic_Metadata_Updates.html#apis">APIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Atomic_Metadata_Updates.html#esgf-atomic-metadata-updates">ESGF Atomic Metadata Updates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="Atomic_Metadata_Updates.html#pre-requisites">Pre-Requisites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Atomic_Metadata_Updates.html#get-https-requests">GET HTTPS Requests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Atomic_Metadata_Updates.html#post-https-requests">POST HTTPS Requests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Atomic_Metadata_Updates.html#targetting-the-local-shard">Targetting the Local Shard</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Core_Metadata.html">ESGF Core Metadata</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Core_Metadata.html#required-fields">Required Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Core_Metadata.html#optional-fields-needed-for-versioning-and-replication">Optional Fields needed for Versioning and Replication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Core_Metadata.html#optional-generic-fields">Optional Generic Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Core_Metadata.html#optional-fields-needed-for-files-download">Optional Fields needed for Files Download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Core_Metadata.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Earth_Sciences_Metadata.html">ESGF Earth Sciences Metadata</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Earth_Sciences_Metadata.html#optional-earth-science-generic-fields">Optional Earth Science Generic Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Earth_Sciences_Metadata.html#optional-fields-used-for-geospatial-and-temporal-searches">Optional Fields used for Geospatial and Temporal Searches</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Climate_Model_Metadata.html">Climate Model Metadata</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Climate_Model_Metadata.html#mandatory-drs-data-reference-syntax-metadata-fields">Mandatory DRS (Data Reference Syntax) Metadata Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Climate_Model_Metadata.html#optional-metadata-fields">Optional Metadata Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Climate_Model_Metadata.html#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Metadata_Validation.html">Metadata Validation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Metadata_Validation.html#schema-hirearchy">Schema HIrearchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Metadata_Validation.html#solr-compliance">Solr compliance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Metadata_Validation.html#meta-schemas">Meta-Schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Metadata_Validation.html#appendix-xsd-versus-esgf-meta-schemas">Appendix: XSD versus ESGF meta-schemas</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 <div class="section" id="indices-and-tables">
@@ -163,6 +260,13 @@
            
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="ESGF_Search_RESTful_API.html" class="btn btn-neutral float-right" title="The ESGF Search RESTful API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
   
 
   <hr/>

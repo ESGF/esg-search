@@ -1,0 +1,336 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Metadata Validation &mdash; esg-search v4.7.19 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Climate Model Metadata" href="Climate_Model_Metadata.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> esg-search
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ESGF_Search_RESTful_API.html">The ESGF Search RESTful API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="REST_Publishing_Services.html">ESGF REST Publishing Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Atomic_Metadata_Updates.html">Atomic Metadata Updates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Core_Metadata.html">ESGF Core Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Earth_Sciences_Metadata.html">ESGF Earth Sciences Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Climate_Model_Metadata.html">Climate Model Metadata</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Metadata Validation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#schema-hirearchy">Schema HIrearchy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#solr-compliance">Solr compliance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#meta-schemas">Meta-Schemas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#appendix-xsd-versus-esgf-meta-schemas">Appendix: XSD versus ESGF meta-schemas</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">esg-search</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Metadata Validation</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Metadata_Validation.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="metadata-validation">
+<h1>Metadata Validation<a class="headerlink" href="#metadata-validation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="schema-hirearchy">
+<h2>Schema HIrearchy<a class="headerlink" href="#schema-hirearchy" title="Permalink to this headline">¶</a></h2>
+<p>The ESGF Publishing Services enforce record validation: before being
+ingested into the metadata index, all incoming records are validated for
+basic compliance requirements, and optionally for project-specific
+compliance.</p>
+<p>Record validation is based on meta-schemas - XML document instances that
+encode the rules to be applied by the validation engine. Currently,
+meta- schemas are distributed as part of the “esgf-search” module in the
+ESGF GitHub repository, in the future they might be made available and
+read from some URL location. Meta-schemas are modularized to encode
+distinct sets of requirements. Specifically at this time the following
+schemas are available:</p>
+<ul class="simple">
+<li><p>esgf.xml : contains core requirements that ALL XML records must
+comply with (each record must have an “id”, a “type”, a “title”,
+etc.). This schema is always enforced.</p></li>
+<li><p>geo.xml : contains requirements for Earth Sciences data. This schema
+is always enforced, but all of its elements are optional so it only
+applies to Earth Sciences datasets.</p></li>
+<li><p>cmip5.xml : contains requirements specific to CMIP5 model data (and
+similar datasets such as obs4MIPs and ana4MIPs). This schema is
+enforced only if the publisher agent explicitly requests it (in
+“pull” operations), or flags the records as such (in “push”
+operations).</p></li>
+</ul>
+</div>
+<div class="section" id="solr-compliance">
+<h2>Solr compliance<a class="headerlink" href="#solr-compliance" title="Permalink to this headline">¶</a></h2>
+<p>Solr uses its own schema definition document (schema.xml inside each
+core conf/ directory) to validate the incoming metadata records.
+Unfortunately, this document lacks all the information that is needed
+for ESGF validation, and therefore ESGF metadata must be defined in two
+different places.</p>
+<p>Luckily, the definition of ESGF metadata fields within the Solr
+schema.xml document may be greatly shortened by defining some naming
+conventions:</p>
+<ul class="simple">
+<li><p>Some fields such as id, title, type, etc. are defined explicitely
+either because they are single-valued, or because they are of type
+date, float, etc.</p></li>
+<li><p>Fields that start or end in “date” are considered of type “date” and
+can only have one value</p></li>
+<li><p>Otherwise, all other fields are considered multiple-values, and of
+type string</p></li>
+</ul>
+</div>
+<div class="section" id="meta-schemas">
+<h2>Meta-Schemas<a class="headerlink" href="#meta-schemas" title="Permalink to this headline">¶</a></h2>
+<p>ESGF meta-schemas are XML documents (conforming to a single XSD schema)
+that allow for encoding of a complex validation semantics, specifically:</p>
+<ul class="simple">
+<li><p>The required and optional metadata elements and their cardinality.</p></li>
+<li><p>The metadata element type, including advanced or custom types such as
+“uuid”. The default type if not specified is “string”.</p></li>
+<li><p>The record types to which they apply: “Dataset”, “File”,
+“Aggregation”. By default, they apply to all record types.</p></li>
+<li><p>An optional minimum value and maximum value for numeric fields.</p></li>
+<li><p>An optional controlled vocabulary for string fields.</p></li>
+</ul>
+<p>Meta-schemas are parsed by the ESGF validation engine, that enforces the
+corresponding rules on the incoming XML records (after converting them
+to Java objects). The validation engine may also apply higher logic to
+specific fields: for example, “url” fields are inspected for being of
+the form “url|mimeType|serverName”. Note that currently the ESGF
+validation engine adopts a “lenient” approach: if a metadata field is
+found in the incoming XML record, but not constrained by any meta-schema
+requirement, it is still ingested as a multi-valued field of type
+“string” (assuming it is not defined otherwise by the Solr engine own
+schema, in which case the field will pass ESGF validation but may be
+rejected by Solr).</p>
+<p>As mentioned, “core” validation is enforced for all publishing
+operations - both “push” and “pull”. Additional validation based on some
+other schema (such as “schema=cmip5”) must be requested by the client:</p>
+<ul class="simple">
+<li><p>pull publishing : the additional HTTP POST parameter “schema=….” must
+be specified</p></li>
+<li><p>push publishing : the Solr/XML document that is the payload of the
+request must be flagged as conforming to the desired schema via the
+“<a class="reference external" href="mailto:doc&#37;&#52;&#48;schema">doc<span>&#64;</span>schema</a>” XML attribute (which is ignored by the Solr engine upon
+ingestion). Note that no validation is applied to un-publishing or
+delete operations (as the only field that matters is the record
+“id”).</p></li>
+</ul>
+</div>
+<div class="section" id="appendix-xsd-versus-esgf-meta-schemas">
+<h2>Appendix: XSD versus ESGF meta-schemas<a class="headerlink" href="#appendix-xsd-versus-esgf-meta-schemas" title="Permalink to this headline">¶</a></h2>
+<p>Historically, the following considerations led to the decision of using
+custom meta-schemas instead of standard XSD documents for validating
+ESGF records:</p>
+<ul class="simple">
+<li><p>Advantages of XSD documents:</p>
+<ul>
+<li><p>Validation can be performed by standard libraries available in all
+languages.</p></li>
+<li><p>XML records conforming to XSD schemas can be validated by non-ESGF
+software and engines.</p></li>
+</ul>
+</li>
+<li><p>Disadvantages of XSD schemas:</p>
+<ul>
+<li><p>XSDs are written in a very complex and verbose syntax, that
+require humans to gain specific training to understand and modify</p></li>
+<li><p>At this time, XSDs require optional metadata fields to follow a
+specific order in the document (this will change in the near
+future, but library support will take some time).</p></li>
+</ul>
+</li>
+<li><p>Advantages of ESGF meta-schemas</p>
+<ul>
+<li><p>They are much simpler than XSD schemas…</p></li>
+<li><p>…yet they allow to encode a richer semantics such as record type
+dependency, custom metadata types, etc.</p></li>
+<li><p>They can be enforced on XML documents conforming to Solr/XML, as
+opposed to documents conforming to some other XSD schema. Solr/XML
+documents are very simple, uniform across all projects, and can be
+directly ingested into Solr without the need for an additional
+conversion.</p></li>
+<li><p>The validating engine can apply any additional custom logic (for
+example, for “url” fields).</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="Climate_Model_Metadata.html" class="btn btn-neutral float-left" title="Climate Model Metadata" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Sasha Ames
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

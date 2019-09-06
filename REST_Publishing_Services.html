@@ -1,0 +1,518 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ESGF REST Publishing Services &mdash; esg-search v4.7.19 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Atomic Metadata Updates" href="Atomic_Metadata_Updates.html" />
+    <link rel="prev" title="The ESGF Search RESTful API" href="ESGF_Search_RESTful_API.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> esg-search
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ESGF_Search_RESTful_API.html">The ESGF Search RESTful API</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ESGF REST Publishing Services</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#api">API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pull-operations">“Pull” Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pull-publishing-service">Pull Publishing Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pull-unpublishing-service">Pull UnPublishing Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#push-operations">“Push” Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#push-publishing-service">Push Publishing Service</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#push-unpublishing-service">Push UnPublishing Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#delete-operations">Delete Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#delete-unpublishing-service">Delete UnPublishing Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#retract-operations">Retract Operations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#retract-unpublishing-service">Retract UnPublishing Service</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#python-client-example">Python Client Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rest-publishing-to-local-shard">REST Publishing to Local Shard</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Atomic_Metadata_Updates.html">Atomic Metadata Updates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Core_Metadata.html">ESGF Core Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Earth_Sciences_Metadata.html">ESGF Earth Sciences Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Climate_Model_Metadata.html">Climate Model Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Metadata_Validation.html">Metadata Validation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">esg-search</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>ESGF REST Publishing Services</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/REST_Publishing_Services.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="esgf-rest-publishing-services">
+<h1>ESGF REST Publishing Services<a class="headerlink" href="#esgf-rest-publishing-services" title="Permalink to this headline">¶</a></h1>
+<p>The ESGF REST Publishing Services represent the “next generation” set of
+services for publishing data into ESGF - as opposed to the old
+Hessian-based services which are still supported, but will eventually be
+phased out. The main features of the new framework are:</p>
+<ul class="simple">
+<li><p>The capability to publish resources of any kind, not just files
+(mainly in NetCDF format) listed in THREDDS catalogs</p></li>
+<li><p>The capability to publish resources by invoking either “push” or
+“pull” operations</p></li>
+<li><p>The capability to validate metadata records upoin ingestion</p></li>
+<li><p>The representation of the service endpoints as simple REST URLs</p></li>
+</ul>
+<p>The new services are secured in exactly the same way as the old
+services. Specifically, publication is controlled by local policies on
+the Data Node, which match classes of resources to groups and roles
+authorized for publishing. As part of the request, the publishing client
+needs to transmit to the server an X509 certificate containing the
+identity of the publication agent. The server uses the agent identity to
+invoke the local authorization service.</p>
+<div class="section" id="api">
+<h2>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h2>
+<p>The Publishing Services API consists of matching RESTful endpoints for
+publishing and unpublishing metadata, in both pull and push mode.
+Additionally, a service is provided to delete records by identier.</p>
+<p>Behavior common to all services:</p>
+<ul class="simple">
+<li><p>All services must be invoked by clients via HTTPS POST requests</p></li>
+<li><p>The client request must include an X.509 certificate for
+authentication and authorization</p></li>
+<li><p>Currently, all invocations are synchronous - i.e. the server, upon
+receiving a request, starts processing and only returns a response to
+the client when the operation is completed (succesfully or not). Note
+that this is the same behavior as the old services. Asynchronous
+invocations may be supported in a future release.</p></li>
+<li><p>The response returned to the client contains:</p>
+<ul>
+<li><p>The standard HTTP status code indicating the result of the
+publishing operation. In particular, the following codes may be
+returned:</p>
+<ul>
+<li><p>200 OK: the publishing operation was succesfull</p></li>
+<li><p>400 Bad Request: request parameters are missing or have
+incorrect values</p></li>
+<li><p>401 Unauthorized: publishing operation failed because agent
+lacked the proper permission</p></li>
+<li><p>500 Internal Server Error: publishing operation failed because
+of an unspecified error arised on the server side</p>
+<ul>
+<li><p>A body encoded as XML containing a short confirmation
+message in case of success, or an error message in case of
+failure</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Throughout this document, example service invocations are provided using
+the popular WGET client. Additionally, at the end we also show an
+example Python script that invokes a service endpoint leveraging the
+Python “Requests” library.</p>
+</div>
+<div class="section" id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Permalink to this headline">¶</a></h2>
+<p>The examples below assumes the following initial setup:</p>
+<ul class="simple">
+<li><p>The publishing agent has obtained an X.509 certificate from an ESGF
+trusted MyProxy server</p></li>
+<li><p>The openid identity contained in the certificate is authorized to
+publish data into the target Index Node</p></li>
+</ul>
+<p>Example on how to obtain an X.509 certificate using the myproxy-logon
+client:</p>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>myproxy-logon -s esgf-node.jpl.nasa.gov -p 7512 -l -t 48 -o ~/.esg/credentials.pem
+</pre></div>
+</div>
+</div>
+<div class="section" id="pull-operations">
+<h2>“Pull” Operations<a class="headerlink" href="#pull-operations" title="Permalink to this headline">¶</a></h2>
+<p>In “pull” mode, the client requests the server to harvest metadata from
+a repository. Records are generated on the server side, validated, and
+sent to the metadata store for ingestion. Note that for Pull operations
+the server authorizes the user to execute the operation based on the
+resource “uri”.</p>
+<div class="section" id="pull-publishing-service">
+<h3>Pull Publishing Service<a class="headerlink" href="#pull-publishing-service" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>URL: <a class="reference external" href="https:///esg-search/ws/harvest">https:///esg-search/ws/harvest</a></p></li>
+<li><p>HTTP POST data: encoded as form (key, value) pair</p>
+<ul>
+<li><p>uri: location identifier of remote metadata repository or catalog</p></li>
+<li><p>metadataRepositoryType: type of metadata repository, chosen from controlled vocabulary</p></li>
+<li><p>schema: optional URI of additional schema for record validation</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p>Example (must be entered only on one line, with … removed):</p>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem\
+     --certificate ~/.esg/credentials.pem --private-key ~/.esg/credentials.pem\
+     --verbose\
+     --post-data=&quot;uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/...
+                  ...NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml&amp;metadataRepositoryType=THREDDS&quot;\
+  https://esgf-dev.jpl.nasa.gov/esg-search/ws/harvest
+</pre></div>
+</div>
+</div>
+<div class="section" id="pull-unpublishing-service">
+<h3>Pull UnPublishing Service<a class="headerlink" href="#pull-unpublishing-service" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><p>URL: <a class="reference external" href="https:///esg-search/ws/unharvest">https:///esg-search/ws/unharvest</a></p></li>
+<li><p>HTTP POST data: encoded as form (key, value) pairs</p>
+<ul>
+<li><p>uri: location identifier of remote metadata repository or catalog</p></li>
+<li><p>metadataRepositoryType: type of metadata repository, chosen from controlled vocabulary</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p>Example (must be entered only on one line, with … removed):</p>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
+      –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem\
+     –verbose
+     –post-data=&quot;uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/…
+               …NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml
+     https://esgf-dev.jpl.nasa.gov/esg-search/ws/unharvest
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="push-operations">
+<h2>“Push” Operations<a class="headerlink" href="#push-operations" title="Permalink to this headline">¶</a></h2>
+<p>In “push” mode, the client sends already generated metadata records to
+the server. The server validates the records and send them to the
+metadata store for ingestion. Client authorization is based on the “id”
+of the resource that is been published or unpublished.</p>
+<div class="section" id="push-publishing-service">
+<h3>Push Publishing Service<a class="headerlink" href="#push-publishing-service" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>URL: <a class="reference external" href="https:///esg-search/ws/publish">https:///esg-search/ws/publish</a></p></li>
+<li><p>HTTP POST data: metadata record encoded as Solr/XML (with optional
+“schema” attribute for additional project-specific validation).</p></li>
+</ul>
+<p>Example (must be entered only on one line):</p>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
+      –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
+      –verbose –post-file=cmip5_dataset.xml
+       https://esgf-dev.jpl.nasa.gov/esg-search/ws/publish
+</pre></div>
+</div>
+<p>The ESGF Search GitHub repository contains several examples of valid
+metadata records that can be published to an ESGF Index Node:</p>
+<ul class="simple">
+<li><p>esgf_dataset.xml : example Dataset metadata record complying to the
+ESGF core and Earth Science schemas</p></li>
+<li><p>esgf_file.xml : example File metadata record complying to the ESGF
+core and Earth Science schemas</p></li>
+<li><p>cmip5_dataset.xml : example CMIP5 Dataset metadata record</p></li>
+<li><p>cmip5_file.xml : example CMIP5 File metadata record</p></li>
+</ul>
+<p>Note that the ESGF metadata store is a Solr index, not a relational
+database: therefore, no relational integrity is enforced between file
+records and dataset records. The client must take care of making sure
+that the file records reference an existing dataset record.</p>
+</div>
+<div class="section" id="push-unpublishing-service">
+<h3>Push UnPublishing Service<a class="headerlink" href="#push-unpublishing-service" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>URL: <a class="reference external" href="https:///esg-search/ws/unpublish">https:///esg-search/ws/unpublish</a></p></li>
+<li><p>HTTP POST data: metadata record encoded as Solr/XML (same that was
+used for publishing, although only the “id” and “type” information
+will really be used).</p></li>
+</ul>
+<p>Example (must be entered only on one line):</p>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
+      –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
+      –verbose –post-file=cmip5_dataset.xml
+      https://esgf-dev.jpl.nasa.gov/esg-search/ws/unpublish
+</pre></div>
+</div>
+<p>Note that unpublishing a dataset record will automatically unpublish all
+file and aggregation records that reference that dataset.</p>
+</div>
+</div>
+<div class="section" id="delete-operations">
+<h2>Delete Operations<a class="headerlink" href="#delete-operations" title="Permalink to this headline">¶</a></h2>
+<p>A generic “delete” service is provided to remove records by identifier
+from the metadata store.</p>
+<div class="section" id="delete-unpublishing-service">
+<h3>Delete UnPublishing Service<a class="headerlink" href="#delete-unpublishing-service" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>URL: <a class="reference external" href="https:///esg-search/ws/delete">https:///esg-search/ws/delete</a></p></li>
+<li><p>HTTP POST data: encoded as form (key, value) pairs</p>
+<ul>
+<li><p>id: identifier of record to be deleted (key and value pairs may be
+repeated any number of times to delete more than one record at a
+time)</p></li>
+</ul>
+</li>
+</ul>
+<p>Example (must be entered only on one line, with … removed):</p>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
+      –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
+      –verbose -O response.xml
+      –post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323…
+                   …|pcmdi9.llnl.gov”
+      https://esgf-dev.jpl.nasa.gov/esg-search/ws/delete
+</pre></div>
+</div>
+<p>Note that just like before, unpublishing a dataset record will
+automatically unpublish all file and aggregation records that reference
+that dataset.</p>
+</div>
+</div>
+<div class="section" id="retract-operations">
+<h2>Retract Operations<a class="headerlink" href="#retract-operations" title="Permalink to this headline">¶</a></h2>
+<p>Datasets can be “retracted” when they are not deemed fit for use in
+scientfiic research - for example because some major problem was found.
+In this case, all file and aggregations records are physically deleted
+from the catalog (so that data cannot be downloaded any more), but the
+dataset record is kept in the catalog for reference, and marked as
+“retracted”.</p>
+<div class="section" id="retract-unpublishing-service">
+<h3>Retract UnPublishing Service<a class="headerlink" href="#retract-unpublishing-service" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>URL: <a class="reference external" href="https:///esg-search/ws/retract">https:///esg-search/ws/retract</a></p></li>
+<li><p>HTTP POST data: encoded as form (key, value) pairs</p>
+<ul>
+<li><p>id: identifier of record to be retracted (key and value pairs may
+be repeated any number of times to delete more than one record at
+a time)</p></li>
+</ul>
+</li>
+</ul>
+<p>Example (must be entered only on one line, with … removed):</p>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
+     –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
+     –verbose -O response.xml
+     –post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323..pcmdi9.llnl.gov”
+     https://esgf-dev.jpl.nasa.gov/esg-search/ws/retract
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="python-client-example">
+<h2>Python Client Example<a class="headerlink" href="#python-client-example" title="Permalink to this headline">¶</a></h2>
+<p>Following is an example on how to invoke the ESGF Publishing Services
+from a Python client. The example leverages the Python Requests library
+for HTTP(s) communication with the server.</p>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>import requests
+
+url = “https://esgf-dev.jpl.nasa.gov/esg-search/ws/harvest”
+mycertpath = “/Users/cinquini/.esg/credentials.pem”
+catalog =  “http://aims3.llnl.gov/thredds/catalog/esgcet/1/”
+         +“cmip5.output1.NIMR-KMA.HadGEM2-AO.historical.mon.atmos.Amon.r1i1p1.v20130815.xml”
+postdata = {“uri” : catalog,
+“metadataRepositoryType”:“THREDDS”,
+“schema”:“cmip5” }
+
+resp = requests.post(url, cert=(mycertpath, mycertpath), data=postdata, verify=False )
+print resp.status_code
+print resp.text
+</pre></div>
+</div>
+<p>Cut-and-paste the above script into a file, for example
+“client_example.py”, and execute as: python client_example.py .</p>
+</div>
+<div class="section" id="rest-publishing-to-local-shard">
+<h2>REST Publishing to Local Shard<a class="headerlink" href="#rest-publishing-to-local-shard" title="Permalink to this headline">¶</a></h2>
+<p>The ESGF REST Publishing Services support an alternative set of web
+service endpoints that will publish/unpublish metadata to/from the local
+Solr instance runninig on port 8982. Specifically, to target the local
+shard, a client must use the following URLs:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https:///esg-search/ws/harvestLocal">https:///esg-search/ws/harvestLocal</a></p></li>
+<li><p><a class="reference external" href="https:///esg-search/ws/unharvestLocal">https:///esg-search/ws/unharvestLocal</a></p></li>
+<li><p><a class="reference external" href="https:///esg-search/ws/publishLocal">https:///esg-search/ws/publishLocal</a></p></li>
+<li><p><a class="reference external" href="https:///esg-search/ws/unpublishLocal">https:///esg-search/ws/unpublishLocal</a></p></li>
+<li><p><a class="reference external" href="https:///esg-search/ws/deleteLocal">https:///esg-search/ws/deleteLocal</a></p></li>
+<li><p><a class="reference external" href="https:///esg-search/ws/retractLocal">https:///esg-search/ws/retractLocal</a></p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Atomic_Metadata_Updates.html" class="btn btn-neutral float-right" title="Atomic Metadata Updates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="ESGF_Search_RESTful_API.html" class="btn btn-neutral float-left" title="The ESGF Search RESTful API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Sasha Ames
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

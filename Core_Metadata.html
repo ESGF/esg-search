@@ -1,0 +1,409 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>ESGF Core Metadata &mdash; esg-search v4.7.19 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ESGF Earth Sciences Metadata" href="Earth_Sciences_Metadata.html" />
+    <link rel="prev" title="Atomic Metadata Updates" href="Atomic_Metadata_Updates.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> esg-search
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ESGF_Search_RESTful_API.html">The ESGF Search RESTful API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="REST_Publishing_Services.html">ESGF REST Publishing Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Atomic_Metadata_Updates.html">Atomic Metadata Updates</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ESGF Core Metadata</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#required-fields">Required Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-fields-needed-for-versioning-and-replication">Optional Fields needed for Versioning and Replication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-generic-fields">Optional Generic Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-fields-needed-for-files-download">Optional Fields needed for Files Download</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Earth_Sciences_Metadata.html">ESGF Earth Sciences Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Climate_Model_Metadata.html">Climate Model Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Metadata_Validation.html">Metadata Validation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">esg-search</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>ESGF Core Metadata</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Core_Metadata.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="esgf-core-metadata">
+<h1>ESGF Core Metadata<a class="headerlink" href="#esgf-core-metadata" title="Permalink to this headline">¶</a></h1>
+<p>ESGF “core” metadata includes mandatory and optional fields that are
+needed to search and download data throughout the ESGF system. These
+fields are not specific to any scientific discpline, rather they are
+common to any discpline that intends to leverage the ESGF
+infrastructure. Core metadata fields are defined in the ESGF meta-schema
+file esgf.xml, which is always used for validation whenever metadata
+records are published.</p>
+<p>When a client invokes the ESGF “Pull” Publishing Services, valid
+metadata records are automatically created on the server by harvesting
+pre-existing THREDDS catalogs. Viceversa, when a client invokes the ESGF
+“Push” Publishing Services, it is itself responsible for creating valid
+metadata records before they are sent to the server for ingestion.</p>
+<div class="section" id="required-fields">
+<h2>Required Fields<a class="headerlink" href="#required-fields" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>id (string): record identifier, must be globally unique. It is
+specific to a verion and replica of that object</p>
+<ul>
+<li><p>Note: when parsing THREDDS catalogs, it is built as
+“instance_id|data_node”</p></li>
+<li><p>Note: could be any string, including a UUID</p></li>
+<li><p>Example (for Dataset): id
+cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323|pcmdi9.llnl.gov</p></li>
+<li><p>Example (for File): id =
+cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323.huss_day_inmcm4_1pctCO2_r1i1p1_20900101-20991231.nc|pcmdi9.llnl.gov</p></li>
+</ul>
+</li>
+<li><p>title (string): record title, displayed as main text in search
+results</p>
+<ul>
+<li><p>Example: title = “project=CMIP5 / IPCC Fifth Assessment Report,
+model=Institute for Numerical Mathematics, experiment=1 percent
+per year CO2, time_frequency=day, modeling realm=atmos,
+ensemble=r1i1p1, version=20110323”</p></li>
+</ul>
+</li>
+<li><p>type (string chosen from Controlled Vocabulary): record type, used to
+enable searching on different targets</p>
+<ul>
+<li><p>Note: currently valid values are: “Dataset”, “File”, “Aggregation”</p></li>
+<li><p>Note: record of different types are mapped to separate Solr cores,
+cannot search acrosss cores</p></li>
+<li><p>Example: type=Dataset</p></li>
+</ul>
+</li>
+<li><p>project (string): provides a scientific context for these data - for
+Datasets only</p>
+<ul>
+<li><p>Example: project = CMIP5</p></li>
+</ul>
+</li>
+<li><p>dataset_id (string) - the enclosing dataset identifier, for files and
+aggregations only</p>
+<ul>
+<li><p>Note: allows to search for datasets first, files later</p></li>
+<li><p>Example: dataset_id =
+cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323|pcmdi9.llnl.gov</p></li>
+</ul>
+</li>
+<li><p>index_node (string): host indexing the data</p>
+<ul>
+<li><p>Note: allows to target the files search to a specific index node
+which greatly improves performance</p></li>
+<li><p>Note: not needed if publishing Datasets that have no files, only
+“service” level endpoints</p></li>
+<li><p>Example: index_node = pcmdi9.llnl.gov</p></li>
+</ul>
+</li>
+<li><p>data_node (string): host serving the data</p>
+<ul>
+<li><p>Note: not needed when publishing Datasets that have no files</p></li>
+<li><p>Example: data_node = pcmdi11.llnl.gov</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="optional-fields-needed-for-versioning-and-replication">
+<h2>Optional Fields needed for Versioning and Replication<a class="headerlink" href="#optional-fields-needed-for-versioning-and-replication" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>version (integer, default=0): version of a Dataset, File or
+Aggregation, if provided it must be an integer</p></li>
+<li><p>master_id (string): globally unique identifier for a “logical”
+Dataset or File: it is the same across all versions and replicas of
+that object</p>
+<ul>
+<li><p>Note: allows searching for all versions and copies of the same
+logical record</p></li>
+<li><p>Example (for Dataset): master_id =
+cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1</p></li>
+<li><p>Example (for File): master_id =
+cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.huss_day_inmcm4_1pctCO2_r1i1p1_20900101-20991231.nc</p>
+<ul>
+<li><p>instance_id (string): globally unique identifier for a specific
+version of a Dataset or File, it’s the same for all replicas of
+that object, but different for different versions</p></li>
+</ul>
+</li>
+<li><p>Note: allows searching for all replicas of the same record of a
+given version</p></li>
+<li><p>Example (for Dataset): iknstance_id =
+cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323</p></li>
+<li><p>Example (for File): instance_id
+=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323.huss_day_inmcm4_1pctCO2_r1i1p1_20900101-20991231.nc</p></li>
+</ul>
+</li>
+<li><p>replica (boolean, default=false): enables support for logical copies
+of the same record</p></li>
+<li><p>latest (boolean, default=true): enables support for searching on
+latest version of each record</p></li>
+<li><p>shard (string): enables publishing to local shard to avoid
+replicating these data across the federation</p>
+<ul>
+<li><p>Example: shard=localhost:8982</p></li>
+</ul>
+</li>
+<li><p>checksum: file checksum - Files only</p>
+<ul>
+<li><p>Example: checksum = 7fcd959a4bb57e4079c8e65a7a5d0499</p></li>
+</ul>
+</li>
+<li><p>checksum_type (string from CV): the algorithm used to compute the
+checksum</p>
+<ul>
+<li><p>Example: checksum_type = SHA256</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="optional-generic-fields">
+<h2>Optional Generic Fields<a class="headerlink" href="#optional-generic-fields" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>description (string) - additional text displayed in search results</p>
+<ul>
+<li><p>Example: description = inmcm4 model output prepared for CMIP5 1
+percent per year CO2</p></li>
+</ul>
+</li>
+<li><p>url (string, zero, one or more): record access point, encoded as
+3-tuple of the form (URL|mime-type|service name)</p>
+<ul>
+<li><p>Example: url =
+<a class="reference external" href="http://pcmdi9.llnl.gov/thredds/esgcet/1/cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323.xml#cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1">http://pcmdi9.llnl.gov/thredds/esgcet/1/cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323.xml#cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1</a>.v20110323|application/xml+thredds|Catalog</p></li>
+<li><p>Example: url =
+<a class="reference external" href="http://pcmdi9.llnl.gov/las/getUI.do?catid=D9C519D5A310E197819B7197215FD574_ns_cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1">http://pcmdi9.llnl.gov/las/getUI.do?catid=D9C519D5A310E197819B7197215FD574_ns_cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1</a>.v20110323|application/las|LAS</p></li>
+</ul>
+</li>
+<li><p>access (string, zero, one or more): name of the service through which
+the data can be acceesed</p>
+<ul>
+<li><p>Example: access = THREDDS, access = LAS</p></li>
+</ul>
+</li>
+<li><p>timestamp (date): date the document was created or last modified - if
+such information is found</p>
+<ul>
+<li><p>Note: if provided, it must be in the form:
+yyyy-MM-dd’T’HH:mm:ss’Z’</p></li>
+<li><p>Example: timestamp = 2012-01-13T01:34:15Z</p></li>
+</ul>
+</li>
+<li><p>schema (string, must be chosen from Controlled Vocabulary) - used to
+enable server-side validation</p>
+<ul>
+<li><p>Note: must be encoded as attribute of the top-level root XML
+element</p></li>
+<li><p>Example: schema = “cmip5”</p></li>
+</ul>
+</li>
+<li><p>format (string): the data format</p>
+<ul>
+<li><p>Example: format = NetCDF</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="optional-fields-needed-for-files-download">
+<h2>Optional Fields needed for Files Download<a class="headerlink" href="#optional-fields-needed-for-files-download" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>size (long) - total size in bytes of record content (i.e. size of
+single file, or global size of all files in a dataset)</p></li>
+<li><p>number_of_files (integer) - for datasets only</p></li>
+<li><p>numbr_of_aggregations (integer) - for datasets only</p></li>
+</ul>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>esgf_dataset.xml : example Dataset metadata record complying to the
+ESGF core and Earth Science schemas</p></li>
+<li><p>esgf_file.xml : example File metadata record complying to the ESGF
+core and Earth Science schemas</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Earth_Sciences_Metadata.html" class="btn btn-neutral float-right" title="ESGF Earth Sciences Metadata" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Atomic_Metadata_Updates.html" class="btn btn-neutral float-left" title="Atomic Metadata Updates" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Sasha Ames
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

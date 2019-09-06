@@ -1,0 +1,737 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>The ESGF Search RESTful API &mdash; esg-search v4.7.19 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="ESGF REST Publishing Services" href="REST_Publishing_Services.html" />
+    <link rel="prev" title="Welcome to esg-search’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> esg-search
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">The ESGF Search RESTful API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#syntax">Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#keywords">Keywords</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#default-query">Default Query</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#free-text-queries">Free Text Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#facet-queries">Facet Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#facet-listings">Facet Listings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#temporal-coverage-queries">Temporal Coverage Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#spatial-coverage-queries">Spatial Coverage Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#distributed-queries">Distributed Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#shard-queries">Shard Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#replica-queries">Replica Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#latest-and-version-queries">Latest and Version Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#retracted-queries">Retracted Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#minimum-and-maximum-version-queries">Minimum and Maximum Version Queries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#results-pagination">Results Pagination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#output-format">Output Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#returned-metadata-fields">Returned Metadata Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#identifiers">Identifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#access-urls">Access URLs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#wget-scripting">Wget scripting</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="REST_Publishing_Services.html">ESGF REST Publishing Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Atomic_Metadata_Updates.html">Atomic Metadata Updates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Core_Metadata.html">ESGF Core Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Earth_Sciences_Metadata.html">ESGF Earth Sciences Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Climate_Model_Metadata.html">Climate Model Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Metadata_Validation.html">Metadata Validation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">esg-search</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>The ESGF Search RESTful API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/ESGF_Search_RESTful_API.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="the-esgf-search-restful-api">
+<h1>The ESGF Search RESTful API<a class="headerlink" href="#the-esgf-search-restful-api" title="Permalink to this headline">¶</a></h1>
+<p>The ESGF search service exposes a RESTful URL that can be used by
+clients (browsers and desktop clients) to query the contents of the
+underlying search index, and return results matching the given
+constraints. Because of the distributed capabilities of the ESGF search,
+the URL at any Index Node can be used to query that Node only, or all
+Nodes in the ESGF system.</p>
+<div class="section" id="syntax">
+<h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
+<p>The general syntax of the ESGF search service URL is:</p>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>http:///search?[keyword parameters as (name, value) pairs][facet parameters as (name,value) pairs]
+</pre></div>
+</div>
+<p>where “” is the base URL of the search service at a given Index Node.</p>
+<p>All parameters (keyword and facet) are optional. Also, the value of all
+parameters must be URL-encoded, so that the complete search URL is well
+formed.</p>
+</div>
+<div class="section" id="keywords">
+<h2>Keywords<a class="headerlink" href="#keywords" title="Permalink to this headline">¶</a></h2>
+<p>Keyword parameters are query parameters that have reserved names, and
+are interpreted by the search service to control the fundamental nature
+of a search request: where to issue the request to, how many results to
+return, etc.</p>
+<p>The following keywords are currently used by the system - see later for
+usage examples:</p>
+<ul class="simple">
+<li><p>facets= to return facet values and counts</p></li>
+<li><p>offset= , limit= to paginate through the available results (default:
+offset=0, limit=10)</p></li>
+<li><p>fields= to return only specific metadata fields for each matching
+result (default: fields=*)</p></li>
+<li><p>format= to specify the response document output format</p></li>
+<li><p>type= (searches record of the specified type: Dataset, File or
+Aggregation)</p></li>
+<li><p>replica=false/true (searches for all records, or records that are NOT
+replicas)</p></li>
+<li><p>latest=true/false (searches for just the latest version, or all
+versions)</p></li>
+<li><p>distrib=true/false (searches across all nodes, or the target node
+only)</p></li>
+<li><p>shards= (searches the specified shards only)</p></li>
+<li><p>bbox=[west, south, east, north] (searches within a geo-spatial box)</p></li>
+<li><p>start=, end= (select records based on their nominal data coverage,
+i.e. their datetime_start, datetime_stop values )</p></li>
+<li><p>from=, to= (select records based on when the data was marked as last
+modified, i.e. their nominal “timestamp” value)</p></li>
+</ul>
+</div>
+<div class="section" id="default-query">
+<h2>Default Query<a class="headerlink" href="#default-query" title="Permalink to this headline">¶</a></h2>
+<p>If no parameters at all are specified, the search service will execute a
+query using all the default values, specifically:</p>
+<ul class="simple">
+<li><p>query=* (query all records)</p></li>
+<li><p>distrib=true (execute a distributed search)</p></li>
+<li><p>type=Dataset (return results of type “Dataset”)</p></li>
+</ul>
+<p>Example:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search">http://esgf-node.jpl.nasa.gov/esg-search/search</a></p></li>
+</ul>
+</div>
+<div class="section" id="free-text-queries">
+<h2>Free Text Queries<a class="headerlink" href="#free-text-queries" title="Permalink to this headline">¶</a></h2>
+<p>The keyword parameter query= can be specified to execute a query that
+matches the given text _ anywhere _ in the records metadata fields.
+The parameter value can be any expression following the Apache Lucene
+query syntax (because it is passed “as-is” to the back-end Solr query),
+and must be URL- encoded. When using the CoG user interface at any ESGF
+node and project, the “query=” parameter value must be entered in the
+text field at the top of the page.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>Search for any text, anywhere:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=*">http://esgf-node.jpl.nasa.gov/esg-search/search?query=*</a> (the default
+value of the query parameter)</p></li>
+<li><p>Search for “humidity” in all metadata fields:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=humidity">http://esgf-node.jpl.nasa.gov/esg-search/search?query=humidity</a></p></li>
+<li><p>Search for the exact sentence “specific humidity” in all metadata
+fields (the sentence must be surrounded by quotes and URL-encoded):
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=%22specific%20humidity%22">http://esgf-node.jpl.nasa.gov/esg-search/search?query=%22specific%20humidity%22</a></p></li>
+<li><p>Search for both words “specific” and “humidity”, but not necessarily
+in an exact sequence (must use a space between the two words = this
+is the same as executing a query with the logical OR):
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=specific%20humidity">http://esgf-node.jpl.nasa.gov/esg-search/search?query=specific%20humidity</a></p></li>
+<li><p>Search for the word “observations” ONLY in the metadata field
+“product” :
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=product:observations">http://esgf-node.jpl.nasa.gov/esg-search/search?query=product:observations</a></p></li>
+<li><p>Using logical AND:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20AND%20humidity">http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20AND%20humidity</a>
+(must use upper case “AND”)</p></li>
+<li><p>Using logical OR:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20OR%20humidity">http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20OR%20humidity</a>
+(must use upper case “OR”). This is the same as using simply a blank
+space:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20humidity">http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20humidity</a>
+)</p></li>
+<li><p>Search for a dataset with a specific id:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.hus.mon">http://esgf-node.jpl.nasa.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.hus.mon</a>.v20110608|esgf-data.jpl.nasa.gov</p></li>
+<li><p>Search for all datasets that match an id pattern:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.*">http://esgf-node.jpl.nasa.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.*</a></p></li>
+</ul>
+</div>
+<div class="section" id="facet-queries">
+<h2>Facet Queries<a class="headerlink" href="#facet-queries" title="Permalink to this headline">¶</a></h2>
+<p>A request to the search service can be constrained to return only those
+records that match specific values for one or more facets. Specifically,
+a facet constraint is expressed through the general form: =, where is
+chosen from the controlled vocabulary of facet names configured at each
+site, and must match exactly one of the possible values for that
+particular facet.</p>
+<p>When specifying more than one facet constraint in the request, multiple
+values for the same facet are combined with a logical OR, while multiple
+values for different facets are combined with a logical AND. Also,
+multiple possible values for teh same facets can be expressed as a
+comma-separated list. For example:</p>
+<ul class="simple">
+<li><p>experiment=decadal2000&amp;variable=hus : will return all records that
+match experiment=decadal2000 AND variable=hus</p></li>
+<li><p>variable=hus&amp;variable=ta : will return all records that match
+variable=hus OR variable=ta</p></li>
+<li><p>variable=hus,ta : will also return all records that match
+variable=hus OR variable=ta</p></li>
+</ul>
+<p>A facet constraint can be negated by using the != operator. For example,
+model!=CCSM searches for all items that do NOT match the CCSM model.
+Note that all negative facets are combined in logical AND, for example,
+model!=CCSM&amp;model!=HadCAM searches for all items that do not match CCSM,
+and do not match HadCAM.</p>
+<p>By default, no facet counts are returned in the output document. Facet
+counts must be explicitly requested by specifying the facet names
+individually (for example: facets=experiment,model) or via the special
+notation facets=*. The facets list must be comma-separated, and white
+spaces are ignored.</p>
+<p>If facet counts is requested, facet values are sorted alphabetically
+(facet.sort=lex), and all facet values are returned (facet.limit=-1),
+provided they match one or more records (facet.mincount=1)</p>
+<p>The “type” facet must be always specified as part of any request to the
+ESGF search services, so that the appropriate records can be searched
+and returned. If not specified explicitly, the default value is
+type=Dataset .</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>Single facet query:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?cf_standard_name=air_temperature">http://esgf-node.jpl.nasa.gov/esg-search/search?cf_standard_name=air_temperature</a></p></li>
+<li><p>Query with two different facet constraints:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?cf_standard_name=air_temperature&amp;project=obs4MIPs">http://esgf-node.jpl.nasa.gov/esg-search/search?cf_standard_name=air_temperature&amp;project=obs4MIPs</a></p></li>
+<li><p>Combining two values of the same facet with a logical OR:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;variable=hus&amp;variable=ta">http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;variable=hus&amp;variable=ta</a>
+(search for all obs4MIPs files that have variable “ta” OR variable
+“hus”)</p></li>
+<li><p>Using a negative facet:</p>
+<ul>
+<li><p><a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;variable=hus&amp;variable=ta&amp;model!=Obs-AIRS">http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;variable=hus&amp;variable=ta&amp;model!=Obs-AIRS</a>
+(search for all obs4MIPs datasets that have variable ta OR hus,
+excluding those produced by AIRS)</p></li>
+<li><p><a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;variable!=ta&amp;variable!=huss">http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;variable!=ta&amp;variable!=huss</a>
+(search for all obs4MIPs datasets that do not contain neither
+variable ta nor variable huss)</p></li>
+</ul>
+</li>
+<li><p>Search a file by its tracking id:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;tracking_id=2209a0d0-9b77-4ecb-b2ab-b7ae412e7a3f">http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;tracking_id=2209a0d0-9b77-4ecb-b2ab-b7ae412e7a3f</a></p></li>
+<li><p>Search a file by its checksum:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;checksum=83df8ae93e85e26df797d5f770449470987a4ecd8f2d405159995b5cac9a410c">http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;checksum=83df8ae93e85e26df797d5f770449470987a4ecd8f2d405159995b5cac9a410c</a></p></li>
+<li><p>Issue a query for all supported facets and their values at one site,
+while returning no results (note that only facets with one or more
+values are returned):
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?facets=*&amp;limit=0&amp;distrib=false">http://esgf-node.jpl.nasa.gov/esg-search/search?facets=*&amp;limit=0&amp;distrib=false</a></p></li>
+</ul>
+</div>
+<div class="section" id="facet-listings">
+<h2>Facet Listings<a class="headerlink" href="#facet-listings" title="Permalink to this headline">¶</a></h2>
+<p>The available facet names and values for searching data within a
+specific project can be listed with a query of the form
+…project=&amp;facets=*&amp;limit=0 (i.e. return no results). Only facet values
+that match one or more records will be returned.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>List all obs4MIPs facet names and values:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;facets=*&amp;limit=0">http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;facets=*&amp;limit=0</a></p></li>
+<li><p>List all CMIP5 facet names and values:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;facets=*&amp;limit=0">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;facets=*&amp;limit=0</a></p></li>
+</ul>
+<p>The same query with no project constraint will return all facet names
+and values for ALL data across the federation:</p>
+<ul class="simple">
+<li><p>List ALL facet names and values:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?facets=*&amp;limit=0">http://esgf-node.jpl.nasa.gov/esg-search/search?facets=*&amp;limit=0</a></p></li>
+</ul>
+<p>To retrieve a listing of available values for only a few facets, simply
+specify a comma-separated list of facet names:</p>
+<ul class="simple">
+<li><p>List all values of model, experiment and project throughout the
+federation:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?facets=model,experiment,project&amp;limit=0">http://esgf-node.jpl.nasa.gov/esg-search/search?facets=model,experiment,project&amp;limit=0</a></p></li>
+<li><p>List all values of model, experiment for CMIP5 data:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?facets=model,experiment&amp;project=CMIP5&amp;limit=0">http://esgf-node.jpl.nasa.gov/esg-search/search?facets=model,experiment&amp;project=CMIP5&amp;limit=0</a></p></li>
+</ul>
+</div>
+<div class="section" id="temporal-coverage-queries">
+<h2>Temporal Coverage Queries<a class="headerlink" href="#temporal-coverage-queries" title="Permalink to this headline">¶</a></h2>
+<p>The keyword parameters start= and/or end= can be used to query for data
+with temporal coverage that overlaps the specified range. The parameter
+values can either be date-times in the format “YYYY-MM-DDTHH:MM:SSZ”
+(UTC ISO 8601 format), or special values supported by the Solr DateMath
+syntax.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>Search for data in the past year:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?start=NOW-1YEAR">http://esgf-node.jpl.nasa.gov/esg-search/search?start=NOW-1YEAR</a>
+(translates into the constraint datetime_stop:[NOW-1YEAR TO *] or
+datetime_stop &gt; NOW-1YEAR)</p></li>
+<li><p>Search for data before the year 2000:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?end=2000-01-01T00:00:00Z">http://esgf-node.jpl.nasa.gov/esg-search/search?end=2000-01-01T00:00:00Z</a>
+(translates into the constraint datetime_start:[* TO
+2000-01-01T00:00:00Z] or datetime_start &lt; 2000-01-01)</p></li>
+</ul>
+</div>
+<div class="section" id="spatial-coverage-queries">
+<h2>Spatial Coverage Queries<a class="headerlink" href="#spatial-coverage-queries" title="Permalink to this headline">¶</a></h2>
+<p>The keyword parameter bbox=[west, south, east, north] can be used to
+query for data with spatial coverage that overlaps the given bounding
+box. As usual, the parameter value must be URL-encoded.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?bbox=%5B-10,-10,+10,+10%5D">http://esgf-node.jpl.nasa.gov/esg-search/search?bbox=%5B-10,-10,+10,+10%5D</a>
+( translates to: east_degrees:[-10 TO *] AND north_degrees:[-10 TO
+*] AND west_degrees:[* TO 10] AND south_degrees:[* TO 10] )</p></li>
+</ul>
+<p>Please note though that NOT all ESGF records contain geo-spatial
+information, and therefore will not be returned by a geo-spatial search.</p>
+</div>
+<div class="section" id="distributed-queries">
+<h2>Distributed Queries<a class="headerlink" href="#distributed-queries" title="Permalink to this headline">¶</a></h2>
+<p>The keyword parameter distrib= can be used to control whether the query
+is executed versus the local Index Node only, or distributed to all
+other Nodes in the federation. If not specified, the default value
+distrib=true is assumed.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>Search for all datasets in the federation:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?distrib=true">http://esgf-node.jpl.nasa.gov/esg-search/search?distrib=true</a></p></li>
+<li><p>Search for all datasets at one Node only:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?distrib=false">http://esgf-node.jpl.nasa.gov/esg-search/search?distrib=false</a></p></li>
+</ul>
+</div>
+<div class="section" id="shard-queries">
+<h2>Shard Queries<a class="headerlink" href="#shard-queries" title="Permalink to this headline">¶</a></h2>
+<p>By default, a distributed query (distrib=true) targets all ESGF Nodes in
+the current peer group, i.e. all nodes that are listed in the local
+configuration file /esg/config/esgf_shards.xml , which is continuously
+updated by the local node manager to reflect the latest state of the
+federation. It is possible to execute a distributed search that targets
+only one or more specific nodes, by specifying them in the “shards”
+parameter, as such: shards=hostname1:port1/solr,hostname2:port2/solr,….
+. Note that the explicit shards value is ignored if distrib=false (but
+distrib=true by default if not otherwise specified).</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>Query for CMIP5 data at the PCMDI and CEDA sites only:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;shards=pcmdi.llnl.gov/solr,esgf-index1.ceda.ac.uk/solr">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;shards=pcmdi.llnl.gov/solr,esgf-index1.ceda.ac.uk/solr</a></p></li>
+<li><p>Query for all files belonging to a given dataset at one site only:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;shards=esgf-node.jpl.nasa.gov/solr&amp;dataset_id=obs4MIPs.NASA-JPL.TES.tro3.mon">http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;shards=esgf-node.jpl.nasa.gov/solr&amp;dataset_id=obs4MIPs.NASA-JPL.TES.tro3.mon</a>.v20110608|esgf-data.jpl.nasa.gov</p></li>
+</ul>
+</div>
+<div class="section" id="replica-queries">
+<h2>Replica Queries<a class="headerlink" href="#replica-queries" title="Permalink to this headline">¶</a></h2>
+<p>Replicas (Datasets and Files) are distinguished from the original record
+(a.k.a. the “master”) in the Solr index by the value of two special
+keywords:</p>
+<ul class="simple">
+<li><p>replica: a flag that is set to false for master records, true for
+replica records.</p></li>
+<li><p>master_id: a string that is identical for the master and all replicas
+of a given logical record (Dataset or File).</p></li>
+</ul>
+<p>By default, a query returns all records (masters and replicas) matching
+the search criteria, i.e. no replica=… constraint is used. To return
+only master records, use replica=false, to return only replicas, use
+replica=true. To search for all identical Datasets or Files (i.e. for
+the master AND replicas of a Dataset or File), use master_id=….</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>Search for all datasets in the system (masters and replicas):
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search">http://esgf-node.jpl.nasa.gov/esg-search/search</a></p></li>
+<li><p>Search for just master datasets, no replicas:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?replica=false">http://esgf-node.jpl.nasa.gov/esg-search/search?replica=false</a></p></li>
+<li><p>Search for just replica datasets, no masters:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?replica=true">http://esgf-node.jpl.nasa.gov/esg-search/search?replica=true</a></p></li>
+<li><p>Search for the master AND replicas of a given dataset:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?master_id=cmip5.output1.LASG-CESS.FGOALS-g2.midHolocene.3hr.land.3hr.r1i1p1">http://esgf-node.jpl.nasa.gov/esg-search/search?master_id=cmip5.output1.LASG-CESS.FGOALS-g2.midHolocene.3hr.land.3hr.r1i1p1</a></p></li>
+<li><p>Search for the master and replicas of a given file:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;master_id=cmip5.output1.MIROC.MIROC5.decadal1978.mon.ocean.Omon.r4i1p1.wfo_Omon_MIROC5_decadal1978_r4i1p1_197901-198812.nc">http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;master_id=cmip5.output1.MIROC.MIROC5.decadal1978.mon.ocean.Omon.r4i1p1.wfo_Omon_MIROC5_decadal1978_r4i1p1_197901-198812.nc</a></p></li>
+</ul>
+</div>
+<div class="section" id="latest-and-version-queries">
+<h2>Latest and Version Queries<a class="headerlink" href="#latest-and-version-queries" title="Permalink to this headline">¶</a></h2>
+<p>By default, a query to the ESGF search services will return all versions
+of the matching records (Datasets or Files). To only return the very
+last, up-to-date version include latest=true . To return a specific
+version, use version=… . Using latest=false will return only datasets
+that were superseded by newer versions.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>Search for all latest CMIP5 datasets:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;latest=true">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;latest=true</a></p></li>
+<li><p>Search for all versions of a given dataset:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;master_id=cmip5.output1.MOHC.HadCM3.decadal1972.day.atmos.day.r10i2p1&amp;facets=version">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;master_id=cmip5.output1.MOHC.HadCM3.decadal1972.day.atmos.day.r10i2p1&amp;facets=version</a></p></li>
+<li><p>Search for a specific version of a given dataset:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;master_id=cmip5.output1.NSF-DOE-NCAR.CESM1-CAM5-1-FV2.historical.mon.atmos.Amon.r1i1p1&amp;version=20120712">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;master_id=cmip5.output1.NSF-DOE-NCAR.CESM1-CAM5-1-FV2.historical.mon.atmos.Amon.r1i1p1&amp;version=20120712</a></p></li>
+</ul>
+</div>
+<div class="section" id="retracted-queries">
+<h2>Retracted Queries<a class="headerlink" href="#retracted-queries" title="Permalink to this headline">¶</a></h2>
+<p>NOTE: this feature is NOT yet released</p>
+<p>Retracted datasets are marked by “retracted=true”, and also have the
+flag “latest=false” set. Consequently, retracted datasets are
+automatically NOT included in any search for the latest version data
+(“latest=true”), while they are automatically included in searches the
+span all versions (no “latest” constraint). To search specifically for
+only retracted datasets, use the constraint “retracted=true”.</p>
+<p>Example:</p>
+<ul class="simple">
+<li><p>Search for all retracted datasets in the CMIP5 project, across all
+nodes:
+<a class="reference external" href="https://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;retracted=true">https://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;retracted=true</a></p></li>
+</ul>
+</div>
+<div class="section" id="minimum-and-maximum-version-queries">
+<h2>Minimum and Maximum Version Queries<a class="headerlink" href="#minimum-and-maximum-version-queries" title="Permalink to this headline">¶</a></h2>
+<p>NOTE: this feature is NOT yet released</p>
+<p>The special keywords “min_version” and “max_version” can be used to
+query for all records that have a version greater or equal, or less or
+equal, of a given numerical value. Because often in ESGF versions are
+expressed as dates of the format YYYYMMDD, it is possible to query for
+all records that have a version greater/less or equal of a certain date.
+The two constraints can be combined with each other to specify a version
+(aka date) range, and can also be combined with other constraints.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>All datasets with version less than a given date:
+<a class="reference external" href="https://esgf-node.jpl.nasa.gov/esg-search/search?max_version=20150101">https://esgf-node.jpl.nasa.gov/esg-search/search?max_version=20150101</a></p></li>
+<li><p>All Obs4MIPs datasets with version between two dates:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?min_version=20120101&amp;max_version=20131231&amp;project=obs4MIPs">http://esgf-node.jpl.nasa.gov/esg-search/search?min_version=20120101&amp;max_version=20131231&amp;project=obs4MIPs</a></p></li>
+</ul>
+</div>
+<div class="section" id="results-pagination">
+<h2>Results Pagination<a class="headerlink" href="#results-pagination" title="Permalink to this headline">¶</a></h2>
+<p>By default, a query to the search service will return the first 10
+records matching the given constraints. The offset into the returned
+results, and the total number of returned results, can be changed
+through the keyword parameters limit= and offset= . The system imposes a
+maximum value of limit &lt;= 10,000.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>Query for 100 CMIP5 datasets in the system:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;limit=100">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;limit=100</a></p></li>
+<li><p>Query for the next 100 CMIP5 datasets in the system:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;limit=100&amp;offset=100">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;limit=100&amp;offset=100</a></p></li>
+</ul>
+</div>
+<div class="section" id="output-format">
+<h2>Output Format<a class="headerlink" href="#output-format" title="Permalink to this headline">¶</a></h2>
+<p>The keyword parameter output= can be used to request results in a
+specific output format. Currently the only available options are
+Solr/XML (the default) and Solr/JSON.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>Request results in Solr XML format:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?format=application%2Fsolr%2Bxml">http://esgf-node.jpl.nasa.gov/esg-search/search?format=application%2Fsolr%2Bxml</a></p></li>
+<li><p>Request results in Solr JSON format:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?format=application%2Fsolr%2Bjson">http://esgf-node.jpl.nasa.gov/esg-search/search?format=application%2Fsolr%2Bjson</a></p></li>
+</ul>
+</div>
+<div class="section" id="returned-metadata-fields">
+<h2>Returned Metadata Fields<a class="headerlink" href="#returned-metadata-fields" title="Permalink to this headline">¶</a></h2>
+<p>By default, all available metadata fields are returned for each result.
+The keyword parameter fields= can be used to limit the number of fields
+returned in the response document, for each matching result. The list
+must be comma-separated, and white spaces are ignored. Use fields=* to
+return all fields (same as not specifiying it, since it is the default).
+Note that the pseudo field “score” is always appended to any fields
+list.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>Return all available metadata fields for CMIP5 datasets:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;fields=*">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;fields=*</a></p></li>
+<li><p>Return only the “model” and “experiment” fields for CMIP5 datasets:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;fields=model,experiment">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;fields=model,experiment</a></p></li>
+</ul>
+</div>
+<div class="section" id="identifiers">
+<h2>Identifiers<a class="headerlink" href="#identifiers" title="Permalink to this headline">¶</a></h2>
+<p>Each search record in the system is assigned the following identifiers
+(all of type string):</p>
+<ul class="simple">
+<li><p>id : universally unique for each record across the federation,
+i.e. specific to each Dataset or File, version and replica (and the
+data node storing the data). It is intended to be “opaque”, i.e. it
+should not be parsed by clients to extract any information.</p>
+<ul>
+<li><p>Dataset example:
+id=obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|esgf-data.jpl.nasa.gov</p></li>
+<li><p>File example:
+id=obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.tro3Stderr_TES_L3_tbd_200507-200912.nc|esgf-data.jpl.nasa.gov</p></li>
+</ul>
+</li>
+<li><p>master_id : same for all replicas and versions across the federation.
+When parsing THREDDS catalogs, it is extracted from the properties
+“dataset_id” or “file_id”.</p>
+<ul>
+<li><p>Dataset example: obs4MIPs.NASA-JPL.TES.tro3.mon (for a Dataset)</p></li>
+<li><p>File example:
+obs4MIPs.NASA-JPL.TES.tro3.mon.tro3Stderr_TES_L3_tbd_200507-200912.nc</p></li>
+</ul>
+</li>
+<li><p>instance_id : same for all replicas across federation, but specific
+to each version. When parsing THREDDS catalogs, it is extracted from
+the ID attribute of the corresponding THREDDS catalog element (for
+both Datasets and Files).</p>
+<ul>
+<li><p>Dataset example: obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608</p></li>
+<li><p>File example:
+obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.tro3Stderr_TES_L3_tbd_200507-200912.nc</p></li>
+</ul>
+</li>
+</ul>
+<p>Note also that the record version is the same for all replicas of that
+record, but different across versions. Examples:</p>
+<ul class="simple">
+<li><p>Dataset example: version=20110608</p></li>
+<li><p>File example: version=1</p></li>
+</ul>
+</div>
+<div class="section" id="access-urls">
+<h2>Access URLs<a class="headerlink" href="#access-urls" title="Permalink to this headline">¶</a></h2>
+<p>In the Solr output document returned by a search, URLs that are access
+points for Datasets and Files are encoded as 3-tuple of the form
+“url|mime type|service name”, where the fields are separated by the
+“pipe (”|“) character, and the”mime type” and “service name” are chosen
+from the ESGF controlled vocabulary.</p>
+<p>Example of Dataset access URLs:</p>
+<ul class="simple">
+<li><p>THREDDS catalog:
+<a class="reference external" href="http://esgf-data.jpl.nasa.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml#obs4MIPs.NASA-JPL.TES.tro3.mon">http://esgf-data.jpl.nasa.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml#obs4MIPs.NASA-JPL.TES.tro3.mon</a>.v20110608|application/xml+thredds|THREDDS</p></li>
+<li><p>LAS server:
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/las/getUI.do?catid=0C5410C250379F2D139F978F7BF48BB9_ns_obs4MIPs.NASA-JPL.TES.tro3.mon">http://esgf-node.jpl.nasa.gov/las/getUI.do?catid=0C5410C250379F2D139F978F7BF48BB9_ns_obs4MIPs.NASA-JPL.TES.tro3.mon</a>.v20110608|application/las|LAS</p></li>
+</ul>
+<p>Example of File access URLs:</p>
+<ul class="simple">
+<li><p>HTTP download:
+<a class="reference external" href="http://esgf-data.jpl.nasa.gov/thredds/fileServer/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912">http://esgf-data.jpl.nasa.gov/thredds/fileServer/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912</a>.nc|application/netcdf|HTTPServer</p></li>
+<li><p>GridFTP download:
+gsiftp://esgf-data.jpl.nasa.gov:2811//esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc|application/gridftp|GridFTP</p></li>
+<li><p>OpenDAP download:
+<a class="reference external" href="http://esgf-data.jpl.nasa.gov/thredds/dodsC/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc">http://esgf-data.jpl.nasa.gov/thredds/dodsC/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc</a>.html|application/opendap-html|OPENDAP</p></li>
+<li><p>Globus As-A-Service download:
+globus:e3f6216e-063e-11e6-a732-22000bf2d559/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc|Globus|Globus</p></li>
+</ul>
+</div>
+<div class="section" id="wget-scripting">
+<h2>Wget scripting<a class="headerlink" href="#wget-scripting" title="Permalink to this headline">¶</a></h2>
+<p>The same RESTful API that is used to query the ESGF search services can
+also be used, with minor modifications, to generate a Wget script to
+download all files matching the given constraints. Specifically, each
+ESGF Index Node exposes the following URL for generating Wget scripts:</p>
+<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>http:///wget?[keyword parameters as (name, value) pairs][facet parameters as (name,value) pairs]
+</pre></div>
+</div>
+<p>where again“” is the base URL of the search service at a given Index
+Node. As for searching, all parameters (keyword and facet) are optional,
+and the value of all parameters must be URL-encoded, so that the
+complete search URL is well formed.</p>
+<p>The only syntax differences with respect to the search URL are:</p>
+<ul class="simple">
+<li><p>The keyword parameter type= is not allowed, as the wget URL always
+assumes type=File .</p></li>
+<li><p>The keyword parameter format= is not allowed, as the wget URL always
+returns a shell script as response document.</p></li>
+<li><p>The keyword parameter limit= is assigned a default value of
+limit=1000 (and must still be limit &lt; 10,000).</p></li>
+<li><p>The keyword parameter download_structure= is used for defining a
+relative directory structure for the download by using the facets
+value (i.e. of Files and not Datasets).</p></li>
+<li><p>The keyword parameter download_emptypath= is used to define what to
+do when download_structure is set and the facet returned has no value
+(for example, when mixing files from CMIP5 and obs4MIP and selecting
+instrument as a facet value will result in all CMIP5 files returning
+an empty value)</p></li>
+</ul>
+<p>A typical workflow pattern consists in first identifying all datasets or
+files matching some scientific criteria, then changing the request URL
+from “/search?” to “/wget?” to generate the corresponding shell scripts
+for bulk download of files.</p>
+<p>Examples:</p>
+<ul class="simple">
+<li><p>Download all obs4MIPs files from the JPL node with variable “hus” :
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/wget?variable=hus&amp;project=obs4MIPs&amp;distrib=false">http://esgf-node.jpl.nasa.gov/esg-search/wget?variable=hus&amp;project=obs4MIPs&amp;distrib=false</a></p></li>
+<li><p>Download the files as in the previous examples, and organize them in
+a directory structure such as
+project/product/institute/time_frequency :
+<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/wget?variable=hus&amp;project=obs4MIPs&amp;distrib=false&amp;download_structure=project,product,institute,time_frequency">http://esgf-node.jpl.nasa.gov/esg-search/wget?variable=hus&amp;project=obs4MIPs&amp;distrib=false&amp;download_structure=project,product,institute,time_frequency</a></p></li>
+</ul>
+<p>For more information, see also the Wget FAQ</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="REST_Publishing_Services.html" class="btn btn-neutral float-right" title="ESGF REST Publishing Services" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to esg-search’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Sasha Ames
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

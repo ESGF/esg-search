@@ -1,0 +1,306 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Climate Model Metadata &mdash; esg-search v4.7.19 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Metadata Validation" href="Metadata_Validation.html" />
+    <link rel="prev" title="ESGF Earth Sciences Metadata" href="Earth_Sciences_Metadata.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> esg-search
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="ESGF_Search_RESTful_API.html">The ESGF Search RESTful API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="REST_Publishing_Services.html">ESGF REST Publishing Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Atomic_Metadata_Updates.html">Atomic Metadata Updates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Core_Metadata.html">ESGF Core Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Earth_Sciences_Metadata.html">ESGF Earth Sciences Metadata</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Climate Model Metadata</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mandatory-drs-data-reference-syntax-metadata-fields">Mandatory DRS (Data Reference Syntax) Metadata Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#optional-metadata-fields">Optional Metadata Fields</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Metadata_Validation.html">Metadata Validation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">esg-search</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Climate Model Metadata</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/Climate_Model_Metadata.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="climate-model-metadata">
+<h1>Climate Model Metadata<a class="headerlink" href="#climate-model-metadata" title="Permalink to this headline">¶</a></h1>
+<p>ESGF Climate Model Metadata is a set of metadata fields that are used to
+describe and search data generated by Climate models, such as the CMIP5
+and (future) CMIP6 international activities. Metadata fields are defined
+in the ESGF meta-schema cmip5.xml, which is not parsed for validation
+unless explicitely requested.</p>
+<div class="section" id="mandatory-drs-data-reference-syntax-metadata-fields">
+<h2>Mandatory DRS (Data Reference Syntax) Metadata Fields<a class="headerlink" href="#mandatory-drs-data-reference-syntax-metadata-fields" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>model (string chosen from CV): the model that generated the data -
+Dataset only</p>
+<ul>
+<li><p>Example: model = INM-CM4</p></li>
+</ul>
+</li>
+<li><p>experiment (string chosen from CV): the climate scenario - Dataset
+only</p>
+<ul>
+<li><p>Example: experiment = 1pctCO2</p></li>
+</ul>
+</li>
+<li><p>product (string chosen from CV): the type of output - Dataset only</p>
+<ul>
+<li><p>Example: product = output1</p></li>
+</ul>
+</li>
+<li><p>realm (string chosen from CV): the physical realm: atmosphere, land,
+ocean, ice - Dataset only</p>
+<ul>
+<li><p>Example: realm = atmos</p></li>
+</ul>
+</li>
+<li><p>time_frequency (string chosen from CV): the time frequency for the
+simulated data: hourly, 3-hourly, daily, monthly, etc. - Dataset only</p>
+<ul>
+<li><p>Example: time_frequency = day</p></li>
+</ul>
+</li>
+<li><p>tracking_id (UUID): unique identifier for a specific File, it’s the
+same for all replicas of that file</p>
+<ul>
+<li><p>Example: tracking_id = bbf37d89-fd8a-4aa6-b42b-eb4adfe6504b</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="optional-metadata-fields">
+<h2>Optional Metadata Fields<a class="headerlink" href="#optional-metadata-fields" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>ensemble (string) - Dataset only</p>
+<ul>
+<li><p>Example: ensemble = r1i1p1</p></li>
+</ul>
+</li>
+<li><p>experiment_family (string, zero, one or more): class this experiment
+belongs to</p>
+<ul>
+<li><p>Note: automatically inserted by Pull Publishing Services based on
+experiment value</p></li>
+<li><p>Example: experiment family = Historical</p></li>
+</ul>
+</li>
+<li><p>cmor_table (string) - Dataset only</p>
+<ul>
+<li><p>Example: cmor_table = Amon</p></li>
+</ul>
+</li>
+<li><p>dataset_id_template_ (string) - Dataset only</p>
+<ul>
+<li><p>Example:
+<a href="#id1"><span class="problematic" id="id2">dataset_id_template_</span></a>”&gt;cmip5.%(product)s.%(valid_institute)s.%(model)s.%(experiment)s.%(time_frequency)s.%(realm)s.%(cmor_table)s.%(ensemble)s</p></li>
+</ul>
+</li>
+<li><p>drs_id (string): - Dataset only</p>
+<ul>
+<li><p>Example: drs_id” =
+cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1</p></li>
+</ul>
+</li>
+<li><p>forcing ((string, zero, one or more):): Dataset only</p>
+<ul>
+<li><p>Example: forcing = Nat</p></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>cmip5_dataset.xml : example CMIP5 Dataset metadata record</p></li>
+<li><p>cmip5_file.xml : example CMIP5 File metadata record</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Metadata_Validation.html" class="btn btn-neutral float-right" title="Metadata Validation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Earth_Sciences_Metadata.html" class="btn btn-neutral float-left" title="ESGF Earth Sciences Metadata" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Sasha Ames
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
