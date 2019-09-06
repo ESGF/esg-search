@@ -17,15 +17,6 @@ Welcome to esg-search's documentation!
    Earth_Sciences_Metadata
    Climate_Model_Metadata
    Metadata_Validation
-   CoG_Installation_from_Docker
-   Installation_Prerequisites
-   Installation_Initial_Setup
-   Installation_Install_or_Upgrade
-   Installation_Testing
-   Installation_Configuration
-  
-
-
 
 
 Indices and tables
