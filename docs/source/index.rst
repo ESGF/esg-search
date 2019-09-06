@@ -10,9 +10,9 @@ Welcome to esg-search's documentation!
    :maxdepth: 4
    :caption: Contents:
 
-   Atomic_Metadata_Updates
-   REST_Publishing_Services
    ESGF_Search_RESTful_API
+   REST_Publishing_Services
+   Atomic_Metadata_Updates
    Core_Metadata
    Earth_Sciences_Metadata
    Climate_Model_Metadata
