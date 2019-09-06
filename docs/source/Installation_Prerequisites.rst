@@ -17,7 +17,7 @@ Step 1: Install Python
 .. code:: ipython2
 
    #downgrade python install conda install 
-   python=2.7.9
+   conda install python=2.7.9
 
 -  Python setup_tools (should come with python)
 
@@ -77,7 +77,10 @@ Step 7: (MacOSX only) Copy image libraries
    -  libssl.1.0.0.dylib
    -  libtiff.5.dylib
 
-#example sudo cp ~/anaconda/lib/libtiff.5.dylib /usr/local/lib
+.. code:: ipython2  
+
+   # example 
+   sudo cp ~/anaconda/lib/libtiff.5.dylib /usr/local/lib
 
 Step 8: Install Xcode command line tools
 ----------------------------------------

@@ -27,6 +27,12 @@ Prerequisites (for installation and general operation)
 -  The Docker Engine MUST BE RUNNING. On a Mac this is done by clicking
    on the icon (Figure 1).
 
+
+.. figure:: /images/docker_terminal.png
+   :scale: 115%
+   :alt:
+
+
 Figure 1: Mac Docker icon.
 
 Download
@@ -37,11 +43,13 @@ Images for several CoG versions are publicly available on DockerHub
 following command:
 
 .. code:: ipython2
-   $ docker pull esgfhub/esgf-cog:
+
+   $ docker pull esgfhub/esgf-cog:<cog_version>
 
    For example:
 
    $ docker pull esgfhub/esgf-cog:v3.7.RC2
+   
 
 
 

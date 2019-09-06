@@ -75,10 +75,8 @@ related dependencies.
 
 This will create the sub-directory venv under with:
 
-::
-
-   copy of python executable in <COG_DIR>/venv/bin/python
-   location for installation of additional needed packages in <COG_DIR>/venv/lib/python2.7/site-packages
+- copy of python executable in <COG_DIR>/venv/bin/python
+-   location for installation of additional needed packages in <COG_DIR>/venv/lib/python2.7/site-packages
 
 Note, if you have multiple installations of python installed, you can
 specify which python to use through the -p option. By default,
