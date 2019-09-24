@@ -83,7 +83,7 @@ public class SolrClient {
         String response = httpClient.doPost(postUrl, xml, true);
         
         // commit changes, do not optimize for a single record
-        if (commit) this.commit();
+        // if (commit) this.commit();
         
         return response;
         
@@ -133,7 +133,7 @@ public class SolrClient {
         }
         
         // commit changes to all cores
-        commit();
+        // commit();
         
         return sb.toString();
     	

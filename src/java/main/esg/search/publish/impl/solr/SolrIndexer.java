@@ -93,7 +93,7 @@ public class SolrIndexer implements RecordConsumer {
         }
         
         // commit all records at once, to all cores
-        solrClient.commit();
+        // solrClient.commit();
         
     }
     
