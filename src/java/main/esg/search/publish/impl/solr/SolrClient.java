@@ -67,7 +67,7 @@ public class SolrClient {
      * Method to index a single XML record.
      * @param xml.
      * @param type : chosen among the supported record types.
-     * @param commit : true to commit the transaction after indexing this record, false if other records are coming.
+     * @param commit : This parameter has no effect
      * @return
      * @throws Exception
      */
@@ -83,6 +83,10 @@ public class SolrClient {
         String response = httpClient.doPost(postUrl, xml, true);
         
         // commit changes, do not optimize for a single record
+        // This results in a high frequency of commits
+        // Which puts non-negligable load on Solr instances
+        // Future work would be to make this externally configurable
+        // For now, Solr "autoCommit" features will be used to perform commits
         // if (commit) this.commit();
         
         return response;
@@ -133,6 +137,7 @@ public class SolrClient {
         }
         
         // commit changes to all cores
+        // Solr "autoCommit" features will be used to perform commits
         // commit();
         
         return sb.toString();
