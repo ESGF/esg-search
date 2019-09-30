@@ -259,7 +259,7 @@ Following is an example on how to invoke the ESGF Publishing Services
 from a Python client. The example leverages the Python Requests library
 for HTTP(s) communication with the server.
 
-.. code:: console
+.. code:: python
 
    import requests
 
