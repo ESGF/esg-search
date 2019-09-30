@@ -77,7 +77,7 @@ client:
 
 .. code:: console
 
-   myproxy-logon -s esgf-node.jpl.nasa.gov -p 7512 -l -t 48 -o ~/.esg/credentials.pem
+   myproxy-logon -s esgf-node.llnl.gov -p 7512 -l -t 48 -o ~/.esg/credentials.pem
 
 “Pull” Operations
 -----------------
@@ -91,7 +91,7 @@ resource “uri”.
 Pull Publishing Service
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-   -  URL: https:///esg-search/ws/harvest
+   -  URL: https://<index-node>/esg-search/ws/harvest
    -  HTTP POST data: encoded as form (key, value) pair
 
       - uri: location identifier of remote metadata repository or catalog
@@ -105,16 +105,16 @@ Example (must be entered only on one line, with … removed):
    wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem\
         --certificate ~/.esg/credentials.pem --private-key ~/.esg/credentials.pem\
         --verbose\
-        --post-data="uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/...
+        --post-data="uri=https://esgf-node.llnl.gov/thredds/catalog/esgcet/1/...
                      ...NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml&metadataRepositoryType=THREDDS"\ 
-     https://esgf-dev.jpl.nasa.gov/esg-search/ws/harvest
+     https://esgf-dev.llnl.gov/esg-search/ws/harvest
 
  
 
 Pull UnPublishing Service
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   -  URL: https:///esg-search/ws/unharvest
+   -  URL: https://<index-node>/esg-search/ws/unharvest
    -  HTTP POST data: encoded as form (key, value) pairs 
 
       -  uri: location identifier of remote metadata repository or catalog
@@ -127,9 +127,9 @@ Example (must be entered only on one line, with … removed):
    wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
          –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem\
         –verbose
-        –post-data="uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/…
+        –post-data="uri=https://esgf-node.llnl.gov/thredds/catalog/esgcet/1/…
                   …NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml
-        https://esgf-dev.jpl.nasa.gov/esg-search/ws/unharvest
+        https://esgf-dev.llnl.gov/esg-search/ws/unharvest
 
 “Push” Operations
 -----------------
@@ -142,7 +142,7 @@ of the resource that is been published or unpublished.
 Push Publishing Service
 ~~~~~~~~~~~~~~~~~~~~~~~
 
--  URL: https:///esg-search/ws/publish
+-  URL: https://<index-node>/esg-search/ws/publish
 -  HTTP POST data: metadata record encoded as Solr/XML (with optional
    “schema” attribute for additional project-specific validation).
 
@@ -153,7 +153,7 @@ Example (must be entered only on one line):
    wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
          –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
          –verbose –post-file=cmip5_dataset.xml
-          https://esgf-dev.jpl.nasa.gov/esg-search/ws/publish
+          https://esgf-dev.llnl.gov/esg-search/ws/publish
 
 The ESGF Search GitHub repository contains several examples of valid
 metadata records that can be published to an ESGF Index Node:
@@ -173,7 +173,7 @@ that the file records reference an existing dataset record.
 Push UnPublishing Service
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  URL: https:///esg-search/ws/unpublish
+-  URL: https://<index-node>/esg-search/ws/unpublish
 -  HTTP POST data: metadata record encoded as Solr/XML (same that was
    used for publishing, although only the “id” and “type” information
    will really be used).
@@ -185,7 +185,7 @@ Example (must be entered only on one line):
    wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
          –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
          –verbose –post-file=cmip5_dataset.xml
-         https://esgf-dev.jpl.nasa.gov/esg-search/ws/unpublish
+         https://esgf-dev.llnl.gov/esg-search/ws/unpublish
 
 Note that unpublishing a dataset record will automatically unpublish all
 file and aggregation records that reference that dataset.
@@ -200,7 +200,7 @@ from the metadata store.
 Delete UnPublishing Service
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  URL: https:///esg-search/ws/delete
+-  URL: https://<index-node>/esg-search/ws/delete
 -  HTTP POST data: encoded as form (key, value) pairs
 
    -  id: identifier of record to be deleted (key and value pairs may be
@@ -216,7 +216,7 @@ Example (must be entered only on one line, with … removed):
          –verbose -O response.xml
          –post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323…
                       …|pcmdi9.llnl.gov”
-         https://esgf-dev.jpl.nasa.gov/esg-search/ws/delete
+         https://esgf-dev.llnl.gov/esg-search/ws/delete
 
 Note that just like before, unpublishing a dataset record will
 automatically unpublish all file and aggregation records that reference
@@ -235,7 +235,7 @@ dataset record is kept in the catalog for reference, and marked as
 Retract UnPublishing Service
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  URL: https:///esg-search/ws/retract
+-  URL: https://<index-node>/esg-search/ws/retract
 -  HTTP POST data: encoded as form (key, value) pairs
 
    -  id: identifier of record to be retracted (key and value pairs may
@@ -250,7 +250,7 @@ Example (must be entered only on one line, with … removed):
         –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
         –verbose -O response.xml
         –post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323..pcmdi9.llnl.gov”
-        https://esgf-dev.jpl.nasa.gov/esg-search/ws/retract
+        https://esgf-dev.llnl.gov/esg-search/ws/retract
 
 Python Client Example
 ---------------------
@@ -263,7 +263,7 @@ for HTTP(s) communication with the server.
 
    import requests
 
-   url = “https://esgf-dev.jpl.nasa.gov/esg-search/ws/harvest” 
+   url = “https://esgf-dev.llnl.gov/esg-search/ws/harvest” 
    mycertpath = “/Users/cinquini/.esg/credentials.pem” 
    catalog =  “http://aims3.llnl.gov/thredds/catalog/esgcet/1/”
             +“cmip5.output1.NIMR-KMA.HadGEM2-AO.historical.mon.atmos.Amon.r1i1p1.v20130815.xml”
@@ -286,9 +286,9 @@ service endpoints that will publish/unpublish metadata to/from the local
 Solr instance runninig on port 8982. Specifically, to target the local
 shard, a client must use the following URLs:
 
--  https:///esg-search/ws/harvestLocal
--  https:///esg-search/ws/unharvestLocal
--  https:///esg-search/ws/publishLocal
--  https:///esg-search/ws/unpublishLocal
--  https:///esg-search/ws/deleteLocal
--  https:///esg-search/ws/retractLocal
+-  https://<index-node>/esg-search/ws/harvestLocal
+-  https://<index-node>/esg-search/ws/unharvestLocal
+-  https://<index-node>/esg-search/ws/publishLocal
+-  https://<index-node>/esg-search/ws/unpublishLocal
+-  https://<index-node>/esg-search/ws/deleteLocal
+-  https://<index-node>/esg-search/ws/retractLocal

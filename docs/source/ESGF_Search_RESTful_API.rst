@@ -16,7 +16,7 @@ The general syntax of the ESGF search service URL is:
 
 .. code:: console
 
-   http:///search?[keyword parameters as (name, value) pairs][facet parameters as (name,value) pairs]
+   http://<index-node>/esg-search/search?[keyword parameters as (name, value) pairs][facet parameters as (name,value) pairs]
 
 where “” is the base URL of the search service at a given Index Node.
 
@@ -68,7 +68,7 @@ query using all the default values, specifically:
 
 Example:
 
--  http://esgf-node.jpl.nasa.gov/esg-search/search
+-  http://esgf-node.llnl.gov/esg-search/search
 
 Free Text Queries
 -----------------
@@ -84,33 +84,33 @@ text field at the top of the page.
 Examples:
 
 -  Search for any text, anywhere:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?query=\* (the default
+   http://esgf-node.llnl.gov/esg-search/search?query=\* (the default
    value of the query parameter)
 -  Search for “humidity” in all metadata fields:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?query=humidity
+   http://esgf-node.llnl.gov/esg-search/search?query=humidity
 -  Search for the exact sentence “specific humidity” in all metadata
    fields (the sentence must be surrounded by quotes and URL-encoded):
-   http://esgf-node.jpl.nasa.gov/esg-search/search?query=%22specific%20humidity%22
+   http://esgf-node.llnl.gov/esg-search/search?query=%22specific%20humidity%22
 -  Search for both words “specific” and “humidity”, but not necessarily
    in an exact sequence (must use a space between the two words = this
    is the same as executing a query with the logical OR):
-   http://esgf-node.jpl.nasa.gov/esg-search/search?query=specific%20humidity
+   http://esgf-node.llnl.gov/esg-search/search?query=specific%20humidity
 -  Search for the word “observations” ONLY in the metadata field
    “product” :
-   http://esgf-node.jpl.nasa.gov/esg-search/search?query=product:observations
+   http://esgf-node.llnl.gov/esg-search/search?query=product:observations
 -  Using logical AND:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20AND%20humidity
+   http://esgf-node.llnl.gov/esg-search/search?query=airs%20AND%20humidity
    (must use upper case “AND”)
 -  Using logical OR:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20OR%20humidity
+   http://esgf-node.llnl.gov/esg-search/search?query=airs%20OR%20humidity
    (must use upper case “OR”). This is the same as using simply a blank
    space:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20humidity
+   http://esgf-node.llnl.gov/esg-search/search?query=airs%20humidity
    )
 -  Search for a dataset with a specific id:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.hus.mon.v20110608|esgf-data.jpl.nasa.gov
+   http://esgf-node.llnl.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.hus.mon.v20110608|esgf-data.llnl.gov
 -  Search for all datasets that match an id pattern:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.\*
+   http://esgf-node.llnl.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.\*
 
 Facet Queries
 -------------
@@ -159,30 +159,30 @@ type=Dataset .
 Examples:
 
 -  Single facet query:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?cf_standard_name=air_temperature
+   http://esgf-node.llnl.gov/esg-search/search?cf_standard_name=air_temperature
 -  Query with two different facet constraints:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?cf_standard_name=air_temperature&project=obs4MIPs
+   http://esgf-node.llnl.gov/esg-search/search?cf_standard_name=air_temperature&project=obs4MIPs
 -  Combining two values of the same facet with a logical OR:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&variable=hus&variable=ta
+   http://esgf-node.llnl.gov/esg-search/search?project=obs4MIPs&variable=hus&variable=ta
    (search for all obs4MIPs files that have variable “ta” OR variable
    “hus”)
 -  Using a negative facet:
 
-   -  http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&variable=hus&variable=ta&model!=Obs-AIRS
+   -  http://esgf-node.llnl.gov/esg-search/search?project=obs4MIPs&variable=hus&variable=ta&model!=Obs-AIRS
       (search for all obs4MIPs datasets that have variable ta OR hus,
       excluding those produced by AIRS)
-   -  http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&variable!=ta&variable!=huss
+   -  http://esgf-node.llnl.gov/esg-search/search?project=obs4MIPs&variable!=ta&variable!=huss
       (search for all obs4MIPs datasets that do not contain neither
       variable ta nor variable huss)
 
 -  Search a file by its tracking id:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&tracking_id=2209a0d0-9b77-4ecb-b2ab-b7ae412e7a3f
+   http://esgf-node.llnl.gov/esg-search/search?type=File&tracking_id=2209a0d0-9b77-4ecb-b2ab-b7ae412e7a3f
 -  Search a file by its checksum:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&checksum=83df8ae93e85e26df797d5f770449470987a4ecd8f2d405159995b5cac9a410c
+   http://esgf-node.llnl.gov/esg-search/search?type=File&checksum=83df8ae93e85e26df797d5f770449470987a4ecd8f2d405159995b5cac9a410c
 -  Issue a query for all supported facets and their values at one site,
    while returning no results (note that only facets with one or more
    values are returned):
-   http://esgf-node.jpl.nasa.gov/esg-search/search?facets=*&limit=0&distrib=false
+   http://esgf-node.llnl.gov/esg-search/search?facets=*&limit=0&distrib=false
 
 Facet Listings
 --------------
@@ -195,24 +195,24 @@ that match one or more records will be returned.
 Examples:
 
 -  List all obs4MIPs facet names and values:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&facets=*&limit=0
+   http://esgf-node.llnl.gov/esg-search/search?project=obs4MIPs&facets=*&limit=0
 -  List all CMIP5 facet names and values:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&facets=*&limit=0
+   http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&facets=*&limit=0
 
 The same query with no project constraint will return all facet names
 and values for ALL data across the federation:
 
 -  List ALL facet names and values:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?facets=*&limit=0
+   http://esgf-node.llnl.gov/esg-search/search?facets=*&limit=0
 
 To retrieve a listing of available values for only a few facets, simply
 specify a comma-separated list of facet names:
 
 -  List all values of model, experiment and project throughout the
    federation:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?facets=model,experiment,project&limit=0
+   http://esgf-node.llnl.gov/esg-search/search?facets=model,experiment,project&limit=0
 -  List all values of model, experiment for CMIP5 data:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?facets=model,experiment&project=CMIP5&limit=0
+   http://esgf-node.llnl.gov/esg-search/search?facets=model,experiment&project=CMIP5&limit=0
 
 Temporal Coverage Queries
 -------------------------
@@ -226,11 +226,11 @@ syntax.
 Examples:
 
 -  Search for data in the past year:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?start=NOW-1YEAR
+   http://esgf-node.llnl.gov/esg-search/search?start=NOW-1YEAR
    (translates into the constraint datetime_stop:[NOW-1YEAR TO \*] or
    datetime_stop > NOW-1YEAR)
 -  Search for data before the year 2000:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?end=2000-01-01T00:00:00Z
+   http://esgf-node.llnl.gov/esg-search/search?end=2000-01-01T00:00:00Z
    (translates into the constraint datetime_start:[\* TO
    2000-01-01T00:00:00Z] or datetime_start < 2000-01-01)
 
@@ -243,7 +243,7 @@ box. As usual, the parameter value must be URL-encoded.
 
 Examples:
 
--  http://esgf-node.jpl.nasa.gov/esg-search/search?bbox=%5B-10,-10,+10,+10%5D
+-  http://esgf-node.llnl.gov/esg-search/search?bbox=%5B-10,-10,+10,+10%5D
    ( translates to: east_degrees:[-10 TO \*] AND north_degrees:[-10 TO
    \*] AND west_degrees:[\* TO 10] AND south_degrees:[\* TO 10] )
 
@@ -261,9 +261,9 @@ distrib=true is assumed.
 Examples:
 
 -  Search for all datasets in the federation:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?distrib=true
+   http://esgf-node.llnl.gov/esg-search/search?distrib=true
 -  Search for all datasets at one Node only:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?distrib=false
+   http://esgf-node.llnl.gov/esg-search/search?distrib=false
 
 Shard Queries
 -------------
@@ -281,9 +281,9 @@ distrib=true by default if not otherwise specified).
 Examples:
 
 -  Query for CMIP5 data at the PCMDI and CEDA sites only:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&shards=pcmdi.llnl.gov/solr,esgf-index1.ceda.ac.uk/solr
+   http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&shards=pcmdi.llnl.gov/solr,esgf-index1.ceda.ac.uk/solr
 -  Query for all files belonging to a given dataset at one site only:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&shards=esgf-node.jpl.nasa.gov/solr&dataset_id=obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|esgf-data.jpl.nasa.gov
+   http://esgf-node.llnl.gov/esg-search/search?type=File&shards=esgf-node.llnl.gov/solr&dataset_id=obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|esgf-data.llnl.gov
 
 Replica Queries
 ---------------
@@ -306,15 +306,15 @@ the master AND replicas of a Dataset or File), use master_id=….
 Examples:
 
 -  Search for all datasets in the system (masters and replicas):
-   http://esgf-node.jpl.nasa.gov/esg-search/search
+   http://esgf-node.llnl.gov/esg-search/search
 -  Search for just master datasets, no replicas:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?replica=false
+   http://esgf-node.llnl.gov/esg-search/search?replica=false
 -  Search for just replica datasets, no masters:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?replica=true
+   http://esgf-node.llnl.gov/esg-search/search?replica=true
 -  Search for the master AND replicas of a given dataset:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?master_id=cmip5.output1.LASG-CESS.FGOALS-g2.midHolocene.3hr.land.3hr.r1i1p1
+   http://esgf-node.llnl.gov/esg-search/search?master_id=cmip5.output1.LASG-CESS.FGOALS-g2.midHolocene.3hr.land.3hr.r1i1p1
 -  Search for the master and replicas of a given file:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&master_id=cmip5.output1.MIROC.MIROC5.decadal1978.mon.ocean.Omon.r4i1p1.wfo_Omon_MIROC5_decadal1978_r4i1p1_197901-198812.nc
+   http://esgf-node.llnl.gov/esg-search/search?type=File&master_id=cmip5.output1.MIROC.MIROC5.decadal1978.mon.ocean.Omon.r4i1p1.wfo_Omon_MIROC5_decadal1978_r4i1p1_197901-198812.nc
 
 Latest and Version Queries
 --------------------------
@@ -328,11 +328,11 @@ that were superseded by newer versions.
 Examples:
 
 -  Search for all latest CMIP5 datasets:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&latest=true
+   http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&latest=true
 -  Search for all versions of a given dataset:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&master_id=cmip5.output1.MOHC.HadCM3.decadal1972.day.atmos.day.r10i2p1&facets=version
+   http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&master_id=cmip5.output1.MOHC.HadCM3.decadal1972.day.atmos.day.r10i2p1&facets=version
 -  Search for a specific version of a given dataset:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&master_id=cmip5.output1.NSF-DOE-NCAR.CESM1-CAM5-1-FV2.historical.mon.atmos.Amon.r1i1p1&version=20120712
+   http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&master_id=cmip5.output1.NSF-DOE-NCAR.CESM1-CAM5-1-FV2.historical.mon.atmos.Amon.r1i1p1&version=20120712
 
 Retracted Queries
 -----------------
@@ -350,7 +350,7 @@ Example:
 
 -  Search for all retracted datasets in the CMIP5 project, across all
    nodes:
-   https://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&retracted=true
+   https://esgf-node.llnl.gov/esg-search/search?project=CMIP5&retracted=true
 
 Minimum and Maximum Version Queries
 -----------------------------------
@@ -368,9 +368,9 @@ The two constraints can be combined with each other to specify a version
 Examples:
 
 -  All datasets with version less than a given date:
-   https://esgf-node.jpl.nasa.gov/esg-search/search?max_version=20150101
+   https://esgf-node.llnl.gov/esg-search/search?max_version=20150101
 -  All Obs4MIPs datasets with version between two dates:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?min_version=20120101&max_version=20131231&project=obs4MIPs
+   http://esgf-node.llnl.gov/esg-search/search?min_version=20120101&max_version=20131231&project=obs4MIPs
 
 Results Pagination
 ------------------
@@ -384,9 +384,9 @@ maximum value of limit <= 10,000.
 Examples:
 
 -  Query for 100 CMIP5 datasets in the system:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&limit=100
+   http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&limit=100
 -  Query for the next 100 CMIP5 datasets in the system:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&limit=100&offset=100
+   http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&limit=100&offset=100
 
 Output Format
 -------------
@@ -398,9 +398,9 @@ Solr/XML (the default) and Solr/JSON.
 Examples:
 
 -  Request results in Solr XML format:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?format=application%2Fsolr%2Bxml
+   http://esgf-node.llnl.gov/esg-search/search?format=application%2Fsolr%2Bxml
 -  Request results in Solr JSON format:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?format=application%2Fsolr%2Bjson
+   http://esgf-node.llnl.gov/esg-search/search?format=application%2Fsolr%2Bjson
 
 Returned Metadata Fields
 ------------------------
@@ -416,9 +416,9 @@ list.
 Examples:
 
 -  Return all available metadata fields for CMIP5 datasets:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&fields=\*
+   http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&fields=\*
 -  Return only the “model” and “experiment” fields for CMIP5 datasets:
-   http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&fields=model,experiment
+   http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&fields=model,experiment
 
 Identifiers
 -----------
@@ -432,9 +432,9 @@ Each search record in the system is assigned the following identifiers
    should not be parsed by clients to extract any information.
 
    -  Dataset example:
-      id=obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|esgf-data.jpl.nasa.gov
+      id=obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|esgf-data.llnl.gov
    -  File example:
-      id=obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.tro3Stderr_TES_L3_tbd_200507-200912.nc|esgf-data.jpl.nasa.gov
+      id=obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.tro3Stderr_TES_L3_tbd_200507-200912.nc|esgf-data.llnl.gov
 
 -  master_id : same for all replicas and versions across the federation.
    When parsing THREDDS catalogs, it is extracted from the properties
@@ -471,18 +471,18 @@ from the ESGF controlled vocabulary.
 Example of Dataset access URLs:
 
 -  THREDDS catalog:
-   http://esgf-data.jpl.nasa.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml#obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|application/xml+thredds|THREDDS
+   http://esgf-data.llnl.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml#obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|application/xml+thredds|THREDDS
 -  LAS server:
-   http://esgf-node.jpl.nasa.gov/las/getUI.do?catid=0C5410C250379F2D139F978F7BF48BB9_ns_obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|application/las|LAS
+   http://esgf-node.llnl.gov/las/getUI.do?catid=0C5410C250379F2D139F978F7BF48BB9_ns_obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|application/las|LAS
 
 Example of File access URLs:
 
 -  HTTP download:
-   http://esgf-data.jpl.nasa.gov/thredds/fileServer/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc|application/netcdf|HTTPServer
+   http://esgf-data.llnl.gov/thredds/fileServer/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc|application/netcdf|HTTPServer
 -  GridFTP download:
-   gsiftp://esgf-data.jpl.nasa.gov:2811//esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc|application/gridftp|GridFTP
+   gsiftp://esgf-data.llnl.gov:2811//esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc|application/gridftp|GridFTP
 -  OpenDAP download:
-   http://esgf-data.jpl.nasa.gov/thredds/dodsC/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc.html|application/opendap-html|OPENDAP
+   http://esgf-data.llnl.gov/thredds/dodsC/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc.html|application/opendap-html|OPENDAP
 -  Globus As-A-Service download:
    globus:e3f6216e-063e-11e6-a732-22000bf2d559/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc|Globus|Globus
 
@@ -528,11 +528,11 @@ for bulk download of files.
 Examples:
 
 -  Download all obs4MIPs files from the JPL node with variable “hus” :
-   http://esgf-node.jpl.nasa.gov/esg-search/wget?variable=hus&project=obs4MIPs&distrib=false
+   http://esgf-node.llnl.gov/esg-search/wget?variable=hus&project=obs4MIPs&distrib=false
 -  Download the files as in the previous examples, and organize them in
    a directory structure such as
    project/product/institute/time_frequency :
-   http://esgf-node.jpl.nasa.gov/esg-search/wget?variable=hus&project=obs4MIPs&distrib=false&download_structure=project,product,institute,time_frequency
+   http://esgf-node.llnl.gov/esg-search/wget?variable=hus&project=obs4MIPs&distrib=false&download_structure=project,product,institute,time_frequency
 
 For more information, see also the Wget FAQ
 

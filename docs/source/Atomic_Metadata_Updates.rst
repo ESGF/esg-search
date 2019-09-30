@@ -31,7 +31,7 @@ APIs:
 1. The native Solr API for atomic updates
 
    -  The client targets the “master” Solr URL directly:
-      http://:8984/solr//update. Updates will be automatically
+      http://<index-node>:8984/solr/<core>/update. Updates will be automatically
       replicated to the “slave” Solr index on port 8983
    -  No authentication or authorization is required. The client must
       have access to port 8984 and therefore must execute from within
@@ -56,7 +56,7 @@ APIs:
 3. The ESGF metadata update API
 
    -  The client targets the ESGF Search web service URLs:
-      https:///esg-search/ws/update… which behind the scenes query and
+      https://<index-node>/esg-search/ws/update… which behind the scenes query and
       update the “master” Solr index. Updates are again automatically
       replicated to the “slave” Solr index. -The client must provide an
       X509 certificate used for authentication and authorization.
@@ -85,7 +85,7 @@ The ESGF Search web services support metadata updates through simple GET
 request, but in this case each request can only update one document. The
 general syntax of a GET request is:
 
-https:///esg-search/ws/updateById?id=…..&action=…&core=…&field=…&value=…&value=…&value=…
+https://<index-node>/esg-search/ws/updateById?id=…..&action=…&core=…&field=…&value=…&value=…&value=…
 
 where:
 
@@ -104,7 +104,7 @@ line):
     
    wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
          --private-key ~/.esg/credentials.pem --verbose\
-        'https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+        'https://esgf-dev.llnl.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.llnl.gov\
                                                                 
 
 
@@ -114,7 +114,7 @@ line):
     
    wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
          --private-key ~/.esg/credentials.pem --verbose\
-        'https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+        'https://esgf-dev.llnl.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.llnl.gov\
                                                                 
 
 .. code:: console
@@ -123,7 +123,7 @@ line):
     
    wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
          --private-key ~/.esg/credentials.pem --verbose\
-        'https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+        'https://esgf-dev.llnl.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.llnl.gov\
                                                                
 
 .. code:: console
@@ -132,7 +132,7 @@ line):
     
     wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
          --private-key ~/.esg/credentials.pem --verbose\
-        'https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+        'https://esgf-dev.llnl.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.llnl.gov\
                                                                
 
 POST HTTPS Requests
@@ -149,7 +149,7 @@ send a POST metadata update request using the wget client:
 
     wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
          --private-key ~/.esg/credentials.pem --verbose --post-file=updates.xml\
-         'https://esgf-dev.jpl.nasa.gov/esg-search/ws/update'
+         'https://esgf-dev.llnl.gov/esg-search/ws/update'
 
 
 where the XML document has the following content, depending on what kind
@@ -160,7 +160,7 @@ of metadata update is requested:
     <!-- set one or more values on a single record (identified by "id") -->
     <updates core="datasets" action="set">
        <update>
-          <query>id=obs4MIPs.NASA-JPL.AIRS.mon.v1|esgf-dev.jpl.nasa.gov</query>
+          <query>id=obs4MIPs.NASA-JPL.AIRS.mon.v1|esgf-dev.llnl.gov</query>
           <field name="xlink">
              <value>abc</value>
              <value>123456</value>

@@ -61,12 +61,11 @@ Optional Metadata Fields
 
 -  dataset_id_template\_ (string) - Dataset only
 
-   -  Example:
-      dataset_id_template_">cmip5.%(product)s.%(valid_institute)s.%(model)s.%(experiment)s.%(time_frequency)s.%(realm)s.%(cmor_table)s.%(ensemble)s
+   -  Example: dataset_id_template = cmip5.%(product)s.%(valid_institute)s.%(model)s.%(experiment)s.%(time_frequency)s.%(realm)s.%(cmor_table)s.%(ensemble)s
 
 -  drs_id (string): - Dataset only
 
-   -  Example: drs_id" =
+   -  Example: drs_id =
       cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1
 
 -  forcing ((string, zero, one or more):): Dataset only
