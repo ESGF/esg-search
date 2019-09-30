@@ -14,7 +14,7 @@ Syntax
 
 The general syntax of the ESGF search service URL is:
 
-.. code:: ipython2
+.. code:: console
 
    http:///search?[keyword parameters as (name, value) pairs][facet parameters as (name,value) pairs]
 
@@ -494,7 +494,7 @@ also be used, with minor modifications, to generate a Wget script to
 download all files matching the given constraints. Specifically, each
 ESGF Index Node exposes the following URL for generating Wget scripts:
 
-.. code:: ipython2
+.. code:: console
 
    http:///wget?[keyword parameters as (name, value) pairs][facet parameters as (name,value) pairs]
 
