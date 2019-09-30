@@ -75,7 +75,7 @@ The examples below assumes the following initial setup:
 Example on how to obtain an X.509 certificate using the myproxy-logon
 client:
 
-.. code:: ipython2
+.. code:: console
 
    myproxy-logon -s esgf-node.jpl.nasa.gov -p 7512 -l -t 48 -o ~/.esg/credentials.pem
 
@@ -100,7 +100,7 @@ Pull Publishing Service
 
 Example (must be entered only on one line, with … removed):
 
-.. code:: ipython2
+.. code:: console
 
    wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem\
         --certificate ~/.esg/credentials.pem --private-key ~/.esg/credentials.pem\
@@ -122,7 +122,7 @@ Pull UnPublishing Service
 
 Example (must be entered only on one line, with … removed):
 
-.. code:: ipython2
+.. code:: console
 
    wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
          –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem\
@@ -148,7 +148,7 @@ Push Publishing Service
 
 Example (must be entered only on one line):
 
-.. code:: ipython2
+.. code:: console
 
    wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
          –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
@@ -180,7 +180,7 @@ Push UnPublishing Service
 
 Example (must be entered only on one line):
 
-.. code:: ipython2
+.. code:: console
 
    wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
          –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
@@ -209,7 +209,7 @@ Delete UnPublishing Service
 
 Example (must be entered only on one line, with … removed):
 
-.. code:: ipython2
+.. code:: console
 
    wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
          –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
@@ -244,7 +244,7 @@ Retract UnPublishing Service
 
 Example (must be entered only on one line, with … removed):
 
-.. code:: ipython2
+.. code:: console
 
    wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
         –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
@@ -259,7 +259,7 @@ Following is an example on how to invoke the ESGF Publishing Services
 from a Python client. The example leverages the Python Requests library
 for HTTP(s) communication with the server.
 
-.. code:: ipython2
+.. code:: console
 
    import requests
 

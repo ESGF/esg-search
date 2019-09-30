@@ -98,7 +98,7 @@ The following examples show how to use the popular wget client to issue
 GET metadata updates requests (each example must be entered all in one
 line):
 
-.. code:: ipython2
+.. code:: console
 
    # set one or more values
     
@@ -108,7 +108,7 @@ line):
                                                                 
 
 
-.. code:: ipython2
+.. code:: console
 
    # add one or more values
     
@@ -117,7 +117,7 @@ line):
         'https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
                                                                 
 
-.. code:: ipython2
+.. code:: console
 
    # remove one or more values
     
@@ -126,7 +126,7 @@ line):
         'https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
                                                                
 
-.. code:: ipython2
+.. code:: console
 
    # remove all values
     
@@ -145,7 +145,7 @@ metadata updates are specified through an XML document that conforms to
 a custom ESGF syntax. For example, the following command can be used to
 send a POST metadata update request using the wget client:
 
-.. code:: ipython2
+.. code:: console
 
     wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
          --private-key ~/.esg/credentials.pem --verbose --post-file=updates.xml\
@@ -155,7 +155,7 @@ send a POST metadata update request using the wget client:
 where the XML document has the following content, depending on what kind
 of metadata update is requested:
 
-.. code:: ipython2
+.. code:: console
 
     <!-- set one or more values on a single record (identified by "id") -->
     <updates core="datasets" action="set">
@@ -168,7 +168,7 @@ of metadata update is requested:
        </update>
     </updates>	
 
-.. code:: ipython2
+.. code:: console
 
     <!-- set one or more values on multiple records (identified by an ESGF query) -->
     <updates core="datasets" action="set">
@@ -182,7 +182,7 @@ of metadata update is requested:
     </updates>	
 
 
-.. code:: ipython2
+.. code:: console
 
     <!-- add one or more values (by query) -->
     <updates core="datasets" action="add">
@@ -196,7 +196,7 @@ of metadata update is requested:
     </updates>	
 
 
-.. code:: ipython2
+.. code:: console
 
     <!-- remove one or more values (by query) -->
     <updates core="datasets" action="remove">
@@ -209,7 +209,7 @@ of metadata update is requested:
     </updates>	
 
 
-.. code:: ipython2
+.. code:: console
 
     <!-- remove all values (by query) -->
     <updates core="datasets" action="set">
