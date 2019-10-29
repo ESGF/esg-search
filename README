@@ -1,5 +1,11 @@
-DESCRIPTION
+Latest version: v4.17.10
+------------------------
+ - Relaxed solr master autocommit to reduce write frequency
+ - enabled from / to search based on _timestamp
 
+
+DESCRIPTION
+-----------
 
 This module contains the next generation search functionality for the Earth System Grid Federation, 
 built upon the Apache Solr search engine. The package contains functionality for:
