@@ -25,7 +25,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Date;
+import java.time.Instant;
 
 import java.time.format.DateTimeFormatter;
 
@@ -82,7 +82,7 @@ public class SolrRetractor implements RecordConsumer {
 	    // also set "latest=false"
 		String query = "id="+record.getId();
 		Map<String,String[]> metadata = new HashMap<String,String[]>();
-        Date thedate = new Date(System.currentTimeMillis());
+        Instant thedate = Instant.now();
 
 		metadata.put(QueryParameters.FIELD_RETRACTED, new String[] {"true"} );
 		metadata.put(QueryParameters.FIELD_LATEST, new String[] {"false"} );
