@@ -83,10 +83,10 @@ public class SolrRetractor implements RecordConsumer {
 		String query = "id="+record.getId();
 		Map<String,String[]> metadata = new HashMap<String,String[]>();
         Date thedate = new Date(System.currentTimeMillis());
-        DateTimeFormatter dtf = new DateTimeFormatter();
+
 		metadata.put(QueryParameters.FIELD_RETRACTED, new String[] {"true"} );
 		metadata.put(QueryParameters.FIELD_LATEST, new String[] {"false"} );
-        metadata.put(QueryParameters.FIELD_TIMESTAMP, dtf.ISO_INSTANT.format(thedate) );
+        metadata.put(QueryParameters.FIELD_TIMESTAMP, DateTimeFormatter.ISO_INSTANT.format(thedate) );
 		HashMap<String, Map<String,String[]>> doc = new HashMap<String, Map<String,String[]>>();
 		doc.put(query, metadata);
 	    updateService.update(solrUrl.toString(), 
