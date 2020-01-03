@@ -91,7 +91,7 @@ resource “uri”.
 Pull Publishing Service
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-   -  URL: https://<index-node>/esg-search/ws/harvest
+   -  URL: https://\<index-node\>/esg-search/ws/harvest
    -  HTTP POST data: encoded as form (key, value) pair
 
       - uri: location identifier of remote metadata repository or catalog
@@ -114,7 +114,7 @@ Example (must be entered only on one line, with … removed):
 Pull UnPublishing Service
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-   -  URL: https://<index-node>/esg-search/ws/unharvest
+   -  URL: https://\<index-node\>/esg-search/ws/unharvest
    -  HTTP POST data: encoded as form (key, value) pairs 
 
       -  uri: location identifier of remote metadata repository or catalog
@@ -124,12 +124,12 @@ Example (must be entered only on one line, with … removed):
 
 .. code:: console
 
-   wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-         –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem\
-        –verbose
-        –post-data="uri=https://esgf-node.llnl.gov/thredds/catalog/esgcet/1/…
+   wget –-no-check-certificate –-ca-certificate ~/.esg/credentials.pem
+         –-certificate ~/.esg/credentials.pem –-private-key  ~/.esg/credentials.pem\
+        –-verbose
+        –-post-data="uri=https://esgf-data1.llnl.gov/thredds/catalog/esgcet/1/…
                   …NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml
-        https://esgf-dev.llnl.gov/esg-search/ws/unharvest
+        https://esgf-node.llnl.gov/esg-search/ws/unharvest
 
 “Push” Operations
 -----------------
@@ -150,9 +150,9 @@ Example (must be entered only on one line):
 
 .. code:: console
 
-   wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-         –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
-         –verbose –post-file=cmip5_dataset.xml
+   wget –-no-check-certificate –-ca-certificate ~/.esg/credentials.pem
+         –-certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
+         –-verbose –-post-file=cmip5_dataset.xml
           https://esgf-dev.llnl.gov/esg-search/ws/publish
 
 The ESGF Search GitHub repository contains several examples of valid
@@ -182,10 +182,10 @@ Example (must be entered only on one line):
 
 .. code:: console
 
-   wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-         –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
-         –verbose –post-file=cmip5_dataset.xml
-         https://esgf-dev.llnl.gov/esg-search/ws/unpublish
+   wget --no-check-certificate –--ca-certificate ~/.esg/credentials.pem
+         –-certificate ~/.esg/credentials.pem –-private-key  ~/.esg/credentials.pem
+         –-verbose –-post-file=cmip5_dataset.xml
+         https://esgf-node.llnl.gov/esg-search/ws/unpublish
 
 Note that unpublishing a dataset record will automatically unpublish all
 file and aggregation records that reference that dataset.
@@ -211,10 +211,10 @@ Example (must be entered only on one line, with … removed):
 
 .. code:: console
 
-   wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-         –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
-         –verbose -O response.xml
-         –post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323…
+   wget –-no-check-certificate –-ca-certificate ~/.esg/credentials.pem
+         –-certificate ~/.esg/credentials.pem –-private-key  ~/.esg/credentials.pem
+         –-verbose -O response.xml
+         –-post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323…
                       …|pcmdi9.llnl.gov”
          https://esgf-dev.llnl.gov/esg-search/ws/delete
 
@@ -246,10 +246,10 @@ Example (must be entered only on one line, with … removed):
 
 .. code:: console
 
-   wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-        –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
-        –verbose -O response.xml
-        –post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323..pcmdi9.llnl.gov”
+   wget –-no-check-certificate –ca-certificate ~/.esg/credentials.pem
+        –-certificate ~/.esg/credentials.pem –-private-key  ~/.esg/credentials.pem
+        –-verbose -O response.xml
+        –-post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323..pcmdi9.llnl.gov”
         https://esgf-dev.llnl.gov/esg-search/ws/retract
 
 Python Client Example
