@@ -253,7 +253,7 @@ publish data into the target Index Node</p></li>
 </ul>
 <p>Example on how to obtain an X.509 certificate using the myproxy-logon
 client:</p>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>myproxy-logon -s esgf-node.jpl.nasa.gov -p 7512 -l -t 48 -o ~/.esg/credentials.pem
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">myproxy-logon -s esgf-node.llnl.gov -p 7512 -l -t 48 -o ~/.esg/credentials.pem</span>
 </pre></div>
 </div>
 </div>
@@ -268,7 +268,7 @@ resource “uri”.</p>
 <h3>Pull Publishing Service<a class="headerlink" href="#pull-publishing-service" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>URL: <a class="reference external" href="https:///esg-search/ws/harvest">https:///esg-search/ws/harvest</a></p></li>
+<li><p>URL: <a class="reference external" href="https://">https://</a>&lt;index-node&gt;/esg-search/ws/harvest</p></li>
 <li><p>HTTP POST data: encoded as form (key, value) pair</p>
 <ul>
 <li><p>uri: location identifier of remote metadata repository or catalog</p></li>
@@ -279,12 +279,12 @@ resource “uri”.</p>
 </ul>
 </div></blockquote>
 <p>Example (must be entered only on one line, with … removed):</p>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem\
-     --certificate ~/.esg/credentials.pem --private-key ~/.esg/credentials.pem\
-     --verbose\
-     --post-data=&quot;uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/...
-                  ...NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml&amp;metadataRepositoryType=THREDDS&quot;\
-  https://esgf-dev.jpl.nasa.gov/esg-search/ws/harvest
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem\</span>
+<span class="go">     --certificate ~/.esg/credentials.pem --private-key ~/.esg/credentials.pem\</span>
+<span class="go">     --verbose\</span>
+<span class="go">     --post-data=&quot;uri=https://esgf-node.llnl.gov/thredds/catalog/esgcet/1/...</span>
+<span class="go">                  ...NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml&amp;metadataRepositoryType=THREDDS&quot;\</span>
+<span class="go">  https://esgf-dev.llnl.gov/esg-search/ws/harvest</span>
 </pre></div>
 </div>
 </div>
@@ -292,7 +292,7 @@ resource “uri”.</p>
 <h3>Pull UnPublishing Service<a class="headerlink" href="#pull-unpublishing-service" title="Permalink to this headline">¶</a></h3>
 <blockquote>
 <div><ul class="simple">
-<li><p>URL: <a class="reference external" href="https:///esg-search/ws/unharvest">https:///esg-search/ws/unharvest</a></p></li>
+<li><p>URL: <a class="reference external" href="https://">https://</a>&lt;index-node&gt;/esg-search/ws/unharvest</p></li>
 <li><p>HTTP POST data: encoded as form (key, value) pairs</p>
 <ul>
 <li><p>uri: location identifier of remote metadata repository or catalog</p></li>
@@ -302,12 +302,12 @@ resource “uri”.</p>
 </ul>
 </div></blockquote>
 <p>Example (must be entered only on one line, with … removed):</p>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-      –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem\
-     –verbose
-     –post-data=&quot;uri=https://esgf-node.jpl.nasa.gov/thredds/catalog/esgcet/1/…
-               …NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml
-     https://esgf-dev.jpl.nasa.gov/esg-search/ws/unharvest
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget –-no-check-certificate –-ca-certificate ~/.esg/credentials.pem</span>
+<span class="go">      –-certificate ~/.esg/credentials.pem –-private-key  ~/.esg/credentials.pem\</span>
+<span class="go">     –-verbose</span>
+<span class="go">     –-post-data=&quot;uri=https://esgf-data1.llnl.gov/thredds/catalog/esgcet/1/…</span>
+<span class="go">               …NASA-JPL.COUND.AMSRE.LWP.mon.v1.xml</span>
+<span class="go">     https://esgf-node.llnl.gov/esg-search/ws/unharvest</span>
 </pre></div>
 </div>
 </div>
@@ -321,15 +321,15 @@ of the resource that is been published or unpublished.</p>
 <div class="section" id="push-publishing-service">
 <h3>Push Publishing Service<a class="headerlink" href="#push-publishing-service" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>URL: <a class="reference external" href="https:///esg-search/ws/publish">https:///esg-search/ws/publish</a></p></li>
+<li><p>URL: <a class="reference external" href="https:/">https:/</a>/&lt;index-node&gt;/esg-search/ws/publish</p></li>
 <li><p>HTTP POST data: metadata record encoded as Solr/XML (with optional
 “schema” attribute for additional project-specific validation).</p></li>
 </ul>
 <p>Example (must be entered only on one line):</p>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-      –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
-      –verbose –post-file=cmip5_dataset.xml
-       https://esgf-dev.jpl.nasa.gov/esg-search/ws/publish
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget –-no-check-certificate –-ca-certificate ~/.esg/credentials.pem</span>
+<span class="go">      –-certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem</span>
+<span class="go">      –-verbose –-post-file=cmip5_dataset.xml</span>
+<span class="go">       https://esgf-dev.llnl.gov/esg-search/ws/publish</span>
 </pre></div>
 </div>
 <p>The ESGF Search GitHub repository contains several examples of valid
@@ -350,16 +350,16 @@ that the file records reference an existing dataset record.</p>
 <div class="section" id="push-unpublishing-service">
 <h3>Push UnPublishing Service<a class="headerlink" href="#push-unpublishing-service" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>URL: <a class="reference external" href="https:///esg-search/ws/unpublish">https:///esg-search/ws/unpublish</a></p></li>
+<li><p>URL: <a class="reference external" href="https:/">https:/</a>/&lt;index-node&gt;/esg-search/ws/unpublish</p></li>
 <li><p>HTTP POST data: metadata record encoded as Solr/XML (same that was
 used for publishing, although only the “id” and “type” information
 will really be used).</p></li>
 </ul>
 <p>Example (must be entered only on one line):</p>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-      –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
-      –verbose –post-file=cmip5_dataset.xml
-      https://esgf-dev.jpl.nasa.gov/esg-search/ws/unpublish
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget --no-check-certificate –--ca-certificate ~/.esg/credentials.pem</span>
+<span class="go">      –-certificate ~/.esg/credentials.pem –-private-key  ~/.esg/credentials.pem</span>
+<span class="go">      –-verbose –-post-file=cmip5_dataset.xml</span>
+<span class="go">      https://esgf-node.llnl.gov/esg-search/ws/unpublish</span>
 </pre></div>
 </div>
 <p>Note that unpublishing a dataset record will automatically unpublish all
@@ -373,7 +373,7 @@ from the metadata store.</p>
 <div class="section" id="delete-unpublishing-service">
 <h3>Delete UnPublishing Service<a class="headerlink" href="#delete-unpublishing-service" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>URL: <a class="reference external" href="https:///esg-search/ws/delete">https:///esg-search/ws/delete</a></p></li>
+<li><p>URL: <a class="reference external" href="https:/">https:/</a>/&lt;index-node&gt;/esg-search/ws/delete</p></li>
 <li><p>HTTP POST data: encoded as form (key, value) pairs</p>
 <ul>
 <li><p>id: identifier of record to be deleted (key and value pairs may be
@@ -383,12 +383,12 @@ time)</p></li>
 </li>
 </ul>
 <p>Example (must be entered only on one line, with … removed):</p>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-      –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
-      –verbose -O response.xml
-      –post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323…
-                   …|pcmdi9.llnl.gov”
-      https://esgf-dev.jpl.nasa.gov/esg-search/ws/delete
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget –-no-check-certificate –-ca-certificate ~/.esg/credentials.pem</span>
+<span class="go">      –-certificate ~/.esg/credentials.pem –-private-key  ~/.esg/credentials.pem</span>
+<span class="go">      –-verbose -O response.xml</span>
+<span class="go">      –-post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323…</span>
+<span class="go">                   …|pcmdi9.llnl.gov”</span>
+<span class="go">      https://esgf-dev.llnl.gov/esg-search/ws/delete</span>
 </pre></div>
 </div>
 <p>Note that just like before, unpublishing a dataset record will
@@ -407,7 +407,7 @@ dataset record is kept in the catalog for reference, and marked as
 <div class="section" id="retract-unpublishing-service">
 <h3>Retract UnPublishing Service<a class="headerlink" href="#retract-unpublishing-service" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>URL: <a class="reference external" href="https:///esg-search/ws/retract">https:///esg-search/ws/retract</a></p></li>
+<li><p>URL: <a class="reference external" href="https:/">https:/</a>/&lt;index-node&gt;/esg-search/ws/retract</p></li>
 <li><p>HTTP POST data: encoded as form (key, value) pairs</p>
 <ul>
 <li><p>id: identifier of record to be retracted (key and value pairs may
@@ -417,11 +417,11 @@ a time)</p></li>
 </li>
 </ul>
 <p>Example (must be entered only on one line, with … removed):</p>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget –no-check-certificate –ca-certificate ~/.esg/credentials.pem
-     –certificate ~/.esg/credentials.pem –private-key  ~/.esg/credentials.pem
-     –verbose -O response.xml
-     –post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323..pcmdi9.llnl.gov”
-     https://esgf-dev.jpl.nasa.gov/esg-search/ws/retract
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget –-no-check-certificate –ca-certificate ~/.esg/credentials.pem</span>
+<span class="go">     –-certificate ~/.esg/credentials.pem –-private-key  ~/.esg/credentials.pem</span>
+<span class="go">     –-verbose -O response.xml</span>
+<span class="go">     –-post-data=“id=cmip5.output1.INM.inmcm4.1pctCO2.day.atmos.day.r1i1p1.v20110323..pcmdi9.llnl.gov”</span>
+<span class="go">     https://esgf-dev.llnl.gov/esg-search/ws/retract</span>
 </pre></div>
 </div>
 </div>
@@ -431,9 +431,9 @@ a time)</p></li>
 <p>Following is an example on how to invoke the ESGF Publishing Services
 from a Python client. The example leverages the Python Requests library
 for HTTP(s) communication with the server.</p>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>import requests
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span>import requests
 
-url = “https://esgf-dev.jpl.nasa.gov/esg-search/ws/harvest”
+url = “https://esgf-dev.llnl.gov/esg-search/ws/harvest”
 mycertpath = “/Users/cinquini/.esg/credentials.pem”
 catalog =  “http://aims3.llnl.gov/thredds/catalog/esgcet/1/”
          +“cmip5.output1.NIMR-KMA.HadGEM2-AO.historical.mon.atmos.Amon.r1i1p1.v20130815.xml”
@@ -456,12 +456,12 @@ service endpoints that will publish/unpublish metadata to/from the local
 Solr instance runninig on port 8982. Specifically, to target the local
 shard, a client must use the following URLs:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="https:///esg-search/ws/harvestLocal">https:///esg-search/ws/harvestLocal</a></p></li>
-<li><p><a class="reference external" href="https:///esg-search/ws/unharvestLocal">https:///esg-search/ws/unharvestLocal</a></p></li>
-<li><p><a class="reference external" href="https:///esg-search/ws/publishLocal">https:///esg-search/ws/publishLocal</a></p></li>
-<li><p><a class="reference external" href="https:///esg-search/ws/unpublishLocal">https:///esg-search/ws/unpublishLocal</a></p></li>
-<li><p><a class="reference external" href="https:///esg-search/ws/deleteLocal">https:///esg-search/ws/deleteLocal</a></p></li>
-<li><p><a class="reference external" href="https:///esg-search/ws/retractLocal">https:///esg-search/ws/retractLocal</a></p></li>
+<li><p><a class="reference external" href="https:/">https:/</a>/&lt;index-node&gt;/esg-search/ws/harvestLocal</p></li>
+<li><p><a class="reference external" href="https:/">https:/</a>/&lt;index-node&gt;/esg-search/ws/unharvestLocal</p></li>
+<li><p><a class="reference external" href="https:/">https:/</a>/&lt;index-node&gt;/esg-search/ws/publishLocal</p></li>
+<li><p><a class="reference external" href="https:/">https:/</a>/&lt;index-node&gt;/esg-search/ws/unpublishLocal</p></li>
+<li><p><a class="reference external" href="https:/">https:/</a>/&lt;index-node&gt;/esg-search/ws/deleteLocal</p></li>
+<li><p><a class="reference external" href="https:/">https:/</a>/&lt;index-node&gt;/esg-search/ws/retractLocal</p></li>
 </ul>
 </div>
 </div>

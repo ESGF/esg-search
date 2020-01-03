@@ -193,7 +193,7 @@ APIs:</p>
 <li><p>The native Solr API for atomic updates</p>
 <ul class="simple">
 <li><p>The client targets the “master” Solr URL directly:
-<a class="reference external" href="http://:8984/solr//update">http://:8984/solr//update</a>. Updates will be automatically
+<a class="reference external" href="http:/">http:/</a>/&lt;index-node&gt;:8984/solr/&lt;core&gt;/update. Updates will be automatically
 replicated to the “slave” Solr index on port 8983</p></li>
 <li><p>No authentication or authorization is required. The client must
 have access to port 8984 and therefore must execute from within
@@ -220,7 +220,7 @@ Solr master URL is open to the Python client for updates
 <li><p>The ESGF metadata update API</p>
 <ul class="simple">
 <li><p>The client targets the ESGF Search web service URLs:
-<a class="reference external" href="https:///esg-search/ws/update">https:///esg-search/ws/update</a>… which behind the scenes query and
+<a class="reference external" href="https:/">https:/</a>/&lt;index-node&gt;/esg-search/ws/update… which behind the scenes query and
 update the “master” Solr index. Updates are again automatically
 replicated to the “slave” Solr index. -The client must provide an
 X509 certificate used for authentication and authorization.</p></li>
@@ -250,7 +250,7 @@ publish to that dataset (based on the record “id” field)</p></li>
 <p>The ESGF Search web services support metadata updates through simple GET
 request, but in this case each request can only update one document. The
 general syntax of a GET request is:</p>
-<p><a class="reference external" href="https:///esg-search/ws/updateById?id=">https:///esg-search/ws/updateById?id=</a>…..&amp;action=…&amp;core=…&amp;field=…&amp;value=…&amp;value=…&amp;value=…</p>
+<p><a class="reference external" href="https:/">https:/</a>/&lt;index-node&gt;/esg-search/ws/updateById?id=…..&amp;action=…&amp;core=…&amp;field=…&amp;value=…&amp;value=…&amp;value=…</p>
 <p>where:</p>
 <ul class="simple">
 <li><p>id: record identifier (properly URL-encoded)</p></li>
@@ -261,32 +261,32 @@ general syntax of a GET request is:</p>
 <p>The following examples show how to use the popular wget client to issue
 GET metadata updates requests (each example must be entered all in one
 line):</p>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># set one or more values
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> <span class="nb">set</span> one or more values
 
-wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
-      --private-key ~/.esg/credentials.pem --verbose\
-     &#39;https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+<span class="go">wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\</span>
+<span class="go">      --private-key ~/.esg/credentials.pem --verbose\</span>
+<span class="go">     &#39;https://esgf-dev.llnl.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.llnl.gov\</span>
 </pre></div>
 </div>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># add one or more values
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> add one or more values
 
-wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
-      --private-key ~/.esg/credentials.pem --verbose\
-     &#39;https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+<span class="go">wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\</span>
+<span class="go">      --private-key ~/.esg/credentials.pem --verbose\</span>
+<span class="go">     &#39;https://esgf-dev.llnl.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.llnl.gov\</span>
 </pre></div>
 </div>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># remove one or more values
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> remove one or more values
 
-wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
-      --private-key ~/.esg/credentials.pem --verbose\
-     &#39;https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+<span class="go">wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\</span>
+<span class="go">      --private-key ~/.esg/credentials.pem --verbose\</span>
+<span class="go">     &#39;https://esgf-dev.llnl.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.llnl.gov\</span>
 </pre></div>
 </div>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span># remove all values
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span> remove all values
 
- wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
-      --private-key ~/.esg/credentials.pem --verbose\
-     &#39;https://esgf-dev.jpl.nasa.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.jpl.nasa.gov\
+<span class="go"> wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\</span>
+<span class="go">      --private-key ~/.esg/credentials.pem --verbose\</span>
+<span class="go">     &#39;https://esgf-dev.llnl.gov/esg-search/ws/updateById?id=obs4MIPs.NASA-JPL.AIRS.mon.v1%7Cesg-datanode.llnl.gov\</span>
 </pre></div>
 </div>
 </div>
@@ -298,67 +298,67 @@ they allow to update at once ALL records that match one or more queries
 metadata updates are specified through an XML document that conforms to
 a custom ESGF syntax. For example, the following command can be used to
 send a POST metadata update request using the wget client:</p>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\
-     --private-key ~/.esg/credentials.pem --verbose --post-file=updates.xml\
-     &#39;https://esgf-dev.jpl.nasa.gov/esg-search/ws/update&#39;
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">wget --no-check-certificate --ca-certificate ~/.esg/credentials.pem --certificate ~/.esg/credentials.pem\</span>
+<span class="go">     --private-key ~/.esg/credentials.pem --verbose --post-file=updates.xml\</span>
+<span class="go">     &#39;https://esgf-dev.llnl.gov/esg-search/ws/update&#39;</span>
 </pre></div>
 </div>
 <p>where the XML document has the following content, depending on what kind
 of metadata update is requested:</p>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>&lt;!-- set one or more values on a single record (identified by &quot;id&quot;) --&gt;
-&lt;updates core=&quot;datasets&quot; action=&quot;set&quot;&gt;
-   &lt;update&gt;
-      &lt;query&gt;id=obs4MIPs.NASA-JPL.AIRS.mon.v1|esgf-dev.jpl.nasa.gov&lt;/query&gt;
-      &lt;field name=&quot;xlink&quot;&gt;
-         &lt;value&gt;abc&lt;/value&gt;
-         &lt;value&gt;123456&lt;/value&gt;
-      &lt;/field&gt;
-   &lt;/update&gt;
-&lt;/updates&gt;
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&lt;!-- set one or more values on a single record (identified by &quot;id&quot;) --&gt;</span>
+<span class="go">&lt;updates core=&quot;datasets&quot; action=&quot;set&quot;&gt;</span>
+<span class="go">   &lt;update&gt;</span>
+<span class="go">      &lt;query&gt;id=obs4MIPs.NASA-JPL.AIRS.mon.v1|esgf-dev.llnl.gov&lt;/query&gt;</span>
+<span class="go">      &lt;field name=&quot;xlink&quot;&gt;</span>
+<span class="go">         &lt;value&gt;abc&lt;/value&gt;</span>
+<span class="go">         &lt;value&gt;123456&lt;/value&gt;</span>
+<span class="go">      &lt;/field&gt;</span>
+<span class="go">   &lt;/update&gt;</span>
+<span class="go">&lt;/updates&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>&lt;!-- set one or more values on multiple records (identified by an ESGF query) --&gt;
-&lt;updates core=&quot;datasets&quot; action=&quot;set&quot;&gt;
-   &lt;update&gt;
-      &lt;query&gt;project=obs4MIPs&amp;amp;realm=atmos&lt;/query&gt;
-      &lt;field name=&quot;xlink&quot;&gt;
-         &lt;value&gt;xyzuvw&lt;/value&gt;
-         &lt;value&gt;999999&lt;/value&gt;
-      &lt;/field&gt;
-   &lt;/update&gt;
-&lt;/updates&gt;
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&lt;!-- set one or more values on multiple records (identified by an ESGF query) --&gt;</span>
+<span class="go">&lt;updates core=&quot;datasets&quot; action=&quot;set&quot;&gt;</span>
+<span class="go">   &lt;update&gt;</span>
+<span class="go">      &lt;query&gt;project=obs4MIPs&amp;amp;realm=atmos&lt;/query&gt;</span>
+<span class="go">      &lt;field name=&quot;xlink&quot;&gt;</span>
+<span class="go">         &lt;value&gt;xyzuvw&lt;/value&gt;</span>
+<span class="go">         &lt;value&gt;999999&lt;/value&gt;</span>
+<span class="go">      &lt;/field&gt;</span>
+<span class="go">   &lt;/update&gt;</span>
+<span class="go">&lt;/updates&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>&lt;!-- add one or more values (by query) --&gt;
-&lt;updates core=&quot;datasets&quot; action=&quot;add&quot;&gt;
-   &lt;update&gt;
-      &lt;query&gt;project=obs4MIPs&amp;amp;realm=atmos&lt;/query&gt;
-      &lt;field name=&quot;xlink&quot;&gt;
-         &lt;value&gt;qazxsw&lt;/value&gt;
-         &lt;value&gt;9876543210&lt;/value&gt;
-      &lt;/field&gt;
-   &lt;/update&gt;
-&lt;/updates&gt;
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&lt;!-- add one or more values (by query) --&gt;</span>
+<span class="go">&lt;updates core=&quot;datasets&quot; action=&quot;add&quot;&gt;</span>
+<span class="go">   &lt;update&gt;</span>
+<span class="go">      &lt;query&gt;project=obs4MIPs&amp;amp;realm=atmos&lt;/query&gt;</span>
+<span class="go">      &lt;field name=&quot;xlink&quot;&gt;</span>
+<span class="go">         &lt;value&gt;qazxsw&lt;/value&gt;</span>
+<span class="go">         &lt;value&gt;9876543210&lt;/value&gt;</span>
+<span class="go">      &lt;/field&gt;</span>
+<span class="go">   &lt;/update&gt;</span>
+<span class="go">&lt;/updates&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>&lt;!-- remove one or more values (by query) --&gt;
-&lt;updates core=&quot;datasets&quot; action=&quot;remove&quot;&gt;
-   &lt;update&gt;
-      &lt;query&gt;project=obs4MIPs&amp;amp;realm=atmos&lt;/query&gt;
-      &lt;field name=&quot;xlink&quot;&gt;
-         &lt;value&gt;qazxsw&lt;/value&gt;
-      &lt;/field&gt;
-   &lt;/update&gt;
-&lt;/updates&gt;
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&lt;!-- remove one or more values (by query) --&gt;</span>
+<span class="go">&lt;updates core=&quot;datasets&quot; action=&quot;remove&quot;&gt;</span>
+<span class="go">   &lt;update&gt;</span>
+<span class="go">      &lt;query&gt;project=obs4MIPs&amp;amp;realm=atmos&lt;/query&gt;</span>
+<span class="go">      &lt;field name=&quot;xlink&quot;&gt;</span>
+<span class="go">         &lt;value&gt;qazxsw&lt;/value&gt;</span>
+<span class="go">      &lt;/field&gt;</span>
+<span class="go">   &lt;/update&gt;</span>
+<span class="go">&lt;/updates&gt;</span>
 </pre></div>
 </div>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>&lt;!-- remove all values (by query) --&gt;
-&lt;updates core=&quot;datasets&quot; action=&quot;set&quot;&gt;
-   &lt;update&gt;
-      &lt;query&gt;project=obs4MIPs&amp;amp;realm=atmos&lt;/query&gt;
-      &lt;field name=&quot;xlink&quot; /&gt;
-   &lt;/update&gt;
-&lt;/updates&gt;
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">&lt;!-- remove all values (by query) --&gt;</span>
+<span class="go">&lt;updates core=&quot;datasets&quot; action=&quot;set&quot;&gt;</span>
+<span class="go">   &lt;update&gt;</span>
+<span class="go">      &lt;query&gt;project=obs4MIPs&amp;amp;realm=atmos&lt;/query&gt;</span>
+<span class="go">      &lt;field name=&quot;xlink&quot; /&gt;</span>
+<span class="go">   &lt;/update&gt;</span>
+<span class="go">&lt;/updates&gt;</span>
 </pre></div>
 </div>
 </div>

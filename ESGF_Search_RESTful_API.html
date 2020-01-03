@@ -186,7 +186,7 @@ Nodes in the ESGF system.</p>
 <div class="section" id="syntax">
 <h2>Syntax<a class="headerlink" href="#syntax" title="Permalink to this headline">¶</a></h2>
 <p>The general syntax of the ESGF search service URL is:</p>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>http:///search?[keyword parameters as (name, value) pairs][facet parameters as (name,value) pairs]
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">http://&lt;index-node&gt;/esg-search/search?[keyword parameters as (name, value) pairs][facet parameters as (name,value) pairs]</span>
 </pre></div>
 </div>
 <p>where “” is the base URL of the search service at a given Index Node.</p>
@@ -236,7 +236,7 @@ query using all the default values, specifically:</p>
 </ul>
 <p>Example:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search">http://esgf-node.jpl.nasa.gov/esg-search/search</a></p></li>
+<li><p><a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search">http://esgf-node.llnl.gov/esg-search/search</a></p></li>
 </ul>
 </div>
 <div class="section" id="free-text-queries">
@@ -251,33 +251,33 @@ text field at the top of the page.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>Search for any text, anywhere:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=*">http://esgf-node.jpl.nasa.gov/esg-search/search?query=*</a> (the default
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?query=*">http://esgf-node.llnl.gov/esg-search/search?query=*</a> (the default
 value of the query parameter)</p></li>
 <li><p>Search for “humidity” in all metadata fields:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=humidity">http://esgf-node.jpl.nasa.gov/esg-search/search?query=humidity</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?query=humidity">http://esgf-node.llnl.gov/esg-search/search?query=humidity</a></p></li>
 <li><p>Search for the exact sentence “specific humidity” in all metadata
 fields (the sentence must be surrounded by quotes and URL-encoded):
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=%22specific%20humidity%22">http://esgf-node.jpl.nasa.gov/esg-search/search?query=%22specific%20humidity%22</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?query=%22specific%20humidity%22">http://esgf-node.llnl.gov/esg-search/search?query=%22specific%20humidity%22</a></p></li>
 <li><p>Search for both words “specific” and “humidity”, but not necessarily
 in an exact sequence (must use a space between the two words = this
 is the same as executing a query with the logical OR):
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=specific%20humidity">http://esgf-node.jpl.nasa.gov/esg-search/search?query=specific%20humidity</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?query=specific%20humidity">http://esgf-node.llnl.gov/esg-search/search?query=specific%20humidity</a></p></li>
 <li><p>Search for the word “observations” ONLY in the metadata field
 “product” :
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=product:observations">http://esgf-node.jpl.nasa.gov/esg-search/search?query=product:observations</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?query=product:observations">http://esgf-node.llnl.gov/esg-search/search?query=product:observations</a></p></li>
 <li><p>Using logical AND:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20AND%20humidity">http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20AND%20humidity</a>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?query=airs%20AND%20humidity">http://esgf-node.llnl.gov/esg-search/search?query=airs%20AND%20humidity</a>
 (must use upper case “AND”)</p></li>
 <li><p>Using logical OR:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20OR%20humidity">http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20OR%20humidity</a>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?query=airs%20OR%20humidity">http://esgf-node.llnl.gov/esg-search/search?query=airs%20OR%20humidity</a>
 (must use upper case “OR”). This is the same as using simply a blank
 space:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20humidity">http://esgf-node.jpl.nasa.gov/esg-search/search?query=airs%20humidity</a>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?query=airs%20humidity">http://esgf-node.llnl.gov/esg-search/search?query=airs%20humidity</a>
 )</p></li>
 <li><p>Search for a dataset with a specific id:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.hus.mon">http://esgf-node.jpl.nasa.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.hus.mon</a>.v20110608|esgf-data.jpl.nasa.gov</p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.hus.mon">http://esgf-node.llnl.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.hus.mon</a>.v20110608|esgf-data.llnl.gov</p></li>
 <li><p>Search for all datasets that match an id pattern:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.*">http://esgf-node.jpl.nasa.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.*</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.*">http://esgf-node.llnl.gov/esg-search/search?query=id:obs4MIPs.NASA-JPL.AIRS.*</a></p></li>
 </ul>
 </div>
 <div class="section" id="facet-queries">
@@ -321,31 +321,31 @@ type=Dataset .</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>Single facet query:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?cf_standard_name=air_temperature">http://esgf-node.jpl.nasa.gov/esg-search/search?cf_standard_name=air_temperature</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?cf_standard_name=air_temperature">http://esgf-node.llnl.gov/esg-search/search?cf_standard_name=air_temperature</a></p></li>
 <li><p>Query with two different facet constraints:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?cf_standard_name=air_temperature&amp;project=obs4MIPs">http://esgf-node.jpl.nasa.gov/esg-search/search?cf_standard_name=air_temperature&amp;project=obs4MIPs</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?cf_standard_name=air_temperature&amp;project=obs4MIPs">http://esgf-node.llnl.gov/esg-search/search?cf_standard_name=air_temperature&amp;project=obs4MIPs</a></p></li>
 <li><p>Combining two values of the same facet with a logical OR:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;variable=hus&amp;variable=ta">http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;variable=hus&amp;variable=ta</a>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?project=obs4MIPs&amp;variable=hus&amp;variable=ta">http://esgf-node.llnl.gov/esg-search/search?project=obs4MIPs&amp;variable=hus&amp;variable=ta</a>
 (search for all obs4MIPs files that have variable “ta” OR variable
 “hus”)</p></li>
 <li><p>Using a negative facet:</p>
 <ul>
-<li><p><a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;variable=hus&amp;variable=ta&amp;model!=Obs-AIRS">http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;variable=hus&amp;variable=ta&amp;model!=Obs-AIRS</a>
+<li><p><a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?project=obs4MIPs&amp;variable=hus&amp;variable=ta&amp;model!=Obs-AIRS">http://esgf-node.llnl.gov/esg-search/search?project=obs4MIPs&amp;variable=hus&amp;variable=ta&amp;model!=Obs-AIRS</a>
 (search for all obs4MIPs datasets that have variable ta OR hus,
 excluding those produced by AIRS)</p></li>
-<li><p><a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;variable!=ta&amp;variable!=huss">http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;variable!=ta&amp;variable!=huss</a>
+<li><p><a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?project=obs4MIPs&amp;variable!=ta&amp;variable!=huss">http://esgf-node.llnl.gov/esg-search/search?project=obs4MIPs&amp;variable!=ta&amp;variable!=huss</a>
 (search for all obs4MIPs datasets that do not contain neither
 variable ta nor variable huss)</p></li>
 </ul>
 </li>
 <li><p>Search a file by its tracking id:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;tracking_id=2209a0d0-9b77-4ecb-b2ab-b7ae412e7a3f">http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;tracking_id=2209a0d0-9b77-4ecb-b2ab-b7ae412e7a3f</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?type=File&amp;tracking_id=2209a0d0-9b77-4ecb-b2ab-b7ae412e7a3f">http://esgf-node.llnl.gov/esg-search/search?type=File&amp;tracking_id=2209a0d0-9b77-4ecb-b2ab-b7ae412e7a3f</a></p></li>
 <li><p>Search a file by its checksum:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;checksum=83df8ae93e85e26df797d5f770449470987a4ecd8f2d405159995b5cac9a410c">http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;checksum=83df8ae93e85e26df797d5f770449470987a4ecd8f2d405159995b5cac9a410c</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?type=File&amp;checksum=83df8ae93e85e26df797d5f770449470987a4ecd8f2d405159995b5cac9a410c">http://esgf-node.llnl.gov/esg-search/search?type=File&amp;checksum=83df8ae93e85e26df797d5f770449470987a4ecd8f2d405159995b5cac9a410c</a></p></li>
 <li><p>Issue a query for all supported facets and their values at one site,
 while returning no results (note that only facets with one or more
 values are returned):
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?facets=*&amp;limit=0&amp;distrib=false">http://esgf-node.jpl.nasa.gov/esg-search/search?facets=*&amp;limit=0&amp;distrib=false</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?facets=*&amp;limit=0&amp;distrib=false">http://esgf-node.llnl.gov/esg-search/search?facets=*&amp;limit=0&amp;distrib=false</a></p></li>
 </ul>
 </div>
 <div class="section" id="facet-listings">
@@ -357,24 +357,24 @@ that match one or more records will be returned.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>List all obs4MIPs facet names and values:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;facets=*&amp;limit=0">http://esgf-node.jpl.nasa.gov/esg-search/search?project=obs4MIPs&amp;facets=*&amp;limit=0</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?project=obs4MIPs&amp;facets=*&amp;limit=0">http://esgf-node.llnl.gov/esg-search/search?project=obs4MIPs&amp;facets=*&amp;limit=0</a></p></li>
 <li><p>List all CMIP5 facet names and values:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;facets=*&amp;limit=0">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;facets=*&amp;limit=0</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;facets=*&amp;limit=0">http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;facets=*&amp;limit=0</a></p></li>
 </ul>
 <p>The same query with no project constraint will return all facet names
 and values for ALL data across the federation:</p>
 <ul class="simple">
 <li><p>List ALL facet names and values:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?facets=*&amp;limit=0">http://esgf-node.jpl.nasa.gov/esg-search/search?facets=*&amp;limit=0</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?facets=*&amp;limit=0">http://esgf-node.llnl.gov/esg-search/search?facets=*&amp;limit=0</a></p></li>
 </ul>
 <p>To retrieve a listing of available values for only a few facets, simply
 specify a comma-separated list of facet names:</p>
 <ul class="simple">
 <li><p>List all values of model, experiment and project throughout the
 federation:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?facets=model,experiment,project&amp;limit=0">http://esgf-node.jpl.nasa.gov/esg-search/search?facets=model,experiment,project&amp;limit=0</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?facets=model,experiment,project&amp;limit=0">http://esgf-node.llnl.gov/esg-search/search?facets=model,experiment,project&amp;limit=0</a></p></li>
 <li><p>List all values of model, experiment for CMIP5 data:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?facets=model,experiment&amp;project=CMIP5&amp;limit=0">http://esgf-node.jpl.nasa.gov/esg-search/search?facets=model,experiment&amp;project=CMIP5&amp;limit=0</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?facets=model,experiment&amp;project=CMIP5&amp;limit=0">http://esgf-node.llnl.gov/esg-search/search?facets=model,experiment&amp;project=CMIP5&amp;limit=0</a></p></li>
 </ul>
 </div>
 <div class="section" id="temporal-coverage-queries">
@@ -387,11 +387,11 @@ syntax.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>Search for data in the past year:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?start=NOW-1YEAR">http://esgf-node.jpl.nasa.gov/esg-search/search?start=NOW-1YEAR</a>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?start=NOW-1YEAR">http://esgf-node.llnl.gov/esg-search/search?start=NOW-1YEAR</a>
 (translates into the constraint datetime_stop:[NOW-1YEAR TO *] or
 datetime_stop &gt; NOW-1YEAR)</p></li>
 <li><p>Search for data before the year 2000:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?end=2000-01-01T00:00:00Z">http://esgf-node.jpl.nasa.gov/esg-search/search?end=2000-01-01T00:00:00Z</a>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?end=2000-01-01T00:00:00Z">http://esgf-node.llnl.gov/esg-search/search?end=2000-01-01T00:00:00Z</a>
 (translates into the constraint datetime_start:[* TO
 2000-01-01T00:00:00Z] or datetime_start &lt; 2000-01-01)</p></li>
 </ul>
@@ -403,7 +403,7 @@ query for data with spatial coverage that overlaps the given bounding
 box. As usual, the parameter value must be URL-encoded.</p>
 <p>Examples:</p>
 <ul class="simple">
-<li><p><a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?bbox=%5B-10,-10,+10,+10%5D">http://esgf-node.jpl.nasa.gov/esg-search/search?bbox=%5B-10,-10,+10,+10%5D</a>
+<li><p><a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?bbox=%5B-10,-10,+10,+10%5D">http://esgf-node.llnl.gov/esg-search/search?bbox=%5B-10,-10,+10,+10%5D</a>
 ( translates to: east_degrees:[-10 TO *] AND north_degrees:[-10 TO
 *] AND west_degrees:[* TO 10] AND south_degrees:[* TO 10] )</p></li>
 </ul>
@@ -419,9 +419,9 @@ distrib=true is assumed.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>Search for all datasets in the federation:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?distrib=true">http://esgf-node.jpl.nasa.gov/esg-search/search?distrib=true</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?distrib=true">http://esgf-node.llnl.gov/esg-search/search?distrib=true</a></p></li>
 <li><p>Search for all datasets at one Node only:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?distrib=false">http://esgf-node.jpl.nasa.gov/esg-search/search?distrib=false</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?distrib=false">http://esgf-node.llnl.gov/esg-search/search?distrib=false</a></p></li>
 </ul>
 </div>
 <div class="section" id="shard-queries">
@@ -438,9 +438,9 @@ distrib=true by default if not otherwise specified).</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>Query for CMIP5 data at the PCMDI and CEDA sites only:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;shards=pcmdi.llnl.gov/solr,esgf-index1.ceda.ac.uk/solr">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;shards=pcmdi.llnl.gov/solr,esgf-index1.ceda.ac.uk/solr</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;shards=pcmdi.llnl.gov/solr,esgf-index1.ceda.ac.uk/solr">http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;shards=pcmdi.llnl.gov/solr,esgf-index1.ceda.ac.uk/solr</a></p></li>
 <li><p>Query for all files belonging to a given dataset at one site only:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;shards=esgf-node.jpl.nasa.gov/solr&amp;dataset_id=obs4MIPs.NASA-JPL.TES.tro3.mon">http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;shards=esgf-node.jpl.nasa.gov/solr&amp;dataset_id=obs4MIPs.NASA-JPL.TES.tro3.mon</a>.v20110608|esgf-data.jpl.nasa.gov</p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?type=File&amp;shards=esgf-node.llnl.gov/solr&amp;dataset_id=obs4MIPs.NASA-JPL.TES.tro3.mon">http://esgf-node.llnl.gov/esg-search/search?type=File&amp;shards=esgf-node.llnl.gov/solr&amp;dataset_id=obs4MIPs.NASA-JPL.TES.tro3.mon</a>.v20110608|esgf-data.llnl.gov</p></li>
 </ul>
 </div>
 <div class="section" id="replica-queries">
@@ -462,15 +462,15 @@ the master AND replicas of a Dataset or File), use master_id=….</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>Search for all datasets in the system (masters and replicas):
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search">http://esgf-node.jpl.nasa.gov/esg-search/search</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search">http://esgf-node.llnl.gov/esg-search/search</a></p></li>
 <li><p>Search for just master datasets, no replicas:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?replica=false">http://esgf-node.jpl.nasa.gov/esg-search/search?replica=false</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?replica=false">http://esgf-node.llnl.gov/esg-search/search?replica=false</a></p></li>
 <li><p>Search for just replica datasets, no masters:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?replica=true">http://esgf-node.jpl.nasa.gov/esg-search/search?replica=true</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?replica=true">http://esgf-node.llnl.gov/esg-search/search?replica=true</a></p></li>
 <li><p>Search for the master AND replicas of a given dataset:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?master_id=cmip5.output1.LASG-CESS.FGOALS-g2.midHolocene.3hr.land.3hr.r1i1p1">http://esgf-node.jpl.nasa.gov/esg-search/search?master_id=cmip5.output1.LASG-CESS.FGOALS-g2.midHolocene.3hr.land.3hr.r1i1p1</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?master_id=cmip5.output1.LASG-CESS.FGOALS-g2.midHolocene.3hr.land.3hr.r1i1p1">http://esgf-node.llnl.gov/esg-search/search?master_id=cmip5.output1.LASG-CESS.FGOALS-g2.midHolocene.3hr.land.3hr.r1i1p1</a></p></li>
 <li><p>Search for the master and replicas of a given file:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;master_id=cmip5.output1.MIROC.MIROC5.decadal1978.mon.ocean.Omon.r4i1p1.wfo_Omon_MIROC5_decadal1978_r4i1p1_197901-198812.nc">http://esgf-node.jpl.nasa.gov/esg-search/search?type=File&amp;master_id=cmip5.output1.MIROC.MIROC5.decadal1978.mon.ocean.Omon.r4i1p1.wfo_Omon_MIROC5_decadal1978_r4i1p1_197901-198812.nc</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?type=File&amp;master_id=cmip5.output1.MIROC.MIROC5.decadal1978.mon.ocean.Omon.r4i1p1.wfo_Omon_MIROC5_decadal1978_r4i1p1_197901-198812.nc">http://esgf-node.llnl.gov/esg-search/search?type=File&amp;master_id=cmip5.output1.MIROC.MIROC5.decadal1978.mon.ocean.Omon.r4i1p1.wfo_Omon_MIROC5_decadal1978_r4i1p1_197901-198812.nc</a></p></li>
 </ul>
 </div>
 <div class="section" id="latest-and-version-queries">
@@ -483,11 +483,11 @@ that were superseded by newer versions.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>Search for all latest CMIP5 datasets:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;latest=true">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;latest=true</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;latest=true">http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;latest=true</a></p></li>
 <li><p>Search for all versions of a given dataset:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;master_id=cmip5.output1.MOHC.HadCM3.decadal1972.day.atmos.day.r10i2p1&amp;facets=version">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;master_id=cmip5.output1.MOHC.HadCM3.decadal1972.day.atmos.day.r10i2p1&amp;facets=version</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;master_id=cmip5.output1.MOHC.HadCM3.decadal1972.day.atmos.day.r10i2p1&amp;facets=version">http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;master_id=cmip5.output1.MOHC.HadCM3.decadal1972.day.atmos.day.r10i2p1&amp;facets=version</a></p></li>
 <li><p>Search for a specific version of a given dataset:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;master_id=cmip5.output1.NSF-DOE-NCAR.CESM1-CAM5-1-FV2.historical.mon.atmos.Amon.r1i1p1&amp;version=20120712">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;master_id=cmip5.output1.NSF-DOE-NCAR.CESM1-CAM5-1-FV2.historical.mon.atmos.Amon.r1i1p1&amp;version=20120712</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;master_id=cmip5.output1.NSF-DOE-NCAR.CESM1-CAM5-1-FV2.historical.mon.atmos.Amon.r1i1p1&amp;version=20120712">http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;master_id=cmip5.output1.NSF-DOE-NCAR.CESM1-CAM5-1-FV2.historical.mon.atmos.Amon.r1i1p1&amp;version=20120712</a></p></li>
 </ul>
 </div>
 <div class="section" id="retracted-queries">
@@ -503,7 +503,7 @@ only retracted datasets, use the constraint “retracted=true”.</p>
 <ul class="simple">
 <li><p>Search for all retracted datasets in the CMIP5 project, across all
 nodes:
-<a class="reference external" href="https://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;retracted=true">https://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;retracted=true</a></p></li>
+<a class="reference external" href="https://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;retracted=true">https://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;retracted=true</a></p></li>
 </ul>
 </div>
 <div class="section" id="minimum-and-maximum-version-queries">
@@ -519,9 +519,9 @@ The two constraints can be combined with each other to specify a version
 <p>Examples:</p>
 <ul class="simple">
 <li><p>All datasets with version less than a given date:
-<a class="reference external" href="https://esgf-node.jpl.nasa.gov/esg-search/search?max_version=20150101">https://esgf-node.jpl.nasa.gov/esg-search/search?max_version=20150101</a></p></li>
+<a class="reference external" href="https://esgf-node.llnl.gov/esg-search/search?max_version=20150101">https://esgf-node.llnl.gov/esg-search/search?max_version=20150101</a></p></li>
 <li><p>All Obs4MIPs datasets with version between two dates:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?min_version=20120101&amp;max_version=20131231&amp;project=obs4MIPs">http://esgf-node.jpl.nasa.gov/esg-search/search?min_version=20120101&amp;max_version=20131231&amp;project=obs4MIPs</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?min_version=20120101&amp;max_version=20131231&amp;project=obs4MIPs">http://esgf-node.llnl.gov/esg-search/search?min_version=20120101&amp;max_version=20131231&amp;project=obs4MIPs</a></p></li>
 </ul>
 </div>
 <div class="section" id="results-pagination">
@@ -534,9 +534,9 @@ maximum value of limit &lt;= 10,000.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>Query for 100 CMIP5 datasets in the system:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;limit=100">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;limit=100</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;limit=100">http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;limit=100</a></p></li>
 <li><p>Query for the next 100 CMIP5 datasets in the system:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;limit=100&amp;offset=100">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;limit=100&amp;offset=100</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;limit=100&amp;offset=100">http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;limit=100&amp;offset=100</a></p></li>
 </ul>
 </div>
 <div class="section" id="output-format">
@@ -547,9 +547,9 @@ Solr/XML (the default) and Solr/JSON.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>Request results in Solr XML format:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?format=application%2Fsolr%2Bxml">http://esgf-node.jpl.nasa.gov/esg-search/search?format=application%2Fsolr%2Bxml</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?format=application%2Fsolr%2Bxml">http://esgf-node.llnl.gov/esg-search/search?format=application%2Fsolr%2Bxml</a></p></li>
 <li><p>Request results in Solr JSON format:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?format=application%2Fsolr%2Bjson">http://esgf-node.jpl.nasa.gov/esg-search/search?format=application%2Fsolr%2Bjson</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?format=application%2Fsolr%2Bjson">http://esgf-node.llnl.gov/esg-search/search?format=application%2Fsolr%2Bjson</a></p></li>
 </ul>
 </div>
 <div class="section" id="returned-metadata-fields">
@@ -564,9 +564,9 @@ list.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>Return all available metadata fields for CMIP5 datasets:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;fields=*">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;fields=*</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;fields=*">http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;fields=*</a></p></li>
 <li><p>Return only the “model” and “experiment” fields for CMIP5 datasets:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;fields=model,experiment">http://esgf-node.jpl.nasa.gov/esg-search/search?project=CMIP5&amp;fields=model,experiment</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;fields=model,experiment">http://esgf-node.llnl.gov/esg-search/search?project=CMIP5&amp;fields=model,experiment</a></p></li>
 </ul>
 </div>
 <div class="section" id="identifiers">
@@ -580,9 +580,9 @@ data node storing the data). It is intended to be “opaque”, i.e. it
 should not be parsed by clients to extract any information.</p>
 <ul>
 <li><p>Dataset example:
-id=obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|esgf-data.jpl.nasa.gov</p></li>
+id=obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608|esgf-data.llnl.gov</p></li>
 <li><p>File example:
-id=obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.tro3Stderr_TES_L3_tbd_200507-200912.nc|esgf-data.jpl.nasa.gov</p></li>
+id=obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.tro3Stderr_TES_L3_tbd_200507-200912.nc|esgf-data.llnl.gov</p></li>
 </ul>
 </li>
 <li><p>master_id : same for all replicas and versions across the federation.
@@ -622,18 +622,18 @@ from the ESGF controlled vocabulary.</p>
 <p>Example of Dataset access URLs:</p>
 <ul class="simple">
 <li><p>THREDDS catalog:
-<a class="reference external" href="http://esgf-data.jpl.nasa.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml#obs4MIPs.NASA-JPL.TES.tro3.mon">http://esgf-data.jpl.nasa.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml#obs4MIPs.NASA-JPL.TES.tro3.mon</a>.v20110608|application/xml+thredds|THREDDS</p></li>
+<a class="reference external" href="http://esgf-data.llnl.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml#obs4MIPs.NASA-JPL.TES.tro3.mon">http://esgf-data.llnl.gov/thredds/catalog/esgcet/1/obs4MIPs.NASA-JPL.TES.tro3.mon.v20110608.xml#obs4MIPs.NASA-JPL.TES.tro3.mon</a>.v20110608|application/xml+thredds|THREDDS</p></li>
 <li><p>LAS server:
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/las/getUI.do?catid=0C5410C250379F2D139F978F7BF48BB9_ns_obs4MIPs.NASA-JPL.TES.tro3.mon">http://esgf-node.jpl.nasa.gov/las/getUI.do?catid=0C5410C250379F2D139F978F7BF48BB9_ns_obs4MIPs.NASA-JPL.TES.tro3.mon</a>.v20110608|application/las|LAS</p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/las/getUI.do?catid=0C5410C250379F2D139F978F7BF48BB9_ns_obs4MIPs.NASA-JPL.TES.tro3.mon">http://esgf-node.llnl.gov/las/getUI.do?catid=0C5410C250379F2D139F978F7BF48BB9_ns_obs4MIPs.NASA-JPL.TES.tro3.mon</a>.v20110608|application/las|LAS</p></li>
 </ul>
 <p>Example of File access URLs:</p>
 <ul class="simple">
 <li><p>HTTP download:
-<a class="reference external" href="http://esgf-data.jpl.nasa.gov/thredds/fileServer/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912">http://esgf-data.jpl.nasa.gov/thredds/fileServer/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912</a>.nc|application/netcdf|HTTPServer</p></li>
+<a class="reference external" href="http://esgf-data.llnl.gov/thredds/fileServer/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912">http://esgf-data.llnl.gov/thredds/fileServer/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912</a>.nc|application/netcdf|HTTPServer</p></li>
 <li><p>GridFTP download:
-gsiftp://esgf-data.jpl.nasa.gov:2811//esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc|application/gridftp|GridFTP</p></li>
+gsiftp://esgf-data.llnl.gov:2811//esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc|application/gridftp|GridFTP</p></li>
 <li><p>OpenDAP download:
-<a class="reference external" href="http://esgf-data.jpl.nasa.gov/thredds/dodsC/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc">http://esgf-data.jpl.nasa.gov/thredds/dodsC/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc</a>.html|application/opendap-html|OPENDAP</p></li>
+<a class="reference external" href="http://esgf-data.llnl.gov/thredds/dodsC/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc">http://esgf-data.llnl.gov/thredds/dodsC/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc</a>.html|application/opendap-html|OPENDAP</p></li>
 <li><p>Globus As-A-Service download:
 globus:e3f6216e-063e-11e6-a732-22000bf2d559/esg_dataroot/obs4MIPs/observations/atmos/tro3Stderr/mon/grid/NASA-JPL/TES/v20110608/tro3Stderr_TES_L3_tbd_200507-200912.nc|Globus|Globus</p></li>
 </ul>
@@ -644,7 +644,7 @@ globus:e3f6216e-063e-11e6-a732-22000bf2d559/esg_dataroot/obs4MIPs/observations/a
 also be used, with minor modifications, to generate a Wget script to
 download all files matching the given constraints. Specifically, each
 ESGF Index Node exposes the following URL for generating Wget scripts:</p>
-<div class="highlight-ipython2 notranslate"><div class="highlight"><pre><span></span>http:///wget?[keyword parameters as (name, value) pairs][facet parameters as (name,value) pairs]
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">http:///wget?[keyword parameters as (name, value) pairs][facet parameters as (name,value) pairs]</span>
 </pre></div>
 </div>
 <p>where again“” is the base URL of the search service at a given Index
@@ -675,11 +675,11 @@ for bulk download of files.</p>
 <p>Examples:</p>
 <ul class="simple">
 <li><p>Download all obs4MIPs files from the JPL node with variable “hus” :
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/wget?variable=hus&amp;project=obs4MIPs&amp;distrib=false">http://esgf-node.jpl.nasa.gov/esg-search/wget?variable=hus&amp;project=obs4MIPs&amp;distrib=false</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/wget?variable=hus&amp;project=obs4MIPs&amp;distrib=false">http://esgf-node.llnl.gov/esg-search/wget?variable=hus&amp;project=obs4MIPs&amp;distrib=false</a></p></li>
 <li><p>Download the files as in the previous examples, and organize them in
 a directory structure such as
 project/product/institute/time_frequency :
-<a class="reference external" href="http://esgf-node.jpl.nasa.gov/esg-search/wget?variable=hus&amp;project=obs4MIPs&amp;distrib=false&amp;download_structure=project,product,institute,time_frequency">http://esgf-node.jpl.nasa.gov/esg-search/wget?variable=hus&amp;project=obs4MIPs&amp;distrib=false&amp;download_structure=project,product,institute,time_frequency</a></p></li>
+<a class="reference external" href="http://esgf-node.llnl.gov/esg-search/wget?variable=hus&amp;project=obs4MIPs&amp;distrib=false&amp;download_structure=project,product,institute,time_frequency">http://esgf-node.llnl.gov/esg-search/wget?variable=hus&amp;project=obs4MIPs&amp;distrib=false&amp;download_structure=project,product,institute,time_frequency</a></p></li>
 </ul>
 <p>For more information, see also the Wget FAQ</p>
 </div>
