@@ -11,9 +11,9 @@ Manual esg-search update
 # download search module (verify module version
 wget https://github.com/ESGF/esg-search/releases/download/v4.17.10/esg-search.war
 /usr/local/tomcat/bin/catalina.sh stop # stop tomcat
-mv /usr/local/tomcat/webapps/esg-search /tmp. # move old version aside
+mv /usr/local/tomcat/webapps/esg-search /tmp # move old version aside
 rm -rf /usr/local/tomcat/work/Catalina/localhost/esg-search # clean out cache
-cp esg-search /usr/local/tomcat/webapps
+cp esg-search.war /usr/local/tomcat/webapps
 /usr/local/tomcat/bin/catalina.sh start # restart tomcat
 
 
