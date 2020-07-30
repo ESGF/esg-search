@@ -52,7 +52,7 @@ public class QueryParameters {
     final public static String FIELD_MIN_VERSION = "min_version";
     final public static String FIELD_SCORE = "score";
     final public static String FIELD_UNITS = "units";
-    
+
     final public static String FIELD_CHECKSUM = "checksum";
     final public static String FIELD_CHECKSUM_TYPE = "checksum_type";
     final public static String FIELD_INDEX_NODE = "index_node";
@@ -63,7 +63,12 @@ public class QueryParameters {
     final public static String FIELD_DATETIME_START = "datetime_start";
     final public static String FIELD_DATETIME_STOP = "datetime_stop";
     final public static String FIELD_TEXT = "text";
-            
+
+    // metadata fields for CMIP6
+    final public static String FIELD_PID = "pid";
+    final public static String FIELD_CITATION_URL = "citation_url";
+    final public static String FIELD_FURTHER_INFO_URL = "further_info_url";
+
     // special query fields for open search geo extension
     public final static String FIELD_BBOX ="bbox";  // west, south, east, north
     public final static String FIELD_LAT ="lat";
@@ -118,7 +123,8 @@ public class QueryParameters {
     	FIELD_VARIABLE_UNITS,
     	FIELD_GEO, FIELD_GEO_UNITS,
     	FIELD_TIMESTAMP_, FIELD_VERSION_,
-    	FIELD_SCORE, FIELD_UNITS
+    	FIELD_SCORE, FIELD_UNITS,
+    	FIELD_PID, FIELD_CITATION_URL, FIELD_FURTHER_INFO_URL
     });
 
     
