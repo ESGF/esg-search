@@ -279,7 +279,7 @@ public class SolrUrlBuilder {
         if (qs.isEmpty()) qs.add(URLEncoder.encode("*:*", "UTF-8"));      
         
         // &facet.field=...&facet.field=...
-        if (this.facets!=null) {
+        if (this.facets!=null && this.facets.size()!=0) {
             ff.append("&facet=true");
             for (final String facet : this.facets) {
                 ff.append("&facet.field=").append( URLEncoder.encode(facet, UTF8 ));
