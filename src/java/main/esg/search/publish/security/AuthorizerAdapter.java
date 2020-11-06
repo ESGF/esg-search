@@ -32,6 +32,7 @@ public class AuthorizerAdapter {
     
     private final Log LOG = LogFactory.getLog(this.getClass());
     
+    @Autowired(required=false)
     public void setAuthorizer(Authorizer authorizer) {
         this.authorizer = authorizer;
     }

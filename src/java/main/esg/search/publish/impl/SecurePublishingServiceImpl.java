@@ -37,6 +37,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
         this.publishingService = publishingService;
     }
     
+    @Autowired(required=false)
     public void setAuthorizerAdpater(AuthorizerAdapter authorizer) {
         this.authorizer = authorizer;
     }
