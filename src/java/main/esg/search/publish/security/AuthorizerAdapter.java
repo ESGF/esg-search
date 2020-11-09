@@ -32,8 +32,7 @@ public class AuthorizerAdapter {
     
     private final Log LOG = LogFactory.getLog(this.getClass());
     
-    // Note: comment out @Autowired to disable security
-    @Autowired
+    @Autowired(required=false)
     public void setAuthorizer(Authorizer authorizer) {
         this.authorizer = authorizer;
     }

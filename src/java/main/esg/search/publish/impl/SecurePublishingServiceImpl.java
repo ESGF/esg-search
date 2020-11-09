@@ -37,8 +37,7 @@ public class SecurePublishingServiceImpl implements PublishingService {
         this.publishingService = publishingService;
     }
     
-    // NOTE: remove @Autowired to disable access control
-    @Autowired
+    @Autowired(required=false)
     public void setAuthorizerAdpater(AuthorizerAdapter authorizer) {
         this.authorizer = authorizer;
     }
