@@ -97,7 +97,7 @@ Builds the project via ant (obviously).
 
   <exec executable="bash" dir="${basedir}" outputproperty="version_num">
     <arg value="-c"/>
-    <arg value="git describe --tags"/>
+    <arg value="git describe | sed -n 's/v[.]*\([a-zA-Z0-9.]*\)[-]*.*/\1/p'"/>
   </exec>
   <exec executable="bash" dir="${basedir}" outputproperty="branch">
     <arg value="-c"/>
