@@ -6,7 +6,7 @@ Search API and publishing module for ESGF (see description below)
 Manual esg-search update
 ------------------------
 
-
+```
 # Using > v4.0, service control differs with v2.x, use esg-node stop/start
 # download search module (verify module version
 wget https://github.com/ESGF/esg-search/releases/download/v4.18.0/esg-search.war
@@ -15,7 +15,7 @@ mv /usr/local/tomcat/webapps/esg-search /tmp # move old version aside
 rm -rf /usr/local/tomcat/work/Catalina/localhost/esg-search # clean out cache
 cp esg-search.war /usr/local/tomcat/webapps
 /usr/local/tomcat/bin/catalina.sh start # restart tomcat
-
+```
 
 
 Latest version: v4.17.10
